@@ -48,7 +48,7 @@ public class TestFunctions extends TestCase
         }
         catch(RuntimeException e)
         {
-            assertEquals(runtimeException, e.getCause());
+            assertEquals(runtimeException, e);
         }
         
         verify(supplier, times(ATTEMPTS)).get();
@@ -76,7 +76,7 @@ public class TestFunctions extends TestCase
         }
         catch(RuntimeException e)
         {
-            assertEquals(runtimeException, e.getCause());
+            assertEquals(runtimeException, e);
         }
 
         verify(supplier, times(ATTEMPTS)).get();
@@ -104,7 +104,7 @@ public class TestFunctions extends TestCase
         }
         catch(RuntimeException e)
         {
-            assertEquals(runtimeException, e.getCause());
+            assertEquals(runtimeException, e);
         }
         
         verify(function, times(ATTEMPTS)).apply("application");
@@ -121,7 +121,7 @@ public class TestFunctions extends TestCase
         }
         catch(RuntimeException e)
         {
-            assertEquals(runtimeException, e.getCause());
+            assertEquals(runtimeException, e);
         }
 
         verify(function, times(ATTEMPTS)).apply("application");
