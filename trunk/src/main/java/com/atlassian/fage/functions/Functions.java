@@ -12,7 +12,7 @@ public class Functions
     /**
      * Attempt to get the result of supplier <i>tries</i> number of times. Any exceptions thrown by the supplier will be
      * ignored until the number of attempts is reached. If the number of attempts is reached without a successful result,
-     * a RuntimeException is thrown wrapping the most recent exception thrown by the supplier.
+     * the most recent exception to be thrown will be thrown again.
      * 
      * @return the first successful result from the supplier
      */
@@ -24,21 +24,20 @@ public class Functions
     /**
      * Attempt to get the result of supplier <i>tries</i> number of times. Any exceptions thrown by the supplier will be
      * acted upon by the exception action provided until the number of attempts is reached. If the number of attempts is
-     * reached without a successful result, a RuntimeException will be thrown wrapping the most recent exception thrown
-     * by the supplier.
+     * reached without a successful result, the most recent exception to be thrown will be thrown again.
      * 
      * @return the first successful result from the supplier
      */
     public static <T> T attempt(Supplier<T> supplier, int tries, ExceptionAction action)
     {
-        Exception ex = null;
+        RuntimeException ex = null;
         for (int i = 0; i < tries; i++)
         {
             try
             {
                 return supplier.get();
             }
-            catch (Exception e)
+            catch (RuntimeException e)
             {
                 if (action != null)
                 {
@@ -47,13 +46,13 @@ public class Functions
                 ex = e;
             }
         }
-        throw new RuntimeException(ex);
+        throw ex;
     }
     
     /**
      * Attempt to get the result of function <i>tries</i> number of times. Any exceptions thrown by the function will be
      * ignored until the number of attempts is reached. If the number of attempts is reached without a successful result,
-     * a RuntimeException is thrown wrapping the most recent exception thrown by the function.
+     * the most recent exception to be thrown will be thrown again.
      * 
      * @return the first successful result from the function
      */
@@ -65,21 +64,20 @@ public class Functions
     /**
      * Attempt to get the result of function <i>tries</i> number of times. Any exceptions thrown by the function will be
      * acted upon by the exception action provided until the number of attempts is reached. If the number of attempts is
-     * reached without a successful result, a RuntimeException will be thrown wrapping the most recent exception thrown
-     * by the function.
+     * reached without a successful result, the most recent exception to be thrown will be thrown again.
      * 
      * @return the first successful result from the supplier
      */
     public static <F, T> T attempt(Function<F, T> function, F parameter, int tries, ExceptionAction action)
     {
-        Exception ex = null;
+        RuntimeException ex = null;
         for (int i = 0; i < tries; i++)
         {
             try
             {
                 return function.apply(parameter);
             }
-            catch (Exception e)
+            catch (RuntimeException e)
             {
                 if (action != null)
                 {
@@ -88,7 +86,7 @@ public class Functions
                 ex = e;
             }
         }
-        throw new RuntimeException(ex);
+        throw ex;
     }
 
 }
