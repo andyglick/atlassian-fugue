@@ -36,7 +36,7 @@ public class TestFunctions
         when(supplier.get()).thenReturn(expected);
         String result = Functions.attempt(supplier, ATTEMPTS);
 
-        verify(supplier, times(1)).get();
+        verify(supplier).get();
         assertEquals(expected, result);
     }
     
@@ -65,7 +65,7 @@ public class TestFunctions
         when(supplier.get()).thenReturn(expected);
         String result = Functions.attempt(supplier, ATTEMPTS, exceptionAction);
         
-        verify(supplier, times(1)).get();
+        verify(supplier).get();
         assertEquals(expected, result);
         verifyZeroInteractions(exceptionAction);
     }
@@ -86,17 +86,17 @@ public class TestFunctions
         }
 
         verify(supplier, times(ATTEMPTS)).get();
-        verify(exceptionAction, times(4)).act(runtimeException);
+        verify(exceptionAction, times(ATTEMPTS)).act(runtimeException);
     }
     
     @Test
     public void testBasicFunctionAttempt()
     {
         Integer expected = 1;
-        when(function.apply("1")).thenReturn(1);
+        when(function.apply("1")).thenReturn(expected);
         Integer result = Functions.attempt(function, "1", ATTEMPTS);
 
-        verify(function, times(1)).apply("1");
+        verify(function).apply("1");
         assertEquals(expected, result);
     }
     
@@ -134,6 +134,6 @@ public class TestFunctions
         }
 
         verify(function, times(ATTEMPTS)).apply("application");
-        verify(exceptionAction, times(4)).act(runtimeException);
+        verify(exceptionAction, times(ATTEMPTS)).act(runtimeException);
     }
 }
