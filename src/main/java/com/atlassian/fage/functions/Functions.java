@@ -23,7 +23,7 @@ public class Functions
     
     /**
      * Attempt to get the result of supplier <i>tries</i> number of times. Any exceptions thrown by the supplier will be
-     * handled by the exception handler provided until the number of attempts is reached. If the number of attempts is
+     * acted upon by the exception action provided until the number of attempts is reached. If the number of attempts is
      * reached without a successful result, a RuntimeException will be thrown wrapping the most recent exception thrown
      * by the supplier.
      * 
@@ -50,11 +50,26 @@ public class Functions
         throw new RuntimeException(ex);
     }
     
-    public static <F, T> T attempt(Function<F, T> supplier, F parameter, int tries)
+    /**
+     * Attempt to get the result of function <i>tries</i> number of times. Any exceptions thrown by the function will be
+     * ignored until the number of attempts is reached. If the number of attempts is reached without a successful result,
+     * a RuntimeException is thrown wrapping the most recent exception thrown by the function.
+     * 
+     * @return the first successful result from the function
+     */
+    public static <F, T> T attempt(Function<F, T> function, F parameter, int tries)
     {
-        return attempt(supplier, parameter, tries, null);
+        return attempt(function, parameter, tries, null);
     }
     
+    /**
+     * Attempt to get the result of function <i>tries</i> number of times. Any exceptions thrown by the function will be
+     * acted upon by the exception action provided until the number of attempts is reached. If the number of attempts is
+     * reached without a successful result, a RuntimeException will be thrown wrapping the most recent exception thrown
+     * by the function.
+     * 
+     * @return the first successful result from the supplier
+     */
     public static <F, T> T attempt(Function<F, T> function, F parameter, int tries, ExceptionAction action)
     {
         Exception ex = null;
