@@ -1,7 +1,11 @@
 package com.atlassian.fage.functions;
 
+import com.google.common.base.Preconditions;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Provides some standard implementations of various exception Actions.
@@ -18,21 +22,9 @@ public class ExceptionActions
      * @param logger the Logger to which exceptions will be logged; if it is null, a default Logger will be used
      * @return an {ExceptionAction} which will log (at WARN level) exceptions passed in
      */
-    public static ExceptionAction loggingExceptionAction(final Logger logger)
+    public static ExceptionAction loggingExceptionAction(Logger logger)
     {
-        return new ExceptionAction() 
-        {
-            @Override
-            public void act(final Exception e)
-            {
-                warn(logger == null ? log: logger, e); 
-            }
-            
-            private void warn(Logger log, Exception e)
-            {
-                log.warn("Exception encountered: ", e);
-            }
-        };
+        return new LoggingExceptionAction(logger == null ? log : logger);
     }
 
     /**
@@ -45,47 +37,95 @@ public class ExceptionActions
      * @param delayMilliseconds the desired duration of the delay, in milliseconds
      * @return an {ExceptionAction} which will sleep before returning
      */
-    public static ExceptionAction delayingExceptionAction(final int delayMilliseconds)
+    public static ExceptionAction delayingExceptionAction(int delayMilliseconds)
     {
-        return new ExceptionAction()
-        {
-            @Override
-            public void act(final Exception e)
-            {
-                try
-                {
-                    Thread.sleep(delayMilliseconds);
-                }
-                catch (InterruptedException iE)
-                {
-                    log.warn("Quietly swallowing thread interruption and continuing.", iE);
-                }
-            }
-        };
+        return new DelayingExceptionAction(delayMilliseconds);
     }
 
+    /**
+     * @return an {ExceptionAction} which does nothing
+     */
     public static ExceptionAction noOpExceptionAction()
     {
-        return new ExceptionAction() { public void act (Exception a) {} };
+        return new NoOpExceptionAction();
     }
+    
     /**
      * Chain a series of Actions together to be executed subsequently; if one throws an exception, subsequent actions 
      * will not be executed.
      */
-    public static ExceptionAction chain(final ExceptionAction... actions)
+    public static ExceptionAction chain(ExceptionAction... actions)
     {
-        return new ExceptionAction()
-        {
-            @Override
-            public void act(final Exception e)
-            {
-                for (ExceptionAction action : actions)
-                {
-                    action.act(e);
-                }
-            }
-        };
+        return new CompositeExceptionAction(actions);
     }
 
+    private static class NoOpExceptionAction implements ExceptionAction
+    {
+        public void act (Exception a) {/* do nothing */}
+    }
 
+    private static class DelayingExceptionAction implements ExceptionAction
+    {
+        private final int delayMilliseconds;
+
+        public DelayingExceptionAction(int delayMilliseconds)
+        {
+            Preconditions.checkArgument(delayMilliseconds >= 0, "The delay must not be negative");
+            this.delayMilliseconds = delayMilliseconds;
+        }
+
+        @Override
+        public void act(Exception e)
+        {
+            try
+            {
+                Thread.sleep(delayMilliseconds);
+            }
+            catch (InterruptedException iE)
+            {
+                log.warn("Quietly swallowing thread interruption and continuing.", iE);
+            }
+        }
+    }
+
+    private static class LoggingExceptionAction implements ExceptionAction
+    {
+        private final Logger logger;
+
+        public LoggingExceptionAction(Logger logger)
+        {
+            this.logger = logger;
+        }
+
+        @Override
+        public void act(Exception e)
+        {
+            warn(logger, e); 
+        }
+
+        private void warn(Logger log, Exception e)
+        {
+            log.warn("Exception encountered: ", e);
+        }
+    }
+
+    private static class CompositeExceptionAction implements ExceptionAction
+    {
+        private final ExceptionAction[] actions;
+
+        public CompositeExceptionAction(ExceptionAction... actions)
+        {
+            checkNotNull(actions);
+            this.actions = actions;
+        }
+
+        @Override
+        public void act(Exception e)
+        {
+            for (ExceptionAction action : actions)
+            {
+                action.act(e);
+            }
+        }
+    }
 }
