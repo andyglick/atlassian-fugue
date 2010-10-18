@@ -27,7 +27,7 @@ public class TestFunctions extends TestCase
         initMocks(this);
     }
     
-    public void testBasicAttempt()
+    public void testBasicSupplierAttempt()
     {
         String expected = "result";
         when(supplier.get()).thenReturn(expected);
@@ -37,7 +37,7 @@ public class TestFunctions extends TestCase
         assertEquals(expected, result);
     }
     
-    public void testBasicAttemptRetry()
+    public void testBasicSupplierAttemptRetry()
     {
         when(supplier.get()).thenThrow(runtimeException);
         
@@ -54,7 +54,7 @@ public class TestFunctions extends TestCase
         verify(supplier, times(ATTEMPTS)).get();
     }
     
-    public void testAttempt()
+    public void testSupplierAttempt()
     {
         String expected = "result";
         when(supplier.get()).thenReturn(expected);
@@ -65,7 +65,7 @@ public class TestFunctions extends TestCase
         verifyZeroInteractions(exceptionAction);
     }
     
-    public void testAttemptRetry()
+    public void testSupplierAttemptRetry()
     {
         when(supplier.get()).thenThrow(runtimeException);
         
