@@ -2,10 +2,12 @@ package com.atlassian.fage.functions;
 import com.google.common.base.Function;
 import com.google.common.base.Supplier;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 
-import junit.framework.TestCase;
-
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.fail;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -13,7 +15,7 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class TestFunctions extends TestCase
+public class TestFunctions
 {
     @Mock private Supplier<String> supplier;
     @Mock private Function<String, Integer> function;
@@ -21,12 +23,13 @@ public class TestFunctions extends TestCase
     @Mock private RuntimeException runtimeException;
     public static final int ATTEMPTS = 4;
 
-    @Override
+    @Before
     public void setUp()
     {
         initMocks(this);
     }
-    
+
+    @Test
     public void testBasicSupplierAttempt()
     {
         String expected = "result";
@@ -37,6 +40,7 @@ public class TestFunctions extends TestCase
         assertEquals(expected, result);
     }
     
+    @Test
     public void testBasicSupplierAttemptRetry()
     {
         when(supplier.get()).thenThrow(runtimeException);
@@ -54,6 +58,7 @@ public class TestFunctions extends TestCase
         verify(supplier, times(ATTEMPTS)).get();
     }
     
+    @Test
     public void testSupplierAttempt()
     {
         String expected = "result";
@@ -65,6 +70,7 @@ public class TestFunctions extends TestCase
         verifyZeroInteractions(exceptionAction);
     }
     
+    @Test
     public void testSupplierAttemptRetry()
     {
         when(supplier.get()).thenThrow(runtimeException);
@@ -83,6 +89,7 @@ public class TestFunctions extends TestCase
         verify(exceptionAction, times(4)).act(runtimeException);
     }
     
+    @Test
     public void testBasicFunctionAttempt()
     {
         Integer expected = 1;
@@ -93,6 +100,7 @@ public class TestFunctions extends TestCase
         assertEquals(expected, result);
     }
     
+    @Test
     public void testBasicFunctionAttemptRetry()
     {
         when(function.apply(anyString())).thenThrow(runtimeException);
@@ -110,6 +118,7 @@ public class TestFunctions extends TestCase
         verify(function, times(ATTEMPTS)).apply("application");
     }
     
+    @Test
     public void testFunctionAttemptRetry()
     {
         when(function.apply("application")).thenThrow(runtimeException);
