@@ -1,6 +1,9 @@
 package com.atlassian.fage.functions;
+
 import com.google.common.base.Function;
 import com.google.common.base.Supplier;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A place to put useful functions.
@@ -18,7 +21,7 @@ public class Functions
      */
     public static <T> T attempt(Supplier<T> supplier, int tries)
     {
-        return attempt(supplier, tries, null);
+        return attempt(supplier, tries, ExceptionActions.noOpExceptionAction());
     }
     
     /**
@@ -30,6 +33,9 @@ public class Functions
      */
     public static <T> T attempt(Supplier<T> supplier, int tries, ExceptionAction action)
     {
+        checkNotNull(supplier);
+        checkNotNull(action);
+        
         RuntimeException ex = null;
         for (int i = 0; i < tries; i++)
         {
@@ -39,10 +45,7 @@ public class Functions
             }
             catch (RuntimeException e)
             {
-                if (action != null)
-                {
-                    action.act(e);
-                }
+                action.act(e);
                 ex = e;
             }
         }
@@ -58,7 +61,7 @@ public class Functions
      */
     public static <F, T> T attempt(Function<F, T> function, F parameter, int tries)
     {
-        return attempt(function, parameter, tries, null);
+        return attempt(function, parameter, tries, ExceptionActions.noOpExceptionAction());
     }
     
     /**
@@ -70,6 +73,9 @@ public class Functions
      */
     public static <F, T> T attempt(Function<F, T> function, F parameter, int tries, ExceptionAction action)
     {
+        checkNotNull(function);
+        checkNotNull(action);
+        
         RuntimeException ex = null;
         for (int i = 0; i < tries; i++)
         {
@@ -79,10 +85,7 @@ public class Functions
             }
             catch (RuntimeException e)
             {
-                if (action != null)
-                {
-                    action.act(e);
-                }
+                action.act(e);
                 ex = e;
             }
         }
