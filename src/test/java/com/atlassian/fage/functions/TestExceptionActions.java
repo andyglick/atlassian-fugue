@@ -39,6 +39,4 @@ public class TestExceptionActions extends TestCase
         assertTrue(actualTime >= 100);
         verify(log).warn("Exception encountered: ", exception);
     }
-    
-    
 }
