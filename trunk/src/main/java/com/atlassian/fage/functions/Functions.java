@@ -1,4 +1,5 @@
 package com.atlassian.fage.functions;
+import com.google.common.base.Function;
 import com.google.common.base.Supplier;
 
 /**
@@ -28,7 +29,7 @@ public class Functions
      * 
      * @return the first successful result from the supplier
      */
-    public static <T> T attempt(Supplier<T> supplier, int tries, ExceptionAction handler)
+    public static <T> T attempt(Supplier<T> supplier, int tries, ExceptionAction action)
     {
         Exception ex = null;
         for (int i = 0; i < tries; i++)
@@ -39,9 +40,35 @@ public class Functions
             }
             catch (Exception e)
             {
-                if (handler != null)
+                if (action != null)
                 {
-                    handler.act(e);
+                    action.act(e);
+                }
+                ex = e;
+            }
+        }
+        throw new RuntimeException(ex);
+    }
+    
+    public static <F, T> T attempt(Function<F, T> supplier, F parameter, int tries)
+    {
+        return attempt(supplier, parameter, tries, null);
+    }
+    
+    public static <F, T> T attempt(Function<F, T> function, F parameter, int tries, ExceptionAction action)
+    {
+        Exception ex = null;
+        for (int i = 0; i < tries; i++)
+        {
+            try
+            {
+                return function.apply(parameter);
+            }
+            catch (Exception e)
+            {
+                if (action != null)
+                {
+                    action.act(e);
                 }
                 ex = e;
             }
