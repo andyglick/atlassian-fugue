@@ -6,8 +6,6 @@ import org.slf4j.Logger;
 
 import junit.framework.TestCase;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -31,7 +29,7 @@ public class TestExceptionActions extends TestCase
     
     public void testLoggingDelayingExceptionAction()
     {
-        ExceptionAction loggingDelayingExceptionAction = ExceptionActions.loggingDelayingExceptionAction(log, 100);
+        ExceptionAction loggingDelayingExceptionAction = ExceptionActions.chain(ExceptionActions.loggingExceptionAction(log), ExceptionActions.delayingExceptionAction(100));
         long startTime = System.currentTimeMillis();
         
         loggingDelayingExceptionAction.act(exception);
@@ -42,15 +40,5 @@ public class TestExceptionActions extends TestCase
         verify(log).warn("Exception encountered: ", exception);
     }
     
-    public void testLoggingDelayingExceptionActionInterrupted()
-    {
-        ExceptionAction loggingDelayingExceptionAction = ExceptionActions.loggingDelayingExceptionAction(log, 100);
-        
-        Thread.currentThread().interrupt();
-        loggingDelayingExceptionAction.act(exception);
-        
-        verify(log).warn("Exception encountered: ", exception);
-        verify(log).warn(eq("Interrupted: "), any(InterruptedException.class));
-    }
     
 }
