@@ -64,6 +64,10 @@ public class ExceptionActions
         };
     }
 
+    public static ExceptionAction noOpExceptionAction()
+    {
+        return new ExceptionAction() { public void act (Exception a) {} };
+    }
     /**
      * Chain a series of Actions together to be executed subsequently; if one throws an exception, subsequent actions 
      * will not be executed.
