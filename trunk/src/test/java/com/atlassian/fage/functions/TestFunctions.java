@@ -11,6 +11,7 @@ import static junit.framework.Assert.fail;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -87,6 +88,18 @@ public class TestFunctions
 
         verify(supplier, times(ATTEMPTS)).get();
         verify(exceptionAction, times(ATTEMPTS)).act(runtimeException);
+    }
+    
+    @Test 
+    public void testSupplierAttemptEarlyExit()
+    {
+        final String expected = "success";
+        when(supplier.get()).thenThrow(new RuntimeException("First attempt")).thenReturn(expected).thenThrow(new RuntimeException("Third attempt")).thenThrow(new RuntimeException("Fourth attempt"));
+        
+        String result = Functions.attempt(supplier, ATTEMPTS);
+        assertEquals(expected, result);
+        verify(supplier, times(2)).get();
+        verifyNoMoreInteractions(supplier);
     }
     
     @Test
