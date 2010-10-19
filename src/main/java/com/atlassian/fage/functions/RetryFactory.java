@@ -5,6 +5,8 @@ import com.google.common.base.Supplier;
 
 /**
  * Provides factory methods for RetryFunction and RetrySupplier.
+ * 
+ * This class is not instantiable.
  */
 public class RetryFactory
 {
