@@ -31,7 +31,7 @@ public class TestAttempt
     }
 
     @Test
-    public void testBasicSupplierAttempt()
+    public void testBasicSupplier()
     {
         String expected = "result";
         when(supplier.get()).thenReturn(expected);
@@ -42,7 +42,7 @@ public class TestAttempt
     }
     
     @Test
-    public void testBasicSupplierAttemptRetry()
+    public void testBasicSupplierRetry()
     {
         when(supplier.get()).thenThrow(runtimeException);
         
@@ -60,7 +60,7 @@ public class TestAttempt
     }
     
     @Test
-    public void testSupplierAttempt()
+    public void testSupplier()
     {
         String expected = "result";
         when(supplier.get()).thenReturn(expected);
@@ -72,7 +72,7 @@ public class TestAttempt
     }
     
     @Test
-    public void testSupplierAttemptRetry()
+    public void testSupplierRetry()
     {
         when(supplier.get()).thenThrow(runtimeException);
         
@@ -91,7 +91,7 @@ public class TestAttempt
     }
     
     @Test 
-    public void testSupplierAttemptEarlyExit()
+    public void testSupplierEarlyExit()
     {
         final String expected = "success";
         when(supplier.get()).thenThrow(new RuntimeException("First attempt")).thenReturn(expected).thenThrow(new RuntimeException("Third attempt")).thenThrow(new RuntimeException("Fourth attempt"));
@@ -103,7 +103,7 @@ public class TestAttempt
     }
     
     @Test
-    public void testBasicFunctionAttempt()
+    public void testBasicFunction()
     {
         Integer expected = 1;
         String input = "1";
@@ -116,7 +116,7 @@ public class TestAttempt
     }
     
     @Test
-    public void testBasicFunctionAttemptRetry()
+    public void testBasicFunctionRetry()
     {
         when(function.apply(anyString())).thenThrow(runtimeException);
         
@@ -134,7 +134,7 @@ public class TestAttempt
     }
     
     @Test
-    public void testFunctionAttemptRetry()
+    public void testFunctionRetry()
     {
         when(function.apply("application")).thenThrow(runtimeException);
         
@@ -153,7 +153,7 @@ public class TestAttempt
     }
     
     @Test
-    public void testFunctionAttemptEarlyExit()
+    public void testFunctionEarlyExit()
     {
         Integer expected = 1;
         String input = "1";
