@@ -10,7 +10,7 @@ import com.google.common.base.Supplier;
  * @param <T> The type of the result the Supplier yields upon application
  * @see RetryFunction for a Function implementation
  * @see RetryFactory for some factory methods
- * @See ExceptionHandlers for some predefined handlers
+ * @see ExceptionHandlers for some predefined handlers
  */
 public class RetrySupplier<T> implements Supplier<T>
 {
