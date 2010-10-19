@@ -7,7 +7,7 @@ import com.google.common.base.Suppliers;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A place to put useful functions.
+ * Provides methods that can be used to attempt to execute a function or supplier a number of times.
  */
 public class Attempt
 {
