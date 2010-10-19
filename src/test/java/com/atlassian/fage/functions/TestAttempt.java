@@ -35,7 +35,7 @@ public class TestAttempt
     {
         String expected = "result";
         when(supplier.get()).thenReturn(expected);
-        String result = Attempt.attempt(supplier, ATTEMPTS);
+        String result = Attempt.attempt(supplier, ATTEMPTS).get();
 
         verify(supplier).get();
         assertEquals(expected, result);
@@ -48,7 +48,7 @@ public class TestAttempt
         
         try
         {
-            Attempt.attempt(supplier, ATTEMPTS);
+            Attempt.attempt(supplier, ATTEMPTS).get();
             fail("Expected a exception.");
         }
         catch(RuntimeException e)
@@ -64,7 +64,7 @@ public class TestAttempt
     {
         String expected = "result";
         when(supplier.get()).thenReturn(expected);
-        String result = Attempt.attempt(supplier, ATTEMPTS, exceptionHandler);
+        String result = Attempt.attempt(supplier, ATTEMPTS, exceptionHandler).get();
         
         verify(supplier).get();
         assertEquals(expected, result);
@@ -78,7 +78,7 @@ public class TestAttempt
         
         try
         {
-            Attempt.attempt(supplier, ATTEMPTS, exceptionHandler);
+            Attempt.attempt(supplier, ATTEMPTS, exceptionHandler).get();
             fail("Expected a exception.");
         }
         catch(RuntimeException e)
@@ -96,7 +96,7 @@ public class TestAttempt
         final String expected = "success";
         when(supplier.get()).thenThrow(new RuntimeException("First attempt")).thenReturn(expected).thenThrow(new RuntimeException("Third attempt")).thenThrow(new RuntimeException("Fourth attempt"));
         
-        String result = Attempt.attempt(supplier, ATTEMPTS);
+        String result = Attempt.attempt(supplier, ATTEMPTS).get();
         assertEquals(expected, result);
         verify(supplier, times(2)).get();
         verifyNoMoreInteractions(supplier);
@@ -109,7 +109,7 @@ public class TestAttempt
         String input = "1";
         
         when(function.apply(input)).thenReturn(expected);
-        Integer result = Attempt.attempt(function, input, ATTEMPTS);
+        Integer result = Attempt.attempt(function, ATTEMPTS).apply(input);
 
         verify(function).apply(input);
         assertEquals(expected, result);
@@ -119,10 +119,11 @@ public class TestAttempt
     public void testBasicFunctionRetry()
     {
         when(function.apply(anyString())).thenThrow(runtimeException);
-        
+
+        String input = "application";
         try
         {
-            Attempt.attempt(function, "application", ATTEMPTS);
+            Attempt.attempt(function, ATTEMPTS).apply(input);
             fail("Expected a exception.");
         }
         catch(RuntimeException e)
@@ -130,17 +131,18 @@ public class TestAttempt
             assertEquals(runtimeException, e);
         }
         
-        verify(function, times(ATTEMPTS)).apply("application");
+        verify(function, times(ATTEMPTS)).apply(input);
     }
     
     @Test
     public void testFunctionRetry()
     {
-        when(function.apply("application")).thenThrow(runtimeException);
+        String input = "application";
+        when(function.apply(input)).thenThrow(runtimeException);
         
         try
         {
-            Attempt.attempt(function, "application", ATTEMPTS, exceptionHandler);
+            Attempt.attempt(function, ATTEMPTS, exceptionHandler).apply(input);
             fail("Expected a exception.");
         }
         catch(RuntimeException e)
@@ -148,7 +150,7 @@ public class TestAttempt
             assertEquals(runtimeException, e);
         }
 
-        verify(function, times(ATTEMPTS)).apply("application");
+        verify(function, times(ATTEMPTS)).apply(input);
         verify(exceptionHandler, times(ATTEMPTS)).handle(runtimeException);
     }
     
@@ -160,7 +162,7 @@ public class TestAttempt
         
         when(function.apply(input)).thenThrow(new RuntimeException("First attempt")).thenReturn(expected).thenThrow(new RuntimeException("Third attempt")).thenThrow(new RuntimeException("Fourth attempt"));
 
-        Integer result = Attempt.attempt(function, input, ATTEMPTS);
+        Integer result = Attempt.attempt(function, ATTEMPTS).apply(input);
         assertEquals(expected, result);
         verify(function, times(2)).apply(input);
         verifyNoMoreInteractions(function);
