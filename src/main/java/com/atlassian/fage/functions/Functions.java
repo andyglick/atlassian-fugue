@@ -2,6 +2,7 @@ package com.atlassian.fage.functions;
 
 import com.google.common.base.Function;
 import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -76,20 +77,11 @@ public class Functions
         checkNotNull(function);
         checkNotNull(action);
         
-        RuntimeException ex = null;
-        for (int i = 0; i < tries; i++)
-        {
-            try
-            {
-                return function.apply(parameter);
-            }
-            catch (RuntimeException e)
-            {
-                action.act(e);
-                ex = e;
-            }
-        }
-        throw ex;
+        return attempt(toSupplier(function, parameter), tries, action);
     }
 
+    private static <F, T> Supplier<T> toSupplier(final Function<F, T> function, final F parameter)
+    {
+        return Suppliers.compose(function, Suppliers.ofInstance(parameter));
+    }
 }
