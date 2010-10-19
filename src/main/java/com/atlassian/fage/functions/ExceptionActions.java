@@ -83,7 +83,12 @@ public class ExceptionActions
             }
             catch (InterruptedException iE)
             {
-                log.warn("Quietly swallowing thread interruption and continuing.", iE);
+                // Restore the interrupted status
+                Thread.currentThread().interrupt();
+                
+                // I can't foresee a situation in which this should happen under normal use, but it isn't an error
+                // per se, so log a warning.
+                log.warn("Thread interrupted", iE);
             }
         }
     }
