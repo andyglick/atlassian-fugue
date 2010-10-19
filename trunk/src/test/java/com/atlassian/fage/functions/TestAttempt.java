@@ -16,7 +16,7 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class TestFunctions
+public class TestAttempt
 {
     @Mock private Supplier<String> supplier;
     @Mock private Function<String, Integer> function;
