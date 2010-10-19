@@ -106,10 +106,12 @@ public class TestFunctions
     public void testBasicFunctionAttempt()
     {
         Integer expected = 1;
-        when(function.apply("1")).thenReturn(expected);
-        Integer result = Functions.attempt(function, "1", ATTEMPTS);
+        String input = "1";
+        
+        when(function.apply(input)).thenReturn(expected);
+        Integer result = Functions.attempt(function, input, ATTEMPTS);
 
-        verify(function).apply("1");
+        verify(function).apply(input);
         assertEquals(expected, result);
     }
     
@@ -148,5 +150,19 @@ public class TestFunctions
 
         verify(function, times(ATTEMPTS)).apply("application");
         verify(exceptionAction, times(ATTEMPTS)).act(runtimeException);
+    }
+    
+    @Test
+    public void testFunctionAttemptEarlyExit()
+    {
+        Integer expected = 1;
+        String input = "1";
+        
+        when(function.apply(input)).thenThrow(new RuntimeException("First attempt")).thenReturn(expected).thenThrow(new RuntimeException("Third attempt")).thenThrow(new RuntimeException("Fourth attempt"));
+
+        Integer result = Functions.attempt(function, input, ATTEMPTS);
+        assertEquals(expected, result);
+        verify(function, times(2)).apply(input);
+        verifyNoMoreInteractions(function);
     }
 }
