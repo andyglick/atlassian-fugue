@@ -31,7 +31,7 @@ public class RetryFunction<F, T> implements Function<F, T>
     }
 
     /**
-     * Attempt to apply <i>paremeter</i> to the wrapped Function <i>tries</i> number of times. Any exceptions thrown 
+     * Attempt to apply <i>parameter</i> to the wrapped Function <i>tries</i> number of times. Any exceptions thrown 
      * will be ignored until the number of attempts is reached. If the number of attempts is reached without a
      * successful result, the most recent exception to be thrown will be rethrown.
      * 
