@@ -9,7 +9,7 @@ import com.google.common.base.Supplier;
  * 
  * @param <T> The type of the result the Supplier yields upon application
  * @see RetryFunction for a Function implementation
- * @see Attempt for some factory methods
+ * @see RetryFactory for some factory methods
  * @See ExceptionHandlers for some predefined handlers
  */
 public class RetrySupplier<T> implements Supplier<T>
@@ -18,6 +18,7 @@ public class RetrySupplier<T> implements Supplier<T>
     private final int tries;
     private final ExceptionHandler handler;
 
+    
     public RetrySupplier(Supplier<T> supplier, int tries, ExceptionHandler handler)
     {
         Preconditions.checkNotNull(supplier);
