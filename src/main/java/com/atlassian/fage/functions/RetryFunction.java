@@ -11,7 +11,7 @@ import com.google.common.base.Suppliers;
  * @param <F> The type of the parameter the Function accepts
  * @param <T> The type of the result the Function yields upon application
  * @see RetrySupplier for a Supplier implementation
- * @see Attempt for some factory methods
+ * @see RetryFactory for some factory methods
  */
 public class RetryFunction<F, T> implements Function<F, T>
 {
