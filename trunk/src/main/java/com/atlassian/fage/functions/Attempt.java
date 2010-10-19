@@ -9,9 +9,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * A place to put useful functions.
  */
-public class Functions
+public class Attempt
 {
-    private Functions(){throw new AssertionError("This class is non-instantiable.");}
+    private Attempt(){throw new AssertionError("This class is non-instantiable.");}
 
     /**
      * Attempt to get the result of supplier <i>tries</i> number of times. Any exceptions thrown by the supplier will be
