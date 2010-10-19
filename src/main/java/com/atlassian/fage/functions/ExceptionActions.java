@@ -14,7 +14,7 @@ public class ExceptionActions
 {
     private static final Logger log = LoggerFactory.getLogger(ExceptionActions.class);
     
-    private ExceptionActions() {throw new IllegalStateException("This class is not instantiable.");}
+    private ExceptionActions() {throw new AssertionError("This class is not instantiable.");}
 
     /**
      * Retrieves an {ExceptionAction} which will log exceptions passed in.
