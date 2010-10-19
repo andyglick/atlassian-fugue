@@ -1,8 +1,9 @@
 package com.atlassian.fage.functions;
 
 /**
- * Takes action when an Exception is thrown. Examples include a delay in execution when performing back-offs and
+ * Takes action when an Exception is thrown. Examples include placing a delay in execution when performing back-offs and
  * logging errors when exceptions are encountered.
+ * 
  * @see ExceptionHandlers for some predefined handlers
  */
 public interface ExceptionHandler
