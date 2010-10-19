@@ -10,7 +10,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class Functions
 {
-    private Functions(){throw new IllegalStateException("This class is non-instantiable");}
+    private Functions(){throw new AssertionError("This class is non-instantiable.");}
 
     /**
      * Attempt to get the result of supplier <i>tries</i> number of times. Any exceptions thrown by the supplier will be
