@@ -35,7 +35,7 @@ public class TestFunctions
     {
         String expected = "result";
         when(supplier.get()).thenReturn(expected);
-        String result = Functions.attempt(supplier, ATTEMPTS);
+        String result = Attempt.attempt(supplier, ATTEMPTS);
 
         verify(supplier).get();
         assertEquals(expected, result);
@@ -48,7 +48,7 @@ public class TestFunctions
         
         try
         {
-            Functions.attempt(supplier, ATTEMPTS);
+            Attempt.attempt(supplier, ATTEMPTS);
             fail("Expected a exception.");
         }
         catch(RuntimeException e)
@@ -64,7 +64,7 @@ public class TestFunctions
     {
         String expected = "result";
         when(supplier.get()).thenReturn(expected);
-        String result = Functions.attempt(supplier, ATTEMPTS, exceptionAction);
+        String result = Attempt.attempt(supplier, ATTEMPTS, exceptionAction);
         
         verify(supplier).get();
         assertEquals(expected, result);
@@ -78,7 +78,7 @@ public class TestFunctions
         
         try
         {
-            Functions.attempt(supplier, ATTEMPTS, exceptionAction);
+            Attempt.attempt(supplier, ATTEMPTS, exceptionAction);
             fail("Expected a exception.");
         }
         catch(RuntimeException e)
@@ -96,7 +96,7 @@ public class TestFunctions
         final String expected = "success";
         when(supplier.get()).thenThrow(new RuntimeException("First attempt")).thenReturn(expected).thenThrow(new RuntimeException("Third attempt")).thenThrow(new RuntimeException("Fourth attempt"));
         
-        String result = Functions.attempt(supplier, ATTEMPTS);
+        String result = Attempt.attempt(supplier, ATTEMPTS);
         assertEquals(expected, result);
         verify(supplier, times(2)).get();
         verifyNoMoreInteractions(supplier);
@@ -109,7 +109,7 @@ public class TestFunctions
         String input = "1";
         
         when(function.apply(input)).thenReturn(expected);
-        Integer result = Functions.attempt(function, input, ATTEMPTS);
+        Integer result = Attempt.attempt(function, input, ATTEMPTS);
 
         verify(function).apply(input);
         assertEquals(expected, result);
@@ -122,7 +122,7 @@ public class TestFunctions
         
         try
         {
-            Functions.attempt(function, "application", ATTEMPTS);
+            Attempt.attempt(function, "application", ATTEMPTS);
             fail("Expected a exception.");
         }
         catch(RuntimeException e)
@@ -140,7 +140,7 @@ public class TestFunctions
         
         try
         {
-            Functions.attempt(function, "application", ATTEMPTS, exceptionAction);
+            Attempt.attempt(function, "application", ATTEMPTS, exceptionAction);
             fail("Expected a exception.");
         }
         catch(RuntimeException e)
@@ -160,7 +160,7 @@ public class TestFunctions
         
         when(function.apply(input)).thenThrow(new RuntimeException("First attempt")).thenReturn(expected).thenThrow(new RuntimeException("Third attempt")).thenThrow(new RuntimeException("Fourth attempt"));
 
-        Integer result = Functions.attempt(function, input, ATTEMPTS);
+        Integer result = Attempt.attempt(function, input, ATTEMPTS);
         assertEquals(expected, result);
         verify(function, times(2)).apply(input);
         verifyNoMoreInteractions(function);
