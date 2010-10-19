@@ -10,7 +10,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class TestExceptionActions
+public class TestExceptionHandlers
 {
     @Mock private Logger log;
     @Mock private Exception exception;
@@ -24,8 +24,8 @@ public class TestExceptionActions
     @Test
     public void testLoggingExceptionAction()
     {
-        ExceptionAction loggingExceptionAction = ExceptionActions.loggingExceptionAction(log);
-        loggingExceptionAction.act(exception);
+        ExceptionHandler loggingExceptionHandler = ExceptionHandlers.loggingExceptionHandler(log);
+        loggingExceptionHandler.handle(exception);
         
         verify(log).warn("Exception encountered: ", exception);
     }
@@ -33,11 +33,11 @@ public class TestExceptionActions
     @Test
     public void testDelayingExceptionAction()
     {
-        ExceptionAction delayingExceptionAction = ExceptionActions.delayingExceptionAction(100);
+        ExceptionHandler delayingExceptionHandler = ExceptionHandlers.delayingExceptionHandler(100);
         
         long startTime = System.currentTimeMillis();
         
-        delayingExceptionAction.act(exception);
+        delayingExceptionHandler.handle(exception);
         
         long actualTime = System.currentTimeMillis() - startTime;
         
@@ -49,20 +49,20 @@ public class TestExceptionActions
     {
         final StringBuffer sb = new StringBuffer();
         
-        ExceptionAction first = new ExceptionAction() {
-            public void act(Exception e) {
+        ExceptionHandler first = new ExceptionHandler() {
+            public void handle(Exception e) {
                 sb.append("1");
             }
         };
-        ExceptionAction second = new ExceptionAction() {
-            public void act(Exception e) {
+        ExceptionHandler second = new ExceptionHandler() {
+            public void handle(Exception e) {
                 sb.append("2");
             }
         };
         
-        ExceptionAction action = ExceptionActions.chain(first, second);
+        ExceptionHandler handler = ExceptionHandlers.chain(first, second);
 
-        action.act(exception);
+        handler.handle(exception);
         
         assertEquals("12", sb.toString());
     }

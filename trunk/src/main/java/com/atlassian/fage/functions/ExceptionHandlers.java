@@ -10,72 +10,72 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Provides some standard implementations of various exception Actions.
  */
-public class ExceptionActions
+public class ExceptionHandlers
 {
-    private static final Logger log = LoggerFactory.getLogger(ExceptionActions.class);
+    private static final Logger log = LoggerFactory.getLogger(ExceptionHandlers.class);
     
-    private ExceptionActions() {throw new AssertionError("This class is not instantiable.");}
+    private ExceptionHandlers() {throw new AssertionError("This class is not instantiable.");}
 
     /**
-     * Retrieves an {ExceptionAction} which will log exceptions passed in.
+     * Retrieves an {ExceptionHandler} which will log exceptions passed in.
      * 
      * @param logger the Logger to which exceptions will be logged; if it is null, a default Logger will be used
-     * @return an {ExceptionAction} which will log (at WARN level) exceptions passed in
+     * @return an {ExceptionHandler} which will log (at WARN level) exceptions passed in
      */
-    public static ExceptionAction loggingExceptionAction(Logger logger)
+    public static ExceptionHandler loggingExceptionHandler(Logger logger)
     {
-        return new LoggingExceptionAction(logger == null ? log : logger);
+        return new LoggingExceptionHandler(logger == null ? log : logger);
     }
 
     /**
-     * Retrieves an {ExceptionAction} which will delay for a period whenever it is called. This is useful as a retry
+     * Retrieves an {ExceptionHandler} which will delay for a period whenever it is called. This is useful as a retry
      * tool when the failure is due to timing issues, such as a ConcurrentModificationException being thrown or an http
      * request which fails intermittently when temporarily under load. If the delay is interrupted, an exception is
      * logged and normal execution is resumed; in this case the delay may not be as long as specified.
      * 
      * @param log the Logger to which exceptions will be logged
      * @param delayMilliseconds the desired duration of the delay, in milliseconds
-     * @return an {ExceptionAction} which will sleep before returning
+     * @return an {ExceptionHandler} which will sleep before returning
      */
-    public static ExceptionAction delayingExceptionAction(int delayMilliseconds)
+    public static ExceptionHandler delayingExceptionHandler(int delayMilliseconds)
     {
-        return new DelayingExceptionAction(delayMilliseconds);
+        return new DelayingExceptionHandler(delayMilliseconds);
     }
 
     /**
-     * @return an {ExceptionAction} which does nothing
+     * @return an {ExceptionHandler} which does nothing
      */
-    public static ExceptionAction noOpExceptionAction()
+    public static ExceptionHandler noOpExceptionHandler()
     {
-        return new NoOpExceptionAction();
+        return new NoOpExceptionHandler();
     }
     
     /**
-     * Chain a series of Actions together to be executed subsequently; if one throws an exception, subsequent actions 
-     * will not be executed.
+     * Chain a series of ExceptionHandlers together to be executed subsequently; if one throws an exception, subsequent
+     * handlers will not be executed.
      */
-    public static ExceptionAction chain(ExceptionAction... actions)
+    public static ExceptionHandler chain(ExceptionHandler... handlers)
     {
-        return new CompositeExceptionAction(actions);
+        return new CompositeExceptionHandler(handlers);
     }
 
-    private static class NoOpExceptionAction implements ExceptionAction
+    private static class NoOpExceptionHandler implements ExceptionHandler
     {
-        public void act (Exception a) {/* do nothing */}
+        public void handle(Exception a) {/* do nothing */}
     }
 
-    private static class DelayingExceptionAction implements ExceptionAction
+    private static class DelayingExceptionHandler implements ExceptionHandler
     {
         private final int delayMilliseconds;
 
-        public DelayingExceptionAction(int delayMilliseconds)
+        public DelayingExceptionHandler(int delayMilliseconds)
         {
             Preconditions.checkArgument(delayMilliseconds >= 0, "The delay must not be negative");
             this.delayMilliseconds = delayMilliseconds;
         }
 
         @Override
-        public void act(Exception e)
+        public void handle(Exception e)
         {
             try
             {
@@ -93,17 +93,17 @@ public class ExceptionActions
         }
     }
 
-    private static class LoggingExceptionAction implements ExceptionAction
+    private static class LoggingExceptionHandler implements ExceptionHandler
     {
         private final Logger logger;
 
-        public LoggingExceptionAction(Logger logger)
+        public LoggingExceptionHandler(Logger logger)
         {
             this.logger = logger;
         }
 
         @Override
-        public void act(Exception e)
+        public void handle(Exception e)
         {
             warn(logger, e); 
         }
@@ -114,22 +114,22 @@ public class ExceptionActions
         }
     }
 
-    private static class CompositeExceptionAction implements ExceptionAction
+    private static class CompositeExceptionHandler implements ExceptionHandler
     {
-        private final ExceptionAction[] actions;
+        private final ExceptionHandler[] handlers;
 
-        public CompositeExceptionAction(ExceptionAction... actions)
+        public CompositeExceptionHandler(ExceptionHandler... handlers)
         {
-            checkNotNull(actions);
-            this.actions = actions;
+            checkNotNull(handlers);
+            this.handlers = handlers;
         }
 
         @Override
-        public void act(Exception e)
+        public void handle(Exception e)
         {
-            for (ExceptionAction action : actions)
+            for (ExceptionHandler handler : handlers)
             {
-                action.act(e);
+                handler.handle(e);
             }
         }
     }

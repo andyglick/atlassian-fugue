@@ -22,20 +22,20 @@ public class Attempt
      */
     public static <T> T attempt(Supplier<T> supplier, int tries)
     {
-        return attempt(supplier, tries, ExceptionActions.noOpExceptionAction());
+        return attempt(supplier, tries, ExceptionHandlers.noOpExceptionHandler());
     }
     
     /**
      * Attempt to get the result of supplier <i>tries</i> number of times. Any exceptions thrown by the supplier will be
-     * acted upon by the exception action provided until the number of attempts is reached. If the number of attempts is
+     * acted upon by the exception handler provided until the number of attempts is reached. If the number of attempts is
      * reached without a successful result, the most recent exception to be thrown will be thrown again.
      * 
      * @return the first successful result from the supplier
      */
-    public static <T> T attempt(Supplier<T> supplier, int tries, ExceptionAction action)
+    public static <T> T attempt(Supplier<T> supplier, int tries, ExceptionHandler handler)
     {
         checkNotNull(supplier);
-        checkNotNull(action);
+        checkNotNull(handler);
         
         RuntimeException ex = null;
         for (int i = 0; i < tries; i++)
@@ -46,7 +46,7 @@ public class Attempt
             }
             catch (RuntimeException e)
             {
-                action.act(e);
+                handler.handle(e);
                 ex = e;
             }
         }
@@ -62,22 +62,22 @@ public class Attempt
      */
     public static <F, T> T attempt(Function<F, T> function, F parameter, int tries)
     {
-        return attempt(function, parameter, tries, ExceptionActions.noOpExceptionAction());
+        return attempt(function, parameter, tries, ExceptionHandlers.noOpExceptionHandler());
     }
     
     /**
      * Attempt to get the result of function <i>tries</i> number of times. Any exceptions thrown by the function will be
-     * acted upon by the exception action provided until the number of attempts is reached. If the number of attempts is
+     * acted upon by the exception handler provided until the number of attempts is reached. If the number of attempts is
      * reached without a successful result, the most recent exception to be thrown will be thrown again.
      * 
      * @return the first successful result from the supplier
      */
-    public static <F, T> T attempt(Function<F, T> function, F parameter, int tries, ExceptionAction action)
+    public static <F, T> T attempt(Function<F, T> function, F parameter, int tries, ExceptionHandler handler)
     {
         checkNotNull(function);
-        checkNotNull(action);
+        checkNotNull(handler);
         
-        return attempt(toSupplier(function, parameter), tries, action);
+        return attempt(toSupplier(function, parameter), tries, handler);
     }
 
     private static <F, T> Supplier<T> toSupplier(final Function<F, T> function, final F parameter)

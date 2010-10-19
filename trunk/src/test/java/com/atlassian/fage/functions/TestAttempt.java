@@ -20,7 +20,7 @@ public class TestAttempt
 {
     @Mock private Supplier<String> supplier;
     @Mock private Function<String, Integer> function;
-    @Mock private ExceptionAction exceptionAction; 
+    @Mock private ExceptionHandler exceptionHandler; 
     @Mock private RuntimeException runtimeException;
     public static final int ATTEMPTS = 4;
 
@@ -64,11 +64,11 @@ public class TestAttempt
     {
         String expected = "result";
         when(supplier.get()).thenReturn(expected);
-        String result = Attempt.attempt(supplier, ATTEMPTS, exceptionAction);
+        String result = Attempt.attempt(supplier, ATTEMPTS, exceptionHandler);
         
         verify(supplier).get();
         assertEquals(expected, result);
-        verifyZeroInteractions(exceptionAction);
+        verifyZeroInteractions(exceptionHandler);
     }
     
     @Test
@@ -78,7 +78,7 @@ public class TestAttempt
         
         try
         {
-            Attempt.attempt(supplier, ATTEMPTS, exceptionAction);
+            Attempt.attempt(supplier, ATTEMPTS, exceptionHandler);
             fail("Expected a exception.");
         }
         catch(RuntimeException e)
@@ -87,7 +87,7 @@ public class TestAttempt
         }
 
         verify(supplier, times(ATTEMPTS)).get();
-        verify(exceptionAction, times(ATTEMPTS)).act(runtimeException);
+        verify(exceptionHandler, times(ATTEMPTS)).handle(runtimeException);
     }
     
     @Test 
@@ -140,7 +140,7 @@ public class TestAttempt
         
         try
         {
-            Attempt.attempt(function, "application", ATTEMPTS, exceptionAction);
+            Attempt.attempt(function, "application", ATTEMPTS, exceptionHandler);
             fail("Expected a exception.");
         }
         catch(RuntimeException e)
@@ -149,7 +149,7 @@ public class TestAttempt
         }
 
         verify(function, times(ATTEMPTS)).apply("application");
-        verify(exceptionAction, times(ATTEMPTS)).act(runtimeException);
+        verify(exceptionHandler, times(ATTEMPTS)).handle(runtimeException);
     }
     
     @Test
