@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.slf4j.Logger;
 
+import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -30,16 +31,39 @@ public class TestExceptionActions
     }
     
     @Test
-    public void testLoggingDelayingExceptionAction()
+    public void testDelayingExceptionAction()
     {
-        ExceptionAction loggingDelayingExceptionAction = ExceptionActions.chain(ExceptionActions.loggingExceptionAction(log), ExceptionActions.delayingExceptionAction(100));
+        ExceptionAction delayingExceptionAction = ExceptionActions.delayingExceptionAction(100);
+        
         long startTime = System.currentTimeMillis();
         
-        loggingDelayingExceptionAction.act(exception);
+        delayingExceptionAction.act(exception);
         
         long actualTime = System.currentTimeMillis() - startTime;
         
         assertTrue(actualTime >= 100);
-        verify(log).warn("Exception encountered: ", exception);
+    }
+    
+    @Test
+    public void testChainCallOrder()
+    {
+        final StringBuffer sb = new StringBuffer();
+        
+        ExceptionAction first = new ExceptionAction() {
+            public void act(Exception e) {
+                sb.append("1");
+            }
+        };
+        ExceptionAction second = new ExceptionAction() {
+            public void act(Exception e) {
+                sb.append("2");
+            }
+        };
+        
+        ExceptionAction action = ExceptionActions.chain(first, second);
+
+        action.act(exception);
+        
+        assertEquals("12", sb.toString());
     }
 }
