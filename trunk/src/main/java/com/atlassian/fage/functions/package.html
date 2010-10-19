@@ -1,0 +1,27 @@
+<html>
+    <head></head>
+    <body>
+        These classes provide convenience methods to use with Google's Guava (the new name for their Collections
+        library), with a focus on augmenting Guava's Supplier and Function.
+        
+        Tasks which usually work but occasionally fail can be retried using {@link RetryFunction} and
+        {@link RetrySupplier}. The recommended way of obtaining instances of these classes is through
+        {@link RetryFactory.create}. The behaviour when an attempt at a task fails can be controlled by an
+        {@link ExceptionHandler}, which can be obtained and chained together via {@link ExceptionHandlers}. The
+        following code wraps the getUserCount() method in a Supplier whose get() method attempts to get the user count 3
+        times, each separated by 200 milliseconds. It returns as soon a user count is successfully retrieved.
+        
+        <pre>
+            Supplier&lt;Integer&gt; userCountSupplier = new Supplier&lt;Integer&gt;() {
+                public Integer get() {
+                    // Occasionally fails (for example, due to cache invalidation) but does not normally repeatedly fail.
+                    return getUserCount();
+                }
+            };
+            Supplier&lt;Integer&gt; retryUserCountSupplier = 
+                RetryFactory.create(userCountSupplier, 3, ExceptionHandlers.delayingExceptionHandler(200));
+            
+            Integer userCount = retryUserCountSupplier.get(); 
+        </pre>
+    </body>
+</html>

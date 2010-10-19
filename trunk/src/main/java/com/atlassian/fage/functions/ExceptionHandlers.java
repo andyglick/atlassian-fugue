@@ -9,6 +9,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Provides some standard implementations of various exception Actions.
+ * 
+ * This class is not instantiable.
  */
 public class ExceptionHandlers
 {
