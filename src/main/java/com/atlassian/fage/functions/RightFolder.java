@@ -5,17 +5,17 @@ import java.util.LinkedList;
 
 import com.google.common.base.Function;
 
-class RightFolder<V, U> implements Function<Iterable<V>, U>
+class RightFolder<A, R> implements Function<Iterable<A>, R>
 {
-    private final LeftFolder<V, U> folder;
+    private final LeftFolder<A, R> folder;
 
-    public RightFolder(U initialValue, Function2Arg<U, U, V> f)
+    public RightFolder(R initialValue, Function2Arg<R, A, R> f)
     {
-        this.folder = new LeftFolder<V, U>(initialValue, f);
+        this.folder = new LeftFolder<A, R>(initialValue, f);
     }
 
     @Override
-    public U apply(final Iterable<V> vs)
+    public R apply(final Iterable<A> vs)
     {
         return folder.apply(reverse(vs));
     }
