@@ -2,22 +2,22 @@ package com.atlassian.fage.functions;
 
 import com.google.common.base.Function;
 
-class LeftFolder<V, U> implements Function<Iterable<V>, U>
+class LeftFolder<A, R> implements Function<Iterable<A>, R>
 {
-    private final U initialValue;
-    private final Function2Arg<U, U, V> f;
+    private final R initialValue;
+    private final Function2Arg<R, A, R> f;
 
-    public LeftFolder(U initialValue, Function2Arg<U, U, V> f)
+    public LeftFolder(R initialValue, Function2Arg<R, A, R> f)
     {
         this.initialValue = initialValue;
         this.f = f;
     }
 
     @Override
-    public U apply(final Iterable<V> vs)
+    public R apply(final Iterable<A> vs)
     {
-        U result = initialValue;
-        for (V u : vs)
+        R result = initialValue;
+        for (A u : vs)
         {
             result = f.apply(result, u);
         }

@@ -4,31 +4,33 @@ import com.google.common.base.Function;
 
 /**
  * This class composes two functions in a way that is compatible with Fold.
- * @param <U>
- * @param <V>
+ * @param <B> The type of the arg that will be converted into a result type
+ * @param <R> The type of the result
  */
-class UncurriedFunction<U, V> implements Function2Arg<U, U, V>
+class UncurriedFunction<A, B, R> implements Function2Arg<A, B, R>
 {
-    private final Function<V, U> convertor;
-    private final Function<U, Function<U, U>> generator;
+    private final Function<B, R> convertor;
+    private final Function<A, Function<R, R>> generator;
 
     /**
-     * The generator will almost always take the form
+     * The typical form of a generator is as follows:
      * <pre><code>
      * 
-     * class Generator 
-     * 
-     * class GeneratedFunction implements Function<U, U>
-     * {
-     *     private final U arg1;
+     * class ExampleGenerator implements Function<Integer, Function<String, String>> {
+     *     public Function<String, String> apply(final Integer a) {
+     *         return new ExampleGeneratedFunction(a);
+     *     }
      *  
-     *     public GeneratedFunction(final U arg1) {this.arg1 = arg1;}
+     *     class ExampleGeneratedFunction implements Function<String, String> {
+     *         private final Integer a;
      *
-     *     public U apply(final U arg2)
-     *     {
-     *         // Implement this part.
-     *         // Integer addition would use "return arg1 + arg2;"
-     *         // 
+     *         public ExampleGeneratedFunction(final Integer a) {
+     *             this.a = a;
+     *         }
+     *
+     *         public String apply(final String r) {
+     *            return r + "," + String.valueOf(a); // action code here
+     *         }
      *     }
      * }
      * </code></pre>
@@ -36,17 +38,15 @@ class UncurriedFunction<U, V> implements Function2Arg<U, U, V>
      * @param convertor creates Us out of Vs
      * @param generator generates functions which perform an operation on two Us
      */
-    public UncurriedFunction(final Function<V, U> convertor, final Function<U, Function<U, U>> generator)
+    public UncurriedFunction(final Function<B, R> convertor, final Function<A, Function<R, R>> generator)
     {
         this.convertor = convertor;
         this.generator = generator;
     }
 
     @Override
-    public U apply(U arg1, V arg2)
+    public R apply(A arg1, B arg2)
     {
-        U u = convertor.apply(arg2);
-        
-        return generator.apply(arg1).apply(u);
+        return generator.apply(arg1).apply(convertor.apply(arg2));
     }
 }
