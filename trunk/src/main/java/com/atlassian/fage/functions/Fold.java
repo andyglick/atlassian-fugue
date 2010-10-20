@@ -7,7 +7,7 @@ import com.google.common.base.Function;
 /**
  * Utility class containing various fold methods. In general a fold applies a certain function to each element in a list
  * and aggregates the result. A left fold applies the function in the natural traversal order whilst the right fold
- * applies them in the reverse order.
+ * applies it in the reverse order.
  */
 public class Fold
 {
