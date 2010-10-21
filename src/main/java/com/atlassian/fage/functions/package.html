@@ -1,9 +1,19 @@
 <html>
     <head></head>
     <body>
+        <p>
         These classes provide convenience methods to use with Google's Guava (the new name for their Collections
         library), with a focus on augmenting Guava's Supplier and Function.
+        </p>
         
+        <h2>Features</h2>
+        <p>
+        Currently, the two main features of this library are <a href="#retry">Retry</a> and <a href="#fold">Fold</a>. 
+        </p>
+        
+        <a name="retry"/>
+        <h3>Retry</h3>
+        <p>
         Tasks which usually work but occasionally fail can be retried using
         {@link com.atlassian.fage.functions.RetryFunction} and {@link com.atlassian.fage.functions.RetrySupplier}. The
         recommended way of obtaining instances of these classes is through
@@ -13,7 +23,8 @@
         in a Supplier whose get() method attempts to get the user count 3 times, each separated by 200 milliseconds. It
         returns as soon a user count is successfully retrieved.
         
-        <pre>
+        <code>
+            <pre>
             Supplier&lt;Integer&gt; userCountSupplier = new Supplier&lt;Integer&gt;() {
                 public Integer get() {
                     // Occasionally fails (for example, due to cache invalidation) but does not normally repeatedly fail.
@@ -24,6 +35,26 @@
                 RetryFactory.create(userCountSupplier, 3, ExceptionHandlers.delayingExceptionHandler(200));
             
             Integer userCount = retryUserCountSupplier.get(); 
-        </pre>
+            </pre>
+        </code>
+        </p>
+        
+        <a name="fold"/>
+        <h3>Fold</h3>
+        <p>A variety of fold operations are also supported. Left and right folds can be accessed through the
+        {@link com.atlassian.fage.functions.Fold} class, which also supports obtaining uncurried left and right folders
+        using the <code>with</code> and <code>withRight</code> methods. Finally, it also supports uncurrying Guava
+        Functions to be used in the other methods provided; the uncurry method requires a function to be applied to the
+        first parameter and a function which generates other functions to be applied to the second parameter. These
+        generated functions are pulled from the apply() method of the generator, which should construct them using the
+        result of the other function (which passed as the apply method to the generator) so the constructed function's
+        apply method can use it.
+        </p>
+        <h2>Beta methods and classes</h2>
+        <p>
+        Some classes and methods are marked @Beta. These should be viewed as liable to change or be removed across point
+        releases.
+        </p>
+        
     </body>
 </html>
