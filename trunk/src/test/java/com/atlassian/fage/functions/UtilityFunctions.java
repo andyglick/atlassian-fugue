@@ -18,14 +18,14 @@ public class UtilityFunctions
         @Override
         public Function<String, String> apply(final String arg1)
         {
-            return new Concatenate(arg1);
+            return new GeneratedConcatenate(arg1);
         }
 
-        static class Concatenate implements Function<String, String>
+        static class GeneratedConcatenate implements Function<String, String>
         {
             private final String arg1;
 
-            public Concatenate(final String arg1) {this.arg1 = arg1;}
+            public GeneratedConcatenate(final String arg1) {this.arg1 = arg1;}
 
             @Override
             public String apply(final String arg2)
@@ -35,7 +35,7 @@ public class UtilityFunctions
         }
     }
 
-    static class Concatenate2 implements Function2Arg<String, String, String>
+    static class Concatenate implements Function2Arg<String, String, String>
     {
         @Override
         public String apply(String arg1, String arg2)

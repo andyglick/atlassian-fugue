@@ -56,7 +56,7 @@ public class TestLeftFolder
         
         List<String> strings = Arrays.asList("1", "2", "3");
 
-        String result = new LeftFolder<String, String>("initial", new UtilityFunctions.Concatenate2()).apply(strings);
+        String result = new LeftFolder<String, String>("initial", new UtilityFunctions.Concatenate()).apply(strings);
         
         assertEquals(expected, result);
     }
