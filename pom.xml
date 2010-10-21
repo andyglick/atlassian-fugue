@@ -68,7 +68,7 @@
     <scm>
         <connection>scm:svn:https://labs.atlassian.com/svn/FAGE/trunk</connection>
         <developerConnection>scm:svn:https://labs.atlassian.com/svn/FAGE/trunk</developerConnection>
-        <url>scm:svn:https://labs.atlassian.com/svn/FAGE/trunk</url>
+        <url>https://labs.atlassian.com/svn/FAGE/trunk</url>
     </scm>
     
 </project>
