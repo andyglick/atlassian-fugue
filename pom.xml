@@ -64,4 +64,11 @@
     <properties>
         <jdkLevel>1.6</jdkLevel>
     </properties>
+    
+    <scm>
+        <connection>scm:svn:https://labs.atlassian.com/svn/FAGE/</connection>
+        <developerConnection>scm:svn:https://labs.atlassian.com/svn/FAGE/</developerConnection>
+        <url>scm:svn:https://labs.atlassian.com/svn/FAGE/</url>
+    </scm>
+    
 </project>
