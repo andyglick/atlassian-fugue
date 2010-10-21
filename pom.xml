@@ -67,7 +67,7 @@
     <scm>
         <connection>scm:svn:https://labs.atlassian.com/svn/FAGE/tags/fage-1.0-beta1</connection>
         <developerConnection>scm:svn:https://labs.atlassian.com/svn/FAGE/tags/fage-1.0-beta1</developerConnection>
-        <url>scm:svn:https://labs.atlassian.com/svn/FAGE/tags/fage-1.0-beta1</url>
+        <url>https://labs.atlassian.com/svn/FAGE/tags/fage-1.0-beta1</url>
     </scm>
     
 </project>
