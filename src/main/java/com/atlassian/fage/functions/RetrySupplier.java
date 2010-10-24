@@ -17,14 +17,32 @@ public class RetrySupplier<T> implements Supplier<T>
     private final Supplier<T> supplier;
     private final int tries;
     private final ExceptionHandler handler;
+    private final Runnable beforeRetry;
 
-    
+
+    /**
+     * @param supplier which fetches the result, must not be null
+     * @param tries the number of times to attempt to get a result, must be positive
+     * @param handler reacts to exceptions thrown by the supplier, must not be null
+     */
     public RetrySupplier(Supplier<T> supplier, int tries, ExceptionHandler handler)
+    {
+        this(supplier, tries, handler, new NoOpBeforeRetryTask());
+    }
+    
+    /**
+     * @param supplier which fetches the result, must not be null
+     * @param tries the number of times to attempt to get a result, must be positive
+     * @param handler reacts to exceptions thrown by the supplier, must not be null
+     * @param beforeRetry a task which will run at the end of any 
+     */
+    public RetrySupplier(Supplier<T> supplier, int tries, ExceptionHandler handler, Runnable beforeRetry)
     {
         Preconditions.checkNotNull(supplier);
         Preconditions.checkArgument(tries >= 0, "Tries must not be negative");
         Preconditions.checkNotNull(handler);
-        
+
+        this.beforeRetry = beforeRetry;
         this.supplier = supplier;
         this.tries = tries;
         this.handler = handler;
@@ -51,6 +69,11 @@ public class RetrySupplier<T> implements Supplier<T>
             {
                 handler.handle(e);
                 ex = e;
+            }
+            
+            if (i + 1 < tries)
+            {
+                beforeRetry.run();
             }
         }
         throw ex;
