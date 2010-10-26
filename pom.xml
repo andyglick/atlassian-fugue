@@ -43,6 +43,7 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>r07</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Test deps -->
