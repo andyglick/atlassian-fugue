@@ -34,13 +34,4 @@ public class UtilityFunctions
             }
         }
     }
-
-    static class Concatenate implements Function2Arg<String, String, String>
-    {
-        @Override
-        public String apply(String arg1, String arg2)
-        {
-            return arg1 + arg2;
-        }
-    }
 }

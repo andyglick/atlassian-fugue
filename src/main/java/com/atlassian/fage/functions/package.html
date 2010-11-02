@@ -8,7 +8,7 @@
         
         <h2>Features</h2>
         <p>
-        Currently, the two main features of this library are <a href="#retry">Retry</a> and <a href="#fold">Fold</a>. 
+        Currently, the main feature of this library is <a href="#retry">Retry</a>. 
         </p>
         
         <a name="retry"/>
@@ -37,23 +37,6 @@
             Integer userCount = retryUserCountSupplier.get(); 
             </pre>
         </code>
-        </p>
-        
-        <a name="fold"/>
-        <h3>Fold</h3>
-        <p>A variety of fold operations are also supported. Left and right folds can be accessed through the
-        {@link com.atlassian.fage.functions.Fold} class, which also supports obtaining uncurried left and right folders
-        using the <code>with</code> and <code>withRight</code> methods. Finally, it also supports uncurrying Guava
-        Functions to be used in the other methods provided; the uncurry method requires a function to be applied to the
-        first parameter and a function which generates other functions to be applied to the second parameter. These
-        generated functions are pulled from the apply() method of the generator, which should construct them using the
-        result of the other function (which passed as the apply method to the generator) so the constructed function's
-        apply method can use it.
-        </p>
-        <h2>Beta methods and classes</h2>
-        <p>
-        Some classes and methods are marked @Beta. These should be viewed as liable to change or be removed across point
-        releases.
         </p>
         
     </body>
