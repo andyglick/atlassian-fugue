@@ -25,8 +25,6 @@ public class RetryFunction<F, T> implements Function<F, T>
      * @param function which fetches the result, must not be null
      * @param tries the number of times to attempt to get a result, must be positive
      * @param handler reacts to exceptions thrown by the supplier, must not be null
-     * @param exponentialBackoff the initial time, in milliseconds, by which to exponentially back off before retrying upon failure, must
-     * not be negative
      */
     public RetryFunction(Function<F, T> function, int tries, ExceptionHandler handler)
     {
@@ -37,8 +35,6 @@ public class RetryFunction<F, T> implements Function<F, T>
      * @param function which fetches the result, must not be null
      * @param tries the number of times to attempt to get a result, must be positive
      * @param handler reacts to exceptions thrown by the supplier, must not be null
-     * @param exponentialBackoff the initial time, in milliseconds, by which to exponentially back off before retrying upon failure, must
-     * not be negative
      */
     public RetryFunction(Function<F, T> function, int tries, ExceptionHandler handler, Runnable beforeRetry)
     {

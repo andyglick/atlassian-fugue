@@ -16,7 +16,7 @@ public class RetryFactory
     /**
      * Decorates a runnable so that it retries a number of times before being allowed to fail.
      * 
-     * @param runnable which will be wrapped for retrial. It should be idempotent.
+     * @param task which will be wrapped for retrial. It should be idempotent.
      * @param tries the number of times to re-attempt the call
      * @return a runnable which can be used to call another runnable multiple times when that runnable may fail
      * sporadically 
@@ -29,7 +29,7 @@ public class RetryFactory
     /**
      * Decorates a runnable so that it retries a number of times before being allowed to fail.
      * 
-     * @param runnable which will be wrapped for retrial. It should be idempotent.
+     * @param task which will be wrapped for retrial. It should be idempotent.
      * @param tries the number of times to re-attempt the call
      * @param handler which acts on exceptions thrown by the wrapped supplier
      * @return a runnable which can be used to call another runnable multiple times when that runnable may fail
