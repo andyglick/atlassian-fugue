@@ -7,6 +7,7 @@ import com.atlassian.util.concurrent.NotNull;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.collect.Iterators;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -36,6 +37,7 @@ public abstract class Option<T> implements Iterable<T>
 
     private static final None<?> NONE = new None<Object>();
 
+    @SuppressWarnings ( { "unchecked" })
     static <T> None<T> none()
     {
         return (None<T>) NONE;
@@ -184,32 +186,7 @@ public abstract class Option<T> implements Iterable<T>
 
         public Iterator<T> iterator()
         {
-            return EmptyIterator.instance();
-        }
-    }
-
-    static final class EmptyIterator<T> implements Iterator<T>
-    {
-        static <T> Iterator<T> instance()
-        {
-            return (Iterator<T>) INSTANCE;
-        }
-
-        private static final Iterator<?> INSTANCE = new EmptyIterator<Object>();
-
-        public boolean hasNext()
-        {
-            return false;
-        }
-
-        public T next()
-        {
-            throw new NoSuchElementException();
-        }
-
-        public void remove()
-        {
-            throw new UnsupportedOperationException();
+            return Iterators.emptyIterator();
         }
     }
 }

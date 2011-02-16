@@ -7,22 +7,19 @@ import com.atlassian.fage.Option;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertSame;
+import static junit.framework.Assert.fail;
 
 public class TestOption_TestNone
 {
-    private Option<Integer> none;
-
-    @Before
-    public void setup()
-    {
-        none = Option.none();
-    }
+    private final Option<Integer> none = Option.none();
     
     @Test (expected = NoSuchElementException.class)
     public void testGet()
@@ -52,12 +49,13 @@ public class TestOption_TestNone
             @Override
             public Integer apply(Integer input)
             {
-                return input + 1;
+                fail("None.map should not call the function.");
+                return input;
             }
         };
 
         Option<Integer> result = none.map(function);
-        assertEquals(Option.None.class, result.getClass());
+        assertSame(Option.None.class, result.getClass());
     }
     
     @Test (expected = NullPointerException.class)
@@ -75,16 +73,7 @@ public class TestOption_TestNone
     @Test
     public void testFilterReturnsEmpty()
     {
-        Predicate predicateTrue = new Predicate()
-        {
-            @Override
-            public boolean apply(Object o)
-            {
-                return true;
-            }
-        };
-        
-        Option<Integer> result = none.filter(predicateTrue);
+        Option<Integer> result = none.filter(Predicates.<Integer>alwaysTrue());
         assertEquals(Option.None.class, result.getClass());
     }
     

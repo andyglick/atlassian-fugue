@@ -1,9 +1,31 @@
 package com.atlassian.fage;
 
-/**
- * Created by IntelliJ IDEA. User: edalgliesh Date: 16/02/11 Time: 1:26 PM To change this template use File | Settings |
- * File Templates.
- */
+import org.junit.Test;
+
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertSame;
+import static junit.framework.Assert.assertTrue;
+
 public class TestOption
 {
+    @Test
+    public void testGetNull()
+    {
+        Option<Object> objectOption = Option.get(null);
+        assertSame(Option.<Object>none(), objectOption);
+    }
+        
+    @Test
+    public void testGet()
+    {
+        Option<String> option = Option.get("Winter.");
+        String actual = option.get();
+        assertEquals("Winter.", actual);
+    }
+    
+    @Test
+    public void testNoneIdempotency()
+    {
+        assertTrue(Option.none() == Option.none());
+    }
 }

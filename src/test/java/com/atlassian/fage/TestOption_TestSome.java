@@ -6,6 +6,7 @@ import com.atlassian.fage.Option;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -19,33 +20,24 @@ public class TestOption_TestSome
 {
     private static final Integer ORIGINAL_VALUE = 1;
     private static final Integer NOT_IN_SOME = 3;
-    Option<Integer> some;
-    
-    @Before
-    public void setup()
-    {
-        some = new Option.Some<Integer>(ORIGINAL_VALUE);
-    }
+    Option<Integer> some = new Option.Some<Integer>(ORIGINAL_VALUE);
     
     @Test
     public void testGet()
     {
-        Integer actual = some.get();
-        assertEquals(ORIGINAL_VALUE, actual);
+        assertEquals(ORIGINAL_VALUE, some.get());
     }
     
     @Test
     public void testIsSet()
     {
-        boolean actual = some.isSet();
-        assertTrue(actual);
+        assertTrue(some.isSet());
     }
     
     @Test
     public void testGetOrElse()
     {
-        Integer actual = some.getOrElse(NOT_IN_SOME);
-        assertEquals(ORIGINAL_VALUE, actual);
+        assertEquals(ORIGINAL_VALUE, some.getOrElse(NOT_IN_SOME));
     }
     
     @Test (expected = NullPointerException.class)
@@ -57,15 +49,9 @@ public class TestOption_TestSome
     @Test
     public void testMap()
     {
-        Function<Integer, Integer> addOne = new Function<Integer, Integer>()
-        {
-            public Integer apply(Integer integer)
-            {
-                return integer + 1;
-            }
-        };
+        
 
-        Option<Integer> actual = some.map(addOne);
+        Option<Integer> actual = some.map(OptionUtilityFunctions.addOne);
         assertEquals(new Integer(2), actual.get());
     }
     
@@ -78,36 +64,21 @@ public class TestOption_TestSome
     @Test
     public void testPositiveFilter()
     {
-        Predicate<Integer> predicateTrue = new Predicate<Integer>()
-        {
-            public boolean apply(Integer integer)
-            {
-                return true;
-            }
-        };
-        Option<Integer> actual = some.filter(predicateTrue);
+        Option<Integer> actual = some.filter(Predicates.<Integer>alwaysTrue());
         assertEquals(ORIGINAL_VALUE, actual.get());
     }
     
     @Test
     public void testNegativeFilter()
     {
-        Predicate<Integer> predicateFalse = new Predicate<Integer>()
-        {
-            public boolean apply(Integer integer)
-            {
-                return false;
-            }
-        };
-        Option<Integer> actual = some.filter(predicateFalse);
+        Option<Integer> actual = some.filter(Predicates.<Integer>alwaysFalse());
         assertEquals(Option.<Integer>none(), actual);
     }
     
     @Test
     public void testIteratorHasNoNext()
     {
-        Iterator<Integer> iterator = some.iterator();
-        assertTrue(iterator.hasNext());
+        assertTrue(some.iterator().hasNext());
     }
     
     @Test
