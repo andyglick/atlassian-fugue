@@ -38,7 +38,7 @@ public abstract class Option<T> implements Iterable<T>
     private static final None<?> NONE = new None<Object>();
 
     @SuppressWarnings ( { "unchecked" })
-    static <T> None<T> none()
+    public static <T> None<T> none()
     {
         return (None<T>) NONE;
     }
