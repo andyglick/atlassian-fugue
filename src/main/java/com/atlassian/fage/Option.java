@@ -53,6 +53,24 @@ public abstract class Option<T> implements Iterable<T>
     }
 
     //
+    // utilities
+    //
+
+    /**
+     * Find the first option that isSet, or if there aren't any, then none.
+     */
+	public static <T> Option<T> find(Iterable<Option<T>> options) {
+	    for (final Option<T> option : options)
+	    {
+	        if (option.isSet())
+	        {
+	            return option;
+	        }
+	    }
+	    return none();
+	}
+
+    //
     // constructors
     //
 
