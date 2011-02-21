@@ -37,12 +37,25 @@ public abstract class Option<T> implements Iterable<T>
 
     private static final None<?> NONE = new None<Object>();
 
-    @SuppressWarnings ( { "unchecked" })
+    /**
+     * Get a none of the required type.
+     * @param <T> the type.
+     * @return a none.
+     */
     public static <T> None<T> none()
     {
-        return (None<T>) NONE;
+        @SuppressWarnings( { "unchecked" })
+        final None<T> result = (None<T>) NONE;
+        return result;
     }
 
+    /**
+     * Get some option for the value if not null, otherwise none.
+     * 
+     * @param <T> the option type
+     * @param value if not null will return {@link Some some option}, if null will return {@link None}.
+     * @return an option
+     */
     public static <T> Option<T> get(final T value)
     {
         if (value == null)
@@ -59,22 +72,24 @@ public abstract class Option<T> implements Iterable<T>
     /**
      * Find the first option that isSet, or if there aren't any, then none.
      */
-	public static <T> Option<T> find(Iterable<Option<T>> options) {
-	    for (final Option<T> option : options)
-	    {
-	        if (option.isSet())
-	        {
-	            return option;
-	        }
-	    }
-	    return none();
-	}
+    public static <T> Option<T> find(final Iterable<Option<T>> options)
+    {
+        for (final Option<T> option : options)
+        {
+            if (option.isSet())
+            {
+                return option;
+            }
+        }
+        return none();
+    }
 
     //
     // constructors
     //
 
-    Option() {}
+    Option()
+    {}
 
     //
     // methods
