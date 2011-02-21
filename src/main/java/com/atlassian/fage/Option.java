@@ -7,6 +7,7 @@ import com.atlassian.util.concurrent.NotNull;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
 
 import java.util.Iterator;
@@ -36,6 +37,14 @@ public abstract class Option<T> implements Iterable<T>
     //
 
     private static final None<?> NONE = new None<Object>();
+    private static final Predicate<Option<?>> SET = new Predicate<Option<?>>()
+    {
+        @Override
+        public boolean apply(final Option<?> option)
+        {
+            return option.isSet();
+        }
+    };
 
     /**
      * Get a none of the required type.
@@ -82,6 +91,25 @@ public abstract class Option<T> implements Iterable<T>
             }
         }
         return none();
+    }
+
+    /**
+     * Filter out unset options.
+     * 
+     * @param <T> the type
+     * @param options many options that may or may not be set
+     * @return the filtered options 
+     */
+    public static <T> Iterable<Option<T>> filterNone(final Iterable<Option<T>> options)
+    {
+        return Iterables.filter(options, set());
+    }
+
+    public static <T> Predicate<T> set()
+    {
+        @SuppressWarnings("unchecked")
+        final Predicate<T> result = (Predicate<T>) SET;
+        return result;
     }
 
     //
