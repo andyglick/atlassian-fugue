@@ -83,14 +83,7 @@ public abstract class Option<T> implements Iterable<T>
      */
     public static <T> Option<T> find(final Iterable<Option<T>> options)
     {
-        for (final Option<T> option : options)
-        {
-            if (option.isSet())
-            {
-                return option;
-            }
-        }
-        return none();
+        return Iterables.find(options, SET, Option.<T> none());
     }
 
     /**
