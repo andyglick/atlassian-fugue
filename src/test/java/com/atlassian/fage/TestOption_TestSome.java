@@ -51,7 +51,7 @@ public class TestOption_TestSome
     {
         
 
-        Option<Integer> actual = some.map(OptionUtilityFunctions.addOne);
+        Option<Integer> actual = some.map(UtilityFunctions.addOne);
         assertEquals(new Integer(2), actual.get());
     }
     
