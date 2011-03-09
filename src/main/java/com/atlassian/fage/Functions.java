@@ -30,29 +30,4 @@ public class Functions
             }
         };
     }
-
-    /*
-    public static <IterableType, ReturnType> Function2<ReturnType, Iterable<IterableType>, ReturnType> fold(final Function2<ReturnType, IterableType, ReturnType> f)
-    {
-        return new Function2<ReturnType, Iterable<IterableType>, ReturnType>()
-        {
-            @Override
-            public ReturnType apply(ReturnType arg1, Iterable<IterableType> arg2)
-            {
-                return fold(f, arg1, arg2);
-            }
-        };
-    }
-    
-    public static <IterableType, ReturnType> Function<Iterable<IterableType>, ReturnType> fold (final Function2<ReturnType, IterableType, ReturnType> f, final ReturnType initialValue)
-    {
-        return new Function<Iterable<IterableType>, ReturnType> ()
-        {
-            @Override
-            public ReturnType apply(Iterable<IterableType> iterableTypeIterable)
-            {
-                return fold(f, initialValue, iterableTypeIterable);
-            }
-        };
-    }*/
 }
