@@ -14,19 +14,19 @@ public class Functions
         return currentValue;
     }
     
-    public static <F, T> T fold (Function<Tuple<T, F>, T> f, T initialValue,  Iterable<F> elements)
+    public static <F, T> T fold (Function<Pair<T, F>, T> f, T initialValue,  Iterable<F> elements)
     {
         return fold(apply(f), initialValue, elements);
     }
 
-    private static <F, T> Function2<T, F, T> apply(final Function<Tuple<T, F>, T> f)
+    private static <F, T> Function2<T, F, T> apply(final Function<Pair<T, F>, T> f)
     {
         return new Function2<T, F, T>()
         {
             @Override
             public T apply(T arg1, F arg2)
             {
-                return f.apply(new Tuple<T, F>(arg1, arg2));
+                return f.apply(new Pair<T, F>(arg1, arg2));
             }
         };
     }

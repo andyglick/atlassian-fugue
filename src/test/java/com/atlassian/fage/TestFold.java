@@ -45,10 +45,10 @@ public class TestFold
 
     @Test public void testF1FoldBasic()
     {
-        Function<Tuple<Integer, Integer>, Integer> add = new Function<Tuple<Integer, Integer>, Integer>()
+        Function<Pair<Integer, Integer>, Integer> add = new Function<Pair<Integer, Integer>, Integer>()
         {
             @Override
-            public Integer apply(Tuple<Integer, Integer> arg)
+            public Integer apply(Pair<Integer, Integer> arg)
             {
                 return arg.left() + arg.right();
             }
@@ -60,10 +60,10 @@ public class TestFold
 
     @Test public void testF1FoldTypes()
     {
-        Function<Tuple<String, Integer>, String> displayIterable = new Function<Tuple<String, Integer>, String>()
+        Function<Pair<String, Integer>, String> displayIterable = new Function<Pair<String, Integer>, String>()
         {
             @Override
-            public String apply(Tuple<String, Integer> t)
+            public String apply(Pair<String, Integer> t)
             {
                 return t.left() + "  " + t.right();
             };
