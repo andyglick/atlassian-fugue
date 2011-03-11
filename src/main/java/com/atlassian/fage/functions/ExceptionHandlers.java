@@ -27,13 +27,21 @@ public class ExceptionHandlers
         return new LoggingExceptionHandler(logger == null ? log : logger);
     }
 
- 
     /**
+     * @deprecated use ignoreExceptionHandler instead
      * @return an {@link ExceptionHandler} which does nothing
      */
     public static ExceptionHandler noOpExceptionHandler()
     {
-        return new NoOpExceptionHandler();
+        return new IgnoreExceptionHandler();
+    }
+
+    /**
+     * @return an {@link ExceptionHandler} which does nothing
+     */
+    public static ExceptionHandler ignoreExceptionHandler()
+    {
+        return new IgnoreExceptionHandler();
     }
     
     /**
@@ -45,7 +53,7 @@ public class ExceptionHandlers
         return new CompositeExceptionHandler(handlers);
     }
 
-    private static class NoOpExceptionHandler implements ExceptionHandler
+    private static class IgnoreExceptionHandler implements ExceptionHandler
     {
         public void handle(RuntimeException a) {/* do nothing */}
     }

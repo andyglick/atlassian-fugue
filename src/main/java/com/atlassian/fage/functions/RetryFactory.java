@@ -51,7 +51,7 @@ public class RetryFactory
      */
     public static <T> Supplier<T> create(Supplier<T> supplier, int tries)
     {
-        return create(supplier, tries, ExceptionHandlers.noOpExceptionHandler());
+        return create(supplier, tries, ExceptionHandlers.ignoreExceptionHandler());
     }
     
     /**
@@ -96,7 +96,7 @@ public class RetryFactory
      */
     public static <F, T> Function<F, T> create(Function<F, T> function, int tries)
     {
-        return create(function, tries, ExceptionHandlers.noOpExceptionHandler());
+        return create(function, tries, ExceptionHandlers.ignoreExceptionHandler());
     }
     
     /**

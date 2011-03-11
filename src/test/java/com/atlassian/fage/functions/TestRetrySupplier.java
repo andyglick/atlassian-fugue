@@ -36,7 +36,7 @@ public class TestRetrySupplier
     public void testBasicSupplier()
     {
         when(supplier.get()).thenReturn(RESULT);
-        String result = new RetrySupplier<String>(supplier, ATTEMPTS, ExceptionHandlers.noOpExceptionHandler()).get();
+        String result = new RetrySupplier<String>(supplier, ATTEMPTS, ExceptionHandlers.ignoreExceptionHandler()).get();
 
         verify(supplier).get();
         assertEquals(RESULT, result);
@@ -49,7 +49,7 @@ public class TestRetrySupplier
         
         try
         {
-            new RetrySupplier<String>(supplier, ATTEMPTS, ExceptionHandlers.noOpExceptionHandler()).get();
+            new RetrySupplier<String>(supplier, ATTEMPTS, ExceptionHandlers.ignoreExceptionHandler()).get();
             fail("Expected a exception.");
         }
         catch(RuntimeException e)
@@ -95,7 +95,7 @@ public class TestRetrySupplier
     {
         when(supplier.get()).thenThrow(new RuntimeException("First attempt")).thenReturn(RESULT).thenThrow(new RuntimeException("Third attempt")).thenThrow(new RuntimeException("Fourth attempt"));
 
-        String result = new RetrySupplier<String>(supplier, ATTEMPTS, ExceptionHandlers.noOpExceptionHandler()).get();
+        String result = new RetrySupplier<String>(supplier, ATTEMPTS, ExceptionHandlers.ignoreExceptionHandler()).get();
         assertEquals(RESULT, result);
         verify(supplier, times(2)).get();
         verifyNoMoreInteractions(supplier);
