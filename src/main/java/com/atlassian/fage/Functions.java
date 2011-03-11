@@ -16,10 +16,10 @@ public class Functions
     
     public static <F, T> T fold (Function<Tuple<T, F>, T> f, T initialValue,  Iterable<F> elements)
     {
-        return fold(curry(f), initialValue, elements);
+        return fold(apply(f), initialValue, elements);
     }
 
-    private static <F, T> Function2<T, F, T> curry(final Function<Tuple<T, F>, T> f)
+    private static <F, T> Function2<T, F, T> apply(final Function<Tuple<T, F>, T> f)
     {
         return new Function2<T, F, T>()
         {
