@@ -57,8 +57,11 @@ public class TestOption_TestSome
     @Test
     public void testSuperTypesPermittedOnFilter()
     {
-        Option<ArrayList> opt = Option.none();
-        Option<ArrayList> nopt = opt.filter(Predicates.<List>alwaysTrue());
+        ArrayList<Number> list = new ArrayList<Number>();
+        list.add(1);
+        list.add(2);
+        Option<ArrayList<Number>> opt = Option.get(list);
+        Option<ArrayList<Number>> nopt = opt.filter(Predicates.<List<Number>>alwaysTrue());
         assertSame(opt, nopt);
     }
 
