@@ -13,7 +13,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Checking which type an Option is can be done be calling the @{@link #isLeft()} and {@link #isRight()} methods.
  * <p/>
  * Eithers can be used to express a success or failure case. By convention, Right is used to store the success value,
- * (you can use the play on words "right" == "correct" as a menmonic) and Left is used to store failure values (such
+ * (you can use the play on words "right" == "correct" as a mnemonic) and Left is used to store failure values (such
  * as exceptions).
  * <p/>
  * While this class is public and abstract it does not expose a constructor as only the concrete {@link Left} and {@link
