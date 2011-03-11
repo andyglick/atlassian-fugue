@@ -4,7 +4,6 @@ import static com.atlassian.fage.Option.get;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertSame;
-import static junit.framework.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -31,9 +30,9 @@ public class TestOption
     }
 
     @Test
-    public void testNoneIdempotency()
+    public void testIdentity()
     {
-        assertTrue(Option.none() == Option.none());
+        assertSame(Option.none(), Option.none());
     }
 
     @Test
