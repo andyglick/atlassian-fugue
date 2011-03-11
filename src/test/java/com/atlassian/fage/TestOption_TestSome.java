@@ -2,19 +2,20 @@ package com.atlassian.fage;
 
 import java.util.Iterator;
 
-import com.atlassian.fage.Option;
-
 import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 
-import org.junit.Before;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertSame;
 import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.fail;
 
 public class TestOption_TestSome
 {
@@ -49,12 +50,37 @@ public class TestOption_TestSome
     @Test
     public void testMap()
     {
-        
-
         Option<Integer> actual = some.map(UtilityFunctions.addOne);
         assertEquals(new Integer(2), actual.get());
     }
-    
+
+    @Test
+    public void testSuperTypesPermittedOnFilter()
+    {
+        Option<ArrayList> opt = Option.none();
+        Option<ArrayList> nopt = opt.filter(Predicates.<List>alwaysTrue());
+        assertSame(opt, nopt);
+    }
+
+    @Test
+    public void testSuperTypesPermittedOnMap()
+    {
+        ArrayList<Number> list = new ArrayList<Number>();
+        list.add(1);
+        list.add(2);
+        Option<ArrayList<Number>> opt = Option.get(list);
+        Option<Set<Number>> set = opt.map(new Function<List<Number>, Set<Number>>()
+        {
+            public Set apply(List<Number> list)
+            {
+                Set<Number> set = new HashSet<Number>();
+                set.addAll(list);
+                return set;
+            }
+        });
+        assertSame(opt.get().size(), set.get().size());
+    }
+
     @Test (expected = NullPointerException.class)
     public void testFilterForNull()
     {

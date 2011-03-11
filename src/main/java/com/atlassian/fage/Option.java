@@ -141,7 +141,7 @@ public abstract class Option<T> implements Iterable<T>
      * @param function the function that takes the value and produces the result
      * @throws NullPointerException if function is null
      */
-    public abstract <V> Option<V> map(@NotNull Function<T, V> function);
+    public abstract <V> Option<V> map(@NotNull Function<? super T, V> function);
 
     /**
      * If the option is empty, or it is nonempty and the given predicate yields false on its value, return None. Otherwise
@@ -149,7 +149,7 @@ public abstract class Option<T> implements Iterable<T>
      * 
      * @throws NullPointerException if predicate is null
      */
-    public abstract Option<T> filter(@NotNull Predicate<T> predicate);
+    public abstract Option<T> filter(@NotNull Predicate<? super T> predicate);
 
     //
     // inner class implementations
@@ -183,13 +183,13 @@ public abstract class Option<T> implements Iterable<T>
         }
 
         @Override
-        public <V> Option<V> map(final Function<T, V> function)
+        public <V> Option<V> map(final Function<? super T, V> function)
         {
             return get(checkNotNull(function).apply(value));
         }
 
         @Override
-        public Option<T> filter(final Predicate<T> predicate)
+        public Option<T> filter(final Predicate<? super T> predicate)
         {
             if (predicate.apply(value))
             {
@@ -225,19 +225,20 @@ public abstract class Option<T> implements Iterable<T>
         }
 
         @Override
-        public <V> Option<V> map(final Function<T, V> function)
+        public <V> Option<V> map(final Function<? super T, V> function)
         {
             checkNotNull(function);
             return none();
         }
 
         @Override
-        public Option<T> filter(final Predicate<T> predicate)
+        public Option<T> filter(final Predicate<? super T> predicate)
         {
             checkNotNull(predicate);
             return this;
         }
 
+        @Override
         public Iterator<T> iterator()
         {
             return Iterators.emptyIterator();

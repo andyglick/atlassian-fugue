@@ -2,14 +2,13 @@ package com.atlassian.fage;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
-import com.atlassian.fage.Option;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
@@ -76,8 +75,30 @@ public class TestOption_TestNone
         Option<Integer> result = none.filter(Predicates.<Integer>alwaysTrue());
         assertEquals(Option.None.class, result.getClass());
     }
-    
-    
+
+    @Test
+    public void testSuperTypesPermittedOnFilter()
+    {
+        Option<ArrayList> opt = Option.none();
+        Option<ArrayList> nopt = opt.filter(Predicates.<List>alwaysTrue());
+        assertSame(opt, nopt);
+    }
+
+    @Test
+    public void testSuperTypesPermittedOnMap()
+    {
+        Option<ArrayList> opt = Option.none();
+        Option<Set> size = opt.map(new Function<List, Set>()
+        {
+            public Set apply(List list)
+            {
+                fail("This internal method should never get called.");
+                return null;
+            }
+        });
+        assertSame(opt, size);
+    }
+
     // These tests are duplicated in TestEmptyIterator, but I've included them here to ensure
     // that None itself complies with the API.
     @Test
