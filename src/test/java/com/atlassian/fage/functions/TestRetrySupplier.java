@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertSame;
 import static junit.framework.Assert.fail;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -54,14 +55,14 @@ public class TestRetrySupplier
         }
         catch(RuntimeException e)
         {
-            assertEquals(runtimeException, e);
+            assertSame(runtimeException, e);
         }
         
         verify(supplier, times(ATTEMPTS)).get();
     }
     
     @Test
-    public void testSupplier()
+    public void testSupplierWithExceptionHandler()
     {
         when(supplier.get()).thenReturn(RESULT);
         String result = new RetrySupplier<String>(supplier, ATTEMPTS, exceptionHandler).get();
@@ -72,7 +73,7 @@ public class TestRetrySupplier
     }
     
     @Test
-    public void testSupplierRetry()
+    public void testSupplierRetryWithExceptions()
     {
         when(supplier.get()).thenThrow(runtimeException);
         
@@ -83,7 +84,7 @@ public class TestRetrySupplier
         }
         catch(RuntimeException e)
         {
-            assertEquals(runtimeException, e);
+            assertSame(runtimeException, e);
         }
 
         verify(supplier, times(ATTEMPTS)).get();

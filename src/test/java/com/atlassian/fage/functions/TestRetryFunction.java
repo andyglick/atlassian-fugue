@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertSame;
 import static junit.framework.Assert.fail;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.times;
@@ -55,14 +56,14 @@ public class TestRetryFunction
         }
         catch(RuntimeException e)
         {
-            assertEquals(runtimeException, e);
+            assertSame(runtimeException, e);
         }
         
         verify(function, times(ATTEMPTS)).apply(INPUT);
     }
     
     @Test
-    public void testFunctionRetry()
+    public void testFunctionRetryWithExceptionHandler()
     {
         when(function.apply(INPUT)).thenThrow(runtimeException);
         
@@ -73,7 +74,7 @@ public class TestRetryFunction
         }
         catch(RuntimeException e)
         {
-            assertEquals(runtimeException, e);
+            assertSame(runtimeException, e);
         }
 
         verify(function, times(ATTEMPTS)).apply(INPUT);
