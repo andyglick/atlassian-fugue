@@ -1,6 +1,6 @@
 package com.atlassian.fage;
 
-public interface Function2<ParamType1, ParamType2, ReturnType>
+public interface Function2<F1, F2, T>
 {
-    ReturnType apply(ParamType1 arg1, ParamType2 arg2);
+    T apply(F1 arg1, F2 arg2);
 }
