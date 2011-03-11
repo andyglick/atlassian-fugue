@@ -29,17 +29,6 @@ public class TestPair
         Pair<String, String> pair = new Pair<String, String>("left", "right");
         assertEquals("right", pair.right());
     }
-    
-    @Test public void testCons()
-    {
-        Pair<String, String> pair = new Pair<String, String>("left", "right");
-        Pair<Integer, Pair<String,String>> actual = pair.cons(2);
-        
-        assertEquals(new Integer(2), actual.left());
-        assertEquals(pair, actual.right());
-        assertEquals("left", actual.right().left());
-        assertEquals("right", actual.right().right());
-    }
 
     @Test public void testToString()
     {

@@ -20,11 +20,6 @@ public final class Pair<A,B>
         this.right = checkNotNull(right, "Right parameter must not be null.");
     }
     
-    public <C> Pair cons(C c)
-    {
-        return new Pair(c, this);
-    }
-    
     public A left()
     {
         return left;
