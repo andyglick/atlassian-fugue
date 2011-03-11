@@ -1,6 +1,6 @@
 package com.atlassian.fage;
 
-import com.google.common.base.Preconditions;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public final class Pair<A,B>
 {
@@ -16,11 +16,8 @@ public final class Pair<A,B>
 
     public Pair(A left, B right)
     {
-        Preconditions.checkNotNull(left, "Left parameter must not be null.");
-        Preconditions.checkNotNull(right, "Right parameter must not be null.");
-        
-        this.left = left;
-        this.right = right;
+        this.left = checkNotNull(left, "Left parameter must not be null.");
+        this.right = checkNotNull(right, "Right parameter must not be null.");
     }
     
     public <C> Pair cons(C c)
