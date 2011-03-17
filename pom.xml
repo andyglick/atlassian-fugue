@@ -9,7 +9,7 @@
     
     <groupId>com.atlassian.fage</groupId>
     <artifactId>fage</artifactId>
-    <version>1.0-beta4</version>
+    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Funcadelic Atlassian Guava Extensions</name>
     
@@ -71,9 +71,9 @@
     </properties>
     
     <scm>
-        <connection>scm:svn:https://labs.atlassian.com/svn/FAGE/tags/fage-1.0-beta4</connection>
-        <developerConnection>scm:svn:https://labs.atlassian.com/svn/FAGE/tags/fage-1.0-beta4</developerConnection>
-        <url>https://labs.atlassian.com/svn/FAGE/tags/fage-1.0-beta4</url>
+        <connection>scm:svn:https://labs.atlassian.com/svn/FAGE/trunk</connection>
+        <developerConnection>scm:svn:https://labs.atlassian.com/svn/FAGE/trunk</developerConnection>
+        <url>https://labs.atlassian.com/svn/FAGE/trunk</url>
     </scm>
     
 </project>
