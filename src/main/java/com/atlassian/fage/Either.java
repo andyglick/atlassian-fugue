@@ -1,7 +1,5 @@
 package com.atlassian.fage;
 
-import java.util.NoSuchElementException;
-
 import com.google.common.base.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -10,7 +8,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * A class that acts as a container for a value of one of two types. An Either will be either {@link Left} or {@link
  * Right}.
  * <p/>
- * Checking which type an Option is can be done be calling the @{@link #isLeft()} and {@link #isRight()} methods.
+ * Checking which type an Either is can be done be calling the @{@link #isLeft()} and {@link #isRight()} methods.
  * <p/>
  * Eithers can be used to express a success or failure case. By convention, Right is used to store the success value,
  * (you can use the play on words "right" == "correct" as a mnemonic) and Left is used to store failure values (such
@@ -59,8 +57,8 @@ public abstract class Either<L, R>
     public static <T> T merge(Either<T,T> either)
     {
         if (either.isLeft())
-            return either.left();
-        return either.right();
+            return either.left().get();
+        return either.right().get();
     }
 
     /**
@@ -100,21 +98,19 @@ public abstract class Either<L, R>
     }
 
     /**
-     * @return the left value of this either, if one exists
-     * @throws NoSuchElementException if this is not a left
+     * @return an option wrapping the left value of this either
      */
-    public L left()
+    public Option<L> left()
     {
-        throw new NoSuchElementException();
+        return Option.none();
     }
     
     /**
-     * @return the right value of this either, if one exists
-     * @throws NoSuchElementException if this is not a right
+     * @return an option wrapping the right value of this either
      */
-    public R right()
+    public Option<R> right()
     {
-        throw new NoSuchElementException();
+        return Option.none();
     }
 
     /**
@@ -145,7 +141,7 @@ public abstract class Either<L, R>
     
     public abstract Either<R,L> swap();
     
-    public abstract <V>V map(Function<L, V> ifLeft, Function<R, V> ifRight);
+    public abstract <V>V fold(Function<L, V> ifLeft, Function<R, V> ifRight);
     
     //
     // inner class implementations
@@ -162,9 +158,9 @@ public abstract class Either<L, R>
         }
         
         @Override
-        public L left()
+        public Option<L> left()
         {
-            return value;
+            return Option.get(value);
         }
         
         @Override
@@ -180,7 +176,7 @@ public abstract class Either<L, R>
         }
         
         @Override
-        public <V>V map(Function<L, V> ifLeft, Function<R, V> ifRight)
+        public <V>V fold(Function<L, V> ifLeft, Function<R, V> ifRight)
         {
             return mapLeft(ifLeft);
         }
@@ -188,7 +184,7 @@ public abstract class Either<L, R>
         @Override
         public <V>V mapLeft(Function<L, V> function)
         {
-            return function.apply(left());
+            return function.apply(value);
         }
 
         @Override
@@ -228,9 +224,9 @@ public abstract class Either<L, R>
         }
         
         @Override
-        public R right()
+        public Option<R> right()
         {
-            return value;
+            return Option.get(value);
         }
         
         @Override
@@ -246,7 +242,7 @@ public abstract class Either<L, R>
         }
 
         @Override
-        public <V>V map(Function<L, V> ifLeft, Function<R, V> ifRight)
+        public <V>V fold(Function<L, V> ifLeft, Function<R, V> ifRight)
         {
             return mapRight(ifRight);
         }
@@ -254,7 +250,7 @@ public abstract class Either<L, R>
         @Override
         public <V>V mapRight(Function<R, V> function)
         {
-            return function.apply(right());
+            return function.apply(value);
         }
 
         @Override

@@ -18,7 +18,7 @@ public class TestEither
     {
         Either<Boolean, Integer> left = Either.left(Boolean.TRUE);
         assertTrue(left.isLeft());
-        assertEquals(Boolean.TRUE, left.left());
+        assertEquals(Boolean.TRUE, left.left().get());
     }
 
     @Test (expected = NullPointerException.class)
@@ -32,7 +32,7 @@ public class TestEither
     {
         Either<Boolean, Integer> right = Either.right(1);
         assertTrue(right.isRight());
-        assertEquals(new Integer(1), right.right());
+        assertEquals(new Integer(1), right.right().get());
     }
 
     @Test

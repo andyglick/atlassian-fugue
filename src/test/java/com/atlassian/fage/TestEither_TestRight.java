@@ -16,13 +16,13 @@ public class TestEither_TestRight
     @Test
     public void testRight()
     {
-        assertEquals(ORIGINAL_VALUE, either.right());
+        assertEquals(ORIGINAL_VALUE, either.right().get());
     }
-    
-    @Test (expected = NoSuchElementException.class)
+
+    @Test
     public void testLeft()
     {
-        either.left();
+        assertFalse(either.left().isSet());
     }
     
     @Test
@@ -42,14 +42,14 @@ public class TestEither_TestRight
     {
         Either<Integer, Boolean> swapped = either.swap();
         assertTrue(swapped.isLeft());
-        assertEquals(either.right(), swapped.left());
-        assertEquals(ORIGINAL_VALUE, swapped.left());
+        assertEquals(either.right().get(), swapped.left().get());
+        assertEquals(ORIGINAL_VALUE, swapped.left().get());
     }
     
     @Test
     public void testMap()
     {
-        String actual = either.map(UtilityFunctions.bool2String, UtilityFunctions.int2String);
+        String actual = either.fold(UtilityFunctions.bool2String, UtilityFunctions.int2String);
         assertEquals(String.valueOf(ORIGINAL_VALUE), actual);
     }
     
