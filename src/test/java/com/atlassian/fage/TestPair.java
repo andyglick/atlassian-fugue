@@ -1,82 +1,84 @@
 package com.atlassian.fage;
 
-import org.junit.Test;
-
+import static com.atlassian.fage.Pair.pair;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Test;
+
 public class TestPair
 {
-    @Test(expected = NullPointerException.class) public void testNullLeft()
+    @Test(expected = NullPointerException.class)
+    public void testNullLeft()
     {
-        new Pair<String, String>(null, "");
-    }
-    
-    @Test(expected = NullPointerException.class) public void testNullRight()
-    {
-        new Pair<String, String>("", null);
-    }
-    
-    @Test public void testLeft()
-    {
-        Pair<String, String> pair = new Pair<String, String>("left", "right");
-        assertEquals("left", pair.left());
-    }
-    
-    @Test public void testRight()
-    {
-        Pair<String, String> pair = new Pair<String, String>("left", "right");
-        assertEquals("right", pair.right());
+        pair(null, "");
     }
 
-    @Test public void testToString()
+    @Test(expected = NullPointerException.class)
+    public void testNullRight()
     {
-        Pair<String, Integer> pair = new Pair<String, Integer>("hello", 4);
-        String actual = pair.toString();
-        assertEquals("Pair: (a: {hello}, b: {4})", actual);
+        pair("", null);
     }
 
-    @Test public void testHashCode()
+    @Test
+    public void testLeft()
     {
-        Pair<Integer, Integer> pair = new Pair<Integer, Integer>(1,3);
-        int actual = pair.hashCode();
-        assertEquals(65539, actual);
+        assertEquals("left", pair("left", "right").left());
     }
 
-    @Test public void testNotEqualToNull()
+    @Test
+    public void testRight()
     {
-        Pair<Integer, Integer> pair = new Pair<Integer, Integer>(1,3);
-        assertFalse(pair.equals(null));
+        assertEquals("right", pair("left", "right").right());
     }
 
-    @Test public void testEqualToSelf()
+    @Test
+    public void testToString()
     {
-        Pair<Integer, Integer> pair = new Pair<Integer, Integer>(1,3);
+        assertEquals("Pair(hello, 4)", pair("hello", 4).toString());
+    }
+
+    @Test
+    public void testHashCode()
+    {
+        assertEquals(65539, pair(1, 3).hashCode());
+    }
+
+    @Test
+    public void testNotEqualToNull()
+    {
+        assertFalse(pair(1, 3).equals(null));
+    }
+
+    @Test
+    public void testEqualToSelf()
+    {
+        final Pair<Integer, Integer> pair = pair(1, 3);
         assertTrue(pair.equals(pair));
     }
 
-    @Test public void testNotEqualToArbitraryObject()
+    @Test
+    public void testNotEqualToArbitraryObject()
     {
-        Pair<Integer, Integer> pair = new Pair<Integer, Integer>(1,3);
-        assertFalse(pair.equals(new Object()));
+        assertFalse(pair(1, 3).equals(new Object()));
     }
 
-    @Test public void testNotEqualLeft()
+    @Test
+    public void testNotEqualLeft()
     {
-        Pair<Integer, Integer> pair = new Pair<Integer, Integer>(1,3);
-        assertFalse(pair.equals(new Pair<Integer, Integer>(0,3)));
+        assertFalse(pair(1, 3).equals(pair(0, 3)));
     }
 
-    @Test public void testNotEqualRight()
+    @Test
+    public void testNotEqualRight()
     {
-        Pair<Integer, Integer> pair = new Pair<Integer, Integer>(1,3);
-        assertFalse(pair.equals(new Pair<Integer, Integer>(1,0)));
+        assertFalse(pair(1, 3).equals(pair(1, 0)));
     }
 
-    @Test public void testEqualsSameValue()
+    @Test
+    public void testEqualsSameValue()
     {
-        Pair<Integer, Integer> pair = new Pair<Integer, Integer>(1,3);
-        assertTrue(pair.equals(new Pair<Integer, Integer>(1,3)));
+        assertTrue(pair(1, 3).equals(pair(1, 3)));
     }
 }
