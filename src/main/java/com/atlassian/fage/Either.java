@@ -1,8 +1,10 @@
 package com.atlassian.fage;
 
-import com.google.common.base.Function;
-
+import static com.atlassian.fage.Option.option;
+import static com.atlassian.fage.Option.some;
 import static com.google.common.base.Preconditions.checkNotNull;
+
+import com.google.common.base.Function;
 
 /**
  * A class that acts as a container for a value of one of two types. An Either will be either {@link Left} or {@link
@@ -30,22 +32,22 @@ public abstract class Either<L, R>
      * @param left the value to be stored, must not be null
      * @return a Left containing the supplied value
      */
-    public static <L,R> Either<L, R> left(L left)
+    public static <L, R> Either<L, R> left(final L left)
     {
         checkNotNull(left);
-        return new Left<L,R>(left);
+        return new Left<L, R>(left);
     }
 
     /**
      * @param right the value to be stored, must not be null
      * @return a Right containing the supplied value
      */
-    public static <L,R> Either<L,R> right(R right)
+    public static <L, R> Either<L, R> right(final R right)
     {
         checkNotNull(right);
-        return new Right<L,R>(right);
+        return new Right<L, R>(right);
     }
-    
+
     //
     // static utility methods
     //
@@ -54,10 +56,12 @@ public abstract class Either<L, R>
      * Extracts an object from an Either, regardless of the side in which it is stored, provided both sides contain the
      * same type. This method will never return null.
      */
-    public static <T> T merge(Either<T,T> either)
+    public static <T> T merge(final Either<T, T> either)
     {
         if (either.isLeft())
+        {
             return either.left().get();
+        }
         return either.right().get();
     }
 
@@ -65,24 +69,18 @@ public abstract class Either<L, R>
      * Creates an Either based on a boolean expression. If predicate is true, a Right wil be returned containing the
      * supplied right value; if it is false, a Left will be returned containing the supplied left value. 
      */
-    public static <L,R> Either<L,R> cond(boolean predicate, R right, L left)
+    public static <L, R> Either<L, R> cond(final boolean predicate, final R right, final L left)
     {
-        if (predicate)
-        {
-            return right(right);
-        }
-        else
-        {
-            return left(left);
-        } 
+        return (predicate) ? Either.<L, R> right(right) : Either.<L, R> left(left);
     }
 
     //
     // constructors
     //
-    
-    Either() {/* Only instantiated by a limited set of classes. */}
-    
+
+    Either()
+    {}
+
     //
     // methods
     //
@@ -91,7 +89,7 @@ public abstract class Either<L, R>
     {
         return false;
     }
-    
+
     public boolean isRight()
     {
         return false;
@@ -104,7 +102,7 @@ public abstract class Either<L, R>
     {
         return Option.none();
     }
-    
+
     /**
      * @return an option wrapping the right value of this either
      */
@@ -121,7 +119,7 @@ public abstract class Either<L, R>
      * @return the result of the function application
      * @throws UnsupportedOperationException if this Either is not a Left
      */
-    public <V>V mapLeft(Function<L,V> function)
+    public <V> V mapLeft(final Function<L, V> function)
     {
         throw new UnsupportedOperationException();
     }
@@ -134,70 +132,72 @@ public abstract class Either<L, R>
      * @return the result of the function application
      * @throws UnsupportedOperationException is this Either is not a Right
      */
-    public <V>V mapRight(Function<R,V> function)
+    public <V> V mapRight(final Function<R, V> function)
     {
         throw new UnsupportedOperationException();
     }
-    
-    public abstract Either<R,L> swap();
-    
-    public abstract <V>V fold(Function<L, V> ifLeft, Function<R, V> ifRight);
-    
+
+    public abstract Either<R, L> swap();
+
+    public abstract <V> V fold(Function<L, V> ifLeft, Function<R, V> ifRight);
+
     //
     // inner class implementations
     //
-    
-    public static final  class Left<L,R> extends Either<L,R>
+
+    public static final class Left<L, R> extends Either<L, R>
     {
         private final L value;
 
-        public Left(L value)
+        public Left(final L value)
         {
             checkNotNull(value);
             this.value = value;
         }
-        
+
         @Override
         public Option<L> left()
         {
-            return Option.get(value);
+            return option(value);
         }
-        
+
         @Override
         public boolean isLeft()
         {
             return true;
         }
-        
+
         @Override
-        public Either<R,L> swap()
+        public Either<R, L> swap()
         {
             return right(value);
         }
-        
+
         @Override
-        public <V>V fold(Function<L, V> ifLeft, Function<R, V> ifRight)
+        public <V> V fold(final Function<L, V> ifLeft, final Function<R, V> ifRight)
         {
             return mapLeft(ifLeft);
         }
-        
+
         @Override
-        public <V>V mapLeft(Function<L, V> function)
+        public <V> V mapLeft(final Function<L, V> function)
         {
             return function.apply(value);
         }
 
         @Override
-        public boolean equals(Object o)
+        public boolean equals(final Object o)
         {
-            if (this == o) { return true; }
-            if (o == null || getClass() != o.getClass()) { return false; }
+            if (this == o)
+            {
+                return true;
+            }
+            if ((o == null) || (getClass() != o.getClass()))
+            {
+                return false;
+            }
 
-            Left left = (Left) o;
-
-            if (!value.equals(left.value)) { return false; }
-
-            return true;
+            return value.equals(((Left<?, ?>) o).value);
         }
 
         @Override
@@ -205,64 +205,67 @@ public abstract class Either<L, R>
         {
             return value.hashCode();
         }
-        
+
         @Override
         public String toString()
         {
             return "Either:Left { " + value.toString() + " } ";
         }
     }
-    
-    public static final class Right<L,R> extends Either<L,R>
+
+    public static final class Right<L, R> extends Either<L, R>
     {
         private final R value;
 
-        public Right(R value)
+        public Right(final R value)
         {
             checkNotNull(value);
             this.value = value;
         }
-        
+
         @Override
         public Option<R> right()
         {
-            return Option.get(value);
+            return some(value);
         }
-        
+
         @Override
         public boolean isRight()
         {
             return true;
         }
-        
+
         @Override
-        public Either<R,L> swap()
+        public Either<R, L> swap()
         {
             return left(value);
         }
 
         @Override
-        public <V>V fold(Function<L, V> ifLeft, Function<R, V> ifRight)
+        public <V> V fold(final Function<L, V> ifLeft, final Function<R, V> ifRight)
         {
             return mapRight(ifRight);
         }
-        
+
         @Override
-        public <V>V mapRight(Function<R, V> function)
+        public <V> V mapRight(final Function<R, V> function)
         {
             return function.apply(value);
         }
 
         @Override
-        public boolean equals(Object o)
+        public boolean equals(final Object o)
         {
-            if (this == o) { return true; }
-            if (o == null || getClass() != o.getClass()) { return false; }
+            if (this == o)
+            {
+                return true;
+            }
+            if ((o == null) || (getClass() != o.getClass()))
+            {
+                return false;
+            }
 
-            Right right = (Right) o;
-
-            return value.equals(right.value);
-
+            return value.equals(((Right<?, ?>) o).value);
         }
 
         @Override
@@ -270,12 +273,11 @@ public abstract class Either<L, R>
         {
             return value.hashCode();
         }
-        
+
         @Override
         public String toString()
         {
             return "Either:Right { " + value.toString() + " } ";
         }
-        
     }
 }
