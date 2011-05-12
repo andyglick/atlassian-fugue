@@ -3,6 +3,7 @@ package com.atlassian.fage;
 import static com.atlassian.fage.Option.none;
 import static com.atlassian.fage.Option.some;
 import static com.google.common.base.Functions.compose;
+import static com.google.common.collect.Iterables.size;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.emptyIterable;
@@ -15,7 +16,9 @@ import org.junit.Test;
 
 import com.google.common.base.Function;
 import com.google.common.base.Suppliers;
+import com.google.common.collect.ImmutableList;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 public class OptionTest
@@ -126,6 +129,13 @@ public class OptionTest
     public void hashCodesFromEqualSomesAreEqual()
     {
         assertTrue(some(1).hashCode() == some(1).hashCode());
+    }
+
+    @Test
+    public void filterNones()
+    {
+        final List<Option<Integer>> list = ImmutableList.<Option<Integer>> of(some(1), none(Integer.class), some(2));
+        assertThat(size(Option.filterNone(list)), is(equalTo(2)));
     }
 
     //
