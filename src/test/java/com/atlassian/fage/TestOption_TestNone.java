@@ -1,96 +1,99 @@
 package com.atlassian.fage;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import com.google.common.base.Function;
-import com.google.common.base.Predicates;
-
-import org.junit.Test;
-
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertSame;
 import static junit.framework.Assert.fail;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+
+import com.google.common.base.Function;
+import com.google.common.base.Predicates;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 public class TestOption_TestNone
 {
     private final Option<Integer> none = Option.none();
-    
-    @Test (expected = NoSuchElementException.class)
+
+    @Test(expected = NoSuchElementException.class)
     public void testGet()
     {
         none.get();
     }
-    
+
     @Test
     public void testIsSet()
     {
-        boolean actual = none.isSet();
-        assertFalse(actual);
+        assertFalse(none.isDefined());
     }
-    
+
     @Test
     public void testGetOrElse()
     {
-        Integer orElse = none.getOrElse(1);
-        assertEquals(new Integer(1), orElse);
+        assertEquals(new Integer(1), none.getOrElse(1));
     }
-   
+
     @Test
     public void testMap()
     {
-        Function<Integer, Integer> function = new Function<Integer, Integer>()
+        final Function<Integer, Integer> function = new Function<Integer, Integer>()
         {
             @Override
-            public Integer apply(Integer input)
+            public Integer apply(final Integer input)
             {
                 fail("None.map should not call the function.");
                 return input;
             }
         };
 
-        Option<Integer> result = none.map(function);
-        assertSame(Option.None.class, result.getClass());
+        assertTrue(none.map(function).isEmpty());
     }
-    
-    @Test (expected = NullPointerException.class)
+
+    @Test(expected = NullPointerException.class)
     public void testNullFunctionForMap()
     {
         none.map(null);
     }
-    
-    @Test (expected = NullPointerException.class)
+
+    @Test(expected = NullPointerException.class)
     public void testNullPredicateForFilter()
     {
         none.filter(null);
     }
-    
+
     @Test
-    public void testFilterReturnsEmpty()
+    public void testFilterTrueReturnsEmpty()
     {
-        Option<Integer> result = none.filter(Predicates.<Integer>alwaysTrue());
-        assertEquals(Option.None.class, result.getClass());
+        assertTrue(none.filter(Predicates.<Integer> alwaysTrue()).isEmpty());
+    }
+
+    @Test
+    public void testFilterFalseReturnsEmpty()
+    {
+        assertTrue(none.filter(Predicates.<Integer> alwaysFalse()).isEmpty());
     }
 
     @Test
     public void testSuperTypesPermittedOnFilter()
     {
-        Option<ArrayList> opt = Option.none();
-        Option<ArrayList> nopt = opt.filter(Predicates.<List>alwaysTrue());
+        final Option<ArrayList<?>> opt = Option.none();
+        final Option<ArrayList<?>> nopt = opt.filter(Predicates.<List<?>> alwaysTrue());
         assertSame(opt, nopt);
     }
 
     @Test
     public void testSuperTypesPermittedOnMap()
     {
-        Option<ArrayList> opt = Option.none();
-        Option<Set> size = opt.map(new Function<List, Set>()
+        final Option<ArrayList<?>> opt = Option.none();
+        final Option<Set<?>> size = opt.map(new Function<List<?>, Set<?>>()
         {
-            public Set apply(List list)
+            public Set<?> apply(final List<?> list)
             {
                 fail("This internal method should never get called.");
                 return null;
@@ -104,22 +107,22 @@ public class TestOption_TestNone
     @Test
     public void testIteratorHasNoNext()
     {
-        Iterator<Integer> iterator = none.iterator();
+        final Iterator<Integer> iterator = none.iterator();
         assertFalse(iterator.hasNext());
     }
-    
-    @Test (expected = NoSuchElementException.class)
+
+    @Test(expected = NoSuchElementException.class)
     public void testIteratorNext()
     {
-        Iterator<Integer> iterator = none.iterator();
-        iterator.next();        
+        final Iterator<Integer> iterator = none.iterator();
+        iterator.next();
     }
-    
-    @Test (expected = UnsupportedOperationException.class)
+
+    @Test(expected = UnsupportedOperationException.class)
     public void testIteratorRemove()
     {
-        Iterator<Integer> iterator = none.iterator();
+        final Iterator<Integer> iterator = none.iterator();
         iterator.remove();
     }
-    
+
 }

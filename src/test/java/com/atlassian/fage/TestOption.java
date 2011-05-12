@@ -1,6 +1,6 @@
 package com.atlassian.fage;
 
-import static com.atlassian.fage.Option.get;
+import static com.atlassian.fage.Option.option;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertSame;
@@ -17,14 +17,14 @@ public class TestOption
     @Test
     public void testGetNull()
     {
-        final Option<Object> objectOption = Option.get(null);
+        final Option<Object> objectOption = option(null);
         assertSame(Option.<Object> none(), objectOption);
     }
 
     @Test
     public void testGet()
     {
-        final Option<String> option = Option.get("Winter.");
+        final Option<String> option = option("Winter.");
         final String actual = option.get();
         assertEquals("Winter.", actual);
     }
@@ -38,36 +38,36 @@ public class TestOption
     @Test
     public void testFindFindsFirst()
     {
-        final Iterable<Option<Integer>> options = ImmutableList.of(get((Integer) null), get(2), get((Integer) null), get(4));
+        final Iterable<Option<Integer>> options = ImmutableList.of(option((Integer) null), option(2), option((Integer) null), option(4));
         assertEquals(new Integer(2), Option.find(options).get());
     }
 
     @Test
     public void testFindFindsOneSingleton()
     {
-        final Iterable<Option<Integer>> options = ImmutableList.of(get(3));
+        final Iterable<Option<Integer>> options = ImmutableList.of(option(3));
         assertEquals(new Integer(3), Option.find(options).get());
     }
 
     @Test
     public void testFindFindsNone()
     {
-        final Iterable<Option<Integer>> options = ImmutableList.of(Option.<Integer> get((Integer) null), get((Integer) null), get((Integer) null),
-            get((Integer) null));
-        assertFalse(Option.find(options).isSet());
+        final Iterable<Option<Integer>> options = ImmutableList.of(Option.<Integer> option((Integer) null), option((Integer) null),
+            option((Integer) null), option((Integer) null));
+        assertFalse(Option.find(options).isDefined());
     }
 
     @Test
     public void testFindFindsNoneSingleton()
     {
-        final Iterable<Option<Integer>> options = ImmutableList.of(Option.<Integer> get((Integer) null));
-        assertFalse(Option.find(options).isSet());
+        final Iterable<Option<Integer>> options = ImmutableList.of(Option.<Integer> option((Integer) null));
+        assertFalse(Option.find(options).isDefined());
     }
 
     @Test
     public void testFilterFindsTwo()
     {
-        final Iterable<Option<Integer>> options = ImmutableList.of(get((Integer) null), get(2), get((Integer) null), get(4));
+        final Iterable<Option<Integer>> options = ImmutableList.of(option((Integer) null), option(2), option((Integer) null), option(4));
         final Iterable<Option<Integer>> filtered = Option.filterNone(options);
         assertEquals(2, Iterables.size(filtered));
         final Iterator<Option<Integer>> it = filtered.iterator();
@@ -79,8 +79,8 @@ public class TestOption
     @Test
     public void testFilterFindsNone()
     {
-        final Iterable<Option<Integer>> options = ImmutableList.of(Option.<Integer> get((Integer) null), get((Integer) null), get((Integer) null),
-            get((Integer) null));
+        final Iterable<Option<Integer>> options = ImmutableList.of(Option.<Integer> option((Integer) null), option((Integer) null),
+            option((Integer) null), option((Integer) null));
         assertEquals(0, Iterables.size(Option.filterNone(options)));
     }
 }
