@@ -18,45 +18,45 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public class TestOption_TestSome
+public class OptionSomeTest
 {
     private static final Integer ORIGINAL_VALUE = 1;
     private static final Integer NOT_IN_SOME = 3;
     Option<Integer> some = some(ORIGINAL_VALUE);
 
     @Test
-    public void testGet()
+    public void get()
     {
         assertEquals(ORIGINAL_VALUE, some.get());
     }
 
     @Test
-    public void testIsSet()
+    public void isSet()
     {
         assertTrue(some.isDefined());
     }
 
     @Test
-    public void testGetOrElse()
+    public void getOrElse()
     {
         assertEquals(ORIGINAL_VALUE, some.getOrElse(NOT_IN_SOME));
     }
 
     @Test(expected = NullPointerException.class)
-    public void testMapForNull()
+    public void mapForNull()
     {
         some.map(null);
     }
 
     @Test
-    public void testMap()
+    public void map()
     {
         final Option<Integer> actual = some.map(UtilityFunctions.addOne);
         assertEquals(new Integer(2), actual.get());
     }
 
     @Test
-    public void testSuperTypesPermittedOnFilter()
+    public void superTypesPermittedOnFilter()
     {
         final ArrayList<Number> list = new ArrayList<Number>();
         list.add(1);
@@ -67,7 +67,7 @@ public class TestOption_TestSome
     }
 
     @Test
-    public void testSuperTypesPermittedOnMap()
+    public void superTypesPermittedOnMap()
     {
         final ArrayList<Number> list = new ArrayList<Number>();
         list.add(1);
@@ -86,33 +86,33 @@ public class TestOption_TestSome
     }
 
     @Test(expected = NullPointerException.class)
-    public void testFilterForNull()
+    public void filterForNull()
     {
         some.filter(null);
     }
 
     @Test
-    public void testPositiveFilter()
+    public void positiveFilter()
     {
         final Option<Integer> actual = some.filter(Predicates.<Integer> alwaysTrue());
         assertEquals(ORIGINAL_VALUE, actual.get());
     }
 
     @Test
-    public void testNegativeFilter()
+    public void negativeFilter()
     {
         final Option<Integer> actual = some.filter(Predicates.<Integer> alwaysFalse());
         assertEquals(Option.<Integer> none(), actual);
     }
 
     @Test
-    public void testIteratorHasNoNext()
+    public void iteratorHasNext()
     {
         assertTrue(some.iterator().hasNext());
     }
 
     @Test
-    public void testIteratorNext()
+    public void iteratorNext()
     {
         final Iterator<Integer> iterator = some.iterator();
         final Integer actual = iterator.next();
@@ -121,7 +121,7 @@ public class TestOption_TestSome
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testIteratorRemove()
+    public void iteratorImmutable()
     {
         final Iterator<Integer> iterator = some.iterator();
         iterator.next();

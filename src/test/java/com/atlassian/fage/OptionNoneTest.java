@@ -12,35 +12,34 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicates;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-public class TestOption_TestNone
+public class OptionNoneTest
 {
     private final Option<Integer> none = Option.none();
 
     @Test(expected = NoSuchElementException.class)
-    public void testGet()
+    public void get()
     {
         none.get();
     }
 
     @Test
-    public void testIsSet()
+    public void isSet()
     {
         assertFalse(none.isDefined());
     }
 
     @Test
-    public void testGetOrElse()
+    public void getOrElse()
     {
         assertEquals(new Integer(1), none.getOrElse(1));
     }
 
     @Test
-    public void testMap()
+    public void map()
     {
         final Function<Integer, Integer> function = new Function<Integer, Integer>()
         {
@@ -56,31 +55,31 @@ public class TestOption_TestNone
     }
 
     @Test(expected = NullPointerException.class)
-    public void testNullFunctionForMap()
+    public void nullFunctionForMap()
     {
         none.map(null);
     }
 
     @Test(expected = NullPointerException.class)
-    public void testNullPredicateForFilter()
+    public void nullPredicateForFilter()
     {
         none.filter(null);
     }
 
     @Test
-    public void testFilterTrueReturnsEmpty()
+    public void filterTrueReturnsEmpty()
     {
         assertTrue(none.filter(Predicates.<Integer> alwaysTrue()).isEmpty());
     }
 
     @Test
-    public void testFilterFalseReturnsEmpty()
+    public void filterFalseReturnsEmpty()
     {
         assertTrue(none.filter(Predicates.<Integer> alwaysFalse()).isEmpty());
     }
 
     @Test
-    public void testSuperTypesPermittedOnFilter()
+    public void superTypesPermittedOnFilter()
     {
         final Option<ArrayList<?>> opt = Option.none();
         final Option<ArrayList<?>> nopt = opt.filter(Predicates.<List<?>> alwaysTrue());
@@ -88,7 +87,7 @@ public class TestOption_TestNone
     }
 
     @Test
-    public void testSuperTypesPermittedOnMap()
+    public void superTypesPermittedOnMap()
     {
         final Option<ArrayList<?>> opt = Option.none();
         final Option<Set<?>> size = opt.map(new Function<List<?>, Set<?>>()
@@ -105,24 +104,20 @@ public class TestOption_TestNone
     // These tests are duplicated in TestEmptyIterator, but I've included them here to ensure
     // that None itself complies with the API.
     @Test
-    public void testIteratorHasNoNext()
+    public void iteratorHasNoNext()
     {
-        final Iterator<Integer> iterator = none.iterator();
-        assertFalse(iterator.hasNext());
+        assertFalse(none.iterator().hasNext());
     }
 
     @Test(expected = NoSuchElementException.class)
-    public void testIteratorNext()
+    public void iteratorNext()
     {
-        final Iterator<Integer> iterator = none.iterator();
-        iterator.next();
+        none.iterator().next();
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testIteratorRemove()
+    public void iteratorImmutable()
     {
-        final Iterator<Integer> iterator = none.iterator();
-        iterator.remove();
+        none.iterator().remove();
     }
-
 }
