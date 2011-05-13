@@ -67,4 +67,10 @@ public class EitherRightTest
     {
         assertEquals("Either.Right(1)", either.toString());
     }
+
+    @Test
+    public void hashCodeTest()
+    {
+        assertEquals(ORIGINAL_VALUE.hashCode(), either.hashCode());
+    }
 }
