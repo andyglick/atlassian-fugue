@@ -12,31 +12,31 @@ public class EitherLeftTest
     final Either<Boolean, Integer> either = Either.left(ORIGINAL_VALUE);
 
     @Test
-    public void testLeft()
+    public void left()
     {
         assertEquals(ORIGINAL_VALUE, either.left().get());
     }
 
     @Test
-    public void testRight()
+    public void right()
     {
         assertFalse(either.right().isDefined());
     }
 
     @Test
-    public void testIsRight()
+    public void isRight()
     {
         assertFalse(either.isRight());
     }
 
     @Test
-    public void testIsLeft()
+    public void isLeft()
     {
         assertTrue(either.isLeft());
     }
 
     @Test
-    public void testSwap()
+    public void swap()
     {
         final Either<Integer, Boolean> swapped = either.swap();
         assertTrue(swapped.isRight());
@@ -45,19 +45,19 @@ public class EitherLeftTest
     }
 
     @Test
-    public void testMap()
+    public void map()
     {
         assertEquals(String.valueOf(ORIGINAL_VALUE), either.fold(UtilityFunctions.bool2String, UtilityFunctions.int2String));
     }
 
     @Test
-    public void testMapRight()
+    public void mapRight()
     {
         assertTrue(either.right().map(UtilityFunctions.int2String).isEmpty());
     }
 
     @Test
-    public void testMapLeft()
+    public void mapLeft()
     {
         assertEquals(String.valueOf(ORIGINAL_VALUE), either.left().map(UtilityFunctions.bool2String).get());
     }
