@@ -86,6 +86,18 @@ public class OptionNoneTest
     }
 
     @Test
+    public void existsTrueReturnsFalse()
+    {
+        assertFalse(none.exists(Predicates.<Integer> alwaysTrue()));
+    }
+
+    @Test
+    public void existsFalseReturnsFalse()
+    {
+        assertFalse(none.exists(Predicates.<Integer> alwaysFalse()));
+    }
+
+    @Test
     public void superTypesPermittedOnFilter()
     {
         final Option<ArrayList<?>> opt = Option.none();
@@ -126,5 +138,23 @@ public class OptionNoneTest
     public void iteratorImmutable()
     {
         none.iterator().remove();
+    }
+
+    @Test
+    public void toStringTest()
+    {
+        assertEquals("none()", none.toString());
+    }
+
+    @Test
+    public void equalsItself()
+    {
+        assertTrue(none.equals(none));
+    }
+
+    @Test
+    public void notEqualsNull()
+    {
+        assertFalse(none.equals(null));
     }
 }

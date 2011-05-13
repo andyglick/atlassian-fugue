@@ -89,7 +89,7 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>
     {
         return none();
     }
-    
+
     /**
      * Find the first option that isSet, or if there aren't any, then none.
      * 
@@ -322,16 +322,11 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>
         {
             return true;
         }
-        if (obj == null)
+        if ((obj == null) || !(obj instanceof Option<?>))
         {
             return false;
         }
-        if (getClass() != obj.getClass())
-        {
-            return false;
-        }
-        @SuppressWarnings("unchecked")
-        final Option<Object> other = (Option<Object>) obj;
+        final Option<?> other = (Option<?>) obj;
         return other.fold(isDefined() ? Suppliers.alwaysFalse() : Suppliers.alwaysTrue(), valuesEqual());
     }
 

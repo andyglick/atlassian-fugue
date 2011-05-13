@@ -2,6 +2,7 @@ package com.atlassian.fage;
 
 import static com.atlassian.fage.Option.option;
 import static com.atlassian.fage.Option.some;
+import static com.atlassian.fage.UtilityFunctions.addOne;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertSame;
@@ -58,8 +59,7 @@ public class OptionSomeTest
     @Test
     public void map()
     {
-        final Option<Integer> actual = some.map(UtilityFunctions.addOne);
-        assertEquals(new Integer(2), actual.get());
+        assertEquals(new Integer(2), some.map(addOne).get());
     }
 
     @Test
@@ -95,15 +95,25 @@ public class OptionSomeTest
     @Test
     public void positiveFilter()
     {
-        final Option<Integer> actual = some.filter(Predicates.<Integer> alwaysTrue());
-        assertEquals(ORIGINAL_VALUE, actual.get());
+        assertEquals(ORIGINAL_VALUE, some.filter(Predicates.<Integer> alwaysTrue()).get());
     }
 
     @Test
     public void negativeFilter()
     {
-        final Option<Integer> actual = some.filter(Predicates.<Integer> alwaysFalse());
-        assertEquals(Option.<Integer> none(), actual);
+        assertEquals(Option.<Integer> none(), some.filter(Predicates.<Integer> alwaysFalse()));
+    }
+
+    @Test
+    public void existsTrueReturnsTrue()
+    {
+        assertTrue(some.exists(Predicates.<Integer> alwaysTrue()));
+    }
+
+    @Test
+    public void existsFalseReturnsFalse()
+    {
+        assertFalse(some.exists(Predicates.<Integer> alwaysFalse()));
     }
 
     @Test
@@ -127,5 +137,23 @@ public class OptionSomeTest
         final Iterator<Integer> iterator = some.iterator();
         iterator.next();
         iterator.remove();
+    }
+
+    @Test
+    public void toStringTest()
+    {
+        assertEquals("some(1)", some.toString());
+    }
+
+    @Test
+    public void equalsItself()
+    {
+        assertTrue(some.equals(some));
+    }
+
+    @Test
+    public void notEqualsNull()
+    {
+        assertFalse(some.equals(null));
     }
 }
