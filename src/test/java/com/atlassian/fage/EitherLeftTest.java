@@ -6,7 +6,7 @@ import static junit.framework.Assert.assertTrue;
 
 import org.junit.Test;
 
-public class TestEither_TestLeft
+public class EitherLeftTest
 {
     private static final Boolean ORIGINAL_VALUE = true;
     final Either<Boolean, Integer> either = Either.left(ORIGINAL_VALUE);
