@@ -111,41 +111,15 @@ public abstract class Either<L, R>
         return Option.none();
     }
 
-    /**
-     * Applies function to the held value if it is a Left.
-     * 
-     * @param <V> the return type
-     * @param function takes the value and produces the result
-     * @return the result of the function application
-     * @throws UnsupportedOperationException if this Either is not a Left
-     */
-    public <V> V mapLeft(final Function<L, V> function)
-    {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Applies function to the held value if it is a Right.
-     * 
-     * @param <V> the return type
-     * @param function takes the value and produces the result
-     * @return the result of the function application
-     * @throws UnsupportedOperationException is this Either is not a Right
-     */
-    public <V> V mapRight(final Function<R, V> function)
-    {
-        throw new UnsupportedOperationException();
-    }
-
     public abstract Either<R, L> swap();
 
-    public abstract <V> V fold(Function<L, V> ifLeft, Function<R, V> ifRight);
+    public abstract <V> V fold(Function<? super L, V> ifLeft, Function<? super R, V> ifRight);
 
     //
     // inner class implementations
     //
 
-    public static final class Left<L, R> extends Either<L, R>
+    static final class Left<L, R> extends Either<L, R>
     {
         private final L value;
 
@@ -174,15 +148,9 @@ public abstract class Either<L, R>
         }
 
         @Override
-        public <V> V fold(final Function<L, V> ifLeft, final Function<R, V> ifRight)
+        public <V> V fold(final Function<? super L, V> ifLeft, final Function<? super R, V> ifRight)
         {
-            return mapLeft(ifLeft);
-        }
-
-        @Override
-        public <V> V mapLeft(final Function<L, V> function)
-        {
-            return function.apply(value);
+            return left().map(ifLeft).get();
         }
 
         @Override
@@ -192,11 +160,10 @@ public abstract class Either<L, R>
             {
                 return true;
             }
-            if ((o == null) || (getClass() != o.getClass()))
+            if ((o == null) || !(o instanceof Left<?, ?>))
             {
                 return false;
             }
-
             return value.equals(((Left<?, ?>) o).value);
         }
 
@@ -209,11 +176,11 @@ public abstract class Either<L, R>
         @Override
         public String toString()
         {
-            return "Either:Left { " + value.toString() + " } ";
+            return "Either:Left(" + value.toString() + ")";
         }
     }
 
-    public static final class Right<L, R> extends Either<L, R>
+    static final class Right<L, R> extends Either<L, R>
     {
         private final R value;
 
@@ -242,15 +209,9 @@ public abstract class Either<L, R>
         }
 
         @Override
-        public <V> V fold(final Function<L, V> ifLeft, final Function<R, V> ifRight)
+        public <V> V fold(final Function<? super L, V> ifLeft, final Function<? super R, V> ifRight)
         {
-            return mapRight(ifRight);
-        }
-
-        @Override
-        public <V> V mapRight(final Function<R, V> function)
-        {
-            return function.apply(value);
+            return right().map(ifRight).get();
         }
 
         @Override
@@ -260,11 +221,10 @@ public abstract class Either<L, R>
             {
                 return true;
             }
-            if ((o == null) || (getClass() != o.getClass()))
+            if ((o == null) || !(o instanceof Right<?, ?>))
             {
                 return false;
             }
-
             return value.equals(((Right<?, ?>) o).value);
         }
 
@@ -277,7 +237,7 @@ public abstract class Either<L, R>
         @Override
         public String toString()
         {
-            return "Either:Right { " + value.toString() + " } ";
+            return "Either:Right(" + value.toString() + ")";
         }
     }
 }

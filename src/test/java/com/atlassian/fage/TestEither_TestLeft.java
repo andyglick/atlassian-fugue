@@ -47,20 +47,17 @@ public class TestEither_TestLeft
     @Test
     public void testMap()
     {
-        final String actual = either.fold(UtilityFunctions.bool2String, UtilityFunctions.int2String);
-        assertEquals(String.valueOf(ORIGINAL_VALUE), actual);
+        assertEquals(String.valueOf(ORIGINAL_VALUE), either.fold(UtilityFunctions.bool2String, UtilityFunctions.int2String));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
     public void testMapRight()
     {
-        either.mapRight(UtilityFunctions.int2String);
+        assertTrue(either.right().map(UtilityFunctions.int2String).isEmpty());
     }
 
     @Test
     public void testMapLeft()
     {
-        final String actual = either.mapLeft(UtilityFunctions.bool2String);
-        assertEquals(String.valueOf(ORIGINAL_VALUE), actual);
+        assertEquals(String.valueOf(ORIGINAL_VALUE), either.left().map(UtilityFunctions.bool2String).get());
     }
 }
