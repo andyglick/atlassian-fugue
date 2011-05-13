@@ -89,18 +89,7 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>
     {
         return none();
     }
-
-    /**
-     * Synonym for {@link #option(Object)}
-     * 
-     * @deprecated use {@link #option(Object)}
-     */
-    @Deprecated
-    public static <A> Option<A> get(final A a)
-    {
-        return option(a);
-    }
-
+    
     /**
      * Find the first option that isSet, or if there aren't any, then none.
      * 
