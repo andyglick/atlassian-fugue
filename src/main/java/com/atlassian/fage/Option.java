@@ -383,13 +383,13 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>
         public Object get()
         {
             throw new NoSuchElementException();
-        };
+        }
 
         @Override
         public boolean isDefined()
         {
             return false;
-        };
+        }
     };
 
     private static final Supplier<String> NONE_STRING = Suppliers.ofInstance("none()");
