@@ -11,9 +11,10 @@ import org.junit.Test;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -42,6 +43,12 @@ public class OptionSomeTest
         assertEquals(ORIGINAL_VALUE, some.getOrElse(NOT_IN_SOME));
     }
 
+    @Test
+    public void getOrNull()
+    {
+        assertEquals(ORIGINAL_VALUE, some.getOrNull());
+    }
+
     @Test(expected = NullPointerException.class)
     public void mapForNull()
     {
@@ -58,31 +65,25 @@ public class OptionSomeTest
     @Test
     public void superTypesPermittedOnFilter()
     {
-        final ArrayList<Number> list = new ArrayList<Number>();
-        list.add(1);
-        list.add(2);
-        final Option<ArrayList<Number>> opt = option(list);
-        final Option<ArrayList<Number>> nopt = opt.filter(Predicates.<List<Number>> alwaysTrue());
-        assertSame(opt, nopt);
+        final ArrayList<Integer> list = Lists.newArrayList(1, 2);
+        final Option<ArrayList<Integer>> option = option(list);
+        final Option<ArrayList<Integer>> nopt = option.filter(Predicates.<List<Integer>> alwaysTrue());
+        assertSame(option, nopt);
     }
 
     @Test
     public void superTypesPermittedOnMap()
     {
-        final ArrayList<Number> list = new ArrayList<Number>();
-        list.add(1);
-        list.add(2);
-        final Option<ArrayList<Number>> opt = option(list);
-        final Option<Set<Number>> set = opt.map(new Function<List<Number>, Set<Number>>()
+        final ArrayList<Integer> list = Lists.newArrayList(1, 2);
+        final Option<ArrayList<Integer>> option = option(list);
+        final Option<Set<Number>> set = option.map(new Function<List<Integer>, Set<Number>>()
         {
-            public Set<Number> apply(final List<Number> list)
+            public Set<Number> apply(final List<Integer> list)
             {
-                final Set<Number> set = new HashSet<Number>();
-                set.addAll(list);
-                return set;
+                return Sets.<Number> newHashSet(list);
             }
         });
-        assertSame(opt.get().size(), set.get().size());
+        assertSame(option.get().size(), set.get().size());
     }
 
     @Test(expected = NullPointerException.class)

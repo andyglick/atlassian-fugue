@@ -4,6 +4,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertSame;
 import static junit.framework.Assert.fail;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -36,6 +37,12 @@ public class OptionNoneTest
     public void getOrElse()
     {
         assertEquals(new Integer(1), none.getOrElse(1));
+    }
+
+    @Test
+    public void getOrNull()
+    {
+        assertNull(none.getOrNull());
     }
 
     @Test
