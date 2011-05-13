@@ -1,24 +1,41 @@
 package com.atlassian.fage;
 
-import static com.atlassian.fage.Suppliers.Nulls.nullSupplier;
-
 import com.google.common.base.Supplier;
 
 public class Suppliers
 {
+    /**
+     * Returns a supplier that always supplies {@code instance}.
+     */
     public static <T> Supplier<T> ofInstance(final T instance)
     {
         return com.google.common.base.Suppliers.ofInstance(instance);
     }
 
-    static Supplier<Boolean> alwaysTrue()
+    /**
+     * Returns a supplier that always supplies {@code true}.
+     */
+    public static Supplier<Boolean> alwaysTrue()
     {
         return SupplyTrue.INSTANCE;
     }
 
-    static Supplier<Boolean> alwaysFalse()
+    /**
+     * Returns a supplier that always supplies {@code false}.
+     */
+    public static Supplier<Boolean> alwaysFalse()
     {
         return SupplyFalse.INSTANCE;
+    }
+
+    /**
+     * Returns a supplier that always supplies {@code null}.
+     */
+    public static <A> Supplier<A> alwaysNull()
+    {
+        @SuppressWarnings("unchecked")
+        final Supplier<A> result = (Supplier<A>) Nulls.NULL;
+        return result;
     }
 
     private enum SupplyTrue implements Supplier<Boolean>
@@ -41,11 +58,6 @@ public class Suppliers
         }
     }
 
-    static <A> Supplier<A> alwaysNull()
-    {
-        return nullSupplier();
-    }
-
     enum Nulls implements Supplier<Object>
     {
         NULL;
@@ -53,12 +65,6 @@ public class Suppliers
         public Object get()
         {
             return null;
-        }
-
-        @SuppressWarnings("unchecked")
-        static <A> Supplier<A> nullSupplier()
-        {
-            return (Supplier<A>) Nulls.NULL;
         }
     };
 }
