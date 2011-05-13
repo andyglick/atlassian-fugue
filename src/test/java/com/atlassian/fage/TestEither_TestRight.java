@@ -50,6 +50,7 @@ public class TestEither_TestRight
         assertEquals(String.valueOf(ORIGINAL_VALUE), either.fold(UtilityFunctions.bool2String, UtilityFunctions.int2String));
     }
 
+    @Test
     public void testMapLeft()
     {
         assertTrue(either.left().map(UtilityFunctions.bool2String).isEmpty());
