@@ -2,6 +2,7 @@ package com.atlassian.fage;
 
 import static com.atlassian.fage.Option.option;
 import static com.atlassian.fage.Option.some;
+import static com.atlassian.fage.Suppliers.ofInstance;
 import static com.atlassian.fage.UtilityFunctions.addOne;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
@@ -114,6 +115,18 @@ public class OptionSomeTest
     public void existsFalseReturnsFalse()
     {
         assertFalse(some.exists(Predicates.<Integer> alwaysFalse()));
+    }
+
+    @Test
+    public void toLeftReturnsLeft()
+    {
+        assertTrue(some.toLeft(ofInstance("")).isLeft());
+    }
+
+    @Test
+    public void toRightReturnsRight()
+    {
+        assertTrue(some.toRight(ofInstance("")).isRight());
     }
 
     @Test

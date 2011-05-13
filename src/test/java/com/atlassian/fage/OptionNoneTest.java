@@ -98,6 +98,18 @@ public class OptionNoneTest
     }
 
     @Test
+    public void toLeftReturnsRight()
+    {
+        assertTrue(none.toLeft(Suppliers.ofInstance("")).isRight());
+    }
+
+    @Test
+    public void toRightReturnsLeft()
+    {
+        assertTrue(none.toRight(Suppliers.ofInstance("")).isLeft());
+    }
+
+    @Test
     public void superTypesPermittedOnFilter()
     {
         final Option<ArrayList<?>> opt = Option.none();
