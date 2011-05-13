@@ -61,4 +61,10 @@ public class EitherLeftTest
     {
         assertEquals(String.valueOf(ORIGINAL_VALUE), either.left().map(UtilityFunctions.bool2String).get());
     }
+
+    @Test
+    public void toStringTest()
+    {
+        assertEquals("Either.Left(true)", either.toString());
+    }
 }

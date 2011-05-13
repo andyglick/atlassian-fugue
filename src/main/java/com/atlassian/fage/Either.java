@@ -176,7 +176,7 @@ public abstract class Either<L, R>
         @Override
         public String toString()
         {
-            return "Either:Left(" + value.toString() + ")";
+            return "Either.Left(" + value.toString() + ")";
         }
     }
 
@@ -237,7 +237,7 @@ public abstract class Either<L, R>
         @Override
         public String toString()
         {
-            return "Either:Right(" + value.toString() + ")";
+            return "Either.Right(" + value.toString() + ")";
         }
     }
 }

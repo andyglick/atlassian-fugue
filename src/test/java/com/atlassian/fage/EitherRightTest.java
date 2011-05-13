@@ -61,4 +61,10 @@ public class EitherRightTest
     {
         assertEquals(String.valueOf(ORIGINAL_VALUE), either.right().map(UtilityFunctions.int2String).get());
     }
+
+    @Test
+    public void toStringTest()
+    {
+        assertEquals("Either.Right(1)", either.toString());
+    }
 }
