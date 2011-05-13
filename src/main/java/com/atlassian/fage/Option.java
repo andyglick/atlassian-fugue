@@ -6,8 +6,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.atlassian.fage.Either.Left;
 import com.atlassian.fage.Either.Right;
 
-import org.junit.Test.None;
-
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Supplier;
@@ -130,7 +128,6 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>
      * Filters defined options only.
      * 
      * @param <T> the held type
-     * @param options many options that may or may not be defined
      * @return the filtered options
      */
     public static <T> Predicate<T> defined()
@@ -454,6 +451,7 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>
         @SuppressWarnings("unchecked")
         static <A> Function<A, String> instance()
         {
+            // Some IDEs reckon this doesn't compile. They are wrong. It compiles and is correct.
             return (Function<A, String>) SomeString.INSTANCE;
         }
     }
@@ -470,6 +468,7 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>
         @SuppressWarnings("unchecked")
         static <A> Function<A, Integer> instance()
         {
+            // Some IDEs reckon this doesn't compile. They are wrong. It compiles and is correct.
             return (Function<A, Integer>) SomeHashCode.INSTANCE;
         }
     }
