@@ -1,5 +1,9 @@
 package com.atlassian.fage;
 
+import static com.atlassian.fage.Either.left;
+import static com.atlassian.fage.UtilityFunctions.bool2String;
+import static com.atlassian.fage.UtilityFunctions.int2String;
+import static java.lang.String.valueOf;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
@@ -9,10 +13,10 @@ import org.junit.Test;
 public class EitherLeftTest
 {
     private static final Boolean ORIGINAL_VALUE = true;
-    final Either<Boolean, Integer> either = Either.left(ORIGINAL_VALUE);
+    final Either<Boolean, Integer> either = left(ORIGINAL_VALUE);
 
     @Test
-    public void left()
+    public void leftGet()
     {
         assertEquals(ORIGINAL_VALUE, either.left().get());
     }
@@ -47,19 +51,19 @@ public class EitherLeftTest
     @Test
     public void map()
     {
-        assertEquals(String.valueOf(ORIGINAL_VALUE), either.fold(UtilityFunctions.bool2String, UtilityFunctions.int2String));
+        assertEquals(valueOf(ORIGINAL_VALUE), either.fold(bool2String, int2String));
     }
 
     @Test
     public void mapRight()
     {
-        assertTrue(either.right().map(UtilityFunctions.int2String).isEmpty());
+        assertTrue(either.right().map(int2String).isEmpty());
     }
 
     @Test
     public void mapLeft()
     {
-        assertEquals(String.valueOf(ORIGINAL_VALUE), either.left().map(UtilityFunctions.bool2String).get());
+        assertEquals(valueOf(ORIGINAL_VALUE), either.left().map(bool2String).get());
     }
 
     @Test
@@ -72,5 +76,17 @@ public class EitherLeftTest
     public void hashCodeTest()
     {
         assertEquals(ORIGINAL_VALUE.hashCode(), either.hashCode());
+    }
+
+    @Test
+    public void equalsItself()
+    {
+        assertTrue(either.equals(either));
+    }
+
+    @Test
+    public void notEqualsNull()
+    {
+        assertFalse(either.equals(null));
     }
 }
