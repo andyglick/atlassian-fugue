@@ -21,9 +21,9 @@ public class Functions
     private Functions()
     {}
 
-    public static <F, T> T fold(final Function2<T, F, T> f, final T initialValue, final Iterable<F> elements)
+    public static <F, T> T fold(final Function2<T, F, T> f, final T zero, final Iterable<F> elements)
     {
-        T currentValue = initialValue;
+        T currentValue = zero;
         for (final F element : elements)
         {
             currentValue = f.apply(currentValue, element);
@@ -31,26 +31,21 @@ public class Functions
         return currentValue;
     }
 
-    public static <F, T> T fold(final Function<Pair<T, F>, T> f, final T initialValue, final Iterable<F> elements)
+    public static <F, T> T fold(final Function<Pair<T, F>, T> f, final T zero, final Iterable<F> elements)
     {
-        return fold(apply(f), initialValue, elements);
-    }
-
-    private static <F, T> Function2<T, F, T> apply(final Function<Pair<T, F>, T> f)
-    {
-        return new Function2<T, F, T>()
+        return fold(new Function2<T, F, T>()
         {
             @Override
             public T apply(final T arg1, final F arg2)
             {
                 return f.apply(new Pair<T, F>(arg1, arg2));
             }
-        };
+        }, zero, elements);
     }
 
     /**
      * Get the value from a supplier.
-     *
+     * 
      * @param <T> the type returned, note the Supplier can be covariant.
      * @return a function that extracts the value from a supplier
      */
@@ -68,19 +63,20 @@ public class Functions
     }
 
     /**
-     * Function that can be used to ignore any RuntimeExceptions that a {@link Supplier} may produce and return null instead.
-     *
+     * Function that can be used to ignore any RuntimeExceptions that a
+     * {@link Supplier} may produce and return null instead.
+     * 
      * @param <T> the result type
      * @return a Function that transforms an exception into a null
      */
-    public static <T> Function<Supplier<T>, Supplier<T>> ignoreExceptions()
+    public static <T> Function<Supplier<? extends T>, Supplier<T>> ignoreExceptions()
     {
         return new ExceptionIgnorer<T>();
     }
 
-    static class ExceptionIgnorer<T> implements Function<Supplier<T>, Supplier<T>>
+    static class ExceptionIgnorer<T> implements Function<Supplier<? extends T>, Supplier<T>>
     {
-        public Supplier<T> apply(final Supplier<T> from)
+        public Supplier<T> apply(final Supplier<? extends T> from)
         {
             return new IgnoreAndReturnNull<T>(from);
         }
@@ -88,9 +84,9 @@ public class Functions
 
     static class IgnoreAndReturnNull<T> implements Supplier<T>
     {
-        private final Supplier<T> delegate;
+        private final Supplier<? extends T> delegate;
 
-        IgnoreAndReturnNull(final Supplier<T> delegate)
+        IgnoreAndReturnNull(final Supplier<? extends T> delegate)
         {
             this.delegate = checkNotNull(delegate);
         }
@@ -123,9 +119,10 @@ public class Functions
 
     public static <F, T> Function<F, T> memoize(final Function<F, T> delegate, final MapMaker mapMaker)
     {
-        final Map<F, T> map = mapMaker.makeComputingMap(delegate);
         return new Function<F, T>()
         {
+            final Map<F, T> map = mapMaker.makeComputingMap(delegate);
+
             public T apply(final F from)
             {
                 return map.get(from);
@@ -133,18 +130,40 @@ public class Functions
         };
     }
 
-    public static Function<String, Long> parseLong()
+    static final class Memoizer<F, T> implements Function<F, T>
+    {
+        final Map<F, T> map;
+
+        Memoizer(final Function<F, T> delegate, final MapMaker mapMaker)
+        {
+            map = mapMaker.makeComputingMap(delegate);
+        }
+
+        public T apply(final F from)
+        {
+            return map.get(from);
+        }
+    };
+
+    public static Function<String, Either<NumberFormatException, Long>> parseLong()
     {
         return ParseLong.INSTANCE;
     }
 
-    private enum ParseLong implements Function<String, Long>
+    private enum ParseLong implements Function<String, Either<NumberFormatException, Long>>
     {
         INSTANCE;
 
-        public Long apply(final String s)
+        public Either<NumberFormatException, Long> apply(final String s)
         {
-            return Long.valueOf(s);
+            try
+            {
+                return right(Long.valueOf(s));
+            }
+            catch (final NumberFormatException e)
+            {
+                return left(e);
+            }
         }
     }
 
