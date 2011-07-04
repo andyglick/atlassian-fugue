@@ -91,14 +91,21 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>
     }
 
     /**
-     * Find the first option that isSet, or if there aren't any, then none.
+     * Find the first option that isDefined, or if there aren't any, then none.
      * 
      * @param <T> the held type
      * @param options an Iterable of options to search through
      */
     public static <T> Option<T> find(final Iterable<Option<T>> options)
     {
-        return Iterables.find(options, DEFINED, Option.<T> none());
+        for (final Option<T> option : options)
+        {
+            if(option.isDefined())
+            {
+                return option;
+            }
+        }
+        return none();
     }
 
     /**
@@ -358,7 +365,7 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>
     private static final Option<Object> NONE = new Option<Object>()
     {
         @Override
-        public <B> B fold(final Supplier<? extends B> none, final Function<Object, B> some)
+        public <B> B fold(final Supplier<? extends B> none, final Function<? super Object, B> some)
         {
             return none.get();
         }
