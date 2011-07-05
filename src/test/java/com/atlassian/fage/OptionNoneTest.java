@@ -131,6 +131,12 @@ public class OptionNoneTest
         });
         assertSame(opt, size);
     }
+    
+    @Test
+    public void hashDoesNotThrowException()
+    {
+        none.hashCode();
+    }
 
     // These tests are duplicated in TestEmptyIterator, but I've included them here to ensure
     // that None itself complies with the API.

@@ -353,7 +353,7 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>
         {
             public Boolean apply(final Object obj)
             {
-                return get().equals(obj);
+                return isDefined() && get().equals(obj);
             }
         };
     }

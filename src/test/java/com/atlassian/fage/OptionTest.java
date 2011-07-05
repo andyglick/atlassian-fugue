@@ -137,6 +137,30 @@ public class OptionTest
         final List<Option<Integer>> list = ImmutableList.<Option<Integer>> of(some(1), none(Integer.class), some(2));
         assertThat(size(Option.filterNone(list)), is(equalTo(2)));
     }
+    
+    @Test
+    public void noneSomeEquality()
+    {
+        assertFalse(Option.none().equals(Option.some("")));
+    }
+    
+    @Test
+    public void someNoneEquality()
+    {
+        assertFalse(Option.some("").equals(Option.none()));
+    }
+    
+    @Test
+    public void someSomeEquality()
+    {
+        assertTrue(Option.some("something").equals(Option.some("something")));
+    }
+    
+    @Test
+    public void noneNoneEquality()
+    {
+        assertTrue(Option.none().equals(Option.none()));
+    }
 
     //
     // scaffolding

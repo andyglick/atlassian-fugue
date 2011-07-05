@@ -169,4 +169,11 @@ public class OptionSomeTest
     {
         assertFalse(some.equals(null));
     }
+    
+    @Test
+    public void hashDoesNotThrowException()
+    {
+        some.hashCode();
+    }
+
 }
