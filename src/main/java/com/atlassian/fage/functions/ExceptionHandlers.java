@@ -28,15 +28,6 @@ public class ExceptionHandlers
     }
 
     /**
-     * @deprecated use ignoreExceptionHandler instead
-     * @return an {@link ExceptionHandler} which does nothing
-     */
-    public static ExceptionHandler noOpExceptionHandler()
-    {
-        return new IgnoreExceptionHandler();
-    }
-
-    /**
      * @return an {@link ExceptionHandler} which does nothing
      */
     public static ExceptionHandler ignoreExceptionHandler()
