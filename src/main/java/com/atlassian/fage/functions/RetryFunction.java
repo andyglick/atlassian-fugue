@@ -5,8 +5,9 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Suppliers;
 
 /**
- * A Function which wraps the apply method of another Function and attempts it a fixed number of times. This class can
- * be used when a task is known to be prone to occasional failure and other workarounds are not known.
+ * A Function which wraps the apply method of another Function and attempts it up to a fixed number of times.
+ * This class can be used when a task is known to be prone to occasional failure and other workarounds
+ * are not known.
  * 
  * @param <F> The type of the parameter the Function accepts
  * @param <T> The type of the result the Function yields upon application
@@ -22,6 +23,19 @@ public class RetryFunction<F, T> implements Function<F, T>
     private final Runnable beforeRetry;
 
     /**
+     * An instance that does nothing before retrying and ignores exceptions that occur.
+     *
+     * @param function which fetches the result, must not be null
+     * @param tries the numbe rof times to attempt to get a result, must be positive
+     */
+    public RetryFunction(Function<F, T> function, int tries)
+    {
+        this(function, tries, ExceptionHandlers.ignoreExceptionHandler());
+    }
+
+    /**
+     * An instance that does nothing before retrying.
+     * 
      * @param function which fetches the result, must not be null
      * @param tries the number of times to attempt to get a result, must be positive
      * @param handler reacts to exceptions thrown by the supplier, must not be null

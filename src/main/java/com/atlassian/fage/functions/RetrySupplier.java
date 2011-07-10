@@ -4,8 +4,9 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
 
 /**
- * A Supplier which wraps the apply method of another Supplier and attempts it a fixed number of times. This class can
- * be used when a task is known to be prone to occasional failure and other workarounds are not known.
+ * A Supplier which wraps the apply method of another Supplier and attempts it up to a fixed number of times.
+ * This class can be used when a task is known to be prone to occasional failure and other workarounds
+ * are not known.
  * 
  * @param <T> The type of the result the Supplier yields upon application
  * @see RetryFunction for a Function implementation
@@ -21,6 +22,19 @@ public class RetrySupplier<T> implements Supplier<T>
 
 
     /**
+     * An instance that does nothing before retrying and ignores exceptions that occur.
+     * 
+     * @param supplier which fetches the result, must not be null
+     * @param tries the number of times to attempt to get a result, must be positive
+     */
+    public RetrySupplier(Supplier<T> supplier, int tries)
+    {
+        this(supplier, tries, ExceptionHandlers.ignoreExceptionHandler());
+    }
+
+    /**
+     * An instance that does nothing before retrying.
+     *
      * @param supplier which fetches the result, must not be null
      * @param tries the number of times to attempt to get a result, must be positive
      * @param handler reacts to exceptions thrown by the supplier, must not be null

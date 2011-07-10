@@ -4,7 +4,8 @@ import com.google.common.base.Function;
 import com.google.common.base.Supplier;
 
 /**
- * Provides factory methods for RetryFunction and RetrySupplier.
+ * Provides factory methods for RetryFunction, RetryTask, and RetrySupplier. These classes can be used
+ * when a task is known to fail on occasion and no other workaround is known.
  * 
  * This class is not instantiable.
  */
@@ -12,11 +13,23 @@ public class RetryFactory
 {
     private RetryFactory(){throw new AssertionError("This class is non-instantiable.");}
 
+    /**
+     * Decorates a runnable so that it retries a number of times before being allowed to fail.
+     *
+     * @param task which will be wrapped for retrial. It should be idempotent on failure.
+     * @param tries the number of times to re-attempt the call
+     * @return a runnable which can be used to call another runnable multiple times when that runnable
+     * may fail sporadically
+     */
+    public static Runnable create(Runnable task, int tries)
+    {
+        return create(task, tries, ExceptionHandlers.ignoreExceptionHandler());
+    }
     
     /**
      * Decorates a runnable so that it retries a number of times before being allowed to fail.
      * 
-     * @param task which will be wrapped for retrial. It should be idempotent.
+     * @param task which will be wrapped for retrial. It should be idempotent on failure.
      * @param tries the number of times to re-attempt the call
      * @return a runnable which can be used to call another runnable multiple times when that runnable may fail
      * sporadically 
@@ -29,7 +42,7 @@ public class RetryFactory
     /**
      * Decorates a runnable so that it retries a number of times before being allowed to fail.
      * 
-     * @param task which will be wrapped for retrial. It should be idempotent.
+     * @param task which will be wrapped for retrial. It should be idempotent on failure.
      * @param tries the number of times to re-attempt the call
      * @param handler which acts on exceptions thrown by the wrapped supplier
      * @return a runnable which can be used to call another runnable multiple times when that runnable may fail
@@ -43,7 +56,7 @@ public class RetryFactory
     /**
      * Decorates a supplier so that it retries a number of times before being allowed to fail.
      * 
-     * @param supplier which will be wrapped for retrial. It should be idempotent.
+     * @param supplier which will be wrapped for retrial. It should be idempotent on failure.
      * @param tries the number of times to re-attempt the call
      * @param <T> The type of the object returned by supplier
      * @return a supplier which can be used to call another supplier multiple times when that supplier may fail
@@ -57,7 +70,7 @@ public class RetryFactory
     /**
      * Decorates a supplier so that it retries a number of times before being allowed to fail.
      * 
-     * @param supplier which will be wrapped for retrial. It should be idempotent.
+     * @param supplier which will be wrapped for retrial. It should be idempotent on failure.
      * @param tries the number of times to re-attempt the call
      * @param <T> The type of the object returned by supplier
      * @param handler which acts on exceptions thrown by the wrapped supplier
@@ -72,7 +85,7 @@ public class RetryFactory
     /**
      * Decorates a supplier so that it retries a number of times before being allowed to fail.
      * 
-     * @param supplier which will be wrapped for retrial. It should be idempotent.
+     * @param supplier which will be wrapped for retrial. It should be idempotent on failure.
      * @param tries the number of times to re-attempt the call
      * @param <T> The type of the object returned by supplier
      * @param handler which acts on exceptions thrown by the wrapped supplier
@@ -87,7 +100,7 @@ public class RetryFactory
     /**
      * Decorates a function so that it retries a number of times before being allowed to fail.
      * 
-     * @param function which will be wrapped for retrial. It should be idempotent.
+     * @param function which will be wrapped for retrial. It should be idempotent on failure.
      * @param tries the number of times to re-attempt the call
      * @param <F> the type of the parameter the function accepts
      * @param <T> the type of the result of the function's apply method
@@ -102,7 +115,7 @@ public class RetryFactory
     /**
      * Decorates a function so that it retries a number of times before being allowed to fail.
      * 
-     * @param function which will be wrapped for retrial. It should be idempotent.
+     * @param function which will be wrapped for retrial. It should be idempotent on failure.
      * @param tries the number of times to re-attempt the call
      * @param <F> the type of the parameter the function accepts
      * @param <T> the type of the result of the function's apply method
@@ -118,7 +131,7 @@ public class RetryFactory
     /**
      * Decorates a function so that it retries a number of times before being allowed to fail.
      * 
-     * @param function which will be wrapped for retrial. It should be idempotent.
+     * @param function which will be wrapped for retrial. It should be idempotent on failure.
      * @param tries the number of times to re-attempt the call
      * @param <F> the type of the parameter the function accepts
      * @param <T> the type of the result of the function's apply method

@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Provides some standard implementations of various exception Actions.
+ * Provides some standard implementations of various exception actions.
  * 
  * This class is not instantiable.
  */
@@ -19,7 +19,8 @@ public class ExceptionHandlers
     /**
      * Retrieves an {@link ExceptionHandler} which will log exceptions passed in.
      * 
-     * @param logger the Logger to which exceptions will be logged; if it is null, a default Logger will be used
+     * @param logger the Logger to which exceptions will be logged; if it is null, a default Logger will be used. The default logger
+     * is the logger for the ExceptionHandlers class, but may change in future.
      * @return an {@link ExceptionHandler} which will log (at WARN level) exceptions passed in
      */
     public static ExceptionHandler loggingExceptionHandler(Logger logger)
