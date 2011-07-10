@@ -10,7 +10,7 @@ import com.google.common.base.Function;
  * A class that acts as a container for a value of one of two types. An Either will be either {@link Left} or {@link
  * Right}.
  * <p/>
- * Checking which type an Either is can be done be calling the @{@link #isLeft()} and {@link #isRight()} methods.
+ * Checking which type an Either is can be done by calling the @{@link #isLeft()} and {@link #isRight()} methods.
  * <p/>
  * Eithers can be used to express a success or failure case. By convention, Right is used to store the success value,
  * (you can use the play on words "right" == "correct" as a mnemonic) and Left is used to store failure values (such
