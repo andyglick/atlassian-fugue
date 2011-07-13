@@ -1,5 +1,6 @@
 package com.atlassian.fage;
 
+import static com.atlassian.fage.Option.some;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertSame;
@@ -131,7 +132,7 @@ public class OptionNoneTest
         });
         assertSame(opt, size);
     }
-    
+
     @Test
     public void hashDoesNotThrowException()
     {
@@ -168,6 +169,12 @@ public class OptionNoneTest
     public void equalsItself()
     {
         assertTrue(none.equals(none));
+    }
+
+    @Test
+    public void notEqualsSome()
+    {
+        assertFalse(none.equals(some("")));
     }
 
     @Test

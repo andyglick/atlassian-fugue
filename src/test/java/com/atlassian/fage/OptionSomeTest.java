@@ -1,5 +1,6 @@
 package com.atlassian.fage;
 
+import static com.atlassian.fage.Option.none;
 import static com.atlassian.fage.Option.option;
 import static com.atlassian.fage.Option.some;
 import static com.atlassian.fage.Suppliers.ofInstance;
@@ -165,11 +166,17 @@ public class OptionSomeTest
     }
 
     @Test
+    public void notEqualsNone()
+    {
+        assertFalse(some.equals(none()));
+    }
+
+    @Test
     public void notEqualsNull()
     {
         assertFalse(some.equals(null));
     }
-    
+
     @Test
     public void hashDoesNotThrowException()
     {
