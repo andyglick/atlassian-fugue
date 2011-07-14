@@ -2,10 +2,16 @@ package com.atlassian.fage;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * Represents a pair fo objects.
+ */
 public final class Pair<A, B>
 {
     private static final int HALF_WORD = 16;
 
+    /**
+     * Factory method for static Pair growth.
+     */
     public static <A, B> Pair<A, B> pair(final A left, final B right)
     {
         return new Pair<A, B>(left, right);
@@ -14,6 +20,10 @@ public final class Pair<A, B>
     private final A left;
     private final B right;
 
+    /**
+     * @param left value, cannot be null
+     * @param right value, cannot be null
+     */
     public Pair(final A left, final B right)
     {
         this.left = checkNotNull(left, "Left parameter must not be null.");

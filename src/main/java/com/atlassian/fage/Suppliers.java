@@ -5,7 +5,7 @@ import com.google.common.base.Supplier;
 public class Suppliers
 {
     /**
-     * Returns a supplier that always supplies {@code instance}.
+     * @return a supplier that always supplies {@code instance}.
      */
     public static <T> Supplier<T> ofInstance(final T instance)
     {
@@ -13,7 +13,7 @@ public class Suppliers
     }
 
     /**
-     * Returns a supplier that always supplies {@code true}.
+     * @return a supplier that always supplies {@code true}.
      */
     public static Supplier<Boolean> alwaysTrue()
     {
@@ -21,7 +21,7 @@ public class Suppliers
     }
 
     /**
-     * Returns a supplier that always supplies {@code false}.
+     * @return a supplier that always supplies {@code false}.
      */
     public static Supplier<Boolean> alwaysFalse()
     {
@@ -29,7 +29,7 @@ public class Suppliers
     }
 
     /**
-     * Returns a supplier that always supplies {@code null}.
+     * @return a supplier that always supplies {@code null}.
      */
     public static <A> Supplier<A> alwaysNull()
     {
@@ -66,5 +66,5 @@ public class Suppliers
         {
             return null;
         }
-    };
+    }
 }

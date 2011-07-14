@@ -7,8 +7,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.base.Function;
 
 /**
- * A class that acts as a container for a value of one of two types. An Either will be either {@link Left} or {@link
- * Right}.
+ * A class that acts as a container for a value of one of two types. An Either will be either {@link Either.Left Left}
+ * or {@link Either.Right Right}.
  * <p/>
  * Checking which type an Either is can be done by calling the @{@link #isLeft()} and {@link #isRight()} methods.
  * <p/>
@@ -16,8 +16,8 @@ import com.google.common.base.Function;
  * (you can use the play on words "right" == "correct" as a mnemonic) and Left is used to store failure values (such
  * as exceptions).
  * <p/>
- * While this class is public and abstract it does not expose a constructor as only the concrete {@link Left} and {@link
- * Right} subclasses are meant to be used.
+ * While this class is public and abstract it does not expose a constructor as only the concrete Left and Right
+ * subclasses are meant to be used.
  * <p/>
  * Eithers are immutable, but do not force immutability on contained objects; if the contained objects are mutable then
  * equals and hashcode methods should not be relied on.
@@ -96,7 +96,7 @@ public abstract class Either<L, R>
     }
 
     /**
-     * @return an option wrapping the left value of this either
+     * @return an Option wrapping the left value of this either
      */
     public Option<L> left()
     {
@@ -104,15 +104,25 @@ public abstract class Either<L, R>
     }
 
     /**
-     * @return an option wrapping the right value of this either
+     * @return an Option wrapping the right value of this either
      */
     public Option<R> right()
     {
         return Option.none();
     }
 
+    /**
+     * @return an Either that is a Left if this is a Right or a Right if this is a Left. The value remains the same.
+     */
     public abstract Either<R, L> swap();
 
+    /**
+     * Applies the function to the wrapped value, applying ifLeft it this is a Left and ifRight if this is a Right.
+     * 
+     * @param ifLeft the function to apply if this is a Left
+     * @param ifRight the function to apply if this is a Right
+     * @return the result of the applies function
+     */
     public abstract <V> V fold(Function<? super L, V> ifLeft, Function<? super R, V> ifRight);
 
     //

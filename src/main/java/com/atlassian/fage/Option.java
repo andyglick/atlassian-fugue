@@ -17,7 +17,7 @@ import java.util.NoSuchElementException;
 
 /**
  * A class that encapsulates null (missing) values. An Option may be either
- * {@link Some some value} or {@link None not}.
+ * {@link Option.Some some value} or {@link None not}.
  * <p>
  * If it is a value it may be tested with the {@link #isDefined()} method, but
  * more often it is useful to either return the value or an alternative if
@@ -29,10 +29,10 @@ import java.util.NoSuchElementException;
  * fail on a {@link None}.
  * <p>
  * While this class is public and abstract it does not expose a constructor as
- * only the concrete {@link Some} and {@link None} subclasses are meant to be
+ * only the concrete {@link Option.Some Some} and {@link None} subclasses are meant to be
  * used.
  * 
- * @param <T> the value type.
+ * @param <A> the value type.
  */
 public abstract class Option<A> implements Iterable<A>, Supplier<A>
 {
@@ -41,7 +41,7 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>
      * 
      * @param <A> the held type
      * @param a the value to hold
-     * @return a {@link Some} if the parameter is not null or a {@link None} if
+     * @return a {@link Option.Some Some} if the parameter is not null or a {@link None} if
      * it is
      */
     public static <A> Option<A> option(final A a)
@@ -50,11 +50,11 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>
     }
 
     /**
-     * Factory method for {@link Some} instances.
+     * Factory method for {@link Option.Some Some} instances.
      * 
      * @param <A> the held type
-     * @param a the value to hold
-     * @return a {@link Some} if the parameter is not null
+     * @param value the value to hold
+     * @return a {@link Option.Some Some} if the parameter is not null
      * @throws NullPointerException if the parameter is null
      */
     public static <A> Option<A> some(final A value)
@@ -162,7 +162,7 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>
      * 
      * @param <B> the result type
      * @param none the supplier of the None type
-     * @param some the function to apply if we are a some
+     * @param some the function to apply if this is a {@link Option.Some Some}
      * @return the appropriate value
      */
     public abstract <B> B fold(Supplier<? extends B> none, Function<? super A, B> some);
@@ -176,7 +176,7 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>
     public abstract A get();
 
     /**
-     * @return {@code true} if this is a {@code some}, {@code false} otherwise.
+     * @return {@code true} if this is a {@link Option.Some Some}, {@code false} otherwise.
      */
     public abstract boolean isDefined();
 
@@ -188,7 +188,7 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>
      * Get the value if defined, otherwise returns {@code other}.
      * 
      * @param other value to return if this is a {@code none}
-     * @return wrapped value if this is a {@code some}, otherwise returns
+     * @return wrapped value if this is a {@link Option.Some Some}, otherwise returns
      * {@code other}
      */
     public final <B extends A> A getOrElse(final B other)
@@ -274,7 +274,7 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>
     }
 
     /**
-     * @return {@code false} if this is a {@code some}, {@code true} otherwise.
+     * @return {@code false} if this is a {@link Option.Some Some}, {@code true} otherwise.
      */
     public final boolean isEmpty()
     {
@@ -282,10 +282,9 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>
     }
 
     /**
-     * Returns a {@link Left} containing the given supplier's value if this is
+     * @return a {@link Left} containing the given supplier's value if this is
      * empty, or a {@link Right} containing this option's value if this option
      * is defined.
-     * 
      * @param left the Supplier to evaluate and return if this is empty
      * @see toLeft
      */
@@ -295,11 +294,10 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>
     }
 
     /**
-     * Returns a {@link Left} containing the given supplier's value if this is
-     * empty, or a {@link Right} containing this option's value if this option
+     * @return a {@link Right} containing the given supplier's value if this is
+     * empty, or a {@link Left} containing this option's value if this option
      * is defined.
-     * 
-     * @param left the Supplier to evaluate and return if this is empty
+     * @param right the Supplier to evaluate and return if this is empty
      * @see toLeft
      */
     public final <X> Either<A, X> toLeft(final Supplier<X> right)
@@ -308,7 +306,7 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>
     }
 
     /**
-     * @return a single element iterator if this is a {@code some}, an empty one
+     * @return a single element iterator if this is a {@link Option.Some Some}, an empty one
      * otherwise.
      */
     public final Iterator<A> iterator()
