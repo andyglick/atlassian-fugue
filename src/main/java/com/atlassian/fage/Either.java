@@ -74,6 +74,23 @@ public abstract class Either<L, R>
         return (predicate) ? Either.<L, R> right(right) : Either.<L, R> left(left);
     }
 
+    /**
+     * Simplifies extracting a value or throwing a checked exception from an Either.
+     * @param <X> the exception type
+     * @param <A> the value type
+     * @param either to extract from
+     * @return the value from the RHS
+     * @throws X the exception on the LHS
+     */
+    public static <X extends Exception, A> A getOrThrow(final Either<X, A> either) throws X
+    {
+        if (either.isLeft())
+        {
+            throw either.left().get();
+        }
+        return either.right().get();
+    }
+
     //
     // constructors
     //

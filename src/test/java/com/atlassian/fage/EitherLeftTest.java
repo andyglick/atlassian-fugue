@@ -1,5 +1,6 @@
 package com.atlassian.fage;
 
+import static com.atlassian.fage.Either.getOrThrow;
 import static com.atlassian.fage.Either.left;
 import static com.atlassian.fage.UtilityFunctions.bool2String;
 import static com.atlassian.fage.UtilityFunctions.int2String;
@@ -9,6 +10,8 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
 import org.junit.Test;
+
+import java.io.IOException;
 
 public class EitherLeftTest
 {
@@ -88,5 +91,12 @@ public class EitherLeftTest
     public void notEqualsNull()
     {
         assertFalse(either.equals(null));
+    }
+
+    @Test(expected = IOException.class)
+    public void throwsException() throws IOException
+    {
+        final Either<IOException, String> either = left(new IOException());
+        getOrThrow(either);
     }
 }
