@@ -1,4 +1,4 @@
-package com.atlassian.fugue.functions;
+package com.atlassian.fugue.retry;
 
 /**
  * Takes action when an Exception is thrown. Examples include placing a delay in execution when performing back-offs and

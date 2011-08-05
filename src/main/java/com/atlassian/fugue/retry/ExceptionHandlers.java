@@ -1,4 +1,4 @@
-package com.atlassian.fugue.functions;
+package com.atlassian.fugue.retry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

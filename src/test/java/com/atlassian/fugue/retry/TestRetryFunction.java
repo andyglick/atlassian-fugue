@@ -1,4 +1,4 @@
-package com.atlassian.fugue.functions;
+package com.atlassian.fugue.retry;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertSame;

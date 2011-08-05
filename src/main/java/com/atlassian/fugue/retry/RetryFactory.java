@@ -1,4 +1,4 @@
-package com.atlassian.fugue.functions;
+package com.atlassian.fugue.retry;
 
 import com.google.common.base.Function;
 import com.google.common.base.Supplier;

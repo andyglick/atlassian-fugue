@@ -1,4 +1,4 @@
-package com.atlassian.fugue.functions;
+package com.atlassian.fugue.retry;
 
 import org.junit.Before;
 import org.junit.Test;

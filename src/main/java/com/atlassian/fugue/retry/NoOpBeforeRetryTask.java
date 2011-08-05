@@ -1,4 +1,4 @@
-package com.atlassian.fugue.functions;
+package com.atlassian.fugue.retry;
 
 /**
  * Used in place of a backoff task when no special behaviour (such as a delay)
