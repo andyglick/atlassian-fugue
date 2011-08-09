@@ -178,9 +178,31 @@ public class Functions
         };
     }
 
+    public static <A, X> Function<X, Iterator<A>> emptyIterator()
+    {
+        return new Function<X, Iterator<A>>()
+        {
+            public Iterator<A> apply(final X a)
+            {
+                return ImmutableList.<A> of().iterator();
+            }
+        };
+    }
+
     public static Function<Object, String> toStringFunction()
     {
         return com.google.common.base.Functions.toStringFunction();
+    }
+
+    public static <A> Effect<A> toEffect(final Function<A, ?> function)
+    {
+        return new Effect<A>()
+        {
+            public void apply(final A a)
+            {
+                function.apply(a);
+            }
+        };
     }
 
     public static Function<String, Either<NumberFormatException, Integer>> parseInt()
@@ -241,5 +263,16 @@ public class Functions
         {
             return Option.option(from);
         }
+    }
+
+    static <A, B> Function<A, B> constant(final B constant)
+    {
+        return new Function<A, B>()
+        {
+            public B apply(final A from)
+            {
+                return constant;
+            }
+        };
     }
 }

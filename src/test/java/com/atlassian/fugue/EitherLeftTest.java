@@ -60,13 +60,13 @@ public class EitherLeftTest
     @Test
     public void mapRight()
     {
-        assertTrue(either.right().map(int2String).isEmpty());
+        assertTrue(either.right().map(int2String).right().isEmpty());
     }
 
     @Test
     public void mapLeft()
     {
-        assertEquals(valueOf(ORIGINAL_VALUE), either.left().map(bool2String).get());
+        assertEquals(valueOf(ORIGINAL_VALUE), either.left().map(bool2String).left().get());
     }
 
     @Test

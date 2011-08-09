@@ -34,7 +34,7 @@ import java.util.NoSuchElementException;
  * 
  * @param <A> the value type.
  */
-public abstract class Option<A> implements Iterable<A>, Supplier<A>
+public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A>
 {
     /**
      * Factory method for {@link Option} instances.
@@ -100,7 +100,7 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>
     {
         for (final Option<T> option : options)
         {
-            if(option.isDefined())
+            if (option.isDefined())
             {
                 return option;
             }
@@ -167,56 +167,56 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>
      */
     public abstract <B> B fold(Supplier<? extends B> none, Function<? super A, B> some);
 
-    /**
-     * Get the value if defined. Throw an exception otherwise.
-     * 
-     * @return the wrapped value
-     * @throws NoSuchElementException if this is a none
-     */
-    public abstract A get();
-
-    /**
-     * @return {@code true} if this is a {@link Option.Some Some}, {@code false} otherwise.
-     */
-    public abstract boolean isDefined();
-
     //
-    // methods
+    // implementing Maybe
     //
 
-    /**
-     * Get the value if defined, otherwise returns {@code other}.
-     * 
-     * @param other value to return if this is a {@code none}
-     * @return wrapped value if this is a {@link Option.Some Some}, otherwise returns
-     * {@code other}
-     */
+    @Override
     public final <B extends A> A getOrElse(final B other)
     {
         return getOrElse(Suppliers.<A> ofInstance(other));
     }
 
-    /**
-     * Get the value if defined or call the supplier and return its value if
-     * not.
-     * 
-     * @return the wrapped value or the value from the {@code Supplier}
-     */
+    @Override
     public final A getOrElse(final Supplier<A> supplier)
     {
         return fold(supplier, Functions.<A> identity());
     }
 
-    /**
-     * Get the value if defined or null if not.
-     * <p>
-     * Although the use of null is discouraged, code written to use Option must
-     * often interface with code that expects and returns nulls.
-     */
+    @Override
     public final A getOrNull()
     {
         return fold(Suppliers.<A> alwaysNull(), Functions.<A> identity());
     }
+
+    @Override
+    public final boolean exists(final Predicate<A> p)
+    {
+        checkNotNull(p);
+        return isDefined() && p.apply(get());
+    }
+
+    @Override
+    public boolean forall(final Predicate<A> p)
+    {
+        return isEmpty() || p.apply(get());
+    }
+
+    @Override
+    public final boolean isEmpty()
+    {
+        return !isDefined();
+    }
+
+    @Override
+    public final Iterator<A> iterator()
+    {
+        return fold(Suppliers.ofInstance(Iterators.<A> emptyIterator()), Functions.<A> singletonIterator());
+    }
+
+    //
+    // stuff that can't be put on an interface without HKT
+    //
 
     /**
      * Apply {@code f} to the value if defined.
@@ -261,27 +261,6 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>
     }
 
     /**
-     * Returns this {@link Option} if it is nonempty <strong>and</strong>
-     * applying the predicate to this option's value returns true. Otherwise,
-     * return {@link #none()}.
-     * 
-     * @param p the predicate to test
-     */
-    public final boolean exists(final Predicate<A> p)
-    {
-        checkNotNull(p);
-        return isDefined() && p.apply(get());
-    }
-
-    /**
-     * @return {@code false} if this is a {@link Option.Some Some}, {@code true} otherwise.
-     */
-    public final boolean isEmpty()
-    {
-        return !isDefined();
-    }
-
-    /**
      * @return a {@link Left} containing the given supplier's value if this is
      * empty, or a {@link Right} containing this option's value if this option
      * is defined.
@@ -303,15 +282,6 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>
     public final <X> Either<A, X> toLeft(final Supplier<X> right)
     {
         return isEmpty() ? Either.<A, X> right(right.get()) : Either.<A, X> left(get());
-    }
-
-    /**
-     * @return a single element iterator if this is a {@link Option.Some Some}, an empty one
-     * otherwise.
-     */
-    public final Iterator<A> iterator()
-    {
-        return fold(Suppliers.ofInstance(Iterators.<A> emptyIterator()), Functions.<A> singletonIterator());
     }
 
     @Override
@@ -379,6 +349,16 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>
         {
             return false;
         }
+
+        @Override
+        public Object getOrError(final Supplier<String> err)
+        {
+            throw new AssertionError(err.get());
+        }
+
+        @Override
+        public void foreach(final Effect<Object> effect)
+        {}
     };
 
     private static final Supplier<String> NONE_STRING = Suppliers.ofInstance("none()");
@@ -425,6 +405,18 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>
         public boolean isDefined()
         {
             return true;
+        }
+
+        @Override
+        public A getOrError(final Supplier<String> err)
+        {
+            return get();
+        }
+
+        @Override
+        public void foreach(final Effect<A> effect)
+        {
+            effect.apply(value);
         }
     }
 
