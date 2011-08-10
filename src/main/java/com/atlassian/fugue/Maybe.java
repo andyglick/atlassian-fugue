@@ -6,6 +6,21 @@ import com.google.common.base.Supplier;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+/**
+ * Implemented by things that may or may not contain a value.
+ * <p>
+ * Note there are some methods suggested by this interface that 
+ * cannot be expressed here as the return type cannot be expressed 
+ * in Java's type system (due to the lack of higher-kinded types).
+ * These are for instance (where M is the implementing Maybe sub-type):
+ * <ul>
+ * <li>&lt;B&gt; M&lt;B&gt; map(Function&lt;? super A, B&gt;)
+ * <li>&lt;B&gt; M&lt;B&gt; flatMap(Function&lt;? super A, M&ltB&gt&gt;)
+ * <li>M&lt;A&gt; filter(final Predicate<? super A> p);
+ * </ul>
+ * 
+ * @param <A> the contained type
+ */
 public interface Maybe<A> extends Supplier<A>, Iterable<A>
 {
     /**
@@ -19,16 +34,17 @@ public interface Maybe<A> extends Supplier<A>, Iterable<A>
     /**
      * Get the value if defined, otherwise returns {@code other}.
      * 
-     * @param other value to return if this is a {@code none}
-     * @return wrapped value if this is a {@link Option.Some Some}, otherwise returns
+     * @param other value to return if this {@link #isEmpty() is empty} 
+     * @return wrapped value if this {@link #isDefined() is defined}, otherwise returns
      * {@code other}
      */
     <B extends A> A getOrElse(final B other);
 
     /**
-     * Get the value if defined or call the supplier and return its value if
-     * not.
+     * Get the value {@link #isDefined() if defined} or call the supplier and 
+     * return its value if not.
      * 
+     * @param supplier called if this {@link #isEmpty() is empty} 
      * @return the wrapped value or the value from the {@code Supplier}
      */
     A getOrElse(final Supplier<A> supplier);
@@ -36,7 +52,7 @@ public interface Maybe<A> extends Supplier<A>, Iterable<A>
     /**
      * Get the value if defined or null if not.
      * <p>
-     * Although the use of null is discouraged, code written to use Option must
+     * Although the use of null is discouraged, code written to use these must
      * often interface with code that expects and returns nulls.
      */
     A getOrNull();
@@ -44,7 +60,7 @@ public interface Maybe<A> extends Supplier<A>, Iterable<A>
     /**
      * Get the value or throws an error with the supplied message if called.
      * <p>
-     * Used when absolutely sure this {@link #isDefined()}.
+     * Used when absolutely sure this {@link #isDefined() is defined}.
      * 
      * @param msg the message for the error.
      * @return the contained value.
@@ -52,27 +68,26 @@ public interface Maybe<A> extends Supplier<A>, Iterable<A>
     A getOrError(Supplier<String> msg);
 
     /**
-     * @return {@code true} if this is a {@link Option.Some Some}, {@code false} otherwise.
+     * @return {@code true} if this holds a value, {@code false} otherwise.
      */
     boolean isDefined();
 
     /**
-     * @return {@code false} if this is a {@link Option.Some Some}, {@code true} otherwise.
+     * @return {@code true} if this does not hold a value, {@code false} otherwise.
      */
     boolean isEmpty();
 
     /**
-     * Returns this {@link Option} if it is nonempty <strong>and</strong>
-     * applying the predicate to this option's value returns true. Otherwise,
-     * return {@link #none()}.
+     * Whether this is {@link #isDefined() is defined} <strong>and</strong>
+     * applying the predicate to the contained value returns true.
      * 
      * @param p the predicate to test
+     * @return {@code true} if defined and the predicate returns true for the contained value, {@code false} otherwise.
      */
     boolean exists(final Predicate<A> p);
 
     /**
-     * @return a single element iterator if this is a {@link Option.Some Some}, an empty one
-     * otherwise.
+     * @return an iterator over the contained value {@link #isDefined() if defined}, or an empty one otherwise.
      */
     Iterator<A> iterator();
 
@@ -82,7 +97,7 @@ public interface Maybe<A> extends Supplier<A>, Iterable<A>
     void foreach(Effect<A> effect);
 
     /**
-     * Returns <code>true</code> if no value or returns the result of the application of the given
+     * Returns <code>true</code> {@link #isEmpty() if empty} or the result of the application of the given
      * function to the value.
      *
      * @param p The predicate function to test on the contained value.
@@ -90,39 +105,4 @@ public interface Maybe<A> extends Supplier<A>, Iterable<A>
      *         function to the value.
      */
     boolean forall(final Predicate<A> p);
-
-    //
-    // stuff that can't be made put on an interface without HKT
-    //
-
-    /**
-     * Apply {@code f} to the value if defined.
-     * <p>
-     * Transforms to an option of the functions result type.
-     * 
-     * @param <B> return type of {@code f}
-     * @param f function to apply to wrapped value
-     * @return new wrapped value
-     */
-    //<B> Option<B> map(final Function<? super A, B> f);
-
-    /**
-     * Apply {@code f} to the value if defined.
-     * <p>
-     * Transforms to an option of the functions result type.
-     * 
-     * @param <B> return type of {@code f}
-     * @param f function to apply to wrapped value
-     * @return value returned from {@code f}
-     */
-    //<B> Option<B> flatMap(final Function<? super A, Option<B>> f);
-
-    /**
-     * Returns this {@link Option} if it is nonempty <strong>and</strong>
-     * applying the predicate to this option's value returns true. Otherwise,
-     * return {@link #none()}.
-     * 
-     * @param p the predicate to test
-     */
-    //Option<A> filter(final Predicate<? super A> p);
 }

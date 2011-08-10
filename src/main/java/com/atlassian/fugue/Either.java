@@ -15,17 +15,17 @@ import java.util.NoSuchElementException;
 /**
  * A class that acts as a container for a value of one of two types. An Either will be either {@link Either.Left Left}
  * or {@link Either.Right Right}.
- * <p/>
+ * <p>
  * Checking which type an Either is can be done by calling the @{@link #isLeft()} and {@link #isRight()} methods.
- * <p/>
- * Eithers can be used to express a success or failure case. By convention, Right is used to store the success value,
+ * <p>
+ * An Either can be used to express a success or failure case. By convention, Right is used to store the success value,
  * (you can use the play on words "right" == "correct" as a mnemonic) and Left is used to store failure values (such
  * as exceptions).
- * <p/>
+ * <p>
  * While this class is public and abstract it does not expose a constructor as only the concrete Left and Right
  * subclasses are meant to be used.
- * <p/>
- * Eithers are immutable, but do not force immutability on contained objects; if the contained objects are mutable then
+ * <p>
+ * Either is immutable, but do not force immutability on contained objects; if the contained objects are mutable then
  * equals and hashcode methods should not be relied on.
  */
 public abstract class Either<L, R>
@@ -108,18 +108,30 @@ public abstract class Either<L, R>
     // methods
     //
 
+    /**
+     * Returns <code>true</code> if this either is a left, <code>false</code> otherwise.
+     *
+     * @return <code>true</code> if this either is a left, <code>false</code> otherwise.
+     */
     public boolean isLeft()
     {
         return false;
     }
 
+    /**
+     * Returns <code>true</code> if this either is a right, <code>false</code> otherwise.
+     *
+     * @return <code>true</code> if this either is a right, <code>false</code> otherwise.
+     */
     public boolean isRight()
     {
         return false;
     }
 
     /**
-     * @return an Option wrapping the left value of this either
+     * Projects this either as a right.
+     *
+     * @return A right projection of this either.
      */
     public final LeftProjection left()
     {
@@ -127,24 +139,30 @@ public abstract class Either<L, R>
     }
 
     /**
-     * @return an Option wrapping the right value of this either
+     * Projects this either as a right.
+     *
+     * @return A right projection of this either.
      */
     public final RightProjection right()
     {
         return new RightProjection();
     }
 
+    // value accessor for Left
     L getLeft()
     {
         throw new NoSuchElementException();
     }
 
+    // value accessor for Right
     R getRight()
     {
         throw new NoSuchElementException();
     }
 
     /**
+     * If this is a left, then return the left value in right, or vice versa.
+     *
      * @return an Either that is a Left if this is a Right or a Right if this is a Left. The value remains the same.
      */
     public abstract Either<R, L> swap();
@@ -438,7 +456,7 @@ public abstract class Either<L, R>
         /**
          * Function application on this projection's value.
          *
-         * @param e The either of the function to apply on this projection's value.
+         * @param either The either of the function to apply on this projection's value.
          * @return The result of function application within either.
          */
         public <X> Either<X, R> apply(final Either<Function<L, X>, R> either)
@@ -606,7 +624,7 @@ public abstract class Either<L, R>
         /**
          * Function application on this projection's value.
          *
-         * @param e The either of the function to apply on this projection's value.
+         * @param either The either of the function to apply on this projection's value.
          * @return The result of function application within either.
          */
         public <X> Either<L, X> apply(final Either<L, Function<R, X>> either)
