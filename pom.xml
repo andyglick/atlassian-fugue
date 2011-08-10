@@ -31,6 +31,37 @@
         </plugins>
     </build>
 
+    <profiles>
+        <profile>
+            <id>clover</id>
+            <build>
+                <defaultGoal>package</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>com.atlassian.maven.plugins</groupId>
+                        <artifactId>maven-clover2-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>preTest</id>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>setup</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>postTest</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>aggregate</goal>
+                                    <goal>clover</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
     
     <dependencies>
         <dependency>
@@ -74,6 +105,7 @@
     
     <properties>
         <jdkLevel>1.6</jdkLevel>
+        <clover.version>3.1.0</clover.version>
     </properties>
     
     <scm>
