@@ -8,10 +8,13 @@ import static java.lang.String.valueOf;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.NoSuchElementException;
 
 public class EitherRightTest
 {
@@ -40,6 +43,18 @@ public class EitherRightTest
     public void isLeft()
     {
         assertFalse(either.isLeft());
+    }
+
+    @Test
+    public void getRight()
+    {
+        assertThat(either.getRight(), is(1));
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void getLeft()
+    {
+        either.getLeft();
     }
 
     @Test

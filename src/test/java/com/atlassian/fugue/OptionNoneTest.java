@@ -5,7 +5,9 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertSame;
 import static junit.framework.Assert.fail;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -51,12 +53,14 @@ public class OptionNoneTest
     {
         final Function<Integer, Integer> function = new Function<Integer, Integer>()
         {
+            ///CLOVER:OFF
             @Override
             public Integer apply(final Integer input)
             {
                 fail("None.map should not call the function.");
                 return input;
             }
+            ///CLOVER:ON
         };
 
         assertTrue(none.map(function).isEmpty());
@@ -124,11 +128,13 @@ public class OptionNoneTest
         final Option<ArrayList<?>> opt = Option.none();
         final Option<Set<?>> size = opt.map(new Function<List<?>, Set<?>>()
         {
+            ///CLOVER:OFF
             public Set<?> apply(final List<?> list)
             {
                 fail("This internal method should never get called.");
                 return null;
             }
+            ///CLOVER:ON
         });
         assertSame(opt, size);
     }
@@ -157,6 +163,24 @@ public class OptionNoneTest
     public void iteratorImmutable()
     {
         none.iterator().remove();
+    }
+
+    @Test
+    public void foreach()
+    {
+        assertThat(Count.countEach(none), is(0));
+    }
+
+    @Test
+    public void forallTrue()
+    {
+        assertThat(none.forall(Predicates.<Integer> alwaysTrue()), is(true));
+    }
+
+    @Test
+    public void forallFalse()
+    {
+        assertThat(none.forall(Predicates.<Integer> alwaysFalse()), is(true));
     }
 
     @Test

@@ -9,6 +9,8 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertSame;
 import static junit.framework.Assert.assertTrue;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
@@ -151,6 +153,24 @@ public class OptionSomeTest
         final Iterator<Integer> iterator = some.iterator();
         iterator.next();
         iterator.remove();
+    }
+
+    @Test
+    public void foreach()
+    {
+        assertThat(Count.countEach(some), is(1));
+    }
+
+    @Test
+    public void forallTrue()
+    {
+        assertThat(some.forall(Predicates.<Integer> alwaysTrue()), is(true));
+    }
+
+    @Test
+    public void forallFalse()
+    {
+        assertThat(some.forall(Predicates.<Integer> alwaysFalse()), is(false));
     }
 
     @Test

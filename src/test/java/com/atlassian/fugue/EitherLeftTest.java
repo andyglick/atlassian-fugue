@@ -12,6 +12,7 @@ import static junit.framework.Assert.assertTrue;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.NoSuchElementException;
 
 public class EitherLeftTest
 {
@@ -40,6 +41,18 @@ public class EitherLeftTest
     public void isLeft()
     {
         assertTrue(either.isLeft());
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void getRight()
+    {
+        either.getRight();
+    }
+
+    @Test
+    public void getLeft()
+    {
+        assertTrue(either.getLeft());
     }
 
     @Test

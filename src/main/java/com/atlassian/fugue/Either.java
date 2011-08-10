@@ -392,7 +392,7 @@ public abstract class Either<L, R>
          * @return The value of this projection or the result of the given function on the opposing projection's
          *         value.
          */
-        public L on(final Function<R, L> f)
+        public L on(final Function<? super R, L> f)
         {
             return isLeft() ? get() : f.apply(right().get());
         }
@@ -403,7 +403,7 @@ public abstract class Either<L, R>
          * @param f The function to map across this projection.
          * @return A new either value after mapping.
          */
-        public <X> Either<X, R> map(final Function<L, X> f)
+        public <X> Either<X, R> map(final Function<? super L, X> f)
         {
             return isLeft() ? new Left<X, R>(f.apply(get())) : new Right<X, R>(right().get());
         }
@@ -414,9 +414,9 @@ public abstract class Either<L, R>
          * @param f The function to bind across this projection.
          * @return A new either value after binding.
          */
-        public <X> Either<X, R> bind(final Function<? super L, Either<X, R>> f)
+        public <X> Either<X, R> flatMap(final Function<? super L, Either<X, R>> f)
         {
-            return isLeft() ? f.apply(get()) : new Right<X, R>(right().get());
+            return isLeft() ? f.apply(get()) : new Right<X, R>(getRight());
         }
 
         /**
@@ -427,7 +427,7 @@ public abstract class Either<L, R>
          */
         public <X> Either<X, R> sequence(final Either<X, R> e)
         {
-            return bind(Functions.<L, Either<X, R>> constant(e));
+            return flatMap(Functions.<L, Either<X, R>> constant(e));
         }
 
         /**
@@ -455,7 +455,7 @@ public abstract class Either<L, R>
          */
         public <X> Either<X, R> apply(final Either<Function<L, X>, R> either)
         {
-            return either.left().bind(new Function<Function<L, X>, Either<X, R>>()
+            return either.left().flatMap(new Function<Function<L, X>, Either<X, R>>()
             {
                 public Either<X, R> apply(final Function<L, X> f)
                 {
@@ -555,7 +555,7 @@ public abstract class Either<L, R>
          * @return The value of this projection or the result of the given function on the opposing projection's
          *         value.
          */
-        public R on(final Function<L, R> f)
+        public R on(final Function<? super L, R> f)
         {
             return isRight() ? get() : f.apply(left().get());
         }
@@ -566,7 +566,7 @@ public abstract class Either<L, R>
          * @param f The function to map across this projection.
          * @return A new either value after mapping.
          */
-        public <X> Either<L, X> map(final Function<R, X> f)
+        public <X> Either<L, X> map(final Function<? super R, X> f)
         {
             return isRight() ? new Right<L, X>(f.apply(get())) : this.<X> toLeft();
         }

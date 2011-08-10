@@ -21,7 +21,7 @@ import java.util.NoSuchElementException;
  * 
  * @param <A> the contained type
  */
-public interface Maybe<A> extends Supplier<A>, Iterable<A>
+public interface Maybe<A> extends Supplier<A>, Iterable<A>, Effect.Applicant<A>
 {
     /**
      * Get the value if defined. Throw an exception otherwise.
@@ -90,11 +90,6 @@ public interface Maybe<A> extends Supplier<A>, Iterable<A>
      * @return an iterator over the contained value {@link #isDefined() if defined}, or an empty one otherwise.
      */
     Iterator<A> iterator();
-
-    /**
-     * Perform the given side-effect for each contained element.
-     */
-    void foreach(Effect<A> effect);
 
     /**
      * Returns <code>true</code> {@link #isEmpty() if empty} or the result of the application of the given
