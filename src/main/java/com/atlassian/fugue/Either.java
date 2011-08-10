@@ -2,7 +2,6 @@ package com.atlassian.fugue;
 
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.some;
-import static com.atlassian.fugue.Suppliers.ofInstance;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.base.Function;
@@ -346,11 +345,6 @@ public abstract class Either<L, R>
         public L getOrError(final Supplier<String> err)
         {
             return toOption().getOrError(err);
-        }
-
-        L getOrError(final String err)
-        {
-            return getOrError(ofInstance(err));
         }
 
         public L getOrElse(final Supplier<L> a)
