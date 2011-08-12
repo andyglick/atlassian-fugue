@@ -26,7 +26,7 @@ import java.util.NoSuchElementException;
  * While this class is public and abstract it does not expose a constructor as
  * only the concrete Left and Right subclasses are meant to be used.
  * <p>
- * Either is immutable, but do not force immutability on contained objects; if
+ * Either is immutable, but does not force immutability on contained objects; if
  * the contained objects are mutable then equals and hashcode methods should not
  * be relied on.
  */
@@ -266,7 +266,7 @@ public abstract class Either<L, R> {
   /**
    * A left projection of an either value.
    */
-  public final class LeftProjection implements Projection<L, L, R> {
+  public final class LeftProjection implements Projection<L, R, L, R> {
     private LeftProjection() {}
 
     public Iterator<L> iterator() {
@@ -323,21 +323,13 @@ public abstract class Either<L, R> {
       return isLeft() ? some(get()) : Option.<L> none();
     }
 
-    //
-    // stuff that can't be put on an interface without HKT
-    //
-
-    /**
-     * The value of this projection or the result of the given function on the
-     * opposing projection's value.
-     * 
-     * @param f The function to execute if this projection has no value.
-     * @return The value of this projection or the result of the given function
-     * on the opposing projection's value.
-     */
     public L on(final Function<? super R, L> f) {
       return isLeft() ? get() : f.apply(right().get());
     }
+
+    //
+    // stuff that can't be put on an interface without higher-kinded types
+    //
 
     /**
      * Map the given function across this projection's value if it has one.
@@ -405,7 +397,7 @@ public abstract class Either<L, R> {
   /**
    * A right projection of an either value.
    */
-  public final class RightProjection implements Projection<R, L, R> {
+  public final class RightProjection implements Projection<R, L, L, R> {
     private RightProjection() {}
 
     public Iterator<R> iterator() {
@@ -462,21 +454,13 @@ public abstract class Either<L, R> {
       return isRight() ? some(get()) : Option.<R> none();
     }
 
-    //
-    // stuff that can't be made put on an interface without HKT
-    //
-
-    /**
-     * The value of this projection or the result of the given function on the
-     * opposing projection's value.
-     * 
-     * @param f The function to execute if this projection has no value.
-     * @return The value of this projection or the result of the given function
-     * on the opposing projection's value.
-     */
     public R on(final Function<? super L, R> f) {
       return isRight() ? get() : f.apply(left().get());
     }
+
+    //
+    // stuff that can't be made put on an interface without higher-kinded types
+    //
 
     /**
      * Map the given function across this projection's value if it has one.
@@ -545,7 +529,7 @@ public abstract class Either<L, R> {
     }
   }
 
-  public interface Projection<A, L, R> extends Maybe<A> {
+  public interface Projection<A, B, L, R> extends Maybe<A> {
     /**
      * The either value underlying this projection.
      * 
@@ -561,5 +545,15 @@ public abstract class Either<L, R> {
      * otherwise <code>None</code>.
      */
     Option<A> toOption();
+
+    /**
+     * The value of this projection or the result of the given function on the
+     * opposing projection's value.
+     * 
+     * @param f The function to execute if this projection has no value.
+     * @return The value of this projection or the result of the given function
+     * on the opposing projection's value.
+     */
+    A on(Function<? super B, A> function);
   }
 }
