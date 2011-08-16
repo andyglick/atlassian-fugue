@@ -33,4 +33,8 @@ public class BeforeRetryLinearBackoffTask implements Runnable {
       throw new RuntimeException(e);
     }
   }
+
+  long currentBackoff() {
+    return backoff;
+  }
 }

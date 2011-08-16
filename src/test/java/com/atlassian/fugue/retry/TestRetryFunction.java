@@ -31,7 +31,7 @@ public class TestRetryFunction {
 
   @Test public void testBasicFunction() {
     when(function.apply(INPUT)).thenReturn(EXPECTED);
-    final Integer result = new RetryFunction<String, Integer>(function, ATTEMPTS, ExceptionHandlers.ignoreExceptionHandler()).apply(INPUT);
+    final Integer result = new RetryFunction<String, Integer>(function, ATTEMPTS).apply(INPUT);
 
     verify(function).apply(INPUT);
     assertEquals(EXPECTED, result);
@@ -41,7 +41,7 @@ public class TestRetryFunction {
     when(function.apply(anyString())).thenThrow(runtimeException);
 
     try {
-      new RetryFunction<String, Integer>(function, ATTEMPTS, ExceptionHandlers.ignoreExceptionHandler()).apply(INPUT);
+      new RetryFunction<String, Integer>(function, ATTEMPTS).apply(INPUT);
       fail("Expected a exception.");
     } catch (final RuntimeException e) {
       assertSame(runtimeException, e);
@@ -68,7 +68,7 @@ public class TestRetryFunction {
     when(function.apply(INPUT)).thenThrow(new RuntimeException("First attempt")).thenReturn(EXPECTED)
       .thenThrow(new RuntimeException("Third attempt")).thenThrow(new RuntimeException("Fourth attempt"));
 
-    final Integer result = new RetryFunction<String, Integer>(function, ATTEMPTS, ExceptionHandlers.ignoreExceptionHandler()).apply(INPUT);
+    final Integer result = new RetryFunction<String, Integer>(function, ATTEMPTS).apply(INPUT);
     assertEquals(EXPECTED, result);
     verify(function, times(2)).apply(INPUT);
     verifyNoMoreInteractions(function);

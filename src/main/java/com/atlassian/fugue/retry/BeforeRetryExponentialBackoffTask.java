@@ -36,4 +36,8 @@ public class BeforeRetryExponentialBackoffTask implements Runnable {
       throw new RuntimeException(e);
     }
   }
+
+  long currentBackoff() {
+    return backoff;
+  }
 }

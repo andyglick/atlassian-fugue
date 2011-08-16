@@ -1,9 +1,12 @@
 package com.atlassian.fugue;
 
+import com.atlassian.fugue.retry.ExceptionHandlers;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import org.junit.Test;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -63,4 +66,10 @@ public class IterablesTest {
     assertThat(found, is(Option.some(expected)));
   }
 
+  @Test (expected = InvocationTargetException.class) public void nonInstantiable() throws NoSuchMethodException, 
+    InvocationTargetException, IllegalAccessException, InstantiationException {
+    Constructor<Iterables> declaredConstructor = Iterables.class.getDeclaredConstructor();
+    declaredConstructor.setAccessible(true);
+    declaredConstructor.newInstance();
+  }
 }

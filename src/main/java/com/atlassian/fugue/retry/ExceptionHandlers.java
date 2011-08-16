@@ -45,14 +45,18 @@ public class ExceptionHandlers {
     return new CompositeExceptionHandler(handlers);
   }
 
+  static Logger logger() {
+    return log;
+  }
+
   private static class IgnoreExceptionHandler implements ExceptionHandler {
     public void handle(RuntimeException a) {/* do nothing */}
   }
 
-  private static class LoggingExceptionHandler implements ExceptionHandler {
+  static class LoggingExceptionHandler implements ExceptionHandler {
     private final Logger logger;
 
-    public LoggingExceptionHandler(Logger logger) {
+    LoggingExceptionHandler(Logger logger) {
       this.logger = logger;
     }
 
@@ -62,6 +66,10 @@ public class ExceptionHandlers {
 
     private void warn(Logger log, Exception e) {
       log.warn("Exception encountered: ", e);
+    }
+
+    Logger logger() {
+      return logger;
     }
   }
 
