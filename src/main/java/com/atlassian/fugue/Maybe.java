@@ -20,6 +20,8 @@ import java.util.NoSuchElementException;
  * </ul>
  * 
  * @param <A> the contained type
+ * 
+ * @since 1.0
  */
 public interface Maybe<A> extends Supplier<A>, Iterable<A>, Effect.Applicant<A> {
   /**

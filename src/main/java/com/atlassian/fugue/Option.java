@@ -33,6 +33,8 @@ import java.util.NoSuchElementException;
  * meant to be used.
  * 
  * @param <A> the value type.
+ * 
+ * @since 1.0
  */
 public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
   /**

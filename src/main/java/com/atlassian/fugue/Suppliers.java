@@ -2,6 +2,12 @@ package com.atlassian.fugue;
 
 import com.google.common.base.Supplier;
 
+/**
+ * Library of utility {@link Supplier} functions not provided by
+ * {@link com.google.common.base.Suppliers}.
+ * 
+ * @since 1.0
+ */
 public class Suppliers {
   /**
    * @return a supplier that always supplies {@code instance}.

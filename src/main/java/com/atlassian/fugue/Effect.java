@@ -4,6 +4,8 @@ package com.atlassian.fugue;
  * Contains the a side-effect that may be applied
  * 
  * @param <A>
+ * 
+ * @since 1.0
  */
 public interface Effect<A> {
   /**

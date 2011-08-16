@@ -29,6 +29,8 @@ import java.util.NoSuchElementException;
  * Either is immutable, but does not force immutability on contained objects; if
  * the contained objects are mutable then equals and hashcode methods should not
  * be relied on.
+ * 
+ * @since 1.0
  */
 public abstract class Either<L, R> {
   //

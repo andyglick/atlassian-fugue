@@ -6,6 +6,8 @@ package com.atlassian.fugue;
  * @param <F1> the type of the first argument accepted
  * @param <F2> the type of the result
  * @param <T> the type of the result of application
+ * 
+ * @since 1.0
  */
 public interface Function2<F1, F2, T> {
   /**

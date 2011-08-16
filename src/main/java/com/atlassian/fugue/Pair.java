@@ -3,7 +3,9 @@ package com.atlassian.fugue;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Represents a pair fo objects.
+ * Represents a pair of objects.
+ * 
+ * @since 1.0
  */
 public final class Pair<A, B> {
   private static final int HALF_WORD = 16;
