@@ -1,8 +1,11 @@
 package com.atlassian.fugue;
 
+import static com.atlassian.fugue.Option.filterNone;
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.some;
 import static com.google.common.base.Functions.compose;
+import static com.google.common.base.Suppliers.ofInstance;
+import static com.google.common.collect.ImmutableList.of;
 import static com.google.common.collect.Iterables.size;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
@@ -15,19 +18,17 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import com.google.common.base.Function;
-import com.google.common.base.Suppliers;
-import com.google.common.collect.ImmutableList;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
 public class OptionTest {
   @Test public void foldOnNoneReturnsValueFromSupplier() {
-    assertThat(none().fold(Suppliers.ofInstance("a"), Functions.toStringFunction()), is(equalTo("a")));
+    assertThat(none().fold(ofInstance("a"), Functions.toStringFunction()), is(equalTo("a")));
   }
 
   @Test public void foldOnSomeReturnsValueAfterFunctionIsApplied() {
-    assertThat(some(1).fold(Suppliers.ofInstance(0), increment()), is(equalTo(2)));
+    assertThat(some(1).fold(ofInstance(0), increment()), is(equalTo(2)));
   }
 
   @Test public void isDefinedIsTrueForSome() {
@@ -55,7 +56,7 @@ public class OptionTest {
   }
 
   @Test public void getOrElseOnNoneReturnsValueFromSupplier() {
-    assertThat(none(Integer.class).getOrElse(Suppliers.ofInstance(0)), is(equalTo(0)));
+    assertThat(none(Integer.class).getOrElse(ofInstance(0)), is(equalTo(0)));
   }
 
   @Test public void iteratorOverSomeContainsOnlyValue() {
@@ -95,24 +96,24 @@ public class OptionTest {
   }
 
   @Test public void filterNones() {
-    final List<Option<Integer>> list = ImmutableList.<Option<Integer>> of(some(1), none(Integer.class), some(2));
-    assertThat(size(Option.filterNone(list)), is(equalTo(2)));
+    final List<Option<Integer>> list = of(some(1), none(Integer.class), some(2));
+    assertThat(size(filterNone(list)), is(equalTo(2)));
   }
 
   @Test public void noneSomeEquality() {
-    assertFalse(Option.none().equals(Option.some("")));
+    assertFalse(none().equals(some("")));
   }
 
   @Test public void someNoneEquality() {
-    assertFalse(Option.some("").equals(Option.none()));
+    assertFalse(some("").equals(none()));
   }
 
   @Test public void someSomeEquality() {
-    assertTrue(Option.some("something").equals(Option.some("something")));
+    assertTrue(some("something").equals(some("something")));
   }
 
   @Test public void noneNoneEquality() {
-    assertTrue(Option.none().equals(Option.none()));
+    assertTrue(none().equals(none()));
   }
 
   //
