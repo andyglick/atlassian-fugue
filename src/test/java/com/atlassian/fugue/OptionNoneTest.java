@@ -1,14 +1,10 @@
 package com.atlassian.fugue;
 
+import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.some;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertSame;
-import static junit.framework.Assert.fail;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertNull;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -21,35 +17,34 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 public class OptionNoneTest {
-  private final Option<Integer> none = Option.none();
+  private final Option<Integer> none = none();
 
   @Test(expected = NoSuchElementException.class) public void get() {
     none.get();
   }
 
   @Test public void isSet() {
-    assertFalse(none.isDefined());
+    assertThat(none.isDefined(), is(false));
   }
 
   @Test public void getOrElse() {
-    assertEquals(new Integer(1), none.getOrElse(1));
+    assertThat(none.getOrElse(1), is(1));
   }
 
   @Test public void getOrNull() {
-    assertNull(none.getOrNull());
+    assertThat(none.getOrNull(), is((Integer) null));
   }
 
   @Test public void map() {
     final Function<Integer, Integer> function = new Function<Integer, Integer>() {
       // /CLOVER:OFF
       @Override public Integer apply(final Integer input) {
-        fail("None.map should not call the function.");
-        return input;
+        throw new AssertionError("None.map should not call the function.");
       }
       // /CLOVER:ON
     };
 
-    assertTrue(none.map(function).isEmpty());
+    assertThat(none.map(function).isEmpty(), is(true));
   }
 
   @Test(expected = NullPointerException.class) public void nullFunctionForMap() {
@@ -61,46 +56,45 @@ public class OptionNoneTest {
   }
 
   @Test public void filterTrueReturnsEmpty() {
-    assertTrue(none.filter(Predicates.<Integer> alwaysTrue()).isEmpty());
+    assertThat(none.filter(Predicates.<Integer> alwaysTrue()).isEmpty(), is(true));
   }
 
   @Test public void filterFalseReturnsEmpty() {
-    assertTrue(none.filter(Predicates.<Integer> alwaysFalse()).isEmpty());
+    assertThat(none.filter(Predicates.<Integer> alwaysFalse()).isEmpty(), is(true));
   }
 
   @Test public void existsTrueReturnsFalse() {
-    assertFalse(none.exists(Predicates.<Integer> alwaysTrue()));
+    assertThat(none.exists(Predicates.<Integer> alwaysTrue()), is(false));
   }
 
   @Test public void existsFalseReturnsFalse() {
-    assertFalse(none.exists(Predicates.<Integer> alwaysFalse()));
+    assertThat(none.exists(Predicates.<Integer> alwaysFalse()), is(false));
   }
 
   @Test public void toLeftReturnsRight() {
-    assertTrue(none.toLeft(Suppliers.ofInstance("")).isRight());
+    assertThat(none.toLeft(Suppliers.ofInstance("")).isRight(), is(true));
   }
 
   @Test public void toRightReturnsLeft() {
-    assertTrue(none.toRight(Suppliers.ofInstance("")).isLeft());
+    assertThat(none.toRight(Suppliers.ofInstance("")).isLeft(), is(true));
   }
 
   @Test public void superTypesPermittedOnFilter() {
-    final Option<ArrayList<?>> opt = Option.none();
+    final Option<ArrayList<?>> opt = none();
     final Option<ArrayList<?>> nopt = opt.filter(Predicates.<List<?>> alwaysTrue());
-    assertSame(opt, nopt);
+    assertThat(nopt, sameInstance(opt));
   }
 
   @Test public void superTypesPermittedOnMap() {
-    final Option<ArrayList<?>> opt = Option.none();
+    final Option<ArrayList<?>> opt = none();
     final Option<Set<?>> size = opt.map(new Function<List<?>, Set<?>>() {
       // /CLOVER:OFF
       public Set<?> apply(final List<?> list) {
-        fail("This internal method should never get called.");
-        return null;
+        throw new AssertionError("This internal method should never get called.");
       }
       // /CLOVER:ON
     });
-    assertSame(opt, size);
+    assertThat(size.isDefined(), is(false));
   }
 
   @Test public void hashDoesNotThrowException() {
@@ -111,7 +105,7 @@ public class OptionNoneTest {
   // here to ensure
   // that None itself complies with the API.
   @Test public void iteratorHasNoNext() {
-    assertFalse(none.iterator().hasNext());
+    assertThat(none.iterator().hasNext(), is(false));
   }
 
   @Test(expected = NoSuchElementException.class) public void iteratorNext() {
@@ -135,18 +129,18 @@ public class OptionNoneTest {
   }
 
   @Test public void toStringTest() {
-    assertEquals("none()", none.toString());
+    assertThat(none.toString(), is("none()"));
   }
 
   @Test public void equalsItself() {
-    assertTrue(none.equals(none));
+    assertThat(none.equals(none), is(true));
   }
 
   @Test public void notEqualsSome() {
-    assertFalse(none.equals(some("")));
+    assertThat(none.equals(some("")), is(false));
   }
 
   @Test public void notEqualsNull() {
-    assertFalse(none.equals(null));
+    assertThat(none.equals(null), is(false));
   }
 }

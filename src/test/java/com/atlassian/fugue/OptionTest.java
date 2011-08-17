@@ -12,8 +12,7 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.emptyIterable;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.not;
 
 import org.junit.Test;
 
@@ -32,11 +31,11 @@ public class OptionTest {
   }
 
   @Test public void isDefinedIsTrueForSome() {
-    assertTrue(some("a").isDefined());
+    assertThat(some("a").isDefined(), is(true));
   }
 
   @Test public void isDefinedIsFalseForNone() {
-    assertFalse(none().isDefined());
+    assertThat(none().isDefined(), is(false));
   }
 
   @Test public void getOnSomeReturnsValue() {
@@ -84,15 +83,15 @@ public class OptionTest {
   }
 
   @Test public void equalSomesAreEqual() {
-    assertTrue(some(2).equals(some(2)));
+    assertThat(some(2), is(some(2)));
   }
 
   @Test public void nonEqualSomesAreNotEqual() {
-    assertFalse(some(1).equals(some(2)));
+    assertThat(some(1), is(not(some(2))));
   }
 
   @Test public void hashCodesFromEqualSomesAreEqual() {
-    assertTrue(some(1).hashCode() == some(1).hashCode());
+    assertThat(some(1).hashCode(), is(some(1).hashCode()));
   }
 
   @Test public void filterNones() {
@@ -101,19 +100,19 @@ public class OptionTest {
   }
 
   @Test public void noneSomeEquality() {
-    assertFalse(none().equals(some("")));
+    assertThat(none().equals(some("")), is(false));
   }
 
   @Test public void someNoneEquality() {
-    assertFalse(some("").equals(none()));
+    assertThat(some("").equals(none()), is(false));
   }
 
   @Test public void someSomeEquality() {
-    assertTrue(some("something").equals(some("something")));
+    assertThat(some("something"), is(some("something")));
   }
 
   @Test public void noneNoneEquality() {
-    assertTrue(none().equals(none()));
+    assertThat(none(), is(equalTo(none())));
   }
 
   //
