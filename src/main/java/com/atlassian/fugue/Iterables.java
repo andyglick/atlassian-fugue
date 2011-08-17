@@ -40,7 +40,8 @@ public class Iterables {
   public static <T> Option<T> findFirst(final Iterable<? extends T> elements, final Predicate<? super T> predicate) {
     final Iterator<? extends T> t = filter(elements.iterator(), predicate);
     if (t.hasNext()) {
-      return some((T) t.next());
+      final T next = t.next();
+      return some(next);
     }
     return none();
   }

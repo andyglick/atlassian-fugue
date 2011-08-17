@@ -375,7 +375,8 @@ public abstract class Either<L, R> {
      */
     public <X> Option<Either<L, X>> filter(final Predicate<L> f) {
       if (isLeft() && f.apply(get())) {
-        return Option.<Either<L, X>> some(new Left<L, X>(get()));
+        final Either<L, X> result = new Left<L, X>(get());
+        return some(result);
       }
       return none();
     }
@@ -510,9 +511,10 @@ public abstract class Either<L, R> {
      */
     public <X> Option<Either<X, R>> filter(final Predicate<R> f) {
       if (isRight() && f.apply(get())) {
-        return Option.<Either<X, R>> some(new Right<X, R>(get()));
+        final Either<X, R> result = new Right<X, R>(get());
+        return some(result);
       }
-      return Option.<Either<X, R>> none();
+      return none();
     }
 
     /**
