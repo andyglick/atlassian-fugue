@@ -4,6 +4,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.base.Function;
 
+import java.util.Iterator;
+
 /**
  * Represents a pair of objects.
  * 
@@ -42,6 +44,21 @@ public final class Pair<A, B> {
    */
   public static <B> Function<Pair<?, B>, B> rightValue() {
     return new RightAccessor<B>();
+  }
+
+  /**
+   * Zips two iterables into a single iterable that produces {@link Pair pairs}.
+   * 
+   * @param <A> LHS type
+   * @param <B> RHS type
+   * @param as left values
+   * @param bs right values
+   * @return an {@link Iterable iterable} of pairs, only as long as the shortest
+   * input iterable.
+   * @since 1.1
+   */
+  public static <A, B> Iterable<Pair<A, B>> zip(final Iterable<A> as, final Iterable<B> bs) {
+    return new Zipper<A, B>(as, bs);
   }
 
   //
@@ -106,6 +123,44 @@ public final class Pair<A, B> {
   static class RightAccessor<B> implements Function<Pair<?, B>, B> {
     @Override public B apply(final Pair<?, B> from) {
       return from.right();
+    }
+  }
+
+  /**
+   * Iterable that produces pairs from two iterables that produce the left and
+   * right elements.
+   * 
+   * @param <A> LHS type
+   * @param <B> RHS type
+   */
+  static class Zipper<A, B> implements Iterable<Pair<A, B>> {
+    private final Iterable<A> as;
+    private final Iterable<B> bs;
+
+    Zipper(final Iterable<A> as, final Iterable<B> bs) {
+      this.as = checkNotNull(as, "as must not be null.");
+      this.bs = checkNotNull(bs, "bs must not be null.");
+    }
+
+    @Override public Iterator<Pair<A, B>> iterator() {
+      return new Iter();
+    }
+
+    class Iter implements Iterator<Pair<A, B>> {
+      private final Iterator<A> a = checkNotNull(as.iterator(), "as iterator must not be null.");
+      private final Iterator<B> b = checkNotNull(bs.iterator(), "bs iterator must not be null.");
+
+      @Override public boolean hasNext() {
+        return a.hasNext() && b.hasNext();
+      }
+
+      @Override public Pair<A, B> next() {
+        return pair(a.next(), b.next());
+      }
+
+      @Override public void remove() {
+        throw new UnsupportedOperationException();
+      }
     }
   }
 }

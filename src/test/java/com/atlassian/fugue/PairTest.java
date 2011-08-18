@@ -1,11 +1,14 @@
 package com.atlassian.fugue;
 
 import static com.atlassian.fugue.Pair.pair;
+import static com.atlassian.fugue.Pair.zip;
 import static com.google.common.collect.Iterables.transform;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
@@ -68,6 +71,20 @@ public class PairTest {
   @Test public void rightFunction() {
     final Iterable<String> ints = transform(pairs(), Pair.<String> rightValue());
     assertThat(ints, contains("1", "2", "3"));
+  }
+
+  @Test public void zipped() {
+    final Iterable<Integer> ints = ImmutableList.of(1, 2, 3);
+    final Iterable<String> strings = ImmutableList.of("1", "2", "3", "4");
+    @SuppressWarnings("unchecked")
+    final Matcher<Iterable<? extends Pair<Integer, String>>> contains = contains(pair(1, "1"), pair(2, "2"), pair(3, "3"));
+    assertThat(zip(ints, strings), contains);
+  }
+
+  @Test public void zippedDiscardsLongest() {
+    final Iterable<Integer> ints = ImmutableList.of(1, 2, 3, 4, 5);
+    final Iterable<String> strings = ImmutableList.of("1", "2", "3");
+    assertThat(zip(ints, strings), Matchers.<Pair<Integer, String>> iterableWithSize(3));
   }
 
   private Iterable<Pair<Integer, String>> pairs() {
