@@ -115,6 +115,24 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
   }
 
   /**
+   * Flattens an {@link Iterable} of {@link Option options} into an iterable of
+   * the things, filtering out any nones.
+   * 
+   * @param <A> the contained type
+   * @param options the iterable of options
+   * @return an {@link Iterable} of the contained type
+   * 
+   * @since 1.1
+   */
+  public static <A> Iterable<A> flatten(final Iterable<Option<A>> options) {
+    return transform(filterNone(options), new Function<Option<A>, A>() {
+      @Override public A apply(final Option<A> from) {
+        return from.get();
+      }
+    });
+  }
+
+  /**
    * Predicate for filtering defined options only.
    * 
    * @param <A> the contained type

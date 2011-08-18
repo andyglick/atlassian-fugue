@@ -2,6 +2,7 @@ package com.atlassian.fugue;
 
 import static com.atlassian.fugue.Option.filterNone;
 import static com.atlassian.fugue.Option.find;
+import static com.atlassian.fugue.Option.flatten;
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.option;
 import static com.google.common.collect.Iterables.isEmpty;
@@ -32,28 +33,23 @@ public class OptionStaticsTest {
   }
 
   @Test public void findFindsFirst() {
-    final Iterable<Option<Integer>> options = twoOptions();
-    assertThat(find(options).get(), is(2));
+    assertThat(find(twoOptions()).get(), is(2));
   }
 
   @Test public void findFindsOneSingleton() {
-    final Iterable<Option<Integer>> options = ImmutableList.of(option(3));
-    assertThat(find(options).get(), is(3));
+    assertThat(find(ImmutableList.of(option(3))).get(), is(3));
   }
 
   @Test public void findFindsNone() {
-    final Iterable<Option<Integer>> options = fourNones();
-    assertThat(find(options).isDefined(), is(false));
+    assertThat(find(fourNones()).isDefined(), is(false));
   }
 
   @Test public void findFindsNoneSingleton() {
-    final Iterable<Option<Integer>> options = ImmutableList.of(option(NULL));
-    assertThat(find(options).isDefined(), is(false));
+    assertThat(find(ImmutableList.of(option(NULL))).isDefined(), is(false));
   }
 
   @Test public void filterFindsTwo() {
-    final Iterable<Option<Integer>> options = twoOptions();
-    final Iterable<Option<Integer>> filtered = filterNone(options);
+    final Iterable<Option<Integer>> filtered = filterNone(twoOptions());
     assertThat(size(filtered), is(2));
     final Iterator<Option<Integer>> it = filtered.iterator();
     assertThat(it.next().get(), is(2));
@@ -61,9 +57,17 @@ public class OptionStaticsTest {
     assertThat(it.hasNext(), is(false));
   }
 
+  @Test public void flattenFindsTwo() {
+    final Iterable<Integer> flattened = flatten(twoOptions());
+    assertThat(size(flattened), is(2));
+    final Iterator<Integer> it = flattened.iterator();
+    assertThat(it.next(), is(2));
+    assertThat(it.next(), is(4));
+    assertThat(it.hasNext(), is(false));
+  }
+
   @Test public void filterFindsNone() {
-    final Iterable<Option<Integer>> options = fourNones();
-    assertThat(isEmpty(filterNone(options)), is(true));
+    assertThat(isEmpty(filterNone(fourNones())), is(true));
   }
 
   private ImmutableList<Option<Integer>> twoOptions() {
