@@ -1,7 +1,9 @@
 package com.atlassian.fugue;
 
+import static com.atlassian.fugue.Suppliers.ofInstance;
 import static com.google.common.base.Functions.compose;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.Iterables.transform;
 
 import com.atlassian.fugue.Either.Left;
 import com.atlassian.fugue.Either.Right;
@@ -32,7 +34,7 @@ import java.util.NoSuchElementException;
  * only the concrete {@link Option.Some Some} and {@link None} subclasses are
  * meant to be used.
  * 
- * @param <A> the value type.
+ * @param <A> the value type the option contains
  * 
  * @since 1.0
  */
@@ -40,7 +42,7 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
   /**
    * Factory method for {@link Option} instances.
    * 
-   * @param <A> the held type
+   * @param <A> the contained type
    * @param a the value to hold
    * @return a {@link Option.Some Some} if the parameter is not null or a
    * {@link None} if it is
@@ -52,7 +54,7 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
   /**
    * Factory method for {@link Option.Some Some} instances.
    * 
-   * @param <A> the held type
+   * @param <A> the contained type
    * @param value the value to hold
    * @return a {@link Option.Some Some} if the parameter is not null
    * @throws NullPointerException if the parameter is null
@@ -77,7 +79,7 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
    * Factory method for {@link None} instances where the type token is handy.
    * Allows calling in-line where the type inferencer would otherwise complain.
    * 
-   * @param <A> the held type
+   * @param <A> the contained type
    * @param type token of the right type, unused, only here for the type
    * inferencer
    * @return a {@link None}
@@ -89,11 +91,11 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
   /**
    * Find the first option that isDefined, or if there aren't any, then none.
    * 
-   * @param <T> the held type
+   * @param <A> the contained type
    * @param options an Iterable of options to search through
    */
-  public static <T> Option<T> find(final Iterable<Option<T>> options) {
-    for (final Option<T> option : options) {
+  public static <A> Option<A> find(final Iterable<Option<A>> options) {
+    for (final Option<A> option : options) {
       if (option.isDefined()) {
         return option;
       }
@@ -104,34 +106,34 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
   /**
    * Filter out undefined options.
    * 
-   * @param <T> the held type
+   * @param <A> the contained type
    * @param options many options that may or may not be defined
    * @return the filtered options
    */
-  public static <T> Iterable<Option<T>> filterNone(final Iterable<Option<T>> options) {
+  public static <A> Iterable<Option<A>> filterNone(final Iterable<Option<A>> options) {
     return Iterables.filter(options, defined());
   }
 
   /**
-   * Filters defined options only.
+   * Predicate for filtering defined options only.
    * 
-   * @param <T> the held type
-   * @return the filtered options
+   * @param <A> the contained type
+   * @return a {@link Predicate} that returns true only for defined options
    */
-  public static <T> Predicate<T> defined() {
+  public static <A> Predicate<? super A> defined() {
     @SuppressWarnings("unchecked")
-    final Predicate<T> result = (Predicate<T>) DEFINED;
+    final Predicate<A> result = (Predicate<A>) DEFINED;
     return result;
   }
 
   /**
    * Supplies {@link None} as required. Useful as the zero value for folds.
    * 
-   * @param <A> the held type
+   * @param <A> the contained type
    * @return a {@link Supplier} of {@link None} instances
    */
   public static <A> Supplier<Option<A>> noneSupplier() {
-    return Suppliers.ofInstance(Option.<A> none());
+    return ofInstance(Option.<A> none());
   }
 
   //
