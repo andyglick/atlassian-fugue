@@ -114,6 +114,14 @@ public class OptionTest {
   @Test public void noneNoneEquality() {
     assertThat(none(), is(equalTo(none())));
   }
+  
+  @Test public void someOrElseReturnsOriginal() {
+    assertThat(some(1).orElse(some(2)), is(equalTo(some(1))));
+  }
+
+  @Test public void noneOrElseReturnsOrElse() {
+    assertThat(none(int.class).orElse(some(2)), is(equalTo(some(2))));
+  }
 
   //
   // scaffolding

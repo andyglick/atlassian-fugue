@@ -46,11 +46,6 @@
                         <Export-Package>
                             com.atlassian.fugue.*;version="${project.version}"
                         </Export-Package>
-                        <Import-Package>
-                            com.google.base.*;version="${guava.osgi.version}",
-                            com.google.common.*;version="${guava.osgi.version}",
-                            *
-                        </Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
@@ -97,10 +92,10 @@
             <version>1.6.0</version>
             <scope>provided</scope>
         </dependency>
-        <dependency> <!-- For now this is not provided by all apps, so we need to bundle it here :( -->
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
+        <dependency>
+            <groupId>com.googlecode.guava-osgi</groupId>
+            <artifactId>guava-osgi</artifactId>
+            <version>${guava.osgi.version}</version>
         </dependency>
         <dependency>
             <groupId>com.atlassian.util.concurrent</groupId>
@@ -145,7 +140,6 @@
     <properties>
         <jdkLevel>1.6</jdkLevel>
         <clover.version>3.1.0</clover.version>
-        <guava.version>r06</guava.version>
         <guava.osgi.version>6.0.0</guava.osgi.version>
     </properties>
     

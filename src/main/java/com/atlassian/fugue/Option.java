@@ -154,6 +154,22 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
     return ofInstance(Option.<A> none());
   }
 
+  /**
+   * Function for wrapping values in a {@link Some} or {@link None}.
+   * @param <A> the contained type
+   * @return a {@link Function} to wrap values
+   */
+  public static <A> Function<A, Option<A>> option() {
+	return new ToOption<A>();
+  }
+  
+  private static class ToOption<A> implements Function<A, Option<A>> {
+    @Override
+    public Option<A> apply(A a) {
+      return option(a);
+    }
+  }
+
   //
   // ctors
   //
@@ -190,6 +206,26 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
 
   @Override public final A getOrNull() {
     return fold(Suppliers.<A> alwaysNull(), Functions.<A> identity());
+  }
+
+  /**
+   * If this is a some, return the same some. Otherwise, return {@code orElse}.
+   * 
+   * @param orElse option to return if this is none
+   * @return this or {@code orElse} 
+   */
+  public final Option<A> orElse(Option<A> orElse) {
+    return orElse(Suppliers.ofInstance(orElse));
+  }
+
+  /**
+   * If this is a some, return the same some. Otherwise, return value supplied by {@code orElse}.
+   * 
+   * @param orElse supplier which provides the option to return if this is none
+   * @return this or value supplied by {@code orElse} 
+   */
+  public final Option<A> orElse(Supplier<Option<A>> orElse) {
+    return fold(orElse, Option.<A>option());
   }
 
   @Override public final boolean exists(final Predicate<A> p) {
