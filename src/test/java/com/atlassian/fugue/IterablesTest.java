@@ -1,5 +1,6 @@
 package com.atlassian.fugue;
 
+import static com.atlassian.fugue.Either.getOrThrow;
 import static com.atlassian.fugue.Iterables.findFirst;
 import static com.atlassian.fugue.Option.some;
 import static com.atlassian.fugue.Pair.pair;
@@ -12,7 +13,6 @@ import org.junit.Test;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
@@ -55,8 +55,6 @@ public class IterablesTest {
   }
 
   @Test(expected = InvocationTargetException.class) public void nonInstantiable() throws Exception {
-    final Constructor<Iterables> declaredConstructor = Iterables.class.getDeclaredConstructor();
-    declaredConstructor.setAccessible(true);
-    declaredConstructor.newInstance();
+    getOrThrow(UtilityFunctions.<Iterables> defaultCtor().apply(Iterables.class));
   }
 }

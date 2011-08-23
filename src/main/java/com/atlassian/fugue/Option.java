@@ -3,7 +3,6 @@ package com.atlassian.fugue;
 import static com.atlassian.fugue.Suppliers.ofInstance;
 import static com.google.common.base.Functions.compose;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Iterables.transform;
 
 import com.atlassian.fugue.Either.Left;
 import com.atlassian.fugue.Either.Right;
@@ -11,7 +10,6 @@ import com.atlassian.fugue.Either.Right;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Supplier;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
 
 import java.util.Iterator;
@@ -19,20 +17,20 @@ import java.util.NoSuchElementException;
 
 /**
  * A class that encapsulates null (missing) values. An Option may be either
- * {@link Option.Some some value} or {@link None not}.
+ * {@link Option.Some some value} or not.
  * <p>
  * If it is a value it may be tested with the {@link #isDefined()} method, but
  * more often it is useful to either return the value or an alternative if
  * {@link #getOrElse(Object) not set}, or {@link #map(Function) map} or
  * {@link #filter(Predicate) filter}.
  * <p>
- * Mapping a None of type A to type B will simply return {@link None} of type B
- * if performed on a {@link None} of type A. Similarly, filtering will always
- * fail on a {@link None}.
+ * Mapping a None of type A to type B will simply return none of type B if
+ * performed on a none of type A. Similarly, filtering will always fail on a
+ * none.
  * <p>
  * While this class is public and abstract it does not expose a constructor as
- * only the concrete {@link Option.Some Some} and {@link None} subclasses are
- * meant to be used.
+ * only the concrete {@link Option.Some Some} and none subclasses are meant to
+ * be used.
  * 
  * @param <A> the value type the option contains
  * 
@@ -44,8 +42,8 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
    * 
    * @param <A> the contained type
    * @param a the value to hold
-   * @return a {@link Option.Some Some} if the parameter is not null or a
-   * {@link None} if it is
+   * @return a {@link Option.Some Some} if the parameter is not null or a none
+   * if it is
    */
   public static <A> Option<A> option(final A a) {
     return (a == null) ? Option.<A> none() : some(a);
@@ -64,10 +62,10 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
   }
 
   /**
-   * Factory method for {@link None} instances.
+   * Factory method for none instances.
    * 
    * @param <A> the held type
-   * @return a {@link None}
+   * @return a none
    */
   public static <A> Option<A> none() {
     @SuppressWarnings("unchecked")
@@ -76,60 +74,28 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
   }
 
   /**
-   * Factory method for {@link None} instances where the type token is handy.
-   * Allows calling in-line where the type inferencer would otherwise complain.
+   * Factory method for none instances where the type token is handy. Allows
+   * calling in-line where the type inferencer would otherwise complain.
    * 
    * @param <A> the contained type
    * @param type token of the right type, unused, only here for the type
    * inferencer
-   * @return a {@link None}
+   * @return a none
    */
   public static <A> Option<A> none(final Class<A> type) {
     return none();
   }
 
   /**
-   * Find the first option that isDefined, or if there aren't any, then none.
+   * Function for wrapping values in a some or none.
    * 
    * @param <A> the contained type
-   * @param options an Iterable of options to search through
-   */
-  public static <A> Option<A> find(final Iterable<Option<A>> options) {
-    for (final Option<A> option : options) {
-      if (option.isDefined()) {
-        return option;
-      }
-    }
-    return none();
-  }
-
-  /**
-   * Filter out undefined options.
-   * 
-   * @param <A> the contained type
-   * @param options many options that may or may not be defined
-   * @return the filtered options
-   */
-  public static <A> Iterable<Option<A>> filterNone(final Iterable<Option<A>> options) {
-    return Iterables.filter(options, defined());
-  }
-
-  /**
-   * Flattens an {@link Iterable} of {@link Option options} into an iterable of
-   * the things, filtering out any nones.
-   * 
-   * @param <A> the contained type
-   * @param options the iterable of options
-   * @return an {@link Iterable} of the contained type
+   * @return a {@link Function} to wrap values
    * 
    * @since 1.1
    */
-  public static <A> Iterable<A> flatten(final Iterable<Option<A>> options) {
-    return transform(filterNone(options), new Function<Option<A>, A>() {
-      @Override public A apply(final Option<A> from) {
-        return from.get();
-      }
-    });
+  static <A> Function<A, Option<A>> toOption() {
+    return new ToOption<A>();
   }
 
   /**
@@ -145,29 +111,38 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
   }
 
   /**
-   * Supplies {@link None} as required. Useful as the zero value for folds.
+   * Supplies none as required. Useful as the zero value for folds.
    * 
    * @param <A> the contained type
-   * @return a {@link Supplier} of {@link None} instances
+   * @return a {@link Supplier} of none instances
    */
   public static <A> Supplier<Option<A>> noneSupplier() {
     return ofInstance(Option.<A> none());
   }
 
   /**
-   * Function for wrapping values in a {@link Some} or {@link None}.
+   * Find the first option that isDefined, or if there aren't any, then none.
+   * 
    * @param <A> the contained type
-   * @return a {@link Function} to wrap values
+   * @param options an Iterable of options to search through
+   * 
+   * @deprecated since 1.1 use {@link Options#find(Iterable)} instead
    */
-  public static <A> Function<A, Option<A>> option() {
-	return new ToOption<A>();
+  @Deprecated public static <A> Option<A> find(final Iterable<Option<A>> options) {
+    return Options.find(options);
   }
-  
-  private static class ToOption<A> implements Function<A, Option<A>> {
-    @Override
-    public Option<A> apply(A a) {
-      return option(a);
-    }
+
+  /**
+   * Filter out undefined options.
+   * 
+   * @param <A> the contained type
+   * @param options many options that may or may not be defined
+   * @return the filtered options
+   * 
+   * @deprecated since 1.1 use {@link Options#filterNone(Iterable)} instead
+   */
+  @Deprecated public static <A> Iterable<Option<A>> filterNone(final Iterable<Option<A>> options) {
+    return Options.filterNone(options);
   }
 
   //
@@ -212,20 +187,21 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
    * If this is a some, return the same some. Otherwise, return {@code orElse}.
    * 
    * @param orElse option to return if this is none
-   * @return this or {@code orElse} 
+   * @return this or {@code orElse}
    */
-  public final Option<A> orElse(Option<A> orElse) {
+  public final Option<A> orElse(final Option<A> orElse) {
     return orElse(Suppliers.ofInstance(orElse));
   }
 
   /**
-   * If this is a some, return the same some. Otherwise, return value supplied by {@code orElse}.
+   * If this is a some, return the same some. Otherwise, return value supplied
+   * by {@code orElse}.
    * 
    * @param orElse supplier which provides the option to return if this is none
-   * @return this or value supplied by {@code orElse} 
+   * @return this or value supplied by {@code orElse}
    */
-  public final Option<A> orElse(Supplier<Option<A>> orElse) {
-    return fold(orElse, Option.<A>option());
+  public final Option<A> orElse(final Supplier<Option<A>> orElse) {
+    return fold(orElse, Option.<A> toOption());
   }
 
   @Override public final boolean exists(final Predicate<A> p) {
@@ -368,7 +344,7 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
   private static final Supplier<String> NONE_STRING = Suppliers.ofInstance("none()");
   private static final Supplier<Integer> NONE_HASH = Suppliers.ofInstance(31);
 
-  private static final Predicate<Option<?>> DEFINED = new Predicate<Option<?>>() {
+  static final Predicate<Option<?>> DEFINED = new Predicate<Option<?>>() {
     @Override public boolean apply(final Option<?> option) {
       return option.isDefined();
     }
@@ -434,6 +410,12 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
       // Some IDEs reckon this doesn't compile. They are wrong. It compiles and
       // is correct.
       return (Function<A, Integer>) SomeHashCode.INSTANCE;
+    }
+  }
+
+  private static class ToOption<A> implements Function<A, Option<A>> {
+    @Override public Option<A> apply(final A a) {
+      return option(a);
     }
   }
 }

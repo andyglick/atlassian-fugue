@@ -1,10 +1,11 @@
 package com.atlassian.fugue;
 
-import static com.atlassian.fugue.Option.filterNone;
-import static com.atlassian.fugue.Option.find;
-import static com.atlassian.fugue.Option.flatten;
+import static com.atlassian.fugue.Either.getOrThrow;
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.option;
+import static com.atlassian.fugue.Options.filterNone;
+import static com.atlassian.fugue.Options.find;
+import static com.atlassian.fugue.Options.flatten;
 import static com.google.common.collect.Iterables.isEmpty;
 import static com.google.common.collect.Iterables.size;
 import static org.hamcrest.Matchers.is;
@@ -15,6 +16,7 @@ import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 
 public class OptionStaticsTest {
@@ -76,5 +78,9 @@ public class OptionStaticsTest {
 
   private ImmutableList<Option<Integer>> fourNones() {
     return ImmutableList.of(option(NULL), option(NULL), option(NULL), option(NULL));
+  }
+
+  @Test(expected = InvocationTargetException.class) public void nonInstantiable() throws Exception {
+    getOrThrow(UtilityFunctions.<Options> defaultCtor().apply(Options.class));
   }
 }
