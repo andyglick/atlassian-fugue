@@ -5,15 +5,20 @@ import static com.atlassian.fugue.Iterables.findFirst;
 import static com.atlassian.fugue.Option.some;
 import static com.atlassian.fugue.Pair.pair;
 import static com.google.common.collect.ImmutableList.of;
+import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 
 import org.junit.Test;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.collect.AbstractIterator;
 import com.google.common.collect.ImmutableList;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Iterator;
 import java.util.List;
 
 public class IterablesTest {
@@ -54,7 +59,40 @@ public class IterablesTest {
     assertThat(found, is(Option.some(expected)));
   }
 
+  @Test public void flatMapConcatenates() {
+    final Iterable<String> result = Iterables.flatMap(asList("123", "ABC"), new Function<String, Iterable<String>>() {
+      public Iterable<String> apply(final String from) {
+        return new CharSplitter(from);
+      }
+    });
+    assertThat(result, contains("1", "2", "3", "A", "B", "C"));
+  }
+
   @Test(expected = InvocationTargetException.class) public void nonInstantiable() throws Exception {
     getOrThrow(UtilityFunctions.<Iterables> defaultCtor().apply(Iterables.class));
+  }
+
+  /**
+   * Splits a string into characters.
+   */
+  class CharSplitter implements Iterable<String> {
+    private final String from;
+
+    CharSplitter(final String from) {
+      this.from = from;
+    }
+
+    @Override public Iterator<String> iterator() {
+      return new AbstractIterator<String>() {
+        int index = 0;
+
+        @Override protected String computeNext() {
+          if (index >= from.length()) {
+            return endOfData();
+          }
+          return from.substring(index, ++index); // up by 1
+        }
+      };
+    }
   }
 }
