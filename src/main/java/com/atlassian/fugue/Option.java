@@ -17,20 +17,20 @@ import java.util.NoSuchElementException;
 
 /**
  * A class that encapsulates null (missing) values. An Option may be either
- * {@link Option.Some some value} or not.
+ * {@link Option.Some some value} or {@link Option.None none}.
  * <p>
  * If it is a value it may be tested with the {@link #isDefined()} method, but
  * more often it is useful to either return the value or an alternative if
  * {@link #getOrElse(Object) not set}, or {@link #map(Function) map} or
  * {@link #filter(Predicate) filter}.
  * <p>
- * Mapping a None of type A to type B will simply return none of type B if
- * performed on a none of type A. Similarly, filtering will always fail on a
- * none.
+ * Mapping a {@link Option.None none} of type A to type B will simply return
+ * {@link Option.None none} of type B if performed on a none of type A.
+ * Similarly, filtering will always fail on a {@link Option.None none}.
  * <p>
  * While this class is public and abstract it does not expose a constructor as
- * only the concrete {@link Option.Some Some} and none subclasses are meant to
- * be used.
+ * only the concrete {@link Option.Some Some} and {@link Option.None None}
+ * subclasses are meant to be used.
  * 
  * @param <A> the value type the option contains
  * 
@@ -42,8 +42,8 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
    * 
    * @param <A> the contained type
    * @param a the value to hold
-   * @return a {@link Option.Some Some} if the parameter is not null or a none
-   * if it is
+   * @return a {@link Option.Some Some} if the parameter is not null or a
+   * {@link Option.None none} if it is
    */
   public static <A> Option<A> option(final A a) {
     return (a == null) ? Option.<A> none() : some(a);
@@ -62,10 +62,10 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
   }
 
   /**
-   * Factory method for none instances.
+   * Factory method for {@link Option.None none} instances.
    * 
    * @param <A> the held type
-   * @return a none
+   * @return a {@link Option.None none}
    */
   public static <A> Option<A> none() {
     @SuppressWarnings("unchecked")
@@ -74,20 +74,22 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
   }
 
   /**
-   * Factory method for none instances where the type token is handy. Allows
-   * calling in-line where the type inferencer would otherwise complain.
+   * Factory method for {@link Option.None none} instances where the type token
+   * is handy. Allows calling in-line where the type inferencer would otherwise
+   * complain.
    * 
    * @param <A> the contained type
    * @param type token of the right type, unused, only here for the type
    * inferencer
-   * @return a none
+   * @return a {@link Option.None none}
    */
   public static <A> Option<A> none(final Class<A> type) {
     return none();
   }
 
   /**
-   * Function for wrapping values in a some or none.
+   * Function for wrapping values in a {@link Option.Some some} or
+   * {@link Option.None none}.
    * 
    * @param <A> the contained type
    * @return a {@link Function} to wrap values
@@ -111,17 +113,19 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
   }
 
   /**
-   * Supplies none as required. Useful as the zero value for folds.
+   * Supplies {@link Option.None none} as required. Useful as the zero value for
+   * folds.
    * 
    * @param <A> the contained type
-   * @return a {@link Supplier} of none instances
+   * @return a {@link Supplier} of {@link Option.None none} instances
    */
   public static <A> Supplier<Option<A>> noneSupplier() {
     return ofInstance(Option.<A> none());
   }
 
   /**
-   * Find the first option that isDefined, or if there aren't any, then none.
+   * Find the first option that isDefined, or if there aren't any, then
+   * {@link Option.None none}.
    * 
    * @param <A> the contained type
    * @param options an Iterable of options to search through
@@ -157,8 +161,8 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
   //
 
   /**
-   * If this is a some value apply the some function, otherwise get the none
-   * value.
+   * If this is a some value apply the some function, otherwise get the
+   * {@link Option.None none} value.
    * 
    * @param <B> the result type
    * @param none the supplier of the None type
