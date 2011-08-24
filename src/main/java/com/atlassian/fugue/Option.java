@@ -132,9 +132,12 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
    * 
    * @deprecated since 1.1 use {@link Options#find(Iterable)} instead
    */
+  // /CLOVER:OFF
   @Deprecated public static <A> Option<A> find(final Iterable<Option<A>> options) {
     return Options.find(options);
   }
+
+  // /CLOVER:ON
 
   /**
    * Filter out undefined options.
