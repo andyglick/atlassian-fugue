@@ -8,7 +8,6 @@ import static com.google.common.base.Predicates.not;
 import static com.google.common.collect.Iterables.concat;
 import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.transform;
-import static com.google.common.collect.Iterators.filter;
 import static com.google.common.collect.Sets.newTreeSet;
 
 import com.atlassian.util.concurrent.LazyReference;
@@ -56,10 +55,8 @@ public class Iterables {
    * @return the first item in elements that matches predicate
    */
   public static <T> Option<T> findFirst(final Iterable<? extends T> elements, final Predicate<? super T> predicate) {
-    final Iterator<? extends T> t = filter(elements.iterator(), predicate);
-    if (t.hasNext()) {
-      final T next = t.next();
-      return some(next);
+    for (final T t : filter(elements, predicate)) {
+      return some(t);
     }
     return none();
   }
@@ -75,11 +72,10 @@ public class Iterables {
    * @since 1.1
    */
   public static <A> Option<A> first(final Iterable<A> as) {
-    final Iterator<A> i = as.iterator();
-    if (!i.hasNext()) {
-      return none();
+    for (final A a : as) {
+      return some(a);
     }
-    return some(i.next());
+    return none();
   }
 
   /**
