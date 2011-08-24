@@ -13,6 +13,8 @@ import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
 
+import java.util.Iterator;
+
 public class PairTest {
   @Test(expected = NullPointerException.class) public void testNullLeft() {
     pair(null, "");
@@ -85,6 +87,14 @@ public class PairTest {
     final Iterable<Integer> ints = ImmutableList.of(1, 2, 3, 4, 5);
     final Iterable<String> strings = ImmutableList.of("1", "2", "3");
     assertThat(zip(ints, strings), Matchers.<Pair<Integer, String>> iterableWithSize(3));
+  }
+
+  @Test(expected = UnsupportedOperationException.class) public void zippedUnmodifiable() {
+    final Iterable<Integer> ints = ImmutableList.of(1, 2, 3, 4, 5);
+    final Iterable<String> strings = ImmutableList.of("1", "2", "3");
+    final Iterator<Pair<Integer, String>> zip = zip(ints, strings).iterator();
+    zip.next();
+    zip.remove();
   }
 
   private Iterable<Pair<Integer, String>> pairs() {
