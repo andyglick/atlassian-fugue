@@ -63,6 +63,8 @@ class Functions {
    * @param arg the argument that will be applied to any input functions
    * @return a function that takes a function from A to B , applies the arg and
    * returns the result
+   * 
+   * @since 1.1
    */
   public static <A, B> Function<Function<A, B>, B> apply(final A arg) {
     return new Function<Function<A, B>, B>() {
