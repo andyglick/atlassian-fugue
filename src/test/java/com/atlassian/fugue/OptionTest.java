@@ -123,6 +123,14 @@ public class OptionTest {
     assertThat(none(int.class).orElse(some(2)), is(equalTo(some(2))));
   }
 
+  @Test public void someOrElseSupplierReturnsOriginal() {
+    assertThat(some(1).orElse(Suppliers.ofInstance(some(2))), is(equalTo(some(1))));
+  }
+
+  @Test public void noneOrElseSupplierReturnsOrElse() {
+    assertThat(none(int.class).orElse(Suppliers.ofInstance(some(2))), is(equalTo(some(2))));
+  }
+
   //
   // scaffolding
   //

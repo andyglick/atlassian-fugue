@@ -195,6 +195,7 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
    * 
    * @param orElse option to return if this is none
    * @return this or {@code orElse}
+   * @since 1.1
    */
   public final Option<A> orElse(final Option<A> orElse) {
     return orElse(Suppliers.ofInstance(orElse));
@@ -206,6 +207,7 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
    * 
    * @param orElse supplier which provides the option to return if this is none
    * @return this or value supplied by {@code orElse}
+   * @since 1.1 
    */
   public final Option<A> orElse(final Supplier<Option<A>> orElse) {
     return fold(orElse, Option.<A> toOption());

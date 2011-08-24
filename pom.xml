@@ -96,6 +96,7 @@
             <groupId>com.googlecode.guava-osgi</groupId>
             <artifactId>guava-osgi</artifactId>
             <version>${guava.osgi.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.atlassian.util.concurrent</groupId>
