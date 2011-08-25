@@ -103,7 +103,7 @@ public class Iterables {
    * iterable.
    * @param fs an iterable of functions that the arg will be applied to
    * @param arg the argument to apply to the functions
-   * @return an the results of the functions when applied to the arg
+   * @return the results of the functions when applied to the arg
    * @since 1.1
    */
   public static <A, B> Iterable<B> revMap(final Iterable<? extends Function<A, B>> fs, final A arg) {
