@@ -16,36 +16,36 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class IterablesMergeSortedTest {
-  @Test public void assertThatMergingEmptyIterablesGivesAnEmptyIterable() {
+  @Test public void mergingEmptyIterablesGivesAnEmptyIterable() {
     assertThat(mergeSorted(of(new ArrayList<String>(), new LinkedList<String>())), is(emptyIterable(String.class)));
   }
 
-  @Test public void assertThatMergingNonEmptyAndEmptyIterablesGivesTheMergedIterable() {
+  @Test public void mergingNonEmptyAndEmptyIterablesGivesTheMergedIterable() {
     assertThat(mergeSorted(of(of("a"), ImmutableList.<String> of())), contains("a"));
   }
 
-  @Test public void assertThatMergingEmptyAndNonEmptyIterablesGivesTheMergedIterable() {
+  @Test public void mergingEmptyAndNonEmptyIterablesGivesTheMergedIterable() {
     assertThat(mergeSorted(of(ImmutableList.<String> of(), of("a"))), contains("a"));
   }
 
-  @Test public void assertThatMergingNonEmptyIterablesInOrderGivesMergedIterable() {
+  @Test public void mergingNonEmptyIterablesInOrderGivesMergedIterable() {
     assertThat(mergeSorted(of(of("a"), of("b"))), contains("a", "b"));
   }
 
-  @Test public void assertThatMergingNonEmptyIterablesOutOfOrderGivesMergedIterable() {
+  @Test public void mergingNonEmptyIterablesOutOfOrderGivesMergedIterable() {
     assertThat(mergeSorted(of(of("b"), of("a"))), contains("a", "b"));
   }
 
-  @Test public void assertThatMergingNonEmptyIterablesOutOfOrderGivesMergedIterableInOrder() {
+  @Test public void mergingNonEmptyIterablesOutOfOrderGivesMergedIterableInOrder() {
     assertThat(mergeSorted(of(of("b", "d"), of("a", "c", "e"))), contains("a", "b", "c", "d", "e"));
   }
 
-  @Test public void assertThatMergingManyNonEmptyIterablesOutOfOrderGivesMergedIterableInOrder() {
+  @Test public void mergingManyNonEmptyIterablesOutOfOrderGivesMergedIterableInOrder() {
     assertThat(mergeSorted(of(of("b", "d"), of("f", "x"), of("c", "e"), of("g", "h"), of("a", "z"))), contains("a", "b", "c", "d", "e", "f", "g",
       "h", "x", "z"));
   }
 
-  @Test public void assertMergedToString() {
+  @Test public void mergedToString() {
     assertThat(mergeSorted(of(of("b", "d"), of("a", "c", "e"))).toString(), is("[a, b, c, d, e]"));
   }
 
