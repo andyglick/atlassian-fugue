@@ -20,10 +20,10 @@ import java.util.Map;
  * This class is package private for the 1.0 release - we intend to make it
  * public once we've decided which methods are actually useful.
  */
-class Functions {
+public class Functions {
   private Functions() {}
 
-  static <F, T> T fold(final Function2<T, F, T> f, final T zero, final Iterable<F> elements) {
+  public static <F, T> T fold(final Function2<T, F, T> f, final T zero, final Iterable<F> elements) {
     T currentValue = zero;
     for (final F element : elements) {
       currentValue = f.apply(currentValue, element);
@@ -31,7 +31,7 @@ class Functions {
     return currentValue;
   }
 
-  static <F, T> T fold(final Function<Pair<T, F>, T> f, final T zero, final Iterable<F> elements) {
+  public static <F, T> T fold(final Function<Pair<T, F>, T> f, final T zero, final Iterable<F> elements) {
     return fold(new Function2<T, F, T>() {
       public T apply(final T arg1, final F arg2) {
         return f.apply(new Pair<T, F>(arg1, arg2));
