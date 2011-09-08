@@ -17,12 +17,23 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class is package private for the 1.0 release - we intend to make it
- * public once we've decided which methods are actually useful.
+ * @since 1.1
  */
 public class Functions {
   private Functions() {}
 
+/**
+ * Apply f to each element in elements, with each application using the result of the previous application as the other
+ * argument to f. zero is used as the first 'result' value. The final result is returned.
+ * 
+ * @param f the function to apply to all the elements
+ * @param zero the starting point for the function
+ * @param elements the series of which each element will be accumulated into a result
+ * 
+ * @return the result of accumulating the application of f to all elements
+ * 
+ * @since 1.1
+ */
   public static <F, T> T fold(final Function2<T, F, T> f, final T zero, final Iterable<F> elements) {
     T currentValue = zero;
     for (final F element : elements) {
@@ -31,6 +42,18 @@ public class Functions {
     return currentValue;
   }
 
+/**
+ * Apply f to each element in elements, with each application using the result of the previous application as the other
+ * argument to f. zero is used as the first 'result' value. The final result is returned.
+ * 
+ * @param f the function to apply to all elements
+ * @param zero the starting point for the function
+ * @param elements the series of which each element will be accumulated into a result
+ * 
+ * @return the result of accumulating the application of f to all elements
+ * 
+ * @since 1.1
+ */
   public static <F, T> T fold(final Function<Pair<T, F>, T> f, final T zero, final Iterable<F> elements) {
     return fold(new Function2<T, F, T>() {
       public T apply(final T arg1, final F arg2) {
