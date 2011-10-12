@@ -7,6 +7,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Supplier;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -95,6 +97,46 @@ public abstract class Either<L, R> {
       throw either.left().get();
     }
     return either.right().get();
+  }
+
+  /**
+   * Collect the right values if there are only rights, otherwise return the
+   * first left encountered.
+   * 
+   * @param <L> the left type
+   * @param <R>
+   * @param eithers an Iterable of Either<L, R>
+   * @return either the iterable of right values, or the first left encountered.
+   */
+  public static <L, R> Either<L, Iterable<R>> sequenceRight(final Iterable<Either<L, R>> eithers) {
+    Iterable<R> it = ImmutableList.of();
+    for (final Either<L, R> e : eithers) {
+      if (e.isLeft()) {
+        return e.left().<Iterable<R>> as();
+      }
+      it = Iterables.concat(it, e.right());
+    }
+    return right(it);
+  }
+
+  /**
+   * Collect the right values if there are only rights, otherwise return the
+   * first left encountered.
+   * 
+   * @param <L> the left type
+   * @param <R>
+   * @param eithers an Iterable of Either<L, R>
+   * @return either the iterable of right values, or the first left encountered.
+   */
+  public static <L, R> Either<Iterable<L>, R> sequenceLeft(final Iterable<Either<L, R>> eithers) {
+    Iterable<L> it = ImmutableList.of();
+    for (final Either<L, R> e : eithers) {
+      if (e.isRight()) {
+        return e.right().<Iterable<L>> as();
+      }
+      it = Iterables.concat(it, e.left());
+    }
+    return left(it);
   }
 
   //
@@ -395,6 +437,16 @@ public abstract class Either<L, R> {
         }
       });
     }
+
+    /**
+     * Coerces our right type as X. Dangerous, isLeft() must be true
+     * 
+     * @param <X> the type to coerce to.
+     * @return an either with the coerced right type.
+     */
+    <X> Either<L, X> as() {
+      return left(get());
+    }
   }
 
   /**
@@ -530,6 +582,16 @@ public abstract class Either<L, R> {
           return map(f);
         }
       });
+    }
+
+    /**
+     * Coerces our left type as X. Dangerous, isRight() must be true
+     * 
+     * @param <X> the type to coerce to.
+     * @return an either with the coerced left type.
+     */
+    <X> Either<X, R> as() {
+      return right(get());
     }
   }
 
