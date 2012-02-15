@@ -8,7 +8,7 @@ import java.util.concurrent.TimeoutException;
 import com.google.common.base.Function;
 
 public class Futures {
-  public static <A, B> Future<B> map(final Future<A> future, final Function<A, B> f) {
+  public static <A, B> Future<B> transform(final Future<A> future, final Function<A, B> f) {
     return new Mapped<A, B>(future, f);
   }
 
