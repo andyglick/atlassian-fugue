@@ -132,9 +132,9 @@
     </properties>
     
     <scm>
-        <connection>scm:svn:https://labs.atlassian.com/svn/FAGE/trunk</connection>
-        <developerConnection>scm:svn:https://labs.atlassian.com/svn/FAGE/trunk</developerConnection>
-        <url>https://labs.atlassian.com/svn/FAGE/trunk</url>
+        <connection>scm:git:git@bitbucket.org:atlassian/fugue.git</connection>
+        <developerConnection>scm:git:git@bitbucket.org:atlassian/fugue.git</developerConnection>
+        <url>https://bitbucket.org/atlassian/fugue</url>
     </scm>
     
 </project>
