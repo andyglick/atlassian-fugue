@@ -9,7 +9,7 @@
     
     <groupId>com.atlassian.fugue</groupId>
     <artifactId>fugue</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>jar</packaging>
     <name>Functional Guava Extensions</name>
 
@@ -138,9 +138,9 @@
     </properties>
     
     <scm>
-        <connection>scm:svn:https://labs.atlassian.com/svn/FAGE/branches/1.0.x-stable</connection>
-        <developerConnection>scm:svn:https://labs.atlassian.com/svn/FAGE/branches/1.0.x-stable</developerConnection>
-        <url>https://labs.atlassian.com/svn/FAGE/branches/1.0.x-stable</url>
+        <connection>scm:svn:https://labs.atlassian.com/svn/FAGE/tags/fugue-1.0</connection>
+        <developerConnection>scm:svn:https://labs.atlassian.com/svn/FAGE/tags/fugue-1.0</developerConnection>
+        <url>https://labs.atlassian.com/svn/FAGE/tags/fugue-1.0</url>
     </scm>
     
 </project>
