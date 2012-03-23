@@ -1,12 +1,9 @@
 package com.atlassian.fugue;
 
-import static com.atlassian.fugue.Either.left;
-import static com.atlassian.fugue.Either.merge;
-import static com.atlassian.fugue.Either.right;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-
 import org.junit.Test;
+
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 
 public class EitherTest {
   @Test(expected = NullPointerException.class) public void testNullLeft() {
@@ -14,34 +11,40 @@ public class EitherTest {
   }
 
   @Test public void testLeftCreation() {
-    final Either<Boolean, Integer> left = left(true);
-    assertThat(left.isLeft(), is(true));
-    assertThat(left.left().get(), is(true));
+    Either<Boolean, Integer> left = Either.left(Boolean.TRUE);
+    assertTrue(left.isLeft());
+    assertEquals(Boolean.TRUE, left.left().get());
   }
 
   @Test(expected = NullPointerException.class) public void testNullRight() {
-    right(null);
+    Either.right(null);
   }
 
   @Test public void testRightCreation() {
-    final Either<Boolean, Integer> right = right(1);
-    assertThat(right.isRight(), is(true));
-    assertThat(right.right().get(), is(1));
+    Either<Boolean, Integer> right = Either.right(1);
+    assertTrue(right.isRight());
+    assertEquals(new Integer(1), right.right().get());
   }
 
   @Test public void testLeftMerge() {
-    assertThat(merge(Either.<String, String> left("Ponies.")), is("Ponies."));
+    Either<String, String> left = Either.left("Ponies.");
+    String actual = Either.merge(left);
+    assertEquals("Ponies.", actual);
   }
 
   @Test public void testRightMerge() {
-    assertThat(merge(Either.<String, String> right("Unicorns.")), is("Unicorns."));
+    Either<String, String> right = Either.right("Unicorns.");
+    String actual = Either.merge(right);
+    assertEquals("Unicorns.", actual);
   }
 
   @Test public void testCondTrue() {
-    assertThat(Either.cond(true, "Pegasus.", 7), is(Either.<Integer, String> right("Pegasus.")));
+    Either<Integer, String> cond = Either.cond(true, "Pegasus.", 7);
+    assertEquals(Either.right("Pegasus."), cond);
   }
 
   @Test public void testCondFalse() {
-    assertThat(Either.cond(false, "Pegasus.", 7), is(Either.<Integer, String> left(7)));
+    Either<Integer, String> cond = Either.cond(false, "Pegasus.", 7);
+    assertEquals(Either.left(7), cond);
   }
 }

@@ -9,25 +9,12 @@
     
     <groupId>com.atlassian.fugue</groupId>
     <artifactId>fugue</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
     <name>Functional Guava Extensions</name>
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.7</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -46,6 +33,11 @@
                         <Export-Package>
                             com.atlassian.fugue.*;version="${project.version}"
                         </Export-Package>
+                        <Import-Package>
+                            com.google.base.*;version="${guava.osgi.version}",
+                            com.google.common.*;version="${guava.osgi.version}",
+                            *
+                        </Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
@@ -92,11 +84,10 @@
             <version>1.6.0</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>com.googlecode.guava-osgi</groupId>
-            <artifactId>guava-osgi</artifactId>
-            <version>${guava.osgi.version}</version>
-            <scope>provided</scope>
+        <dependency> <!-- For now this is not provided by all apps, so we need to bundle it here :( -->
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
         </dependency>
         <dependency>
             <groupId>com.atlassian.util.concurrent</groupId>
@@ -111,29 +102,17 @@
             <artifactId>mockito-core</artifactId>
             <version>1.8.4</version>
             <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.hamcrest</groupId>
-                    <artifactId>hamcrest-core</artifactId>
-                 </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
-            <artifactId>junit-dep</artifactId>
-            <version>4.8.2</version>
+            <artifactId>junit</artifactId>
+            <version>4.8.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-core</artifactId>
-            <version>1.3.RC2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-library</artifactId>
-            <version>1.3.RC2</version>
+            <artifactId>hamcrest-all</artifactId>
+            <version>1.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -141,13 +120,14 @@
     <properties>
         <jdkLevel>1.6</jdkLevel>
         <clover.version>3.1.0</clover.version>
+        <guava.version>r06</guava.version>
         <guava.osgi.version>6.0.0</guava.osgi.version>
     </properties>
     
     <scm>
-        <connection>scm:svn:https://labs.atlassian.com/svn/FAGE/trunk</connection>
-        <developerConnection>scm:svn:https://labs.atlassian.com/svn/FAGE/trunk</developerConnection>
-        <url>https://labs.atlassian.com/svn/FAGE/trunk</url>
+        <connection>scm:svn:https://labs.atlassian.com/svn/FAGE/tags/fugue-1.0.1</connection>
+        <developerConnection>scm:svn:https://labs.atlassian.com/svn/FAGE/tags/fugue-1.0.1</developerConnection>
+        <url>https://labs.atlassian.com/svn/FAGE/tags/fugue-1.0.1</url>
     </scm>
     
 </project>

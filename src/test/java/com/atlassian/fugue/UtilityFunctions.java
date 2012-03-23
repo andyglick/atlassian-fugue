@@ -1,11 +1,6 @@
 package com.atlassian.fugue;
 
-import static com.atlassian.fugue.Either.left;
-import static com.atlassian.fugue.Either.right;
-
 import com.google.common.base.Function;
-
-import java.lang.reflect.Constructor;
 
 public class UtilityFunctions {
   public static Function<Integer, Integer> addOne = new Function<Integer, Integer>() {
@@ -30,18 +25,4 @@ public class UtilityFunctions {
       return new StringBuilder(from).reverse().toString();
     }
   };
-
-  static <A> Function<Class<A>, Either<Exception, A>> defaultCtor() {
-    return new Function<Class<A>, Either<Exception, A>>() {
-      @Override public Either<Exception, A> apply(final Class<A> klass) {
-        try {
-          final Constructor<A> declaredConstructor = klass.getDeclaredConstructor();
-          declaredConstructor.setAccessible(true);
-          return right(declaredConstructor.newInstance());
-        } catch (final Exception e) {
-          return left(e);
-        }
-      }
-    };
-  }
 }

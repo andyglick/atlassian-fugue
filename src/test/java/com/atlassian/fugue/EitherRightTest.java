@@ -5,6 +5,9 @@ import static com.atlassian.fugue.Either.right;
 import static com.atlassian.fugue.UtilityFunctions.bool2String;
 import static com.atlassian.fugue.UtilityFunctions.int2String;
 import static java.lang.String.valueOf;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -18,23 +21,19 @@ public class EitherRightTest {
   final Either<Boolean, Integer> either = right(ORIGINAL_VALUE);
 
   @Test public void rightGet() {
-    assertThat(either.right().get(), is(ORIGINAL_VALUE));
+    assertEquals(ORIGINAL_VALUE, either.right().get());
   }
 
-  @Test public void rightIsDefined() {
-    assertThat(either.right().isDefined(), is(true));
-  }
-
-  @Test public void leftIsDefined() {
-    assertThat(either.left().isDefined(), is(false));
+  @Test public void left() {
+    assertFalse(either.left().isDefined());
   }
 
   @Test public void isRight() {
-    assertThat(either.isRight(), is(true));
+    assertTrue(either.isRight());
   }
 
   @Test public void isLeft() {
-    assertThat(either.isLeft(), is(false));
+    assertFalse(either.isLeft());
   }
 
   @Test public void getRight() {
@@ -47,41 +46,41 @@ public class EitherRightTest {
 
   @Test public void swap() {
     final Either<Integer, Boolean> swapped = either.swap();
-    assertThat(swapped.isLeft(), is(true));
-    assertThat(swapped.left().get(), is(either.right().get()));
-    assertThat(swapped.left().get(), is(ORIGINAL_VALUE));
+    assertTrue(swapped.isLeft());
+    assertEquals(either.right().get(), swapped.left().get());
+    assertEquals(ORIGINAL_VALUE, swapped.left().get());
   }
 
   @Test public void map() {
-    assertThat(either.fold(bool2String, int2String), is(valueOf(ORIGINAL_VALUE)));
+    assertEquals(valueOf(ORIGINAL_VALUE), either.fold(bool2String, int2String));
   }
 
   @Test public void mapLeft() {
-    assertThat(either.left().map(bool2String).left().isEmpty(), is(true));
+    assertTrue(either.left().map(bool2String).left().isEmpty());
   }
 
   @Test public void mapRight() {
-    assertThat(either.right().map(int2String).right().get(), is(valueOf(ORIGINAL_VALUE)));
+    assertEquals(valueOf(ORIGINAL_VALUE), either.right().map(int2String).right().get());
   }
 
   @Test public void toStringTest() {
-    assertThat(either.toString(), is("Either.Right(1)"));
+    assertEquals("Either.Right(1)", either.toString());
   }
 
   @Test public void hashCodeTest() {
-    assertThat(either.hashCode(), is(ORIGINAL_VALUE.hashCode()));
+    assertEquals(ORIGINAL_VALUE.hashCode(), either.hashCode());
   }
 
   @Test public void equalsItself() {
-    assertThat(either.equals(either), is(true));
+    assertTrue(either.equals(either));
   }
 
   @Test public void notEqualsNull() {
-    assertThat(either.equals(null), is(false));
+    assertFalse(either.equals(null));
   }
 
   @Test public void notThrowsException() throws IOException {
     final Either<IOException, String> either = right("boo yaa!");
-    assertThat(getOrThrow(either), is("boo yaa!"));
+    assertEquals("boo yaa!", getOrThrow(either));
   }
 }

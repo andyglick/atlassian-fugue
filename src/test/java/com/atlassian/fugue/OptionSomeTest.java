@@ -5,8 +5,11 @@ import static com.atlassian.fugue.Option.option;
 import static com.atlassian.fugue.Option.some;
 import static com.atlassian.fugue.Suppliers.ofInstance;
 import static com.atlassian.fugue.UtilityFunctions.addOne;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertSame;
+import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
@@ -27,19 +30,19 @@ public class OptionSomeTest {
   Option<Integer> some = some(ORIGINAL_VALUE);
 
   @Test public void get() {
-    assertThat(some.get(), is(ORIGINAL_VALUE));
+    assertEquals(ORIGINAL_VALUE, some.get());
   }
 
   @Test public void isSet() {
-    assertThat(some.isDefined(), is(true));
+    assertTrue(some.isDefined());
   }
 
   @Test public void getOrElse() {
-    assertThat(some.getOrElse(NOT_IN_SOME), is(ORIGINAL_VALUE));
+    assertEquals(ORIGINAL_VALUE, some.getOrElse(NOT_IN_SOME));
   }
 
   @Test public void getOrNull() {
-    assertThat(some.getOrNull(), is(ORIGINAL_VALUE));
+    assertEquals(ORIGINAL_VALUE, some.getOrNull());
   }
 
   @Test(expected = NullPointerException.class) public void mapForNull() {
@@ -47,24 +50,25 @@ public class OptionSomeTest {
   }
 
   @Test public void map() {
-    assertThat(some.map(addOne).get(), is(2));
+    assertEquals(new Integer(2), some.map(addOne).get());
   }
 
   @Test public void superTypesPermittedOnFilter() {
     final ArrayList<Integer> list = Lists.newArrayList(1, 2);
     final Option<ArrayList<Integer>> option = option(list);
     final Option<ArrayList<Integer>> nopt = option.filter(Predicates.<List<Integer>> alwaysTrue());
-    assertThat(nopt, sameInstance(option));
+    assertSame(option, nopt);
   }
 
   @Test public void superTypesPermittedOnMap() {
-    final Option<ArrayList<Integer>> option = option(Lists.newArrayList(1, 2));
+    final ArrayList<Integer> list = Lists.newArrayList(1, 2);
+    final Option<ArrayList<Integer>> option = option(list);
     final Option<Set<Number>> set = option.map(new Function<List<Integer>, Set<Number>>() {
       public Set<Number> apply(final List<Integer> list) {
         return Sets.<Number> newHashSet(list);
       }
     });
-    assertThat(set.get().size(), is(option.get().size()));
+    assertSame(option.get().size(), set.get().size());
   }
 
   @Test(expected = NullPointerException.class) public void filterForNull() {
@@ -72,37 +76,38 @@ public class OptionSomeTest {
   }
 
   @Test public void positiveFilter() {
-    assertThat(some.filter(Predicates.<Integer> alwaysTrue()).get(), is(ORIGINAL_VALUE));
+    assertEquals(ORIGINAL_VALUE, some.filter(Predicates.<Integer> alwaysTrue()).get());
   }
 
   @Test public void negativeFilter() {
-    assertThat(some.filter(Predicates.<Integer> alwaysFalse()).isDefined(), is(false));
+    assertEquals(Option.<Integer> none(), some.filter(Predicates.<Integer> alwaysFalse()));
   }
 
   @Test public void existsTrueReturnsTrue() {
-    assertThat(some.exists(Predicates.<Integer> alwaysTrue()), is(true));
+    assertTrue(some.exists(Predicates.<Integer> alwaysTrue()));
   }
 
   @Test public void existsFalseReturnsFalse() {
-    assertThat(some.exists(Predicates.<Integer> alwaysFalse()), is(false));
+    assertFalse(some.exists(Predicates.<Integer> alwaysFalse()));
   }
 
   @Test public void toLeftReturnsLeft() {
-    assertThat(some.toLeft(ofInstance("")).isLeft(), is(true));
+    assertTrue(some.toLeft(ofInstance("")).isLeft());
   }
 
   @Test public void toRightReturnsRight() {
-    assertThat(some.toRight(ofInstance("")).isRight(), is(true));
+    assertTrue(some.toRight(ofInstance("")).isRight());
   }
 
   @Test public void iteratorHasNext() {
-    assertThat(some.iterator().hasNext(), is(true));
+    assertTrue(some.iterator().hasNext());
   }
 
   @Test public void iteratorNext() {
     final Iterator<Integer> iterator = some.iterator();
-    assertThat(iterator.next(), is(ORIGINAL_VALUE));
-    assertThat(iterator.hasNext(), is(false));
+    final Integer actual = iterator.next();
+    assertEquals(ORIGINAL_VALUE, actual);
+    assertFalse(iterator.hasNext());
   }
 
   @Test(expected = UnsupportedOperationException.class) public void iteratorImmutable() {
@@ -124,22 +129,23 @@ public class OptionSomeTest {
   }
 
   @Test public void toStringTest() {
-    assertThat(some.toString(), is("some(1)"));
+    assertEquals("some(1)", some.toString());
   }
 
   @Test public void equalsItself() {
-    assertThat(some.equals(some), is(true));
+    assertTrue(some.equals(some));
   }
 
   @Test public void notEqualsNone() {
-    assertThat(some.equals(none()), is(false));
+    assertFalse(some.equals(none()));
   }
 
   @Test public void notEqualsNull() {
-    assertThat(some.equals(null), is(false));
+    assertFalse(some.equals(null));
   }
 
   @Test public void hashDoesNotThrowException() {
     some.hashCode();
   }
+
 }
