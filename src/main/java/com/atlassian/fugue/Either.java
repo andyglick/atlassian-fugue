@@ -187,9 +187,9 @@ public abstract class Either<L, R> {
   }
 
   /**
-   * Projects this either as a right.
-   * 
-   * @return A right projection of this either.
+   * Projects this either as a left.
+   *
+   * @return A left projection of this either.
    */
   public final LeftProjection left() {
     return new LeftProjection();
