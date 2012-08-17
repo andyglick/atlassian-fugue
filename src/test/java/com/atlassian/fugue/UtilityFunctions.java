@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package com.atlassian.fugue;
 
 import static com.atlassian.fugue.Either.left;
@@ -43,6 +43,12 @@ public class UtilityFunctions {
   public static Function<String, String> reverse = new Function<String, String>() {
     public String apply(final String from) {
       return new StringBuilder(from).reverse().toString();
+    }
+  };
+
+  static final Function2<Integer, Integer, Integer> product = new Function2<Integer, Integer, Integer>() {
+    @Override public Integer apply(final Integer a, final Integer b) {
+      return a * b;
     }
   };
 

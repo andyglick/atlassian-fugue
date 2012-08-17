@@ -12,14 +12,12 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package com.atlassian.fugue;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.base.Function;
-
-import java.util.Iterator;
 
 /**
  * Represents a pair of objects.
@@ -37,6 +35,17 @@ public final class Pair<A, B> {
    */
   public static <A, B> Pair<A, B> pair(final A left, final B right) {
     return new Pair<A, B>(left, right);
+  }
+
+  /**
+   * Factory method for a Pair factory function.
+   */
+  public static <A, B> Function2<A, B, Pair<A, B>> pairs() {
+    return new Function2<A, B, Pair<A, B>>() {
+      public com.atlassian.fugue.Pair<A, B> apply(final A a, final B b) {
+        return pair(a, b);
+      }
+    };
   }
 
   /**
@@ -73,7 +82,7 @@ public final class Pair<A, B> {
    * @since 1.1
    */
   public static <A, B> Iterable<Pair<A, B>> zip(final Iterable<A> as, final Iterable<B> bs) {
-    return new Zipper<A, B>(as, bs);
+    return Iterables.zip(as, bs);
   }
 
   //
@@ -138,44 +147,6 @@ public final class Pair<A, B> {
   static class RightAccessor<B> implements Function<Pair<?, B>, B> {
     @Override public B apply(final Pair<?, B> from) {
       return from.right();
-    }
-  }
-
-  /**
-   * Iterable that produces pairs from two iterables that produce the left and
-   * right elements.
-   * 
-   * @param <A> LHS type
-   * @param <B> RHS type
-   */
-  static class Zipper<A, B> implements Iterable<Pair<A, B>> {
-    private final Iterable<A> as;
-    private final Iterable<B> bs;
-
-    Zipper(final Iterable<A> as, final Iterable<B> bs) {
-      this.as = checkNotNull(as, "as must not be null.");
-      this.bs = checkNotNull(bs, "bs must not be null.");
-    }
-
-    @Override public Iterator<Pair<A, B>> iterator() {
-      return new Iter();
-    }
-
-    class Iter implements Iterator<Pair<A, B>> {
-      private final Iterator<A> a = checkNotNull(as.iterator(), "as iterator must not be null.");
-      private final Iterator<B> b = checkNotNull(bs.iterator(), "bs iterator must not be null.");
-
-      @Override public boolean hasNext() {
-        return a.hasNext() && b.hasNext();
-      }
-
-      @Override public Pair<A, B> next() {
-        return pair(a.next(), b.next());
-      }
-
-      @Override public void remove() {
-        throw new UnsupportedOperationException();
-      }
     }
   }
 }

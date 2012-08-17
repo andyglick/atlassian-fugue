@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package com.atlassian.fugue;
 
 import static com.atlassian.fugue.Option.none;
@@ -77,8 +77,8 @@ public class Iterables {
   }
 
   /**
-   * If {@code as} is empty, returns {@code none()}. Otherwise, returns {@code
-   * some(get(as, 0))}.
+   * If {@code as} is empty, returns {@code none()}. Otherwise, returns
+   * {@code some(get(as, 0))}.
    * 
    * @param <A> type of elements in {@code as}
    * @param as elements to get the first value of
@@ -183,7 +183,7 @@ public class Iterables {
     checkArgument(n >= 0, "Cannot drop a negative number of elements");
     if (xs instanceof List<?>) {
       final List<T> list = (List<T>) xs;
-      if (n > list.size() - 1) {
+      if (n > (list.size() - 1)) {
         return ImmutableList.of();
       }
       return ((List<T>) xs).subList(n, list.size());
@@ -191,23 +191,94 @@ public class Iterables {
     return new Range<T>(n, Integer.MAX_VALUE, xs);
   }
 
-  static final class Range<T> implements Iterable<T> {
-    private final Iterable<T> delegate;
+  /**
+   * Merge a number of already sorted collections of elements into a single
+   * collection of elements.
+   * 
+   * @param <A> type of the elements
+   * @param xss already sorted collection of collections
+   * @param ordering ordering to use when comparing elements
+   * @return {@code xss} merged in a sorted order
+   * @since 1.1
+   */
+  public static <A> Iterable<A> mergeSorted(final Iterable<? extends Iterable<A>> xss, final Ordering<A> ordering) {
+    return new MergeSortedIterable<A>(xss, ordering);
+  }
+
+  /**
+   * Makes a lazy copy of {@code xs}.
+   * 
+   * @param <A> type of elements in {@code xs}
+   * @param xs {@code Iterable} to be memoized
+   * @return lazy copy of {@code as}
+   * @since 1.1
+   */
+  public static <A> Iterable<A> memoize(final Iterable<A> xs) {
+    return new Memoizer<A>(xs);
+  }
+
+  /**
+   * Zips two iterables into a single iterable that produces {@link Pair pairs}.
+   * 
+   * @param <A> LHS type
+   * @param <B> RHS type
+   * @param as left values
+   * @param bs right values
+   * @return an {@link Iterable iterable} of pairs, only as long as the shortest
+   * input iterable.
+   * @since 1.2
+   */
+  public static <A, B> Iterable<Pair<A, B>> zip(final Iterable<A> as, final Iterable<B> bs) {
+    return zipWith(Pair.<A, B> pairs()).apply(as, bs);
+  }
+
+  /**
+   * Takes a two-arg function that returns a third type and reurn a new function
+   * that takes iterables of the two input types and combines them into a new
+   * iterable.
+   * 
+   * @param <A> LHS type
+   * @param <B> RHS type
+   * @param <C> result type
+   * @param f combiner function
+   * @return an Function that takes two iterables and zips them using the
+   * supplied function
+   * @since 1.2
+   */
+  public static <A, B, C> Function2<Iterable<A>, Iterable<B>, Iterable<C>> zipWith(final Function2<A, B, C> f) {
+    return new Function2<Iterable<A>, Iterable<B>, Iterable<C>>() {
+      public Iterable<C> apply(final Iterable<A> as, final Iterable<B> bs) {
+        return new Zipper<A, B, C>(as, bs, f);
+      }
+    };
+  }
+
+  //
+  // inner classes
+  //
+
+  static abstract class IterableToString<A> implements Iterable<A> {
+    @Override public final String toString() {
+      return com.google.common.collect.Iterables.toString(this);
+    }
+  }
+
+  /**
+   * Iterable that only shows a small range of the original Iterable.
+   */
+  static final class Range<A> extends IterableToString<A> {
+    private final Iterable<A> delegate;
     private final int drop;
     private final int size;
 
-    private Range(final int drop, final int size, final Iterable<T> delegate) {
+    private Range(final int drop, final int size, final Iterable<A> delegate) {
       this.delegate = checkNotNull(delegate);
       this.drop = drop;
       this.size = size;
     }
 
-    public Iterator<T> iterator() {
-      return new Iter<T>(drop, size, delegate.iterator());
-    }
-
-    @Override public String toString() {
-      return com.google.common.collect.Iterables.toString(this);
+    public Iterator<A> iterator() {
+      return new Iter<A>(drop, size, delegate.iterator());
     }
 
     static final class Iter<T> extends AbstractIterator<T> {
@@ -238,20 +309,9 @@ public class Iterables {
   }
 
   /**
-   * Merge a number of already sorted collections of elements into a single
-   * collection of elements.
-   * 
-   * @param <A> type of the elements
-   * @param xss already sorted collection of collections
-   * @param ordering ordering to use when comparing elements
-   * @return {@code xss} merged in a sorted order
-   * @since 1.1
+   * Merges two sorted Iterables into one, sorted iterable.
    */
-  public static <A> Iterable<A> mergeSorted(final Iterable<? extends Iterable<A>> xss, final Ordering<A> ordering) {
-    return new MergeSortedIterable<A>(xss, ordering);
-  }
-
-  private static final class MergeSortedIterable<A> implements Iterable<A> {
+  static final class MergeSortedIterable<A> extends IterableToString<A> {
     private final Iterable<? extends Iterable<A>> xss;
     private final Ordering<A> ordering;
 
@@ -262,10 +322,6 @@ public class Iterables {
 
     public Iterator<A> iterator() {
       return new Iter<A>(xss, ordering);
-    }
-
-    @Override public String toString() {
-      return com.google.common.collect.Iterables.toString(this);
     }
 
     private static final class Iter<A> extends AbstractIterator<A> {
@@ -317,23 +373,9 @@ public class Iterables {
   }
 
   /**
-   * Makes a lazy copy of {@code xs}.
-   * 
-   * @param <A> type of elements in {@code xs}
-   * @param xs {@code Iterable} to be memoized
-   * @return lazy copy of {@code as}
-   * @since 1.1
-   */
-  public static <A> Iterable<A> memoize(final Iterable<A> xs) {
-    return new Memoizer<A>(xs);
-  }
-
-  /**
    * Memoizing iterable, maintains a lazily computed linked list of nodes.
-   * 
-   * @param <A> the type
    */
-  static final class Memoizer<A> implements Iterable<A> {
+  static final class Memoizer<A> extends IterableToString<A> {
     private final Node<A> head;
 
     Memoizer(final Iterable<A> delegate) {
@@ -342,10 +384,6 @@ public class Iterables {
 
     public Iterator<A> iterator() {
       return new Iter<A>(head);
-    }
-
-    @Override public String toString() {
-      return com.google.common.collect.Iterables.toString(this);
     }
 
     private static <A> Node<A> nextNode(final Iterator<A> delegate) {
@@ -430,6 +468,42 @@ public class Iterables {
         } finally {
           node = node.next();
         }
+      }
+    }
+  }
+
+  /**
+   * Iterable that combines two iterables using a combiner function.
+   */
+  static class Zipper<A, B, C> extends IterableToString<C> {
+    private final Iterable<A> as;
+    private final Iterable<B> bs;
+    private final Function2<A, B, C> f;
+
+    Zipper(final Iterable<A> as, final Iterable<B> bs, final Function2<A, B, C> f) {
+      this.as = checkNotNull(as, "as must not be null.");
+      this.bs = checkNotNull(bs, "bs must not be null.");
+      this.f = checkNotNull(f, "f must not be null.");
+    }
+
+    @Override public Iterator<C> iterator() {
+      return new Iter();
+    }
+
+    class Iter implements Iterator<C> {
+      private final Iterator<A> a = checkNotNull(as.iterator(), "as iterator must not be null.");
+      private final Iterator<B> b = checkNotNull(bs.iterator(), "bs iterator must not be null.");
+
+      @Override public boolean hasNext() {
+        return a.hasNext() && b.hasNext();
+      }
+
+      @Override public C next() {
+        return f.apply(a.next(), b.next());
+      }
+
+      @Override public void remove() {
+        throw new UnsupportedOperationException();
       }
     }
   }
