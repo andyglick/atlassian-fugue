@@ -15,9 +15,9 @@
 */
 package com.atlassian.fugue;
 
-import static com.atlassian.fugue.Option.filterNone;
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.some;
+import static com.atlassian.fugue.Options.filterNone;
 import static com.google.common.base.Functions.compose;
 import static com.google.common.base.Suppliers.ofInstance;
 import static com.google.common.collect.ImmutableList.of;
@@ -29,12 +29,12 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
+import java.util.List;
+import java.util.NoSuchElementException;
+
 import org.junit.Test;
 
 import com.google.common.base.Function;
-
-import java.util.List;
-import java.util.NoSuchElementException;
 
 public class OptionTest {
   @Test public void foldOnNoneReturnsValueFromSupplier() {

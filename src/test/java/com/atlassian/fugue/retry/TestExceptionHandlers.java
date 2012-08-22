@@ -27,7 +27,6 @@ import java.lang.reflect.InvocationTargetException;
 import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -76,7 +75,6 @@ public class TestExceptionHandlers {
   }
   
   @Test public void loggingExceptionHandlerNull() {
-    Logger logger = mock(Logger.class);
     ExceptionHandler exceptionHandler = ExceptionHandlers.loggingExceptionHandler(null);
     
     assertThat(exceptionHandler.getClass(), Matchers.<Class<? extends ExceptionHandler>>is(ExceptionHandlers.LoggingExceptionHandler.class));
