@@ -15,6 +15,7 @@ as well as a Pair.
 
 There also additional helper classes for common Function and Supplier operations.
 
+--------------
 Issue Tracking
 --------------
 Issues are tracked in the FAGE_ project on labs.atlassian.com
