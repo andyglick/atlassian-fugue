@@ -17,6 +17,8 @@ package com.atlassian.fugue;
 
 import static com.atlassian.fugue.Either.getOrThrow;
 import static com.atlassian.fugue.Iterables.findFirst;
+import static com.atlassian.fugue.Iterables.rangeTo;
+import static com.atlassian.fugue.Iterables.rangeUntil;
 import static com.atlassian.fugue.Option.some;
 import static com.atlassian.fugue.Pair.pair;
 import static com.google.common.collect.ImmutableList.of;
@@ -72,6 +74,26 @@ public class IterablesTest {
     });
 
     assertThat(found, is(Option.some(expected)));
+  }
+
+  @Test public void testRangeTo() {
+    assertThat(rangeTo(1, 5), is(contains(1, 2, 3, 4, 5)));
+  }
+
+  @Test public void testRangeUntil() {
+    assertThat(rangeUntil(1, 5), is(contains(1, 2, 3, 4)));
+  }
+
+  @Test public void testRangeToStep() {
+    assertThat(rangeTo(1, 5, 2), is(contains(1, 3, 5)));
+  }
+
+  @Test public void testRangeUntilStep() {
+    assertThat(rangeUntil(1, 5, 2), is(contains(1, 3)));
+  }
+
+  @Test public void testRangeUntilNegativeStep() {
+    assertThat(rangeUntil(8, -1, -3), is(contains(8, 5, 2)));
   }
 
   @Test public void flatMapConcatenates() {

@@ -17,6 +17,7 @@ package com.atlassian.fugue;
 
 import static com.atlassian.fugue.Iterables.zip;
 import static com.atlassian.fugue.Iterables.zipWith;
+import static com.atlassian.fugue.Iterables.zipWithIndex;
 import static com.atlassian.fugue.Pair.pair;
 import static com.atlassian.fugue.UtilityFunctions.product;
 import static java.util.Arrays.asList;
@@ -40,5 +41,9 @@ public class IterablesZipTest {
 
   @Test public void zipWithFrom() {
     assertThat(zipWith(product).apply(asList(4, 3, 2, 8), asList(2, 4, 6, 8)), contains(8, 12, 12, 64));
+  }
+
+  @Test public void testZipWithIndex() {
+    assertThat(zipWithIndex(asList("a", "b", "c")), contains(pair("a", 0), pair("b", 1), pair("c", 2)));
   }
 }
