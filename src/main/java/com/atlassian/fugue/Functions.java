@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package com.atlassian.fugue;
 
 import static com.atlassian.fugue.Either.left;
@@ -35,20 +35,24 @@ import java.util.Map;
  * @since 1.1
  */
 public class Functions {
-  private Functions() {}
+  private Functions() {
+    throw new UnsupportedOperationException();
+  }
 
-/**
- * Apply f to each element in elements, with each application using the result of the previous application as the other
- * argument to f. zero is used as the first 'result' value. The final result is returned.
- * 
- * @param f the function to apply to all the elements
- * @param zero the starting point for the function
- * @param elements the series of which each element will be accumulated into a result
- * 
- * @return the result of accumulating the application of f to all elements
- * 
- * @since 1.1
- */
+  /**
+   * Apply f to each element in elements, with each application using the result
+   * of the previous application as the other argument to f. zero is used as the
+   * first 'result' value. The final result is returned.
+   * 
+   * @param f the function to apply to all the elements
+   * @param zero the starting point for the function
+   * @param elements the series of which each element will be accumulated into a
+   * result
+   * 
+   * @return the result of accumulating the application of f to all elements
+   * 
+   * @since 1.1
+   */
   public static <F, T> T fold(final Function2<T, F, T> f, final T zero, final Iterable<F> elements) {
     T currentValue = zero;
     for (final F element : elements) {
@@ -57,18 +61,20 @@ public class Functions {
     return currentValue;
   }
 
-/**
- * Apply f to each element in elements, with each application using the result of the previous application as the other
- * argument to f. zero is used as the first 'result' value. The final result is returned.
- * 
- * @param f the function to apply to all elements
- * @param zero the starting point for the function
- * @param elements the series of which each element will be accumulated into a result
- * 
- * @return the result of accumulating the application of f to all elements
- * 
- * @since 1.1
- */
+  /**
+   * Apply f to each element in elements, with each application using the result
+   * of the previous application as the other argument to f. zero is used as the
+   * first 'result' value. The final result is returned.
+   * 
+   * @param f the function to apply to all elements
+   * @param zero the starting point for the function
+   * @param elements the series of which each element will be accumulated into a
+   * result
+   * 
+   * @return the result of accumulating the application of f to all elements
+   * 
+   * @since 1.1
+   */
   public static <F, T> T fold(final Function<Pair<T, F>, T> f, final T zero, final Iterable<F> elements) {
     return fold(new Function2<T, F, T>() {
       public T apply(final T arg1, final F arg2) {
@@ -271,6 +277,119 @@ public class Functions {
     return new Function<A, B>() {
       public B apply(final A from) {
         return constant;
+      }
+    };
+  }
+
+  static <A, B, C> Function<A, Function<B, C>> curry(final Function2<A, B, C> f2) {
+    return new Function<A, Function<B, C>>() {
+      @Override
+      public Function<B, C> apply(final A a) {
+        return new Function<B, C>() {
+          public C apply(B b) {
+            return f2.apply(a, b);
+          };
+        };
+      }
+    };
+  }
+
+  /**
+   * Function composition: one andThen two
+   */
+  static <A, B, C> Function<A, C> andThen(final Function<A, B> one, final Function<B, C> two) {
+    return new Function<A, C>() {
+      @Override
+      public C apply(A from) {
+        return two.apply(one.apply(from));
+      }
+    };
+  }
+
+  /**
+   * Function composition. f compose g means apply g andThen f
+   * 
+   * @param f A function to compose with another.
+   * @param g A function to compose with another.
+   * @return A function that is the composition of the given arguments.
+   */
+  static <A, B, C> Function<A, C> compose(final Function<B, C> f, final Function<A, B> g) {
+    return andThen(g, f);
+  }
+
+  /**
+   * Function composition.
+   * 
+   * @param f A function to compose with another.
+   * @param g A function to compose with another.
+   * @return A function that is the composition of the given arguments.
+   */
+  static <A, B, C, D> Function<A, Function<B, D>> compose2(final Function<C, D> f, final Function<A, Function<B, C>> g) {
+    return new Function<A, Function<B, D>>() {
+      public Function<B, D> apply(final A a) {
+        return new Function<B, D>() {
+          public D apply(final B b) {
+            return f.apply(g.apply(a).apply(b));
+          }
+        };
+      }
+    };
+  }
+
+  /**
+   * Function argument flipping.
+   * 
+   * @return A function that takes a function and flips its arguments.
+   */
+  static <A, B, C> Function<Function<A, Function<B, C>>, Function<B, Function<A, C>>> flip() {
+    return new Function<Function<A, Function<B, C>>, Function<B, Function<A, C>>>() {
+      public Function<B, Function<A, C>> apply(final Function<A, Function<B, C>> f) {
+        return flip(f);
+      }
+    };
+  }
+
+  /**
+   * Function argument flipping.
+   * 
+   * @param f The function to flip.
+   * @return The given function flipped.
+   */
+  static <A, B, C> Function<B, Function<A, C>> flip(final Function<A, Function<B, C>> f) {
+    return new Function<B, Function<A, C>>() {
+      public Function<A, C> apply(final B b) {
+        return new Function<A, C>() {
+          public C apply(final A a) {
+            return f.apply(a).apply(b);
+          }
+        };
+      }
+    };
+  }
+
+  /**
+   * Function argument flipping.
+   * 
+   * @param f The function to flip.
+   * @return The given function flipped.
+   */
+  static <A, B, C> Function2<B, A, C> flip(final Function2<A, B, C> f) {
+    return new Function2<B, A, C>() {
+      public C apply(final B b, final A a) {
+        return f.apply(a, b);
+      }
+    };
+  }
+
+  /**
+   * Function argument flipping.
+   * 
+   * @return A function that flips the arguments of a given function.
+   */
+  static <A, B, C> Function<Function2<A, B, C>, Function2<B, A, C>> flip2() {
+    return new Function<Function2<A, B, C>, Function2<B, A, C>>() {
+      public Function2<B, A, C> apply(final Function2<A, B, C> f) {
+        return flip(f);
       }
     };
   }

@@ -171,7 +171,8 @@ public class Iterables {
   }
 
   /**
-   * Drop the first {@code n} {@code xs} and return the rest.
+   * Drop the first {@code n} {@code xs} and return the rest. Returns an empty
+   * iterable if the number dropped exceeds the number of elements.
    * 
    * @param <T> type of {@code xs}
    * @param n number of {@code xs} to drop
@@ -187,6 +188,10 @@ public class Iterables {
         return ImmutableList.of();
       }
       return ((List<T>) xs).subList(n, list.size());
+    }
+    if (xs instanceof Range<?>) {
+      final Range<T> range = (Range<T>) xs;
+      return new Range<T>(range.drop + n, range.size, range.delegate);
     }
     return new Range<T>(n, Integer.MAX_VALUE, xs);
   }
@@ -253,12 +258,21 @@ public class Iterables {
     };
   }
 
+  public static <A, B extends A> A foldLeft(Iterable<B> as, A zero, Semigroup<A> semi) {
+    A accum = zero;
+    for (A a : as) {
+      accum = semi.append(accum, a);
+    }
+    return accum;
+  }
+
   //
   // inner classes
   //
 
   static abstract class IterableToString<A> implements Iterable<A> {
-    @Override public final String toString() {
+    @Override
+    public final String toString() {
       return com.google.common.collect.Iterables.toString(this);
     }
   }
@@ -297,7 +311,8 @@ public class Iterables {
         }
       }
 
-      @Override protected T computeNext() {
+      @Override
+      protected T computeNext() {
         if ((remaining > 0) && it.hasNext()) {
           remaining--;
           return it.next();
@@ -332,7 +347,8 @@ public class Iterables {
         com.google.common.collect.Iterables.addAll(this.xss, transform(filter(xss, not(isEmpty())), peekingIterator()));
       }
 
-      @Override protected A computeNext() {
+      @Override
+      protected A computeNext() {
         final Option<PeekingIterator<A>> currFirstOption = first(xss);
         if (!currFirstOption.isDefined()) {
           return endOfData();
@@ -419,7 +435,8 @@ public class Iterables {
         this.value = delegate.next();
       }
 
-      @Override protected Node<A> create() throws Exception {
+      @Override
+      protected Node<A> create() throws Exception {
         return nextNode(delegate);
       }
 
@@ -459,7 +476,8 @@ public class Iterables {
         this.node = node;
       }
 
-      @Override protected A computeNext() {
+      @Override
+      protected A computeNext() {
         if (node.isEnd()) {
           return endOfData();
         }
@@ -486,7 +504,8 @@ public class Iterables {
       this.f = checkNotNull(f, "f must not be null.");
     }
 
-    @Override public Iterator<C> iterator() {
+    @Override
+    public Iterator<C> iterator() {
       return new Iter();
     }
 
@@ -494,15 +513,18 @@ public class Iterables {
       private final Iterator<A> a = checkNotNull(as.iterator(), "as iterator must not be null.");
       private final Iterator<B> b = checkNotNull(bs.iterator(), "bs iterator must not be null.");
 
-      @Override public boolean hasNext() {
+      @Override
+      public boolean hasNext() {
         return a.hasNext() && b.hasNext();
       }
 
-      @Override public C next() {
+      @Override
+      public C next() {
         return f.apply(a.next(), b.next());
       }
 
-      @Override public void remove() {
+      @Override
+      public void remove() {
         throw new UnsupportedOperationException();
       }
     }

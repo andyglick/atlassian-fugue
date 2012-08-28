@@ -80,6 +80,7 @@ public final class Pair<A, B> {
    * @return an {@link Iterable iterable} of pairs, only as long as the shortest
    * input iterable.
    * @since 1.1
+   * @see Iterables#zip(Iterable, Iterable)
    */
   public static <A, B> Iterable<Pair<A, B>> zip(final Iterable<A> as, final Iterable<B> bs) {
     return Iterables.zip(as, bs);

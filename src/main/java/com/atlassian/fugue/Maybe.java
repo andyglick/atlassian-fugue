@@ -38,7 +38,7 @@ import java.util.NoSuchElementException;
  * 
  * @since 1.0
  */
-public interface Maybe<A> extends Supplier<A>, Iterable<A>, Effect.Applicant<A> {
+interface Maybe<A> extends Supplier<A>, Iterable<A>, Effect.Applicant<A> {
   /**
    * Get the value if defined. Throw an exception otherwise.
    * 
