@@ -23,6 +23,8 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
+import com.google.common.base.Function;
+
 public class EitherTest {
   @Test(expected = NullPointerException.class) public void testNullLeft() {
     Either.left(null);
@@ -58,5 +60,31 @@ public class EitherTest {
 
   @Test public void testCondFalse() {
     assertThat(Either.cond(false, "Pegasus.", 7), is(Either.<Integer, String> left(7)));
+  }
+
+  static class GenericTest<A> {
+    private final Either<Exception, A> either;
+
+    public GenericTest(Either<Exception, A> either) {
+      this.either = either;
+    }
+
+    public Exception getException() {
+      return either.left().get();
+    }
+
+    public A getValue() {
+      return either.right().get();
+    }
+
+    public <B> GenericTest<B> map(Function<A, B> func) {
+      return new GenericTest<B>(either.right().map(func));
+    }
+
+    public <B> GenericTest<B> flatMap(Function<A, GenericTest<B>> func) {
+      @SuppressWarnings("unchecked")
+      GenericTest<B> left = (GenericTest<B>) this;
+      return either.fold(Functions.<Exception, GenericTest<B>> constant(left), func);
+    }
   }
 }
