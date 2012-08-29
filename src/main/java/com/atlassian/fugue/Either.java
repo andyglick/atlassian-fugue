@@ -418,7 +418,7 @@ public abstract class Either<L, R> {
     }
 
     //
-    // stuff that can't be put on an interface without higher-kinded types
+    // definitions that can't be shared without higher-kinded types
     //
 
     /**
@@ -521,7 +521,7 @@ public abstract class Either<L, R> {
     }
 
     //
-    // stuff that can't be made put on an interface without higher-kinded types
+    // definitions that can't be shared without higher-kinded types
     //
 
     /**
