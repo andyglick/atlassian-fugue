@@ -336,8 +336,10 @@ public abstract class Either<L, R> {
     }
   }
 
+  /**
+   * Holds the common implementation for both projections.
+   */
   abstract class AbstractProjection<A, B> implements Projection<A, B, L, R> {
-
     @Override
     public final Iterator<A> iterator() {
       return toOption().iterator();
@@ -426,7 +428,7 @@ public abstract class Either<L, R> {
      * @return A new either value after mapping.
      */
     public <X> Either<X, R> map(final Function<? super L, X> f) {
-      return isLeft() ? new Left<X, R>(f.apply(get())) : new Right<X, R>(right().get());
+      return isLeft() ? new Left<X, R>(f.apply(get())) : this.<X> toRight();
     }
 
     /**
@@ -436,7 +438,11 @@ public abstract class Either<L, R> {
      * @return A new either value after binding.
      */
     public <X> Either<X, R> flatMap(final Function<? super L, Either<X, R>> f) {
-      return isLeft() ? f.apply(get()) : new Right<X, R>(getRight());
+      return isLeft() ? f.apply(get()) : this.<X> toRight();
+    }
+
+    <X> Right<X, R> toRight() {
+      return new Right<X, R>(getRight());
     }
 
     /**
@@ -528,10 +534,6 @@ public abstract class Either<L, R> {
       return isRight() ? new Right<L, X>(f.apply(get())) : this.<X> toLeft();
     }
 
-    <X> Left<L, X> toLeft() {
-      return new Left<L, X>(left().get());
-    }
-
     /**
      * Binds the given function across this projection's value if it has one.
      * 
@@ -540,6 +542,10 @@ public abstract class Either<L, R> {
      */
     public <X> Either<L, X> flatMap(final Function<? super R, Either<L, X>> f) {
       return isRight() ? f.apply(get()) : this.<X> toLeft();
+    }
+
+    <X> Left<L, X> toLeft() {
+      return new Left<L, X>(left().get());
     }
 
     /**
