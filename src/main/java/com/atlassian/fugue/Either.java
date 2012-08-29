@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package com.atlassian.fugue;
 
 import static com.atlassian.fugue.Option.none;
@@ -188,7 +188,7 @@ public abstract class Either<L, R> {
 
   /**
    * Projects this either as a left.
-   *
+   * 
    * @return A left projection of this either.
    */
   public final LeftProjection left() {
@@ -244,23 +244,28 @@ public abstract class Either<L, R> {
       this.value = value;
     }
 
-    @Override final L getLeft() {
+    @Override
+    final L getLeft() {
       return value;
     }
 
-    @Override public boolean isLeft() {
+    @Override
+    public boolean isLeft() {
       return true;
     }
 
-    @Override public Either<R, L> swap() {
+    @Override
+    public Either<R, L> swap() {
       return right(value);
     }
 
-    @Override public <V> V fold(final Function<? super L, V> ifLeft, final Function<? super R, V> ifRight) {
+    @Override
+    public <V> V fold(final Function<? super L, V> ifLeft, final Function<? super R, V> ifRight) {
       return ifLeft.apply(value);
     }
 
-    @Override public boolean equals(final Object o) {
+    @Override
+    public boolean equals(final Object o) {
       if (this == o) {
         return true;
       }
@@ -270,11 +275,13 @@ public abstract class Either<L, R> {
       return value.equals(((Left<?, ?>) o).value);
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
       return value.hashCode();
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
       return "Either.Left(" + value.toString() + ")";
     }
   }
@@ -287,23 +294,28 @@ public abstract class Either<L, R> {
       this.value = value;
     }
 
-    @Override final R getRight() {
+    @Override
+    final R getRight() {
       return value;
     }
 
-    @Override public boolean isRight() {
+    @Override
+    public boolean isRight() {
       return true;
     }
 
-    @Override public Either<R, L> swap() {
+    @Override
+    public Either<R, L> swap() {
       return left(value);
     }
 
-    @Override public <V> V fold(final Function<? super L, V> ifLeft, final Function<? super R, V> ifRight) {
+    @Override
+    public <V> V fold(final Function<? super L, V> ifLeft, final Function<? super R, V> ifRight) {
       return ifRight.apply(value);
     }
 
-    @Override public boolean equals(final Object o) {
+    @Override
+    public boolean equals(final Object o) {
       if (this == o) {
         return true;
       }
@@ -313,11 +325,13 @@ public abstract class Either<L, R> {
       return value.equals(((Right<?, ?>) o).value);
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
       return value.hashCode();
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
       return "Either.Right(" + value.toString() + ")";
     }
   }
@@ -340,15 +354,18 @@ public abstract class Either<L, R> {
       return getLeft();
     }
 
-    @Override public L getOrNull() {
+    @Override
+    public L getOrNull() {
       return isLeft() ? get() : null;
     }
 
-    @Override public boolean isDefined() {
+    @Override
+    public boolean isDefined() {
       return isLeft();
     }
 
-    @Override public boolean isEmpty() {
+    @Override
+    public boolean isEmpty() {
       return !isDefined();
     }
 
@@ -486,11 +503,13 @@ public abstract class Either<L, R> {
       return getRight();
     }
 
-    @Override public boolean isDefined() {
+    @Override
+    public boolean isDefined() {
       return isRight();
     }
 
-    @Override public boolean isEmpty() {
+    @Override
+    public boolean isEmpty() {
       return !isDefined();
     }
 
