@@ -124,14 +124,14 @@ public abstract class Either<L, R> {
    * @return either the iterable of right values, or the first left encountered.
    */
   public static <L, R> Either<L, Iterable<R>> sequenceRight(final Iterable<Either<L, R>> eithers) {
-    Iterable<R> it = ImmutableList.of();
+    ImmutableList.Builder<R> it = ImmutableList.builder();
     for (final Either<L, R> e : eithers) {
       if (e.isLeft()) {
         return e.left().<Iterable<R>> as();
       }
-      it = Iterables.concat(it, e.right());
+      it.add(e.right().get());
     }
-    return right(it);
+    return right((Iterable<R>) it.build());
   }
 
   /**
@@ -336,67 +336,79 @@ public abstract class Either<L, R> {
     }
   }
 
+  abstract class AbstractProjection<A, B> implements Projection<A, B, L, R> {
+
+    @Override
+    public final Iterator<A> iterator() {
+      return toOption().iterator();
+    }
+
+    @Override
+    public final Either<L, R> either() {
+      return Either.this;
+    }
+
+    @Override
+    public final boolean isEmpty() {
+      return !isDefined();
+    }
+
+    @Override
+    public final Option<A> toOption() {
+      return isDefined() ? some(get()) : Option.<A> none();
+    }
+
+    @Override
+    public final boolean exists(final Predicate<A> f) {
+      return isDefined() && f.apply(get());
+    }
+
+    @Override
+    final public A getOrNull() {
+      return isDefined() ? get() : null;
+    }
+
+    @Override
+    public final boolean forall(final Predicate<A> f) {
+      return isEmpty() || f.apply(get());
+    }
+
+    @Override
+    public final A getOrError(final Supplier<String> err) {
+      return toOption().getOrError(err);
+    }
+
+    @Override
+    public final A getOrElse(final Supplier<A> a) {
+      return isDefined() ? get() : a.get();
+    }
+
+    @Override
+    public final <X extends A> A getOrElse(final X x) {
+      return isDefined() ? get() : x;
+    }
+
+    @Override
+    public final void foreach(final Effect<A> f) {
+      if (isDefined()) {
+        f.apply(get());
+      }
+    }
+  }
+
   /**
    * A left projection of an either value.
    */
-  public final class LeftProjection implements Projection<L, R, L, R> {
+  public final class LeftProjection extends AbstractProjection<L, R> implements Projection<L, R, L, R> {
     private LeftProjection() {}
-
-    public Iterator<L> iterator() {
-      return fold(Functions.<L> singletonIterator(), Functions.<L, R> emptyIterator());
-    }
-
-    public Either<L, R> either() {
-      return Either.this;
-    }
 
     public L get() {
       return getLeft();
     }
 
     @Override
-    public L getOrNull() {
-      return isLeft() ? get() : null;
-    }
-
-    @Override
     public boolean isDefined() {
       return isLeft();
-    }
-
-    @Override
-    public boolean isEmpty() {
-      return !isDefined();
-    }
-
-    public L getOrError(final Supplier<String> err) {
-      return toOption().getOrError(err);
-    }
-
-    public L getOrElse(final Supplier<L> a) {
-      return isLeft() ? get() : a.get();
-    }
-
-    public <X extends L> L getOrElse(final X x) {
-      return isLeft() ? get() : x;
-    }
-
-    public void foreach(final Effect<L> f) {
-      if (isLeft()) {
-        f.apply(get());
-      }
-    }
-
-    public boolean forall(final Predicate<L> f) {
-      return isRight() || f.apply(get());
-    }
-
-    public boolean exists(final Predicate<L> f) {
-      return isLeft() && f.apply(get());
-    }
-
-    public Option<L> toOption() {
-      return isLeft() ? some(get()) : Option.<L> none();
     }
 
     public L on(final Function<? super R, L> f) {
@@ -484,21 +496,10 @@ public abstract class Either<L, R> {
   /**
    * A right projection of an either value.
    */
-  public final class RightProjection implements Projection<R, L, L, R> {
+  public final class RightProjection extends AbstractProjection<R, L> implements Projection<R, L, L, R> {
     private RightProjection() {}
 
-    public Iterator<R> iterator() {
-      return toOption().iterator();
-    }
-
-    public Either<L, R> either() {
-      return Either.this;
-    }
-
-    public R getOrError(final Supplier<String> err) {
-      return toOption().getOrError(err);
-    }
-
+    @Override
     public R get() {
       return getRight();
     }
@@ -509,40 +510,6 @@ public abstract class Either<L, R> {
     }
 
     @Override
-    public boolean isEmpty() {
-      return !isDefined();
-    }
-
-    public R getOrElse(final Supplier<R> b) {
-      return isRight() ? get() : b.get();
-    }
-
-    public <X extends R> R getOrElse(final X x) {
-      return isRight() ? get() : x;
-    }
-
-    public R getOrNull() {
-      return isRight() ? get() : null;
-    }
-
-    public void foreach(final Effect<R> f) {
-      if (isRight()) {
-        f.apply(get());
-      }
-    }
-
-    public boolean forall(final Predicate<R> f) {
-      return isLeft() || f.apply(get());
-    }
-
-    public boolean exists(final Predicate<R> f) {
-      return isRight() && f.apply(get());
-    }
-
-    public Option<R> toOption() {
-      return isRight() ? some(get()) : Option.<R> none();
-    }
-
     public R on(final Function<? super L, R> f) {
       return isRight() ? get() : f.apply(left().get());
     }
@@ -571,8 +538,8 @@ public abstract class Either<L, R> {
      * @param f The function to bind across this projection.
      * @return A new either value after binding.
      */
-    public <X> Either<L, X> flatMap(final Function<R, Either<L, X>> f) {
-      return isRight() ? f.apply(get()) : new Left<L, X>(left().get());
+    public <X> Either<L, X> flatMap(final Function<? super R, Either<L, X>> f) {
+      return isRight() ? f.apply(get()) : this.<X> toLeft();
     }
 
     /**
