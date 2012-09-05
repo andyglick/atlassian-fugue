@@ -24,6 +24,7 @@ import static com.google.common.collect.Iterables.concat;
 import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Sets.newTreeSet;
+import static java.lang.String.format;
 
 import com.atlassian.util.concurrent.LazyReference;
 
@@ -249,6 +250,57 @@ public class Iterables {
     return new Function2<Iterable<A>, Iterable<B>, Iterable<C>>() {
       public Iterable<C> apply(final Iterable<A> as, final Iterable<B> bs) {
         return new Zipper<A, B, C>(as, bs, f);
+      }
+    };
+  }
+
+  public static <A> Iterable<Pair<A, Integer>> zipWithIndex(final Iterable<A> as) {
+    return zip(as, rangeTo(0, Integer.MAX_VALUE));
+  }
+
+  public static Iterable<Integer> rangeUntil(final int start, final int end) {
+    return rangeUntil(start, end, 1);
+  }
+
+  public static Iterable<Integer> rangeUntil(final int start, final int end, final int step) {
+    return rangeTo(start, end - (Math.abs(step) / step), step);
+  }
+
+  public static Iterable<Integer> rangeTo(final int start, final int end) {
+    return rangeTo(start, end, 1);
+  }
+
+  public static Iterable<Integer> rangeTo(final int start, final int end, final int step) {
+    if (step == 0) {
+      throw new IllegalArgumentException(format("Step %s must not be zero", step));
+    } else if (step > 0 && start > end) {
+      throw new IllegalArgumentException(format("Start %s must be less than end %s with step %s", start, end, step));
+    } else if (step < 0 && start < end) {
+      throw new IllegalArgumentException(format("Start %s must be greater than end %s with step %s", start, end, step));
+    }
+    return new Iterable<Integer>() {
+      @Override
+      public Iterator<Integer> iterator() {
+        return new Iterator<Integer>() {
+          private int i = start;
+
+          @Override
+          public boolean hasNext() {
+            return step > 0 ? i <= end : i >= end;
+          }
+
+          @Override
+          public Integer next() {
+            int j = i;
+            i += step;
+            return j;
+          }
+
+          @Override
+          public void remove() {
+            throw new UnsupportedOperationException();
+          }
+        };
       }
     };
   }
