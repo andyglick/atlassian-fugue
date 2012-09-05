@@ -24,7 +24,6 @@ import static com.google.common.collect.Iterables.concat;
 import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Sets.newTreeSet;
-import static java.lang.String.format;
 
 import com.atlassian.util.concurrent.LazyReference;
 
@@ -69,6 +68,7 @@ public class Iterables {
    * @param predicate the predicate to use to determine if an element is
    * eligible to be returned
    * @return the first item in elements that matches predicate
+   * @since 1.0
    */
   public static <T> Option<T> findFirst(final Iterable<? extends T> elements, final Predicate<? super T> predicate) {
     for (final T t : filter(elements, predicate)) {
@@ -254,50 +254,97 @@ public class Iterables {
     };
   }
 
+  /**
+   * Takes an Iterable, and returns an Iterable of a Pair of the original
+   * element and its index starting at zero.
+   * 
+   * @param as the original iterable
+   * @return the decorated iterable that generates pairs.
+   * @since 1.2
+   */
   public static <A> Iterable<Pair<A, Integer>> zipWithIndex(final Iterable<A> as) {
     return zip(as, rangeTo(0, Integer.MAX_VALUE));
   }
 
+  /**
+   * Creates a sequence of {@link Integer integers} from start up to but not
+   * including end.
+   * 
+   * @param start from (inclusive)
+   * @param end to (exclusive)
+   * @return a sequence of {@link Integer integers}
+   * @since 1.2
+   */
   public static Iterable<Integer> rangeUntil(final int start, final int end) {
-    return rangeUntil(start, end, 1);
+    return rangeUntil(start, end, (start > end) ? -1 : 1);
   }
 
+  /**
+   * Creates a sequence of {@link Integer integers} from start up to but not
+   * including end with the the supplied step between them.
+   * 
+   * @param start from (inclusive)
+   * @param end to (exclusive)
+   * @param step size to step – must not be zero, must be positive if end is
+   * greater than start, neagtive otherwise
+   * @return a sequence of {@link Integer integers}
+   * @since 1.2
+   */
   public static Iterable<Integer> rangeUntil(final int start, final int end, final int step) {
+    checkArgument(step != 0, "Step must not be zero");
     return rangeTo(start, end - (Math.abs(step) / step), step);
   }
 
+  /**
+   * Creates a sequence of {@link Integer integers} from start up to and
+   * including end.
+   * 
+   * @param start from (inclusive)
+   * @param end to (inclusive)
+   * @return a sequence of {@link Integer integers}
+   * @since 1.2
+   */
   public static Iterable<Integer> rangeTo(final int start, final int end) {
-    return rangeTo(start, end, 1);
+    return rangeTo(start, end, (start > end) ? -1 : 1);
   }
 
+  /**
+   * Creates a sequence of {@link Integer integers} from start up to and
+   * including end with the the supplied step between them.
+   * 
+   * @param start from (inclusive)
+   * @param end to (inclusive)
+   * @param step size to step – must not be zero, must be positive if end is
+   * greater than start, neagtive otherwise
+   * @return a sequence of {@link Integer integers}
+   * @since 1.2
+   */
   public static Iterable<Integer> rangeTo(final int start, final int end, final int step) {
-    if (step == 0) {
-      throw new IllegalArgumentException(format("Step %s must not be zero", step));
-    } else if (step > 0 && start > end) {
-      throw new IllegalArgumentException(format("Start %s must be less than end %s with step %s", start, end, step));
-    } else if (step < 0 && start < end) {
-      throw new IllegalArgumentException(format("Start %s must be greater than end %s with step %s", start, end, step));
+    checkArgument(step != 0, "Step must not be zero");
+    if (step > 0) {
+      checkArgument(start <= end, "Start %s must not be greater than end %s with step %s", start, end, step);
+    } else {
+      checkArgument(start >= end, "Start %s must not be less than end %s with step %s", start, end, step);
     }
+
     return new Iterable<Integer>() {
-      @Override
-      public Iterator<Integer> iterator() {
+      @Override public Iterator<Integer> iterator() {
         return new Iterator<Integer>() {
           private int i = start;
 
-          @Override
-          public boolean hasNext() {
+          @Override public boolean hasNext() {
             return step > 0 ? i <= end : i >= end;
           }
 
-          @Override
-          public Integer next() {
-            int j = i;
-            i += step;
-            return j;
+          @Override public Integer next() {
+            try {
+              return i;
+            } finally {
+              i += step;
+            }
           }
 
-          @Override
-          public void remove() {
+          @Override public void remove() {
             throw new UnsupportedOperationException();
           }
         };

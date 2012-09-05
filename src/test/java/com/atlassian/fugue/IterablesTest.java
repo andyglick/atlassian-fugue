@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package com.atlassian.fugue;
 
 import static com.atlassian.fugue.Either.getOrThrow;
@@ -76,24 +76,64 @@ public class IterablesTest {
     assertThat(found, is(Option.some(expected)));
   }
 
-  @Test public void testRangeTo() {
+  @Test public void rangeToSingle() {
     assertThat(rangeTo(1, 5), is(contains(1, 2, 3, 4, 5)));
   }
 
-  @Test public void testRangeUntil() {
+  @Test public void rangeToSingleNegative() {
+    assertThat(rangeTo(5, 1), is(contains(5, 4, 3, 2, 1)));
+  }
+
+  @Test public void rangeUntilSingle() {
     assertThat(rangeUntil(1, 5), is(contains(1, 2, 3, 4)));
   }
 
-  @Test public void testRangeToStep() {
+  @Test public void rangeUntilSingleNegative() {
+    assertThat(rangeUntil(5, 1), is(contains(5, 4, 3, 2)));
+  }
+
+  @Test public void rangeToStep() {
     assertThat(rangeTo(1, 5, 2), is(contains(1, 3, 5)));
   }
 
-  @Test public void testRangeUntilStep() {
+  @Test public void rangeUntilStep() {
     assertThat(rangeUntil(1, 5, 2), is(contains(1, 3)));
   }
 
-  @Test public void testRangeUntilNegativeStep() {
+  @Test public void rangeToNegativeStep() {
+    assertThat(rangeTo(8, -1, -3), is(contains(8, 5, 2, -1)));
+  }
+
+  @Test public void rangeUntilNegativeStep() {
     assertThat(rangeUntil(8, -1, -3), is(contains(8, 5, 2)));
+  }
+
+  @Test public void rangeToEqual() {
+    assertThat(rangeTo(1, 1), is(contains(1)));
+  }
+
+  @Test(expected = IllegalArgumentException.class) public void rangeToNegative() {
+    assertThat(rangeTo(1, 2, -1), is(contains(1)));
+  }
+
+  @Test(expected = IllegalArgumentException.class) public void rangeToBackwardsPositive() {
+    assertThat(rangeTo(2, 1, 1), is(contains(1)));
+  }
+
+  @Test(expected = IllegalArgumentException.class) public void rangeToZero() {
+    assertThat(rangeTo(1, 2, 0), is(contains(1)));
+  }
+
+  @Test(expected = IllegalArgumentException.class) public void rangeUntilNegative() {
+    assertThat(rangeUntil(1, 2, -1), is(contains(1)));
+  }
+
+  @Test(expected = IllegalArgumentException.class) public void rangeUntilBackwardsPositive() {
+    assertThat(rangeUntil(2, 1, 1), is(contains(1)));
+  }
+
+  @Test(expected = IllegalArgumentException.class) public void rangeUntilZero() {
+    assertThat(rangeUntil(1, 2, 0), is(contains(1)));
   }
 
   @Test public void flatMapConcatenates() {
