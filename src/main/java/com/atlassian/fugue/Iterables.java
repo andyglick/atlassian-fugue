@@ -289,10 +289,7 @@ public class Iterables {
         this.it = it;
         this.remaining = size;
 
-        for (int i = 0; i < drop; i++) {
-          if (!it.hasNext()) {
-            break;
-          }
+        for (int i = 0; (i < drop) && it.hasNext(); i++) {
           it.next();
         }
       }
