@@ -24,6 +24,7 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertThat;
 
+import org.hamcrest.Matcher;
 import org.junit.Test;
 
 public class IterablesZipTest {
@@ -44,6 +45,8 @@ public class IterablesZipTest {
   }
 
   @Test public void testZipWithIndex() {
-    assertThat(zipWithIndex(asList("a", "b", "c")), contains(pair("a", 0), pair("b", 1), pair("c", 2)));
+    @SuppressWarnings("unchecked")
+    Matcher<Iterable<? extends Pair<String, Integer>>> containsPairs = contains(pair("a", 0), pair("b", 1), pair("c", 2));
+    assertThat(zipWithIndex(asList("a", "b", "c")), containsPairs);
   }
 }
