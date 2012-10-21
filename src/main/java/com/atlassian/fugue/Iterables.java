@@ -17,6 +17,7 @@ package com.atlassian.fugue;
 
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.some;
+import static com.atlassian.fugue.Pair.pair;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Predicates.not;
@@ -151,6 +152,18 @@ public class Iterables {
    */
   public static <A extends Comparable<A>> Iterable<A> mergeSorted(final Iterable<? extends Iterable<A>> xss) {
     return mergeSorted(xss, Ordering.<A> natural());
+  }
+
+  /**
+   * Filter an {@code Iterable} into a {@code Pair} of {@code Iterable}'s.
+   *
+   * @param iterable to be filtered
+   * @param predicate to filter each element
+   * @param <A>
+   * @return a pair where the left matches the predicate, and the right does not.
+   */
+  public static <A> Pair<Iterable<A>, Iterable<A>> partition(Iterable<A> iterable, Predicate<? super A> predicate) {
+    return pair(filter(iterable, predicate), filter(iterable, not(predicate)));
   }
 
   /**

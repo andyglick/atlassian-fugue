@@ -17,6 +17,7 @@ package com.atlassian.fugue;
 
 import static com.atlassian.fugue.Either.getOrThrow;
 import static com.atlassian.fugue.Iterables.findFirst;
+import static com.atlassian.fugue.Iterables.partition;
 import static com.atlassian.fugue.Iterables.rangeTo;
 import static com.atlassian.fugue.Iterables.rangeUntil;
 import static com.atlassian.fugue.Option.some;
@@ -27,6 +28,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 
+import com.google.common.collect.Ranges;
 import org.junit.Test;
 
 import com.google.common.base.Function;
@@ -134,6 +136,12 @@ public class IterablesTest {
 
   @Test(expected = IllegalArgumentException.class) public void rangeUntilZero() {
     assertThat(rangeUntil(1, 2, 0), is(contains(1)));
+  }
+
+  @Test public void partitionSimple() {
+    Pair<Iterable<Integer>, Iterable<Integer>> part = partition(asList(1, 2, 3, 4), Ranges.greaterThan(2));
+    assertThat(part.left(), contains(3, 4));
+    assertThat(part.right(), contains(1, 2));
   }
 
   @Test public void flatMapConcatenates() {
