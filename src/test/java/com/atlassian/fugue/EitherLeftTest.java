@@ -91,6 +91,10 @@ public class EitherLeftTest {
     assertThat(either.equals(null), is(false));
   }
 
+  @Test public void leftPredicateMatches() {
+    assertThat(Either.<Boolean, Integer>isLeftPredicate().apply(either), is(true));
+  }
+
   @Test(expected = IOException.class) public void throwsException() throws IOException {
     final Either<IOException, String> either = left(new IOException());
     getOrThrow(either);

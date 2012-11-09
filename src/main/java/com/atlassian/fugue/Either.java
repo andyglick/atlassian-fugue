@@ -154,6 +154,32 @@ public abstract class Either<L, R> {
     return left(it);
   }
 
+  /**
+   * A predicate that tests if the supplied either is a left.
+   * 
+   * @since 1.2
+   */
+  public static <L, R> Predicate<Either<L, R>> isLeftPredicate() {
+    return new Predicate<Either<L, R>>() {
+      public boolean apply(Either<L, R> e) {
+        return e.isLeft();
+      }
+    };
+  }
+
+  /**
+   * A predicate that tests if the supplied either is a right.
+   * 
+   * @since 1.2
+   */
+  public static <L, R> Predicate<Either<L, R>> isRightPredicate() {
+    return new Predicate<Either<L, R>>() {
+      public boolean apply(Either<L, R> e) {
+        return e.isRight();
+      }
+    };
+  }
+
   //
   // constructors
   //

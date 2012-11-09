@@ -95,6 +95,10 @@ public class EitherRightTest {
     assertThat(either.equals(null), is(false));
   }
 
+  @Test public void rightPredicateMatches() {
+    assertThat(Either.<Boolean, Integer>isRightPredicate().apply(either), is(true));
+  }
+
   @Test public void notThrowsException() throws IOException {
     final Either<IOException, String> either = right("boo yaa!");
     assertThat(getOrThrow(either), is("boo yaa!"));
