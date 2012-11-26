@@ -19,20 +19,19 @@ import static com.atlassian.fugue.Iterables.mergeSorted;
 import static com.google.common.collect.ImmutableList.of;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.emptyIterableOf;
 import static org.hamcrest.Matchers.is;
-
-import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
-import org.junit.Test;
-
-import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import org.junit.Test;
+
+import com.google.common.collect.ImmutableList;
+
 public class IterablesMergeSortedTest {
   @Test public void mergingEmptyIterablesGivesAnEmptyIterable() {
-    assertThat(mergeSorted(of(new ArrayList<String>(), new LinkedList<String>())), is(emptyIterable(String.class)));
+    assertThat(mergeSorted(of(new ArrayList<String>(), new LinkedList<String>())), is(emptyIterableOf(String.class)));
   }
 
   @Test public void mergingNonEmptyAndEmptyIterablesGivesTheMergedIterable() {
@@ -62,9 +61,5 @@ public class IterablesMergeSortedTest {
 
   @Test public void mergedToString() {
     assertThat(mergeSorted(of(of("b", "d"), of("a", "c", "e"))).toString(), is("[a, b, c, d, e]"));
-  }
-
-  private static <A> Matcher<java.lang.Iterable<A>> emptyIterable(final Class<A> a) {
-    return Matchers.<A> emptyIterable();
   }
 }
