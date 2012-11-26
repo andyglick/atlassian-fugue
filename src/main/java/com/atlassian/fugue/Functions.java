@@ -25,11 +25,9 @@ import com.google.common.base.Function;
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
-import com.google.common.collect.MapMaker;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @since 1.1
@@ -152,28 +150,6 @@ public class Functions {
   private static final class SingletonList<T> implements Function<T, List<T>> {
     public List<T> apply(final T o) {
       return ImmutableList.of(o);
-    }
-  }
-
-  static <F, T> Function<F, T> memoize(final Function<F, T> delegate, final MapMaker mapMaker) {
-    return new Function<F, T>() {
-      final Map<F, T> map = mapMaker.makeComputingMap(delegate);
-
-      public T apply(final F from) {
-        return map.get(from);
-      }
-    };
-  }
-
-  static final class Memoizer<F, T> implements Function<F, T> {
-    final Map<F, T> map;
-
-    Memoizer(final Function<F, T> delegate, final MapMaker mapMaker) {
-      map = mapMaker.makeComputingMap(delegate);
-    }
-
-    public T apply(final F from) {
-      return map.get(from);
     }
   }
 
