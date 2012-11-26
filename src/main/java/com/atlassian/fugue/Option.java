@@ -12,23 +12,21 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package com.atlassian.fugue;
 
 import static com.atlassian.fugue.Suppliers.ofInstance;
-import static com.google.common.base.Functions.compose;
 import static com.google.common.base.Preconditions.checkNotNull;
+
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import com.atlassian.fugue.Either.Left;
 import com.atlassian.fugue.Either.Right;
-
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Iterators;
-
-import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 /**
  * A class that encapsulates null (missing) values. An Option may be either
@@ -222,7 +220,7 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
    * 
    * @param orElse supplier which provides the option to return if this is none
    * @return this or value supplied by {@code orElse}
-   * @since 1.1 
+   * @since 1.1
    */
   public final Option<A> orElse(final Supplier<Option<A>> orElse) {
     return fold(orElse, Option.<A> toOption());
@@ -259,7 +257,8 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
    * @return new wrapped value
    */
   public final <B> Option<B> map(final Function<? super A, B> f) {
-    return flatMap(compose(Functions.<B> option(), f));
+    checkNotNull(f);
+    return isEmpty() ? Option.<B> none() : option(f.apply(get()));
   }
 
   /**
