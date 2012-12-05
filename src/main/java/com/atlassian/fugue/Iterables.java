@@ -74,19 +74,7 @@ public class Iterables {
   public static <T> Iterable<T> emptyIterable() {
     return new Iterable<T>() {
       @Override public Iterator<T> iterator() {
-        return new Iterator<T>() {
-          @Override public boolean hasNext() {
-            return false;
-          }
-
-          @Override public T next() {
-            throw new NoSuchElementException();
-          }
-
-          @Override public void remove() {
-            throw new UnsupportedOperationException();
-          }
-        };
+        return Iterators.emptyIterator();
       }
     };
   }
