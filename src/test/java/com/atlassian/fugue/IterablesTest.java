@@ -67,6 +67,10 @@ public class IterablesTest {
     assertThat(findFirst(ImmutableList.<Integer> of(), grepOne), is(Option.<Integer> none()));
   }
 
+  @Test(expected = NoSuchElementException.class) public void emptyIterablesAreEqual() {
+    assertThat(emptyIterable(), is(emptyIterable()));
+  }
+
   @Test public void findFirstAbsent() {
     assertThat(findFirst(of(2), grepOne), is(none));
   }
