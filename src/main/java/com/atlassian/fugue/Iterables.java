@@ -70,6 +70,7 @@ public class Iterables {
    * iterables.
    *
    * @return an empty iterable
+   * @since 1.2
    */
   public static <T> Iterable<T> emptyIterable() {
     return new Iterable<T>() {
