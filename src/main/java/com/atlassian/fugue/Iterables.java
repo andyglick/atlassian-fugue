@@ -60,6 +60,16 @@ public class Iterables {
     throw new UnsupportedOperationException("This class is not instantiable.");
   }
 
+  static final Iterable<?> EMPTY = new Iterable<Object>() {
+      @Override public Iterator<Object> iterator() {
+        return Iterators.emptyIterator();
+      }
+      
+      @Override public String toString() {
+        return "[]";
+      }
+    };
+
   /**
    * Returns an empty iterable, that is, an {@code Iterable} with an
    * {@code Iterator} for which {@code hasNext()} always returns {@code false},
@@ -73,11 +83,8 @@ public class Iterables {
    * @since 1.2
    */
   public static <T> Iterable<T> emptyIterable() {
-    return new Iterable<T>() {
-      @Override public Iterator<T> iterator() {
-        return Iterators.emptyIterator();
-      }
-    };
+    @SuppressWarnings("unchecked") Iterable<T> result = (Iterable<T>) EMPTY;
+    return result;
   }
 
   /**

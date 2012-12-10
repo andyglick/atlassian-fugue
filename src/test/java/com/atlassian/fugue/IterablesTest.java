@@ -63,12 +63,16 @@ public class IterablesTest {
     emptyIterable().iterator().remove();
   }
 
-  @Test public void findFirstEmpty() {
-    assertThat(findFirst(ImmutableList.<Integer> of(), grepOne), is(Option.<Integer> none()));
+  @Test public void emptyIterablesAreEqual() {
+    assertThat(emptyIterable(), is(emptyIterable()));
   }
 
-  @Test(expected = NoSuchElementException.class) public void emptyIterablesAreEqual() {
-    assertThat(emptyIterable(), is(emptyIterable()));
+  @Test public void emptyIterablesToString() {
+    assertThat(emptyIterable().toString(), is("[]"));
+  }
+
+  @Test public void findFirstEmpty() {
+    assertThat(findFirst(ImmutableList.<Integer> of(), grepOne), is(Option.<Integer> none()));
   }
 
   @Test public void findFirstAbsent() {
