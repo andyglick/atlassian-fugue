@@ -16,6 +16,7 @@
 package com.atlassian.fugue;
 
 import static com.atlassian.fugue.Either.getOrThrow;
+import static com.atlassian.fugue.Iterables.emptyIterable;
 import static com.atlassian.fugue.Iterables.findFirst;
 import static com.atlassian.fugue.Iterables.partition;
 import static com.atlassian.fugue.Iterables.rangeTo;
@@ -39,6 +40,7 @@ import com.google.common.collect.ImmutableList;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class IterablesTest {
 
@@ -49,8 +51,24 @@ public class IterablesTest {
   };
   private final Option<Integer> none = Option.<Integer> none();
 
+  @Test public void emptyIterableIteratorHasNext() {
+    assertThat(emptyIterable().iterator().hasNext(), is(false));
+  }
+
+  @Test(expected = NoSuchElementException.class) public void emptyIterableIteratorNext() {
+    emptyIterable().iterator().next();
+  }
+
+  @Test(expected = UnsupportedOperationException.class) public void emptyIterableIteratorRemove() {
+    emptyIterable().iterator().remove();
+  }
+
   @Test public void findFirstEmpty() {
     assertThat(findFirst(ImmutableList.<Integer> of(), grepOne), is(Option.<Integer> none()));
+  }
+
+  @Test(expected = NoSuchElementException.class) public void emptyIterablesAreEqual() {
+    assertThat(emptyIterable(), is(emptyIterable()));
   }
 
   @Test public void findFirstAbsent() {

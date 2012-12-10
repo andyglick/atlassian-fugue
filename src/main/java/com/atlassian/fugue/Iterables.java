@@ -61,6 +61,26 @@ public class Iterables {
   }
 
   /**
+   * Returns an empty iterable, that is, an {@code Iterable} with an
+   * {@code Iterator} for which {@code hasNext()} always returns {@code false},
+   * and the other methods throw appropriate exceptions if called.
+   *
+   * Intended to be used as a more idiomatic replacement for
+   * {@code Collections.emptyList()} in code that otherwise deals only with
+   * iterables.
+   *
+   * @return an empty iterable
+   * @since 1.2
+   */
+  public static <T> Iterable<T> emptyIterable() {
+    return new Iterable<T>() {
+      @Override public Iterator<T> iterator() {
+        return Iterators.emptyIterator();
+      }
+    };
+  }
+
+  /**
    * Finds the first item that matches the predicate. Traditionally, this should
    * be named find; in this case it is named findFirst to avoid clashing with
    * static imports from Guava's {@link com.google.common.collect.Iterables}.
