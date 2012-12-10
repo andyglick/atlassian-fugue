@@ -61,29 +61,30 @@ public class Iterables {
   }
 
   static final Iterable<?> EMPTY = new Iterable<Object>() {
-      @Override public Iterator<Object> iterator() {
-        return Iterators.emptyIterator();
-      }
-      
-      @Override public String toString() {
-        return "[]";
-      }
-    };
+    @Override public Iterator<Object> iterator() {
+      return Iterators.emptyIterator();
+    }
+
+    @Override public String toString() {
+      return "[]";
+    }
+  };
 
   /**
    * Returns an empty iterable, that is, an {@code Iterable} with an
    * {@code Iterator} for which {@code hasNext()} always returns {@code false},
    * and the other methods throw appropriate exceptions if called.
-   *
+   * 
    * Intended to be used as a more idiomatic replacement for
    * {@code Collections.emptyList()} in code that otherwise deals only with
    * iterables.
-   *
+   * 
    * @return an empty iterable
    * @since 1.2
    */
   public static <T> Iterable<T> emptyIterable() {
-    @SuppressWarnings("unchecked") Iterable<T> result = (Iterable<T>) EMPTY;
+    @SuppressWarnings("unchecked")
+    Iterable<T> result = (Iterable<T>) EMPTY;
     return result;
   }
 
@@ -183,11 +184,12 @@ public class Iterables {
 
   /**
    * Filter an {@code Iterable} into a {@code Pair} of {@code Iterable}'s.
-   *
+   * 
    * @param iterable to be filtered
    * @param predicate to filter each element
    * @param <A>
-   * @return a pair where the left matches the predicate, and the right does not.
+   * @return a pair where the left matches the predicate, and the right does
+   * not.
    */
   public static <A> Pair<Iterable<A>, Iterable<A>> partition(Iterable<A> iterable, Predicate<? super A> predicate) {
     return pair(filter(iterable, predicate), filter(iterable, not(predicate)));
