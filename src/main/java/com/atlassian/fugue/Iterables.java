@@ -170,6 +170,13 @@ public class Iterables {
   }
 
   /**
+   * 
+   */
+  public static <A, B> Iterable<B> collect(Iterable<? extends A> unfiltered, Function<? super A, Option<B>> partial) {
+    return new CollectingIterable<A, B>(unfiltered, partial);
+  }
+
+  /**
    * Merge a number of already sorted collections of elements into a single
    * collection of elements, using the elements natural ordering.
    * 
@@ -506,6 +513,36 @@ public class Iterables {
             return ordering.compare(lhs.peek(), rhs.peek());
           }
         };
+      }
+    }
+  }
+
+  /**
+   * CollectingIterable, filters and transforms in one.
+   */
+  static class CollectingIterable<A, B> extends IterableToString<B> {
+    private final Iterable<? extends A> delegate;
+    private final Function<? super A, Option<B>> partial;
+
+    CollectingIterable(Iterable<? extends A> delegate, Function<? super A, Option<B>> partial) {
+      this.delegate = checkNotNull(delegate);
+      this.partial = checkNotNull(partial);
+    }
+
+    public Iterator<B> iterator() {
+      return new Iter();
+    }
+
+    final class Iter extends AbstractIterator<B> {
+      private final Iterator<? extends A> it = delegate.iterator();
+
+      @Override protected B computeNext() {
+        while (it.hasNext()) {
+          Option<B> result = partial.apply(it.next());
+          if (result.isDefined())
+            return result.get();
+        }
+        return endOfData();
       }
     }
   }
