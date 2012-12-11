@@ -20,6 +20,7 @@ import static com.atlassian.fugue.Either.right;
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.some;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
 import java.util.Iterator;
 import java.util.List;
@@ -144,7 +145,7 @@ public class Functions {
    * Create a PartialFunction from a {@link Predicate} and a {@link Function}.
    * 
    * @param p the predicate to test the value against.
-   * @param p the predicate to test the value against.
+   * @param f the function to apply if the predicate passes.
    * @return a PartialFunction that tests the supplied predicate before applying
    * the function.
    * @since 1.2
@@ -167,6 +168,61 @@ public class Functions {
     }
   }
 
+  /**
+   * Compose two PartialFunctions into one.
+   * 
+   * @param f the first partial function.
+   * @param f the first partial function.
+   * @return a PartialFunction that flatMaps g on to the result of applying f.
+   * @since 1.2
+   */
+  public static <A, B, C> Function<A, Option<C>> flatMap(Function<? super A, Option<B>> f, Function<? super B, Option<C>> g) {
+    return new PartialComposer<A, B, C>(f, g);
+  }
+
+  static class PartialComposer<A, B, C> implements Function<A, Option<C>> {
+    private final Function<? super A, Option<B>> f;
+    private final Function<? super B, Option<C>> g;
+
+    PartialComposer(Function<? super A, Option<B>> f, Function<? super B, Option<C>> g) {
+      this.f = checkNotNull(f);
+      this.g = checkNotNull(g);
+    }
+
+    public Option<C> apply(A a) {
+      return f.apply(a).flatMap(g);
+    }
+  }
+
+  /**
+   * Creates a stack of matcher functions and returns the first result that matches.
+   * 
+   * @param fs the partial functions, order matters as they are tried in iteration order.
+   * @return a PartialFunction that composes all the functions and tries each one in sequence.
+   * @since 1.2
+   */
+  public static <A, B> Function<A, Option<B>> matches(Function<? super A, Option<B>>... fs) {
+    return new Matcher<A, B>(fs);
+  }
+
+  static class Matcher<A, B> implements Function<A, Option<B>> {
+    private final Iterable<Function<? super A, Option<B>>> fs;
+
+    Matcher(Function<? super A, Option<B>>... fs) {
+      this.fs = ImmutableList.copyOf(checkNotNull(fs));
+      checkState(!Iterables.isEmpty().apply(this.fs));
+    }
+
+    public Option<B> apply(A a) {
+      for (Function<? super A, Option<B>> f : fs) {
+        Option<B> b = f.apply(a);
+        if (b.isDefined())
+          return b;
+      }
+      return Option.none();
+    }
+  }
+  
   /**
    * Function that can be used to ignore any RuntimeExceptions that a
    * {@link Supplier} may produce and return null instead.
