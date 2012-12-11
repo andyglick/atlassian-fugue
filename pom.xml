@@ -33,6 +33,8 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
+                <!-- 2.0.1 specifies open ended imports, 2.3.? puts a cap on them, don't remove unless this gets fixed  -->
+                <version>2.0.1</version>
                 <executions>
                     <execution>
                         <id>bundle-manifest</id>
