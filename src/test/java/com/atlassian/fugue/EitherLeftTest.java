@@ -12,21 +12,21 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package com.atlassian.fugue;
 
-import static com.atlassian.fugue.Either.getOrThrow;
 import static com.atlassian.fugue.Either.left;
+import static com.atlassian.fugue.Eithers.getOrThrow;
 import static com.atlassian.fugue.UtilityFunctions.bool2String;
 import static com.atlassian.fugue.UtilityFunctions.int2String;
 import static java.lang.String.valueOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-import org.junit.Test;
-
 import java.io.IOException;
 import java.util.NoSuchElementException;
+
+import org.junit.Test;
 
 public class EitherLeftTest {
   private static final Boolean ORIGINAL_VALUE = true;
@@ -92,7 +92,7 @@ public class EitherLeftTest {
   }
 
   @Test public void leftPredicateMatches() {
-    assertThat(Either.<Boolean, Integer>isLeftPredicate().apply(either), is(true));
+    assertThat(Eithers.<Boolean, Integer> isLeft().apply(either), is(true));
   }
 
   @Test(expected = IOException.class) public void throwsException() throws IOException {

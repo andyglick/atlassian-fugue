@@ -24,7 +24,8 @@ import com.google.common.collect.ImmutableList;
 
 public class IterablesCollectTest {
 
-  @Test public void emptyIterableIteratorHasNext() {
-    assertThat(Iterables.collect(ImmutableList.of("a", 11), Functions.isInstanceOf(Integer.class)), contains(11));
+  @Test public void collectIterableFindsRightType() {
+    Iterable<Integer> collected = Iterables.collect(ImmutableList.of("a", 11), Functions.isInstanceOf(Integer.class));
+    assertThat(collected, contains(11));
   }
 }

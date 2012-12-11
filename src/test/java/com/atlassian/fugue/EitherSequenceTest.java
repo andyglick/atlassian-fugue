@@ -17,8 +17,8 @@ package com.atlassian.fugue;
 
 import static com.atlassian.fugue.Either.left;
 import static com.atlassian.fugue.Either.right;
-import static com.atlassian.fugue.Either.sequenceLeft;
-import static com.atlassian.fugue.Either.sequenceRight;
+import static com.atlassian.fugue.Eithers.sequenceLeft;
+import static com.atlassian.fugue.Eithers.sequenceRight;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;

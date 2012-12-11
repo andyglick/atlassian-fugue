@@ -15,7 +15,7 @@
  */
 package com.atlassian.fugue;
 
-import static com.atlassian.fugue.Either.getOrThrow;
+import static com.atlassian.fugue.Eithers.getOrThrow;
 import static com.atlassian.fugue.Iterables.emptyIterable;
 import static com.atlassian.fugue.Iterables.findFirst;
 import static com.atlassian.fugue.Iterables.partition;
@@ -29,18 +29,18 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 
-import com.google.common.collect.Ranges;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
+
 import org.junit.Test;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.AbstractIterator;
 import com.google.common.collect.ImmutableList;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
+import com.google.common.collect.Ranges;
 
 public class IterablesTest {
 

@@ -26,8 +26,12 @@ import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Sets.newTreeSet;
 
-import com.atlassian.util.concurrent.LazyReference;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.TreeSet;
 
+import com.atlassian.util.concurrent.LazyReference;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.AbstractIterator;
@@ -35,11 +39,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.PeekingIterator;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.TreeSet;
 
 /**
  * Contains static utility methods that operate on or return objects of type
@@ -399,30 +398,6 @@ public class Iterables {
         };
       }
     };
-  }
-
-  /**
-   * Takes an Iterable of Eithers, returns an Iterable containing the left values of every Either which has a left value
-   *
-   * @param it Iterator of Eithers to filter from
-   * @return the left values contained in the contents of it
-   * @since 1.2
-   */
-  public static <L, R> Iterable<L> filterLeft(Iterable<Either<L, R>> it)
-  {
-    return Options.flatten(transform(it, Either.<L, R>leftMapper()));
-  }
-
-  /**
-   * Takes an Iterable of Eithers, returns an Iterable containing the right values of every Either which has a right value
-   *
-   * @param it Iterator of Eithers to filter from
-   * @return the right values contained in the contents of it
-   * @since 1.2
-   */
-  public static <L, R> Iterable<R> filterRight(Iterable<Either<L, R>> it)
-  {
-    return Options.flatten(transform(it, Either.<L, R>rightMapper()));
   }
 
   //

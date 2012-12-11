@@ -12,10 +12,10 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package com.atlassian.fugue;
 
-import static com.atlassian.fugue.Either.getOrThrow;
+import static com.atlassian.fugue.Eithers.getOrThrow;
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.option;
 import static com.atlassian.fugue.Options.filterNone;
@@ -27,12 +27,12 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Iterator;
+
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.Iterator;
 
 public class OptionStaticsTest {
   static final Integer NULL = null;

@@ -12,12 +12,13 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package com.atlassian.fugue;
 
 import static com.atlassian.fugue.Either.left;
-import static com.atlassian.fugue.Either.merge;
 import static com.atlassian.fugue.Either.right;
+import static com.atlassian.fugue.Eithers.cond;
+import static com.atlassian.fugue.Eithers.merge;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -55,11 +56,11 @@ public class EitherTest {
   }
 
   @Test public void testCondTrue() {
-    assertThat(Either.cond(true, "Pegasus.", 7), is(Either.<Integer, String> right("Pegasus.")));
+    assertThat(cond(true, 7, "Pegasus."), is(Either.<Integer, String> right("Pegasus.")));
   }
 
   @Test public void testCondFalse() {
-    assertThat(Either.cond(false, "Pegasus.", 7), is(Either.<Integer, String> left(7)));
+    assertThat(cond(false, 7, "Pegasus."), is(Either.<Integer, String> left(7)));
   }
 
   static class GenericTest<A> {

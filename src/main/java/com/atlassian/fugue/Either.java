@@ -19,14 +19,12 @@ import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.some;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Supplier;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
-
-import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 /**
  * A class that acts as a container for a value of one of two types. An Either
@@ -77,133 +75,38 @@ public abstract class Either<L, R> {
   //
 
   /**
-   * Extracts an object from an Either, regardless of the side in which it is
-   * stored, provided both sides contain the same type. This method will never
-   * return null.
+   * @deprecated use {@link Eithers#merge(Either)}
    */
-  public static <T> T merge(final Either<T, T> either) {
-    if (either.isLeft()) {
-      return either.left().get();
-    }
-    return either.right().get();
+  @Deprecated public static <T> T merge(final Either<T, T> either) {
+    return Eithers.merge(either);
   }
 
   /**
-   * Creates an Either based on a boolean expression. If predicate is true, a
-   * Right wil be returned containing the supplied right value; if it is false,
-   * a Left will be returned containing the supplied left value.
+   * @deprecated use {@link Eithers#cond(boolean, Object, Object)}
    */
-  public static <L, R> Either<L, R> cond(final boolean predicate, final R right, final L left) {
-    return (predicate) ? Either.<L, R> right(right) : Either.<L, R> left(left);
+  @Deprecated public static <L, R> Either<L, R> cond(final boolean predicate, final R right, final L left) {
+    return Eithers.cond(predicate, left, right);
   }
 
   /**
-   * Simplifies extracting a value or throwing a checked exception from an
-   * Either.
-   * 
-   * @param <X> the exception type
-   * @param <A> the value type
-   * @param either to extract from
-   * @return the value from the RHS
-   * @throws X the exception on the LHS
+   * @deprecated use {@link Eithers#getOrThrow(Either)}
    */
-  public static <X extends Exception, A> A getOrThrow(final Either<X, A> either) throws X {
-    if (either.isLeft()) {
-      throw either.left().get();
-    }
-    return either.right().get();
+  @Deprecated public static <X extends Exception, A> A getOrThrow(final Either<X, A> either) throws X {
+    return Eithers.getOrThrow(either);
   }
 
   /**
-   * Collect the right values if there are only rights, otherwise return the
-   * first left encountered.
-   * 
-   * @param <L> the left type
-   * @param <R>
-   * @param eithers an Iterable of Either<L, R>
-   * @return either the iterable of right values, or the first left encountered.
+   * @deprecated use {@link Eithers#sequenceRight(Iterable)}
    */
-  public static <L, R> Either<L, Iterable<R>> sequenceRight(final Iterable<Either<L, R>> eithers) {
-    ImmutableList.Builder<R> it = ImmutableList.builder();
-    for (final Either<L, R> e : eithers) {
-      if (e.isLeft()) {
-        return e.left().<Iterable<R>> as();
-      }
-      it.add(e.right().get());
-    }
-    return right((Iterable<R>) it.build());
+  @Deprecated public static <L, R> Either<L, Iterable<R>> sequenceRight(final Iterable<Either<L, R>> eithers) {
+    return Eithers.sequenceRight(eithers);
   }
 
   /**
-   * Collect the right values if there are only rights, otherwise return the
-   * first left encountered.
-   * 
-   * @param <L> the left type
-   * @param <R>
-   * @param eithers an Iterable of Either<L, R>
-   * @return either the iterable of right values, or the first left encountered.
+   * @deprecated use {@link Eithers#sequenceLeft(Iterable)}
    */
-  public static <L, R> Either<Iterable<L>, R> sequenceLeft(final Iterable<Either<L, R>> eithers) {
-    Iterable<L> it = ImmutableList.of();
-    for (final Either<L, R> e : eithers) {
-      if (e.isRight()) {
-        return e.right().<Iterable<L>> as();
-      }
-      it = Iterables.concat(it, e.left());
-    }
-    return left(it);
-  }
-
-  /**
-   * A predicate that tests if the supplied either is a left.
-   * 
-   * @since 1.2
-   */
-  public static <L, R> Predicate<Either<L, R>> isLeftPredicate() {
-    return new Predicate<Either<L, R>>() {
-      public boolean apply(Either<L, R> e) {
-        return e.isLeft();
-      }
-    };
-  }
-
-  /**
-   * A predicate that tests if the supplied either is a right.
-   * 
-   * @since 1.2
-   */
-  public static <L, R> Predicate<Either<L, R>> isRightPredicate() {
-    return new Predicate<Either<L, R>>() {
-      public boolean apply(Either<L, R> e) {
-        return e.isRight();
-      }
-    };
-  }
-
-  /**
-   * A function that maps an either to an option of its left type. The Function will return {@link Option.Some some)
-   * containing the either's left value if isLeft() is true, {@link Option.None none} otherwise.
-   * @since 1.2
-   */
-  public static <L, R> Function<Either<L, R>, Option<L>> leftMapper() {
-    return new Function<Either<L, R>, Option<L>>() {
-      public Option<L> apply(Either<L, R> either) {
-        return either.left().toOption();
-      }
-    };
-  }
-
-  /**
-   * A function that maps an either to an option of its right type. The Function will return {@link Option.Some some)
-   * containing the either's right value if isRight() is true, {@link Option.None none} otherwise.
-   * @since 1.2
-   */
-  public static <L, R> Function<Either<L, R>, Option<R>> rightMapper() {
-    return new Function<Either<L, R>, Option<R>>() {
-      public Option<R> apply(Either<L, R> either) {
-        return either.right().toOption();
-      }
-    };
+  @Deprecated public static <L, R> Either<Iterable<L>, R> sequenceLeft(final Iterable<Either<L, R>> eithers) {
+    return Eithers.sequenceLeft(eithers);
   }
 
   //
@@ -296,28 +199,23 @@ public abstract class Either<L, R> {
       this.value = value;
     }
 
-    @Override
-    final L getLeft() {
+    @Override final L getLeft() {
       return value;
     }
 
-    @Override
-    public boolean isLeft() {
+    @Override public boolean isLeft() {
       return true;
     }
 
-    @Override
-    public Either<R, L> swap() {
+    @Override public Either<R, L> swap() {
       return right(value);
     }
 
-    @Override
-    public <V> V fold(final Function<? super L, V> ifLeft, final Function<? super R, V> ifRight) {
+    @Override public <V> V fold(final Function<? super L, V> ifLeft, final Function<? super R, V> ifRight) {
       return ifLeft.apply(value);
     }
 
-    @Override
-    public boolean equals(final Object o) {
+    @Override public boolean equals(final Object o) {
       if (this == o) {
         return true;
       }
@@ -327,13 +225,11 @@ public abstract class Either<L, R> {
       return value.equals(((Left<?, ?>) o).value);
     }
 
-    @Override
-    public int hashCode() {
+    @Override public int hashCode() {
       return value.hashCode();
     }
 
-    @Override
-    public String toString() {
+    @Override public String toString() {
       return "Either.Left(" + value.toString() + ")";
     }
   }
@@ -346,28 +242,23 @@ public abstract class Either<L, R> {
       this.value = value;
     }
 
-    @Override
-    final R getRight() {
+    @Override final R getRight() {
       return value;
     }
 
-    @Override
-    public boolean isRight() {
+    @Override public boolean isRight() {
       return true;
     }
 
-    @Override
-    public Either<R, L> swap() {
+    @Override public Either<R, L> swap() {
       return left(value);
     }
 
-    @Override
-    public <V> V fold(final Function<? super L, V> ifLeft, final Function<? super R, V> ifRight) {
+    @Override public <V> V fold(final Function<? super L, V> ifLeft, final Function<? super R, V> ifRight) {
       return ifRight.apply(value);
     }
 
-    @Override
-    public boolean equals(final Object o) {
+    @Override public boolean equals(final Object o) {
       if (this == o) {
         return true;
       }
@@ -377,13 +268,11 @@ public abstract class Either<L, R> {
       return value.equals(((Right<?, ?>) o).value);
     }
 
-    @Override
-    public int hashCode() {
+    @Override public int hashCode() {
       return value.hashCode();
     }
 
-    @Override
-    public String toString() {
+    @Override public String toString() {
       return "Either.Right(" + value.toString() + ")";
     }
   }
@@ -392,58 +281,47 @@ public abstract class Either<L, R> {
    * Holds the common implementation for both projections.
    */
   abstract class AbstractProjection<A, B> implements Projection<A, B, L, R> {
-    @Override
-    public final Iterator<A> iterator() {
+    @Override public final Iterator<A> iterator() {
       return toOption().iterator();
     }
 
-    @Override
-    public final Either<L, R> either() {
+    @Override public final Either<L, R> either() {
       return Either.this;
     }
 
-    @Override
-    public final boolean isEmpty() {
+    @Override public final boolean isEmpty() {
       return !isDefined();
     }
 
-    @Override
-    public final Option<A> toOption() {
+    @Override public final Option<A> toOption() {
       return isDefined() ? some(get()) : Option.<A> none();
     }
 
-    @Override
-    public final boolean exists(final Predicate<A> f) {
+    @Override public final boolean exists(final Predicate<A> f) {
       return isDefined() && f.apply(get());
     }
 
-    @Override
-    final public A getOrNull() {
+    @Override final public A getOrNull() {
       return isDefined() ? get() : null;
     }
 
-    @Override
-    public final boolean forall(final Predicate<A> f) {
+    @Override public final boolean forall(final Predicate<A> f) {
       return isEmpty() || f.apply(get());
     }
 
-    @Override
-    public final A getOrError(final Supplier<String> err) {
+    @Override public final A getOrError(final Supplier<String> err) {
       return toOption().getOrError(err);
     }
 
-    @Override
-    public final A getOrElse(final Supplier<A> a) {
+    @Override public final A getOrElse(final Supplier<A> a) {
       return isDefined() ? get() : a.get();
     }
 
-    @Override
-    public final <X extends A> A getOrElse(final X x) {
+    @Override public final <X extends A> A getOrElse(final X x) {
       return isDefined() ? get() : x;
     }
 
-    @Override
-    public final void foreach(final Effect<A> f) {
+    @Override public final void foreach(final Effect<A> f) {
       if (isDefined()) {
         f.apply(get());
       }
@@ -460,8 +338,7 @@ public abstract class Either<L, R> {
       return getLeft();
     }
 
-    @Override
-    public boolean isDefined() {
+    @Override public boolean isDefined() {
       return isLeft();
     }
 
@@ -557,18 +434,15 @@ public abstract class Either<L, R> {
   public final class RightProjection extends AbstractProjection<R, L> implements Projection<R, L, L, R> {
     private RightProjection() {}
 
-    @Override
-    public R get() {
+    @Override public R get() {
       return getRight();
     }
 
-    @Override
-    public boolean isDefined() {
+    @Override public boolean isDefined() {
       return isRight();
     }
 
-    @Override
-    public R on(final Function<? super L, R> f) {
+    @Override public R on(final Function<? super L, R> f) {
       return isRight() ? get() : f.apply(left().get());
     }
 
