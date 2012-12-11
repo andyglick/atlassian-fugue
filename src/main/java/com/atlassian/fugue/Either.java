@@ -75,35 +75,35 @@ public abstract class Either<L, R> {
   //
 
   /**
-   * @deprecated use {@link Eithers#merge(Either)}
+   * @deprecated in 1.2 use {@link Eithers#merge(Either)}
    */
   @Deprecated public static <T> T merge(final Either<T, T> either) {
     return Eithers.merge(either);
   }
 
   /**
-   * @deprecated use {@link Eithers#cond(boolean, Object, Object)}
+   * @deprecated in 1.2 use {@link Eithers#cond(boolean, Object, Object)}
    */
   @Deprecated public static <L, R> Either<L, R> cond(final boolean predicate, final R right, final L left) {
     return Eithers.cond(predicate, left, right);
   }
 
   /**
-   * @deprecated use {@link Eithers#getOrThrow(Either)}
+   * @deprecated in 1.2 use {@link Eithers#getOrThrow(Either)}
    */
   @Deprecated public static <X extends Exception, A> A getOrThrow(final Either<X, A> either) throws X {
     return Eithers.getOrThrow(either);
   }
 
   /**
-   * @deprecated use {@link Eithers#sequenceRight(Iterable)}
+   * @deprecated in 1.2 use {@link Eithers#sequenceRight(Iterable)}
    */
   @Deprecated public static <L, R> Either<L, Iterable<R>> sequenceRight(final Iterable<Either<L, R>> eithers) {
     return Eithers.sequenceRight(eithers);
   }
 
   /**
-   * @deprecated use {@link Eithers#sequenceLeft(Iterable)}
+   * @deprecated in 1.2 use {@link Eithers#sequenceLeft(Iterable)}
    */
   @Deprecated public static <L, R> Either<Iterable<L>, R> sequenceLeft(final Iterable<Either<L, R>> eithers) {
     return Eithers.sequenceLeft(eithers);
