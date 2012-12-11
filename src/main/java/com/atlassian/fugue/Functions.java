@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package com.atlassian.fugue;
 
 import static com.atlassian.fugue.Either.left;
@@ -21,13 +21,14 @@ import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.some;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.Iterator;
+import java.util.List;
+
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
-
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * @since 1.1
@@ -35,18 +36,20 @@ import java.util.List;
 public class Functions {
   private Functions() {}
 
-/**
- * Apply f to each element in elements, with each application using the result of the previous application as the other
- * argument to f. zero is used as the first 'result' value. The final result is returned.
- * 
- * @param f the function to apply to all the elements
- * @param zero the starting point for the function
- * @param elements the series of which each element will be accumulated into a result
- * 
- * @return the result of accumulating the application of f to all elements
- * 
- * @since 1.1
- */
+  /**
+   * Apply f to each element in elements, with each application using the result
+   * of the previous application as the other argument to f. zero is used as the
+   * first 'result' value. The final result is returned.
+   * 
+   * @param f the function to apply to all the elements
+   * @param zero the starting point for the function
+   * @param elements the series of which each element will be accumulated into a
+   * result
+   * 
+   * @return the result of accumulating the application of f to all elements
+   * 
+   * @since 1.1
+   */
   public static <F, T> T fold(final Function2<T, F, T> f, final T zero, final Iterable<F> elements) {
     T currentValue = zero;
     for (final F element : elements) {
@@ -55,18 +58,20 @@ public class Functions {
     return currentValue;
   }
 
-/**
- * Apply f to each element in elements, with each application using the result of the previous application as the other
- * argument to f. zero is used as the first 'result' value. The final result is returned.
- * 
- * @param f the function to apply to all elements
- * @param zero the starting point for the function
- * @param elements the series of which each element will be accumulated into a result
- * 
- * @return the result of accumulating the application of f to all elements
- * 
- * @since 1.1
- */
+  /**
+   * Apply f to each element in elements, with each application using the result
+   * of the previous application as the other argument to f. zero is used as the
+   * first 'result' value. The final result is returned.
+   * 
+   * @param f the function to apply to all elements
+   * @param zero the starting point for the function
+   * @param elements the series of which each element will be accumulated into a
+   * result
+   * 
+   * @return the result of accumulating the application of f to all elements
+   * 
+   * @since 1.1
+   */
   public static <F, T> T fold(final Function<Pair<T, F>, T> f, final T zero, final Iterable<F> elements) {
     return fold(new Function2<T, F, T>() {
       public T apply(final T arg1, final F arg2) {
@@ -108,6 +113,58 @@ public class Functions {
         return f.apply(arg);
       }
     };
+  }
+
+  /**
+   * PartialFunction that does a type check and matches if the value is of the
+   * right type.
+   * 
+   * @param cls the type to check against.
+   * @return a function that returns a Some with the value if of the right type
+   * otherwise a None
+   * @since 1.2
+   */
+  public static <A, B> Function<A, Option<B>> isInstanceOf(Class<B> cls) {
+    return new InstanceOf<A, B>(cls);
+  }
+
+  static class InstanceOf<A, B> implements Function<A, Option<B>> {
+    private final Class<B> cls;
+
+    InstanceOf(Class<B> cls) {
+      this.cls = checkNotNull(cls);
+    }
+
+    public Option<B> apply(A a) {
+      return (cls.isAssignableFrom(a.getClass())) ? Option.some(cls.cast(a)) : Option.<B> none();
+    }
+  }
+
+  /**
+   * Create a PartialFunction from a {@link Predicate} and a {@link Function}.
+   * 
+   * @param p the predicate to test the value against.
+   * @param p the predicate to test the value against.
+   * @return a PartialFunction that tests the supplied predicate before applying
+   * the function.
+   * @since 1.2
+   */
+  public static <A, B> Function<A, Option<B>> partial(Predicate<? super A> p, Function<? super A, ? extends B> f) {
+    return new Partial<A, B>(p, f);
+  }
+
+  static class Partial<A, B> implements Function<A, Option<B>> {
+    private final Predicate<? super A> p;
+    private final Function<? super A, ? extends B> f;
+
+    Partial(Predicate<? super A> p, Function<? super A, ? extends B> f) {
+      this.p = checkNotNull(p);
+      this.f = checkNotNull(f);
+    }
+
+    public Option<B> apply(A a) {
+      return (p.apply(a)) ? Option.<B> option(f.apply(a)) : Option.<B> none();
+    }
   }
 
   /**
