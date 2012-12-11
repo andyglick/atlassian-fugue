@@ -180,6 +180,32 @@ public abstract class Either<L, R> {
     };
   }
 
+  /**
+   * A function that maps an either to an option of its left type. The Function will return {@link Option.Some some)
+   * containing the either's left value if isLeft() is true, {@link Option.None none} otherwise.
+   * @since 1.2
+   */
+  public static <L, R> Function<Either<L, R>, Option<L>> leftMapper() {
+    return new Function<Either<L, R>, Option<L>>() {
+      public Option<L> apply(Either<L, R> either) {
+        return either.left().toOption();
+      }
+    };
+  }
+
+  /**
+   * A function that maps an either to an option of its right type. The Function will return {@link Option.Some some)
+   * containing the either's right value if isRight() is true, {@link Option.None none} otherwise.
+   * @since 1.2
+   */
+  public static <L, R> Function<Either<L, R>, Option<R>> rightMapper() {
+    return new Function<Either<L, R>, Option<R>>() {
+      public Option<R> apply(Either<L, R> either) {
+        return either.right().toOption();
+      }
+    };
+  }
+
   //
   // constructors
   //

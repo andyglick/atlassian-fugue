@@ -401,6 +401,30 @@ public class Iterables {
     };
   }
 
+  /**
+   * Takes an Iterable of Eithers, returns an Iterable containing the left values of every Either which has a left value
+   *
+   * @param it Iterator of Eithers to filter from
+   * @return the left values contained in the contents of it
+   * @since 1.2
+   */
+  public static <L, R> Iterable<L> filterLeft(Iterable<Either<L, R>> it)
+  {
+    return Options.flatten(transform(it, Either.<L, R>leftMapper()));
+  }
+
+  /**
+   * Takes an Iterable of Eithers, returns an Iterable containing the right values of every Either which has a right value
+   *
+   * @param it Iterator of Eithers to filter from
+   * @return the right values contained in the contents of it
+   * @since 1.2
+   */
+  public static <L, R> Iterable<R> filterRight(Iterable<Either<L, R>> it)
+  {
+    return Options.flatten(transform(it, Either.<L, R>rightMapper()));
+  }
+
   //
   // inner classes
   //
