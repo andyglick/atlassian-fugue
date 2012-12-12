@@ -33,8 +33,6 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <!-- 2.0.1 specifies open ended imports, 2.3.? puts a cap on them, don't remove unless this gets fixed  -->
-                <version>2.0.1</version>
                 <executions>
                     <execution>
                         <id>bundle-manifest</id>
@@ -49,6 +47,12 @@
                         <Export-Package>
                             com.atlassian.fugue.*;version="${project.version}"
                         </Export-Package>
+                        <Import-Package>
+                            com.atlassian.util.concurrent;version="${atlassian-util-concurrent.version}",
+                            com.google.common.base;version="${guava.osgi.version}",
+                            com.google.common.collect;version="${guava.osgi.version}",
+                            org.slf4j;version="${slf4j-api.version}"
+                        </Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
@@ -92,7 +96,7 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.6.0</version>
+            <version>${slf4j-api.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -104,7 +108,7 @@
         <dependency>
             <groupId>com.atlassian.util.concurrent</groupId>
             <artifactId>atlassian-util-concurrent</artifactId>
-            <version>2.0.0</version>
+            <version>${atlassian-util-concurrent.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -145,6 +149,8 @@
         <jdkLevel>1.6</jdkLevel>
         <clover.version>3.1.0</clover.version>
         <guava.osgi.version>10.0.1</guava.osgi.version>
+        <slf4j-api.version>1.6.0</slf4j-api.version>
+        <atlassian-util-concurrent.version>2.0.0</atlassian-util-concurrent.version>
     </properties>
     
     <scm>
