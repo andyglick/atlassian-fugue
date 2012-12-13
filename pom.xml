@@ -106,6 +106,13 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <!-- findbugs is only useful for compile/analysis, not needed at runtime -->
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>2.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>com.atlassian.util.concurrent</groupId>
             <artifactId>atlassian-util-concurrent</artifactId>
             <version>${atlassian-util-concurrent.version}</version>
