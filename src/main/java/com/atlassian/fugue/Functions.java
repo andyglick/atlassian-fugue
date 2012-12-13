@@ -170,13 +170,15 @@ public class Functions {
 
   /**
    * Compose two PartialFunctions into one.
+   * <p>
+   * Kleisli composition. In Haskell it is defined as <code>&gt;=&gt;</code>, AKA <a href="http://stackoverflow.com/a/7833488/210216">"compose, fishy, compose"</a>
    * 
-   * @param f the first partial function.
-   * @param f the first partial function.
+   * @param f the first partial function
+   * @param g the second partial function
    * @return a PartialFunction that flatMaps g on to the result of applying f.
    * @since 1.2
    */
-  public static <A, B, C> Function<A, Option<C>> flatMap(Function<? super A, Option<B>> f, Function<? super B, Option<C>> g) {
+  public static <A, B, C> Function<A, Option<C>> compose(Function<? super A, Option<B>> f, Function<? super B, Option<C>> g) {
     return new PartialComposer<A, B, C>(f, g);
   }
 
