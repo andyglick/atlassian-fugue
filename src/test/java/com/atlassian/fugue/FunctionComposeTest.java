@@ -7,12 +7,11 @@ import static org.junit.Assert.assertThat;
 
 import javax.annotation.Nullable;
 
-import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import com.google.common.base.Function;
 
-public class FunctionsTest {
+public class FunctionComposeTest {
   Function<String, Option<Integer>> toInt = new Function<String, Option<Integer>>() {
     @Override public Option<Integer> apply(@Nullable String input) {
       try {

@@ -21,6 +21,7 @@ import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.some;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.collect.ImmutableList.copyOf;
 
 import java.util.Iterator;
 import java.util.List;
@@ -171,7 +172,9 @@ public class Functions {
   /**
    * Compose two PartialFunctions into one.
    * <p>
-   * Kleisli composition. In Haskell it is defined as <code>&gt;=&gt;</code>, AKA <a href="http://stackoverflow.com/a/7833488/210216">"compose, fishy, compose"</a>
+   * Kleisli composition. In Haskell it is defined as <code>&gt;=&gt;</code>,
+   * AKA <a href="http://stackoverflow.com/a/7833488/210216">
+   * "compose, fishy, compose"</a>
    * 
    * @param f the first partial function
    * @param g the second partial function
@@ -197,21 +200,89 @@ public class Functions {
   }
 
   /**
-   * Creates a stack of matcher functions and returns the first result that matches.
+   * Creates a stack of matcher functions and returns the first result that
+   * matches.
    * 
-   * @param fs the partial functions, order matters as they are tried in iteration order.
-   * @return a PartialFunction that composes all the functions and tries each one in sequence.
+   * @param f1 partial function, tried in order.
+   * @param f2 partial function, tried in order.
+   * @return a PartialFunction that composes all the functions and tries each
+   * one in sequence.
    * @since 1.2
    */
-  public static <A, B> Function<A, Option<B>> matches(Function<? super A, Option<B>>... fs) {
-    return new Matcher<A, B>(fs);
+  public static <A, B> Function<A, Option<B>> matches(Function<? super A, Option<B>> f1, Function<? super A, Option<B>> f2) {
+    @SuppressWarnings("unchecked")
+    Matcher<A, B> result = matcher(f1, f2);
+    return result;
+  }
+
+  /**
+   * Creates a stack of matcher functions and returns the first result that
+   * matches.
+   * 
+   * @param f1 partial function, tried in order.
+   * @param f2 partial function, tried in order.
+   * @param f3 partial function, tried in order.
+   * @return a PartialFunction that composes all the functions and tries each
+   * one in sequence.
+   * @since 1.2
+   */
+  public static <A, B> Function<A, Option<B>> matches(Function<? super A, Option<B>> f1, Function<? super A, Option<B>> f2,
+    Function<? super A, Option<B>> f3) {
+    @SuppressWarnings("unchecked")
+    Matcher<A, B> result = matcher(f1, f2, f3);
+    return result;
+  }
+
+  /**
+   * Creates a stack of matcher functions and returns the first result that
+   * matches.
+   * 
+   * @param f1 partial function, tried in order.
+   * @param f2 partial function, tried in order.
+   * @param f3 partial function, tried in order.
+   * @param f4 partial function, tried in order.
+   * @return a PartialFunction that composes all the functions and tries each
+   * one in sequence.
+   * @since 1.2
+   */
+  public static <A, B> Function<A, Option<B>> matches(Function<? super A, Option<B>> f1, Function<? super A, Option<B>> f2,
+    Function<? super A, Option<B>> f3, Function<? super A, Option<B>> f4) {
+    @SuppressWarnings("unchecked")
+    Matcher<A, B> result = matcher(f1, f2, f3, f4);
+    return result;
+  }
+
+  /**
+   * Creates a stack of matcher functions and returns the first result that
+   * matches.
+   * 
+   * @param f1 partial function, tried in order.
+   * @param f2 partial function, tried in order.
+   * @param f3 partial function, tried in order.
+   * @param f4 partial function, tried in order.
+   * @param f5 partial function, tried in order.
+   * @param fs partial functions, tried in order.
+   * @return a PartialFunction that composes all the functions and tries each
+   * one in sequence.
+   * @since 1.2
+   */
+  public static <A, B> Function<A, Option<B>> matches(Function<? super A, Option<B>> f1, Function<? super A, Option<B>> f2,
+    Function<? super A, Option<B>> f3, Function<? super A, Option<B>> f4, Function<? super A, Option<B>> f5, Function<? super A, Option<B>>... fs) {
+    Matcher<A, B> result = new Matcher<A, B>(com.google.common.collect.Iterables.concat(
+      ImmutableList.<Function<? super A, Option<B>>> of(f1, f2, f3, f4, f5), copyOf(fs)));
+    return result;
+  }
+
+  /* utility copy function */
+  private static <A, B> Matcher<A, B> matcher(Function<? super A, Option<B>>... fs) {
+    return new Matcher<A, B>(copyOf(fs));
   }
 
   static class Matcher<A, B> implements Function<A, Option<B>> {
     private final Iterable<Function<? super A, Option<B>>> fs;
 
-    Matcher(Function<? super A, Option<B>>... fs) {
-      this.fs = ImmutableList.copyOf(checkNotNull(fs));
+    Matcher(Iterable<Function<? super A, Option<B>>> fs) {
+      this.fs = checkNotNull(fs);
       checkState(!Iterables.isEmpty().apply(this.fs));
     }
 
@@ -224,7 +295,7 @@ public class Functions {
       return Option.none();
     }
   }
-  
+
   /**
    * Function that can be used to ignore any RuntimeExceptions that a
    * {@link Supplier} may produce and return null instead.
