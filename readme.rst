@@ -20,4 +20,4 @@ Issue Tracking
 --------------
 Issues are tracked in the FAGE_ project on labs.atlassian.com
 
-.. _FAGE: labs://jira.atlassian.com/browse/FAGE
+.. _FAGE: https://labs.atlassian.com/browse/FAGE

@@ -28,6 +28,14 @@
     <packaging>jar</packaging>
     <name>Functional Guava Extensions</name>
 
+	<licenses>
+        <license>
+	        <name>Apache License 2.0</name>
+	        <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+	        <distribution>repo</distribution>
+	    </license>
+    </licenses>
+
     <build>
         <plugins>
             <plugin>
