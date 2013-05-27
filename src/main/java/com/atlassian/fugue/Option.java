@@ -185,7 +185,7 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
    * @param some the function to apply if this is a {@link Option.Some Some}
    * @return the appropriate value
    */
-  public abstract <B> B fold(Supplier<? extends B> none, Function<? super A, B> some);
+  public abstract <B> B fold(Supplier<? extends B> none, Function<? super A, ? extends B> some);
 
   //
   // implementing Maybe
@@ -256,9 +256,9 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
    * @param f function to apply to wrapped value
    * @return new wrapped value
    */
-  public final <B> Option<B> map(final Function<? super A, B> f) {
+  public final <B> Option<B> map(final Function<? super A, ? extends B> f) {
     checkNotNull(f);
-    return isEmpty() ? Option.<B> none() : option(f.apply(get()));
+    return isEmpty() ? Option.<B> none() : option((B) f.apply(get()));
   }
 
   /**
@@ -270,9 +270,11 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
    * @param f function to apply to wrapped value
    * @return value returned from {@code f}
    */
-  public final <B> Option<B> flatMap(final Function<? super A, Option<B>> f) {
+  public final <B> Option<B> flatMap(final Function<? super A, ? extends Option<? extends B>> f) {
     checkNotNull(f);
-    return fold(Option.<B> noneSupplier(), f);
+    @SuppressWarnings("unchecked")
+    Option<B> result = (Option<B>) fold(Option.<B> noneSupplier(), f);
+    return result;
   }
 
   /**
@@ -345,7 +347,7 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
   //
 
   private static final Option<Object> NONE = new Option<Object>() {
-    @Override public <B> B fold(final Supplier<? extends B> none, final Function<? super Object, B> some) {
+    @Override public <B> B fold(final Supplier<? extends B> none, final Function<? super Object, ? extends B> some) {
       return none.get();
     }
 
@@ -387,7 +389,7 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
       this.value = checkNotNull(value, "value");
     }
 
-    @Override public <B> B fold(final Supplier<? extends B> none, final Function<? super A, B> f) {
+    @Override public <B> B fold(final Supplier<? extends B> none, final Function<? super A, ? extends B> f) {
       return f.apply(value);
     }
 
