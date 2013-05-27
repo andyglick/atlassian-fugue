@@ -19,7 +19,7 @@
     <parent>
         <groupId>com.atlassian.pom</groupId>
         <artifactId>atlassian-public-pom</artifactId>
-        <version>34</version>
+        <version>39</version>
     </parent>
     
     <groupId>com.atlassian.fugue</groupId>
