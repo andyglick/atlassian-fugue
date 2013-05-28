@@ -33,6 +33,12 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
 
 /**
+ * Utility methods for Functions that are in addition to the methods on
+ * {@link com.google.common.base.Functions}.
+ * <P>
+ * Note that this class defines Partial Functions to be functions that return an
+ * {@link Option} of the result type, and has some methods for creating them.
+ * 
  * @since 1.1
  */
 public class Functions {
@@ -118,7 +124,7 @@ public class Functions {
   }
 
   /**
-   * PartialFunction that does a type check and matches if the value is of the
+   * Partial Function that does a type check and matches if the value is of the
    * right type.
    * 
    * @param cls the type to check against.
@@ -293,6 +299,30 @@ public class Functions {
           return b;
       }
       return Option.none();
+    }
+  }
+
+  /**
+   * Lift a function that returns nulls into a Partial function that returns an
+   * Option of the result.
+   * 
+   * @param f the function that may return nulls
+   * @return a function that converts any nulls into Options
+   * @since 1.2
+   */
+  public static <A, B> Function<A, Option<B>> lift(Function<? super A, ? extends B> f) {
+    return new LiftedPartial<A, B>(f);
+  }
+
+  static class LiftedPartial<A, B> implements Function<A, Option<B>> {
+    private final Function<? super A, ? extends B> f;
+
+    LiftedPartial(Function<? super A, ? extends B> f) {
+      this.f = f;
+    }
+
+    @Override public Option<B> apply(A a) {
+      return Option.option((B) f.apply(a));
     }
   }
 
