@@ -13,14 +13,14 @@ import org.junit.Test;
 import com.google.common.collect.ImmutableList;
 
 public class FilterLeftTest {
-  @Test public void testThatRightOnlyFiltersLeftToEmpty() {
+  @Test public void rightOnlyFiltersLeftToEmpty() {
     final List<Either<Integer, String>> it = ImmutableList.of(Either.<Integer, String> right("one"), Either.<Integer, String> right("three"),
       Either.<Integer, String> right("2"));
 
     assertFalse(filterLeft(it).iterator().hasNext());
   }
 
-  @Test public void testThatLeftOnlyFiltersLeftToSameContents() {
+  @Test public void leftOnlyFiltersLeftToSameContents() {
     final List<Either<Integer, String>> it = ImmutableList.of(Either.<Integer, String> left(1), Either.<Integer, String> left(333),
       Either.<Integer, String> left(22));
 
@@ -33,7 +33,7 @@ public class FilterLeftTest {
     }
   }
 
-  @Test public void testThatMixedEithersFiltersLeftToExpectedContents() {
+  @Test public void mixedEithersFiltersLeftToExpectedContents() {
     final List<Either<Integer, String>> it = ImmutableList.of(Either.<Integer, String> left(1), Either.<Integer, String> right("three"),
       Either.<Integer, String> right("fore"), Either.<Integer, String> left(22));
 
@@ -43,8 +43,7 @@ public class FilterLeftTest {
     assertFalse(iterator.hasNext());
   }
 
-  @Test public void testThatEmptyIterableFiltersLeftToEmptyIterable() {
-    final List<Either<Integer, String>> it = Collections.emptyList();
-    assertFalse(filterLeft(it).iterator().hasNext());
+  @Test public void emptyIterableFiltersLeftToEmptyIterable() {
+    assertFalse(filterLeft(Collections.<Either<Integer, String>>emptyList()).iterator().hasNext());
   }
 }
