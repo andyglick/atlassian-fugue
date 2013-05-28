@@ -18,6 +18,6 @@ There also additional helper classes for common Function and Supplier operations
 --------------
 Issue Tracking
 --------------
-Issues are tracked in the FAGE_ project on labs.atlassian.com
+Issues are tracked in the fugue_ project on bitbucket
 
-.. _FAGE: https://labs.atlassian.com/browse/FAGE
+.. _fugue: https://bitbucket.org/atlassian/fugue/issues
