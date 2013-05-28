@@ -23,5 +23,4 @@ public class FunctionMatcherTest {
     Functions.compose(toInt(1), null);
   }
 
-  
 }

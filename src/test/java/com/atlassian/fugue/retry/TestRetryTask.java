@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package com.atlassian.fugue.retry;
 
 import org.junit.Before;
@@ -35,13 +35,11 @@ public class TestRetryTask {
   @Mock private ExceptionHandler exceptionHandler;
   @Mock private RuntimeException runtimeException;
 
-  @Before
-  public void setUp() {
+  @Before public void setUp() {
     initMocks(this);
   }
 
-  @Test
-  public void testBasicTask() {
+  @Test public void testBasicTask() {
     new RetryTask(task, ATTEMPTS).run();
     verify(task).run();
   }
@@ -81,22 +79,24 @@ public class TestRetryTask {
   }
 
   @Test public void testTaskEarlyExit() {
-    
+
     final AtomicReference<Integer> failcount = new AtomicReference<Integer>(0);
     Runnable localTask = new Runnable() {
       public void run() {
         failcount.set(failcount.get() + 1);
         switch (failcount.get()) {
-          case 1 : throw new RuntimeException("First attempt");
-          case 2 : return;
-          default : throw new RuntimeException("Third runthrough (fail)");
+          case 1:
+            throw new RuntimeException("First attempt");
+          case 2:
+            return;
+          default:
+            throw new RuntimeException("Third runthrough (fail)");
         }
       }
     };
-    
+
     new RetryTask(localTask, ATTEMPTS).run();
     assertThat(failcount.get(), is(2));
   }
 
-  
 }

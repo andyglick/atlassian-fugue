@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package com.atlassian.fugue;
 
 import static com.atlassian.fugue.Option.none;
@@ -132,7 +132,7 @@ public class OptionTest {
   @Test public void noneNoneEquality() {
     assertThat(none(), is(equalTo(none())));
   }
-  
+
   @Test public void someOrElseReturnsOriginal() {
     assertThat(some(1).orElse(some(2)), is(equalTo(some(1))));
   }
@@ -149,8 +149,9 @@ public class OptionTest {
     assertThat(none(int.class).orElse(Suppliers.ofInstance(some(2))), is(equalTo(some(2))));
   }
 
-  class Parent{};
-  class Child extends Parent{};
+  class Parent {};
+
+  class Child extends Parent {};
 
   @Test public void covariantReturn() {
     Option<Parent> some = some(new Parent());
@@ -159,7 +160,7 @@ public class OptionTest {
         return some(new Child());
       }
     };
-    Option<Parent> mapped = some.<Parent>flatMap(f);
+    Option<Parent> mapped = some.<Parent> flatMap(f);
     assertThat(mapped.get(), notNullValue());
   }
 

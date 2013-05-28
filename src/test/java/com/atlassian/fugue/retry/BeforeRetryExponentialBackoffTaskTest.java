@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package com.atlassian.fugue.retry;
 
 import org.hamcrest.Matchers;
@@ -22,19 +22,16 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 public class BeforeRetryExponentialBackoffTaskTest {
-  
-  @Test (expected = IllegalArgumentException.class)
-  public void negativeSleep() {
+
+  @Test(expected = IllegalArgumentException.class) public void negativeSleep() {
     new BeforeRetryExponentialBackoffTask(-1);
   }
-  
-  @Test (expected = IllegalArgumentException.class)
-  public void zeroSleep() {
+
+  @Test(expected = IllegalArgumentException.class) public void zeroSleep() {
     new BeforeRetryExponentialBackoffTask(0);
   }
-  
-  @Test
-  public void sleep() {
+
+  @Test public void sleep() {
     BeforeRetryExponentialBackoffTask beforeRetryExponentialBackoffTask = new BeforeRetryExponentialBackoffTask(1);
 
     Thread.currentThread().interrupt();
@@ -42,12 +39,11 @@ public class BeforeRetryExponentialBackoffTaskTest {
       beforeRetryExponentialBackoffTask.run();
     } catch (RuntimeException e) {
       Throwable cause = e.getCause();
-      assertThat(cause.getClass(), Matchers.<Class<? extends Throwable>>is(InterruptedException.class));
+      assertThat(cause.getClass(), Matchers.<Class<? extends Throwable>> is(InterruptedException.class));
     }
   }
-  
-  @Test
-  public void backoffIncreases() {
+
+  @Test public void backoffIncreases() {
     BeforeRetryExponentialBackoffTask beforeRetryExponentialBackoffTask = new BeforeRetryExponentialBackoffTask(1);
 
     beforeRetryExponentialBackoffTask.run();

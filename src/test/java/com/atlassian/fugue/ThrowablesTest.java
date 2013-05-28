@@ -15,13 +15,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.common.base.Function;
 
-@RunWith(MockitoJUnitRunner.class)
-public final class ThrowablesTest {
-  @Mock
-  private Function<Throwable, RuntimeException> function;
+@RunWith(MockitoJUnitRunner.class) public final class ThrowablesTest {
+  @Mock private Function<Throwable, RuntimeException> function;
 
-  @Test
-  public void testPropagateWithFunctionForRuntimeException() throws Exception {
+  @Test public void testPropagateWithFunctionForRuntimeException() throws Exception {
     final Exception original = new RuntimeException();
     try {
       Throwables.propagate(original, function);
@@ -33,8 +30,7 @@ public final class ThrowablesTest {
     verifyZeroInteractions(function);
   }
 
-  @Test
-  public void testPropagateWithFunctionForNonRuntimeException() throws Exception {
+  @Test public void testPropagateWithFunctionForNonRuntimeException() throws Exception {
     final RuntimeException runtime = new RuntimeException();
     when(function.apply(Mockito.<Throwable> any())).thenReturn(runtime);
 
@@ -49,8 +45,7 @@ public final class ThrowablesTest {
     verify(function).apply(original);
   }
 
-  @Test
-  public void testPropagateWithTypeForRuntimeException() throws Exception {
+  @Test public void testPropagateWithTypeForRuntimeException() throws Exception {
     final Exception original = new RuntimeException();
     try {
       Throwables.propagate(original, MyRuntimeException.class);
@@ -60,8 +55,7 @@ public final class ThrowablesTest {
     }
   }
 
-  @Test
-  public void testPropagateWithTypeForNonRuntimeException() throws Exception {
+  @Test public void testPropagateWithTypeForNonRuntimeException() throws Exception {
     final Exception original = new Exception();
     try {
       Throwables.propagate(original, MyRuntimeException.class);

@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package com.atlassian.fugue.retry;
 
 import org.hamcrest.Matchers;
@@ -22,19 +22,16 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 public class BeforeRetryLinearBackoffTaskTest {
-  
-  @Test(expected = IllegalArgumentException.class)
-  public void negativeSleep() {
+
+  @Test(expected = IllegalArgumentException.class) public void negativeSleep() {
     new BeforeRetryLinearBackoffTask(-1);
   }
-  
-  @Test (expected = IllegalArgumentException.class)
-  public void zeroSleep() {
+
+  @Test(expected = IllegalArgumentException.class) public void zeroSleep() {
     new BeforeRetryLinearBackoffTask(0);
   }
-  
-  @Test
-  public void sleep() {
+
+  @Test public void sleep() {
     BeforeRetryLinearBackoffTask beforeRetryLinearBackoffTask = new BeforeRetryLinearBackoffTask(1);
 
     Thread.currentThread().interrupt();
@@ -42,12 +39,11 @@ public class BeforeRetryLinearBackoffTaskTest {
       beforeRetryLinearBackoffTask.run();
     } catch (RuntimeException e) {
       Throwable cause = e.getCause();
-      assertThat(cause.getClass(), Matchers.<Class<? extends Throwable>>is(InterruptedException.class));
+      assertThat(cause.getClass(), Matchers.<Class<? extends Throwable>> is(InterruptedException.class));
     }
   }
-  
-  @Test
-  public void backoffIncreases() {
+
+  @Test public void backoffIncreases() {
     BeforeRetryLinearBackoffTask beforeRetryLinearBackoffTask = new BeforeRetryLinearBackoffTask(1);
 
     beforeRetryLinearBackoffTask.run();

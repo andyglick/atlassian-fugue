@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package com.atlassian.fugue;
 
 import static com.atlassian.fugue.Iterables.mergeSorted;
@@ -55,8 +55,8 @@ public class IterablesMergeSortedTest {
   }
 
   @Test public void mergingManyNonEmptyIterablesOutOfOrderGivesMergedIterableInOrder() {
-    assertThat(mergeSorted(of(of("b", "d"), of("f", "x"), of("c", "e"), of("g", "h"), of("a", "z"))), contains("a", "b", "c", "d", "e", "f", "g",
-      "h", "x", "z"));
+    assertThat(mergeSorted(of(of("b", "d"), of("f", "x"), of("c", "e"), of("g", "h"), of("a", "z"))),
+      contains("a", "b", "c", "d", "e", "f", "g", "h", "x", "z"));
   }
 
   @Test public void mergedToString() {

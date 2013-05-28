@@ -103,8 +103,7 @@ public final class Throwables {
       this.type = checkNotNull(type);
     }
 
-    @Override
-    public E apply(Throwable throwable) {
+    @Override public E apply(Throwable throwable) {
       return newInstance(getConstructor(type, Throwable.class), throwable);
     }
 

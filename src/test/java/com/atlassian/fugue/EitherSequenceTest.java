@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package com.atlassian.fugue;
 
 import static com.atlassian.fugue.Either.left;
@@ -36,8 +36,8 @@ import java.util.Arrays;
   }
 
   @Test public void sequenceRightWithLeft() {
-    final Iterable<Either<String, Integer>> eithers = build(Build.<String, Integer> r(1), Build.<String, Integer> l("2"), Build
-      .<String, Integer> r(3));
+    final Iterable<Either<String, Integer>> eithers = build(Build.<String, Integer> r(1), Build.<String, Integer> l("2"),
+      Build.<String, Integer> r(3));
     assertThat(sequenceRight(eithers), is(Build.<String, Iterable<Integer>> l("2")));
   }
 
@@ -47,8 +47,8 @@ import java.util.Arrays;
   }
 
   @Test public void sequenceLeftWithRight() {
-    final Iterable<Either<String, Integer>> eithers = build(Build.<String, Integer> l("1"), Build.<String, Integer> r(2), Build
-      .<String, Integer> l("3"));
+    final Iterable<Either<String, Integer>> eithers = build(Build.<String, Integer> l("1"), Build.<String, Integer> r(2),
+      Build.<String, Integer> l("3"));
     assertThat(sequenceLeft(eithers), is(Build.<Iterable<String>, Integer> r(2)));
   }
 

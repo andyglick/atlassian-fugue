@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package com.atlassian.fugue.retry;
 
 import org.hamcrest.Matchers;
@@ -66,23 +66,23 @@ public class TestExceptionHandlers {
 
     assertEquals("12", sb.toString());
   }
-  
+
   @Test public void loggingExceptionHandler() {
     Logger logger = mock(Logger.class);
     ExceptionHandler exceptionHandler = ExceptionHandlers.loggingExceptionHandler(logger);
-    
+
     assertThat(((ExceptionHandlers.LoggingExceptionHandler) exceptionHandler).logger(), is(logger));
   }
-  
+
   @Test public void loggingExceptionHandlerNull() {
     ExceptionHandler exceptionHandler = ExceptionHandlers.loggingExceptionHandler(null);
-    
-    assertThat(exceptionHandler.getClass(), Matchers.<Class<? extends ExceptionHandler>>is(ExceptionHandlers.LoggingExceptionHandler.class));
-    assertThat(((ExceptionHandlers.LoggingExceptionHandler)exceptionHandler).logger(), is(ExceptionHandlers.logger()));
+
+    assertThat(exceptionHandler.getClass(), Matchers.<Class<? extends ExceptionHandler>> is(ExceptionHandlers.LoggingExceptionHandler.class));
+    assertThat(((ExceptionHandlers.LoggingExceptionHandler) exceptionHandler).logger(), is(ExceptionHandlers.logger()));
   }
 
-  @Test (expected = InvocationTargetException.class) public void nonInstantiable() throws NoSuchMethodException, 
-    InvocationTargetException, IllegalAccessException, InstantiationException {
+  @Test(expected = InvocationTargetException.class) public void nonInstantiable() throws NoSuchMethodException, InvocationTargetException,
+    IllegalAccessException, InstantiationException {
     Constructor<ExceptionHandlers> declaredConstructor = ExceptionHandlers.class.getDeclaredConstructor();
     declaredConstructor.setAccessible(true);
     declaredConstructor.newInstance();
