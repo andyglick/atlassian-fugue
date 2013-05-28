@@ -33,8 +33,6 @@ import static org.hamcrest.Matchers.notNullValue;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import javax.annotation.Nullable;
-
 import org.junit.Test;
 
 import com.google.common.base.Function;

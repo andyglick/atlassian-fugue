@@ -23,13 +23,13 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import com.google.common.base.Functions;
-
-import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 public class IterablesTakeTest {
   @Test public void takeOneFromList() {

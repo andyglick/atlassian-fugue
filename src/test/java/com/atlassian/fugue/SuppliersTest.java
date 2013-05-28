@@ -15,11 +15,12 @@
  */
 package com.atlassian.fugue;
 
-import com.google.common.base.Supplier;
-import org.junit.Test;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+
+import org.junit.Test;
+
+import com.google.common.base.Supplier;
 
 public class SuppliersTest {
 

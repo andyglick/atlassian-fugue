@@ -18,9 +18,9 @@ package com.atlassian.fugue;
 import static com.atlassian.fugue.Either.left;
 import static com.atlassian.fugue.Either.right;
 
-import com.google.common.base.Function;
-
 import java.lang.reflect.Constructor;
+
+import com.google.common.base.Function;
 
 public class UtilityFunctions {
   public static Function<Integer, Integer> addOne = new Function<Integer, Integer>() {

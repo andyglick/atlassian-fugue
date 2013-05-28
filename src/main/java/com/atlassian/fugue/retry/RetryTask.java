@@ -15,8 +15,8 @@
  */
 package com.atlassian.fugue.retry;
 
-import com.google.common.base.Supplier;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Supplier;
 
 /**
  * A Runable which wraps the apply method of another Runnable and attempts it a

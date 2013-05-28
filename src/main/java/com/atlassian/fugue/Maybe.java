@@ -15,11 +15,11 @@
  */
 package com.atlassian.fugue;
 
-import com.google.common.base.Predicate;
-import com.google.common.base.Supplier;
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import com.google.common.base.Predicate;
+import com.google.common.base.Supplier;
 
 /**
  * Implemented by things that may or may not contain a value.

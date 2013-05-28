@@ -21,15 +21,15 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 
-import org.junit.Test;
-
-import com.google.common.base.Function;
-import com.google.common.base.Predicates;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
+
+import org.junit.Test;
+
+import com.google.common.base.Function;
+import com.google.common.base.Predicates;
 
 public class OptionNoneTest {
   private final Option<Integer> none = none();

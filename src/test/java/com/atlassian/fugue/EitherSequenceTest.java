@@ -23,11 +23,11 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
-
-import java.util.Arrays;
 
 @SuppressWarnings("unchecked") public class EitherSequenceTest {
   @Test public void sequenceRights() {

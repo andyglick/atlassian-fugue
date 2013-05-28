@@ -15,18 +15,21 @@
  */
 package com.atlassian.fugue.retry;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-
-import java.util.concurrent.atomic.AtomicReference;
-
 import static junit.framework.Assert.assertSame;
 import static junit.framework.Assert.fail;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.MockitoAnnotations.initMocks;
+
+import java.util.concurrent.atomic.AtomicReference;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
 
 public class TestRetryTask {
   private static final int ATTEMPTS = 4;
