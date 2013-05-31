@@ -182,26 +182,27 @@ public class Functions {
    * AKA <a href="http://stackoverflow.com/a/7833488/210216">
    * "compose, fishy, compose"</a>
    * 
-   * @param f the first partial function
-   * @param g the second partial function
+   * @param bc partial function from {@code B -> C}
+   * @param ab partial function from {@code A -> B}
    * @return a PartialFunction that flatMaps g on to the result of applying f.
    * @since 1.2
    */
-  public static <A, B, C> Function<A, Option<C>> compose(Function<? super A, Option<B>> f, Function<? super B, Option<C>> g) {
-    return new PartialComposer<A, B, C>(f, g);
+  public static <A, B, C> Function<A, Option<C>> compose(
+    Function<? super B, ? extends Option<? extends C>> bc, Function<? super A, ? extends Option<? extends B>> ab) {
+    return new PartialComposer<A, B, C>(ab, bc);
   }
 
   static class PartialComposer<A, B, C> implements Function<A, Option<C>> {
-    private final Function<? super A, Option<B>> f;
-    private final Function<? super B, Option<C>> g;
+    private final Function<? super A, ? extends Option<? extends B>> ab;
+    private final Function<? super B, ? extends Option<? extends C>> bc;
 
-    PartialComposer(Function<? super A, Option<B>> f, Function<? super B, Option<C>> g) {
-      this.f = checkNotNull(f);
-      this.g = checkNotNull(g);
+    PartialComposer(Function<? super A, ? extends Option<? extends B>> ab, Function<? super B, ? extends Option<? extends C>> bc) {
+      this.ab = checkNotNull(ab);
+      this.bc = checkNotNull(bc);
     }
 
     public Option<C> apply(A a) {
-      return f.apply(a).flatMap(g);
+      return ab.apply(a).flatMap(bc);
     }
   }
 
@@ -215,7 +216,8 @@ public class Functions {
    * one in sequence.
    * @since 1.2
    */
-  public static <A, B> Function<A, Option<B>> matches(Function<? super A, Option<B>> f1, Function<? super A, Option<B>> f2) {
+  public static <A, B> Function<A, Option<B>> matches(Function<? super A, ? extends Option<? extends B>> f1,
+    Function<? super A, ? extends Option<? extends B>> f2) {
     @SuppressWarnings("unchecked")
     Matcher<A, B> result = matcher(f1, f2);
     return result;
@@ -232,8 +234,8 @@ public class Functions {
    * one in sequence.
    * @since 1.2
    */
-  public static <A, B> Function<A, Option<B>> matches(Function<? super A, Option<B>> f1, Function<? super A, Option<B>> f2,
-    Function<? super A, Option<B>> f3) {
+  public static <A, B> Function<A, Option<B>> matches(Function<? super A, ? extends Option<? extends B>> f1,
+    Function<? super A, ? extends Option<? extends B>> f2, Function<? super A, ? extends Option<? extends B>> f3) {
     @SuppressWarnings("unchecked")
     Matcher<A, B> result = matcher(f1, f2, f3);
     return result;
@@ -251,10 +253,10 @@ public class Functions {
    * one in sequence.
    * @since 1.2
    */
-  public static <A, B> Function<A, Option<B>> matches(Function<? super A, Option<B>> f1, Function<? super A, Option<B>> f2,
-    Function<? super A, Option<B>> f3, Function<? super A, Option<B>> f4) {
-    @SuppressWarnings("unchecked")
-    Matcher<A, B> result = matcher(f1, f2, f3, f4);
+  public static <A, B> Function<A, Option<B>> matches(Function<? super A, ? extends Option<? extends B>> f1,
+    Function<? super A, ? extends Option<? extends B>> f2, Function<? super A, ? extends Option<? extends B>> f3,
+    Function<? super A, ? extends Option<? extends B>> f4) {
+    Matcher<A, B> result = new Matcher<A, B>(ImmutableList.<Function<? super A, ? extends Option<? extends B>>> of(f1, f2, f3, f4));
     return result;
   }
 
@@ -272,29 +274,32 @@ public class Functions {
    * one in sequence.
    * @since 1.2
    */
-  public static <A, B> Function<A, Option<B>> matches(Function<? super A, Option<B>> f1, Function<? super A, Option<B>> f2,
-    Function<? super A, Option<B>> f3, Function<? super A, Option<B>> f4, Function<? super A, Option<B>> f5, Function<? super A, Option<B>>... fs) {
+  public static <A, B> Function<A, Option<B>> matches(Function<? super A, ? extends Option<? extends B>> f1,
+    Function<? super A, ? extends Option<? extends B>> f2, Function<? super A, ? extends Option<? extends B>> f3,
+    Function<? super A, ? extends Option<? extends B>> f4, Function<? super A, ? extends Option<? extends B>> f5,
+    Function<? super A, ? extends Option<? extends B>>... fs) {
     Matcher<A, B> result = new Matcher<A, B>(com.google.common.collect.Iterables.concat(
-      ImmutableList.<Function<? super A, Option<B>>> of(f1, f2, f3, f4, f5), copyOf(fs)));
+      ImmutableList.<Function<? super A, ? extends Option<? extends B>>> of(f1, f2, f3, f4, f5), copyOf(fs)));
     return result;
   }
 
   /* utility copy function */
-  private static <A, B> Matcher<A, B> matcher(Function<? super A, Option<B>>... fs) {
+  private static <A, B> Matcher<A, B> matcher(Function<? super A, ? extends Option<? extends B>>... fs) {
     return new Matcher<A, B>(copyOf(fs));
   }
 
   static class Matcher<A, B> implements Function<A, Option<B>> {
-    private final Iterable<Function<? super A, Option<B>>> fs;
+    private final Iterable<Function<? super A, ? extends Option<? extends B>>> fs;
 
-    Matcher(Iterable<Function<? super A, Option<B>>> fs) {
+    Matcher(Iterable<Function<? super A, ? extends Option<? extends B>>> fs) {
       this.fs = checkNotNull(fs);
       checkState(!Iterables.isEmpty().apply(this.fs));
     }
 
     public Option<B> apply(A a) {
-      for (Function<? super A, Option<B>> f : fs) {
-        Option<B> b = f.apply(a);
+      for (Function<? super A, ? extends Option<? extends B>> f : fs) {
+        @SuppressWarnings("unchecked")
+        Option<B> b = (Option<B>) f.apply(a);
         if (b.isDefined())
           return b;
       }
@@ -322,7 +327,7 @@ public class Functions {
     }
 
     @Override public Option<B> apply(A a) {
-      return Option.option((B) f.apply(a));
+      return Option.<B> option(f.apply(a));
     }
   }
 

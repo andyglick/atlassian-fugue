@@ -29,7 +29,7 @@ public class FunctionComposeTest {
   };
 
   @Test public void composeNotNull() {
-    assertThat(Functions.compose(toInt, toString), notNullValue());
+    assertThat(Functions.compose(toString, toInt), notNullValue());
   }
 
   @Test(expected = NullPointerException.class) public void nullFirst() {
@@ -41,10 +41,10 @@ public class FunctionComposeTest {
   }
 
   @Test public void someForInt() {
-    assertThat(Functions.compose(toInt, toString).apply("12"), is(some("12")));
+    assertThat(Functions.compose(toString, toInt).apply("12"), is(some("12")));
   }
 
   @Test public void noneForNonParsable() {
-    assertThat(Functions.compose(toInt, toString).apply("twelve"), is(Option.<String> none()));
+    assertThat(Functions.compose(toString, toInt).apply("twelve"), is(Option.<String> none()));
   }
 }
