@@ -57,6 +57,10 @@ public class OptionSomeTest {
     assertThat(some.getOrNull(), is(ORIGINAL_VALUE));
   }
 
+  @Test(expected = NullPointerException.class) public void someNull() {
+    some(null);
+  }
+
   @Test(expected = NullPointerException.class) public void mapForNull() {
     some.map(null);
   }
