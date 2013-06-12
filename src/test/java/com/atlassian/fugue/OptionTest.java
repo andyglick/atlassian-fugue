@@ -15,6 +15,7 @@
  */
 package com.atlassian.fugue;
 
+import static com.atlassian.fugue.Functions.toStringFunction;
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.some;
 import static com.atlassian.fugue.Options.filterNone;
@@ -39,7 +40,7 @@ import com.google.common.base.Function;
 
 public class OptionTest {
   @Test public void foldOnNoneReturnsValueFromSupplier() {
-    assertThat(none().fold(ofInstance("a"), Functions.toStringFunction()), is(equalTo("a")));
+    assertThat(none().fold(ofInstance("a"), toStringFunction()), is(equalTo("a")));
   }
 
   @Test public void foldOnSomeReturnsValueAfterFunctionIsApplied() {
