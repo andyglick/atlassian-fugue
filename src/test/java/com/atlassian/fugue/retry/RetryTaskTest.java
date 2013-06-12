@@ -31,7 +31,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
-public class TestRetryTask {
+public class RetryTaskTest {
   private static final int ATTEMPTS = 4;
 
   @Mock private Runnable task;
@@ -42,13 +42,12 @@ public class TestRetryTask {
     initMocks(this);
   }
 
-  @Test public void testBasicTask() {
+  @Test public void basicTask() {
     new RetryTask(task, ATTEMPTS).run();
     verify(task).run();
   }
 
-  @Test public void testBasicTaskRetry() {
-
+  @Test public void basicTaskRetry() {
     doThrow(runtimeException).when(task).run();
 
     try {
@@ -57,17 +56,16 @@ public class TestRetryTask {
     } catch (final RuntimeException e) {
       assertSame(runtimeException, e);
     }
-
     verify(task, times(ATTEMPTS)).run();
   }
 
-  @Test public void testTaskWithExceptionHandler() {
+  @Test public void taskWithExceptionHandler() {
     new RetryTask(task, ATTEMPTS, exceptionHandler).run();
     verify(task).run();
     verifyZeroInteractions(exceptionHandler);
   }
 
-  @Test public void testTaskRetryWithExceptions() {
+  @Test public void taskRetryWithExceptions() {
     doThrow(runtimeException).when(task).run();
 
     try {
@@ -81,8 +79,7 @@ public class TestRetryTask {
     verify(exceptionHandler, times(ATTEMPTS)).handle(runtimeException);
   }
 
-  @Test public void testTaskEarlyExit() {
-
+  @Test public void taskEarlyExit() {
     final AtomicReference<Integer> failcount = new AtomicReference<Integer>(0);
     Runnable localTask = new Runnable() {
       public void run() {
@@ -101,5 +98,4 @@ public class TestRetryTask {
     new RetryTask(localTask, ATTEMPTS).run();
     assertThat(failcount.get(), is(2));
   }
-
 }
