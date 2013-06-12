@@ -24,13 +24,14 @@ import java.util.NoSuchElementException;
 import com.atlassian.fugue.Either.Left;
 import com.atlassian.fugue.Either.Right;
 import com.google.common.base.Function;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Iterators;
 
 /**
- * A class that encapsulates null (missing) values. An Option may be either
- * {@link Option.Some some value} or {@link Option.None none}.
+ * A class that encapsulates missing values. An Option may be either
+ * {@link Option.Some some} value or {@link Option.None none}.
  * <p>
  * If it is a value it may be tested with the {@link #isDefined()} method, but
  * more often it is useful to either return the value or an alternative if
@@ -40,6 +41,18 @@ import com.google.common.collect.Iterators;
  * Mapping a {@link Option.None none} of type A to type B will simply return
  * {@link Option.None none} of type B if performed on a none of type A.
  * Similarly, filtering will always fail on a {@link Option.None none}.
+ * <p>
+ * This class is often used as an alternative to <code>null</code> where
+ * <code>null</code> may be used to represent an optional value. There are
+ * however some situations where <code>null</code> may be a legitimate value,
+ * and that even though the option is defined, it still carries a
+ * <code>null</code> inside. Specifically, this will happen if a function is
+ * mapped across it returns null, as it is necessary to preserve the <a
+ * href=http://en.wikipedia.org/wiki/Functor>Functor composition law</a>. Note
+ * however, that this should be rare as functions that return <code>null</code>
+ * is a bad idea anyway. <b>Note</b> that if a function returns null to indicate
+ * optionality, it can be {@link Functions#lift(Function) lifted} into a partial
+ * function and then {@link #flatMap(Function) flat mapped} instead.
  * <p>
  * While this class is public and abstract it does not expose a constructor as
  * only the concrete {@link Option.Some Some} and {@link Option.None None}
@@ -71,6 +84,7 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
    * @throws NullPointerException if the parameter is null
    */
   public static <A> Option<A> some(final A value) {
+    Preconditions.checkNotNull(value);
     return new Some<A>(value);
   }
 
@@ -258,7 +272,7 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
    */
   public final <B> Option<B> map(final Function<? super A, ? extends B> f) {
     checkNotNull(f);
-    return isEmpty() ? Option.<B> none() : option((B) f.apply(get()));
+    return isEmpty() ? Option.<B> none() : new Some<B>(f.apply(get()));
   }
 
   /**
@@ -386,7 +400,7 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
     private final A value;
 
     private Some(final A value) {
-      this.value = checkNotNull(value, "value");
+      this.value = value;
     }
 
     @Override public <B> B fold(final Supplier<? extends B> none, final Function<? super A, ? extends B> f) {
