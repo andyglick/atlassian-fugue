@@ -7,14 +7,14 @@ import org.junit.Test;
 
 import com.google.common.base.Function;
 
-public class FunctionLiftTest {
+public class FunctionMapNullToOptionTest {
 
   @Test public void testLiftingNull() {
-    assertThat(Functions.lift(FunctionLiftTest.<String, String> nullProducer()).apply("ignored"), is(Option.<String> none()));
+    assertThat(Functions.mapNullToOption(FunctionMapNullToOptionTest.<String, String> nullProducer()).apply("ignored"), is(Option.<String> none()));
   }
 
   @Test public void testLiftingNotNull() {
-    assertThat(Functions.lift(com.google.common.base.Functions.<String> identity()).apply("mx1tr1x"), is(Option.some("mx1tr1x")));
+    assertThat(Functions.mapNullToOption(com.google.common.base.Functions.<String> identity()).apply("mx1tr1x"), is(Option.some("mx1tr1x")));
   }
 
   static <A, B> Function<A, B> nullProducer() {

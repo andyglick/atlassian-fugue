@@ -308,21 +308,31 @@ public class Functions {
   }
 
   /**
-   * Lift a function that returns nulls into a Partial function that returns an
+   * Maps a function that returns nulls into a Partial function that returns an
    * Option of the result.
    * 
    * @param f the function that may return nulls
    * @return a function that converts any nulls into Options
-   * @since 1.2
+   * @since 1.3
    */
-  public static <A, B> Function<A, Option<B>> lift(Function<? super A, ? extends B> f) {
-    return new LiftedPartial<A, B>(f);
+  public static <A, B> Function<A, Option<B>> mapNullToOption(Function<? super A, ? extends B> f) {
+    return new MapNullToOption<A, B>(f);
   }
 
-  static class LiftedPartial<A, B> implements Function<A, Option<B>> {
+  /**
+   * @deprecated this is a poor name, use {@link #mapNullToOption(Function)} instead
+   * @since 1.2
+   */
+  //TODO deprecated in 1.3, remove in >= 1.5
+  @Deprecated
+  public static <A, B> Function<A, Option<B>> lift(Function<? super A, ? extends B> f) {
+    return mapNullToOption(f);
+  }
+
+  static class MapNullToOption<A, B> implements Function<A, Option<B>> {
     private final Function<? super A, ? extends B> f;
 
-    LiftedPartial(Function<? super A, ? extends B> f) {
+    MapNullToOption(Function<? super A, ? extends B> f) {
       this.f = f;
     }
 
