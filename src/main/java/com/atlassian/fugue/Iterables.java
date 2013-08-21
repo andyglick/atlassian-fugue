@@ -39,6 +39,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.PeekingIterator;
+import com.google.common.collect.UnmodifiableIterator;
 
 /**
  * Contains static utility methods that operate on or return objects of type
@@ -377,7 +378,7 @@ public class Iterables {
 
     return new Iterable<Integer>() {
       @Override public Iterator<Integer> iterator() {
-        return new Iterator<Integer>() {
+        return new UnmodifiableIterator<Integer>() {
           private int i = start;
 
           @Override public boolean hasNext() {
@@ -390,10 +391,6 @@ public class Iterables {
             } finally {
               i += step;
             }
-          }
-
-          @Override public void remove() {
-            throw new UnsupportedOperationException();
           }
         };
       }
@@ -459,7 +456,7 @@ public class Iterables {
     private final Iterable<? extends Iterable<A>> xss;
     private final Ordering<A> ordering;
 
-    public MergeSortedIterable(final Iterable<? extends Iterable<A>> xss, final Ordering<A> ordering) {
+    MergeSortedIterable(final Iterable<? extends Iterable<A>> xss, final Ordering<A> ordering) {
       this.xss = checkNotNull(xss, "xss");
       this.ordering = checkNotNull(ordering, "ordering");
     }
