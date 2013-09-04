@@ -54,6 +54,20 @@ public class Suppliers {
     return result;
   }
 
+  /**
+   * @return a {@link Supplier} that always calls {@link Option#get()}, which
+   * throws an Exception if the option is None
+   * 
+   * @since 1.3
+   */
+  public static <A> Supplier<A> fromOption(final Option<A> option) {
+    return new Supplier<A>() {
+      @Override public A get() {
+        return option.get();
+      }
+    };
+  }
+
   private enum SupplyTrue implements Supplier<Boolean> {
     INSTANCE;
 

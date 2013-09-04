@@ -29,7 +29,6 @@ import static org.hamcrest.Matchers.emptyIterable;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.notNullValue;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -146,21 +145,6 @@ public class OptionTest {
 
   @Test public void noneOrElseSupplierReturnsOrElse() {
     assertThat(none(int.class).orElse(Suppliers.ofInstance(some(2))), is(equalTo(some(2))));
-  }
-
-  class Parent {};
-
-  class Child extends Parent {};
-
-  @Test public void covariantReturn() {
-    Option<Parent> some = some(new Parent());
-    Function<Parent, Option<Child>> f = new Function<Parent, Option<Child>>() {
-      @Override public Option<Child> apply(Parent p) {
-        return some(new Child());
-      }
-    };
-    Option<Parent> mapped = some.<Parent> flatMap(f);
-    assertThat(mapped.get(), notNullValue());
   }
 
   //

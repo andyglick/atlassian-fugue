@@ -18,6 +18,8 @@ package com.atlassian.fugue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+import java.util.NoSuchElementException;
+
 import org.junit.Test;
 
 import com.google.common.base.Supplier;
@@ -60,4 +62,11 @@ public class SuppliersTest {
     assertThat(alwaysNull.get(), is(nully));
   }
 
+  @Test public void fromOptionCallsSome() {
+    assertThat(Suppliers.fromOption(Option.some("test")).get(), is("test"));
+  }
+
+  @Test(expected = NoSuchElementException.class) public void fromOptionNoneThrows() {
+    Suppliers.fromOption(Option.none()).get();
+  }
 }

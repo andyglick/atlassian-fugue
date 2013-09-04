@@ -63,7 +63,7 @@ public interface Maybe<A> extends Supplier<A>, Iterable<A>, Effect.Applicant<A> 
    * @param supplier called if this {@link #isEmpty() is empty}
    * @return the wrapped value or the value from the {@code Supplier}
    */
-  A getOrElse(final Supplier<A> supplier);
+  A getOrElse(final Supplier<? extends A> supplier);
 
   /**
    * Get the value if defined or null if not.
