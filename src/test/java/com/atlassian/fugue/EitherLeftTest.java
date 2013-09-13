@@ -35,7 +35,7 @@ public class EitherLeftTest {
   @Test public void leftGet() {
     assertThat(either.left().get(), is(ORIGINAL_VALUE));
   }
-
+  
   @Test public void right() {
     assertThat(either.right().isDefined(), is(false));
   }
