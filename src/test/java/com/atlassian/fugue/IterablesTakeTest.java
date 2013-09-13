@@ -88,7 +88,7 @@ public class IterablesTakeTest {
     ints.next();
   }
 
-  static <A> Iterable<A> asIterable(@SuppressWarnings("unchecked") final A... as) {
+  static <A> Iterable<A> asIterable(final A... as) {
     return transform(asList(as), Functions.<A> identity());
   }
 }
