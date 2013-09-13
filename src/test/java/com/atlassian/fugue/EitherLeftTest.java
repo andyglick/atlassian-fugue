@@ -56,11 +56,14 @@ public class EitherLeftTest {
     assertThat(either.getLeft(), is(true));
   }
 
-  @Test public void swap() {
-    final Either<Integer, Boolean> swapped = either.swap();
-    assertThat(swapped.isRight(), is(true));
-    assertThat(swapped.right().get(), is(either.left().get()));
-    assertThat(swapped.right().get(), is(ORIGINAL_VALUE));
+  @Test public void swapIsRight() {
+    assertThat(either.swap().isRight(), is(true));
+  }
+  @Test public void swapRightIsEitherLeft() {
+    assertThat(either.swap().right().get(), is(either.left().get()));
+  }
+  @Test public void swapRightIsOriginal() {
+    assertThat(either.swap().right().get(), is(ORIGINAL_VALUE));
   }
 
   @Test public void map() {
