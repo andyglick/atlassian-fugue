@@ -15,10 +15,13 @@
  */
 package com.atlassian.fugue;
 
+import static com.google.common.base.Suppliers.compose;
+import static com.google.common.base.Suppliers.ofInstance;
 import static com.google.common.collect.Iterables.transform;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -28,7 +31,7 @@ import com.google.common.collect.ImmutableList;
  */
 public class Eithers {
 
-  /**
+    /**
    * Extracts an object from an Either, regardless of the side in which it is
    * stored, provided both sides contain the same type. This method will never
    * return null.
@@ -174,5 +177,51 @@ public class Eithers {
    */
   public static <L, R> Iterable<R> filterRight(Iterable<Either<L, R>> it) {
     return Options.flatten(transform(it, Eithers.<L, R> rightMapper()));
+  }
+
+  public static <L, R> Function<L, Either<L, R>> toLeft() {
+    return new Function<L, Either<L, R>>()
+    {
+      public Either<L, R> apply(final L from) {
+        return Either.left(from);
+      }
+    };
+  }
+
+  // allows static import
+  public static <L, R> Function<L, Either<L, R>> toLeft(final Class<L> leftType, final Class<R> rightType) {
+    return Eithers.toLeft();
+  }
+
+  public static <L, R> Supplier<Either<L, R>> toLeft(final L l) {
+    return compose(Eithers.<L, R>toLeft(), ofInstance(l));
+  }
+
+  // allows static import
+  public static <L, R> Supplier<Either<L, R>> toLeft(final L l, final Class<R> rightType) {
+    return Eithers.toLeft(l);
+  }
+
+  public static <L, R> Function<R, Either<L, R>> toRight() {
+    return new Function<R, Either<L, R>>()
+    {
+      public Either<L, R> apply(final R from) {
+        return Either.right(from);
+      }
+    };
+  }
+
+  // allows static import
+  public static <L, R> Function<R, Either<L, R>> toRight(final Class<L> leftType, final Class<R> rightType) {
+    return Eithers.toRight();
+  }
+
+  public static <L, R> Supplier<Either<L, R>> toRight(final R r) {
+    return compose(Eithers.<L, R>toRight(), ofInstance(r));
+  }
+
+  // allows static import
+  public static <L, R> Supplier<Either<L, R>> toRight(final Class<L> leftType, final R r) {
+    return Eithers.toRight(r);
   }
 }
