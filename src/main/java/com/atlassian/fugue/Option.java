@@ -378,6 +378,10 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A> {
     @Override public Object getOrError(final Supplier<String> err) {
       throw new AssertionError(err.get());
     }
+    
+    @Override public <X extends Throwable> Object getOrThrow(Supplier<X> ifUndefined) throws X {
+      throw ifUndefined.get();
+    }
 
     @Override public void foreach(final Effect<Object> effect) {}
   };
@@ -418,6 +422,10 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A> {
     }
 
     @Override public A getOrError(final Supplier<String> err) {
+      return get();
+    }
+    
+    @Override public <X extends Throwable> A getOrThrow(Supplier<X> ifUndefined) throws X {
       return get();
     }
 

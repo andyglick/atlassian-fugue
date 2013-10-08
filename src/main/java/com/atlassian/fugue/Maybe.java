@@ -65,6 +65,7 @@ public interface Maybe<A> extends Supplier<A>, Iterable<A>, Effect.Applicant<A> 
    */
   A getOrElse(final Supplier<? extends A> supplier);
 
+  
   /**
    * Get the value if defined or null if not.
    * <p>
@@ -74,14 +75,26 @@ public interface Maybe<A> extends Supplier<A>, Iterable<A>, Effect.Applicant<A> 
   A getOrNull();
 
   /**
-   * Get the value or throws an error with the supplied message if called.
+   * Get the value or throws an error with the supplied message if not defined.
    * <p>
    * Used when absolutely sure this {@link #isDefined() is defined}.
    * 
    * @param msg the message for the error.
+   * @throws an {@link AssertionError} if not defined.
    * @return the contained value.
    */
   A getOrError(Supplier<String> msg);
+
+  /**
+   * Get the value or throws the supplied throwable if not defined.
+   * <p>
+   * Used when absolutely sure this {@link #isDefined() is defined}.
+   * 
+   * @param msg the message for the error.
+   * @throws the throwable the supplier creates if there is no value
+   * @return the contained value.
+   */
+  <X extends Throwable> A getOrThrow(Supplier<X> ifUndefined) throws X;
 
   /**
    * @return {@code true} if this holds a value, {@code false} otherwise.

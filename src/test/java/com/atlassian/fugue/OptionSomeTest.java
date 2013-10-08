@@ -33,6 +33,7 @@ import org.junit.Test;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
+import com.google.common.base.Supplier;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
@@ -160,5 +161,17 @@ public class OptionSomeTest {
 
   @Test public void hashDoesNotThrowException() {
     some.hashCode();
+  }
+
+  static class MyException extends Exception {
+    private static final long serialVersionUID = -1056362494708225175L;
+  }
+
+  @Test public void getOrThrow() throws MyException {
+    assertThat(some.getOrThrow(new Supplier<MyException>() {
+      @Override public MyException get() {
+        return new MyException();
+      }
+    }), is(ORIGINAL_VALUE));
   }
 }
