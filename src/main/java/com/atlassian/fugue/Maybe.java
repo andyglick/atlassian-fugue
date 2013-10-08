@@ -90,9 +90,11 @@ public interface Maybe<A> extends Supplier<A>, Iterable<A>, Effect.Applicant<A> 
    * <p>
    * Used when absolutely sure this {@link #isDefined() is defined}.
    * 
+   * @param X the type of the {@link Throwable} that could be thrown. 
    * @param msg the message for the error.
-   * @throws the throwable the supplier creates if there is no value
+   * @throws the throwable the supplier creates if there is no value.
    * @return the contained value.
+   * @since 1.3
    */
   <X extends Throwable> A getOrThrow(Supplier<X> ifUndefined) throws X;
 
