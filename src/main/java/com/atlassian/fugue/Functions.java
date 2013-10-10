@@ -277,14 +277,14 @@ public class Functions {
   public static <A, B> Function<A, Option<B>> matches(Function<? super A, ? extends Option<? extends B>> f1,
     Function<? super A, ? extends Option<? extends B>> f2, Function<? super A, ? extends Option<? extends B>> f3,
     Function<? super A, ? extends Option<? extends B>> f4, Function<? super A, ? extends Option<? extends B>> f5,
-    @SuppressWarnings("unchecked") Function<? super A, ? extends Option<? extends B>>... fs) {
+    Function<? super A, ? extends Option<? extends B>>... fs) {
     Matcher<A, B> result = new Matcher<A, B>(com.google.common.collect.Iterables.concat(
       ImmutableList.<Function<? super A, ? extends Option<? extends B>>> of(f1, f2, f3, f4, f5), copyOf(fs)));
     return result;
   }
 
   /* utility copy function */
-  private static <A, B> Matcher<A, B> matcher(@SuppressWarnings("unchecked") Function<? super A, ? extends Option<? extends B>>... fs) {
+  private static <A, B> Matcher<A, B> matcher(Function<? super A, ? extends Option<? extends B>>... fs) {
     return new Matcher<A, B>(copyOf(fs));
   }
 

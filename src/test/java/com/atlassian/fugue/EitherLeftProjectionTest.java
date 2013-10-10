@@ -212,4 +212,24 @@ public class EitherLeftProjectionTest {
     final Either<Function<String, String>, Integer> func = right(36);
     assertThat(r.left().apply(func).right().get(), is(36));
   }
+
+  static class MyException extends Exception {
+    private static final long serialVersionUID = -1056362494708225175L;
+  }
+
+  @Test public void getOrThrowLeft() throws MyException {
+    assertThat(l.left().getOrThrow(new Supplier<MyException>() {
+      @Override public MyException get() {
+        return new MyException();
+      }
+    }), is("heyaa!"));
+  }
+
+  @Test(expected = MyException.class) public void getOrThrowRight() throws MyException {
+    r.left().getOrThrow(new Supplier<MyException>() {
+      @Override public MyException get() {
+        return new MyException();
+      }
+    });
+  }
 }

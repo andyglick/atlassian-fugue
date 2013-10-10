@@ -30,6 +30,7 @@ import org.junit.Test;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
+import com.google.common.base.Supplier;
 
 public class OptionNoneTest {
   private final Option<Integer> none = none();
@@ -157,5 +158,17 @@ public class OptionNoneTest {
 
   @Test public void notEqualsNull() {
     assertThat(none.equals(null), is(false));
+  }
+
+  static class MyException extends Exception {
+    private static final long serialVersionUID = -1056362494708225175L;
+  }
+
+  @Test(expected = MyException.class) public void getOrThrow() throws MyException {
+    none.getOrThrow(new Supplier<MyException>() {
+      @Override public MyException get() {
+        return new MyException();
+      }
+    });
   }
 }

@@ -62,7 +62,7 @@ import com.google.common.collect.Iterators;
  * 
  * @since 1.0
  */
-public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
+public abstract class Option<A> implements Iterable<A>, Maybe<A> {
   /**
    * Factory method for {@link Option} instances.
    * 
@@ -209,7 +209,7 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
     return getOrElse(Suppliers.<A> ofInstance(other));
   }
 
-  @Override public final A getOrElse(final Supplier<A> supplier) {
+  @Override public final A getOrElse(final Supplier<? extends A> supplier) {
     return fold(supplier, Functions.<A> identity());
   }
 
@@ -224,7 +224,7 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
    * @return this or {@code orElse}
    * @since 1.1
    */
-  public final Option<A> orElse(final Option<A> orElse) {
+  public final Option<A> orElse(final Option<? extends A> orElse) {
     return orElse(Suppliers.ofInstance(orElse));
   }
 
@@ -236,8 +236,10 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
    * @return this or value supplied by {@code orElse}
    * @since 1.1
    */
-  public final Option<A> orElse(final Supplier<Option<A>> orElse) {
-    return fold(orElse, Option.<A> toOption());
+  public final Option<A> orElse(final Supplier<? extends Option<? extends A>> orElse) {
+    @SuppressWarnings("unchecked") // safe covariant cast
+    Option<A> result = (Option<A>) fold(orElse, Option.<A> toOption());
+    return result;
   }
 
   @Override public final boolean exists(final Predicate<A> p) {
@@ -376,6 +378,10 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
     @Override public Object getOrError(final Supplier<String> err) {
       throw new AssertionError(err.get());
     }
+    
+    @Override public <X extends Throwable> Object getOrThrow(Supplier<X> ifUndefined) throws X {
+      throw ifUndefined.get();
+    }
 
     @Override public void foreach(final Effect<Object> effect) {}
   };
@@ -416,6 +422,10 @@ public abstract class Option<A> implements Iterable<A>, Supplier<A>, Maybe<A> {
     }
 
     @Override public A getOrError(final Supplier<String> err) {
+      return get();
+    }
+    
+    @Override public <X extends Throwable> A getOrThrow(Supplier<X> ifUndefined) throws X {
       return get();
     }
 

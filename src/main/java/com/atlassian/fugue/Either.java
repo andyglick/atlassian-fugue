@@ -312,8 +312,12 @@ public abstract class Either<L, R> {
     @Override public final A getOrError(final Supplier<String> err) {
       return toOption().getOrError(err);
     }
-
-    @Override public final A getOrElse(final Supplier<A> a) {
+    
+    @Override public <X extends Throwable> A getOrThrow(Supplier<X> ifUndefined) throws X {
+      return toOption().getOrThrow(ifUndefined);
+    }
+    
+    @Override public final A getOrElse(final Supplier<? extends A> a) {
       return isDefined() ? get() : a.get();
     }
 
