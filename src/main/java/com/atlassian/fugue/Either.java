@@ -346,7 +346,7 @@ public abstract class Either<L, R> {
       return isLeft();
     }
 
-    public L on(final Function<? super R, L> f) {
+    public L on(final Function<? super R, ? extends L> f) {
       return isLeft() ? get() : f.apply(right().get());
     }
 
@@ -446,7 +446,7 @@ public abstract class Either<L, R> {
       return isRight();
     }
 
-    @Override public R on(final Function<? super L, R> f) {
+    @Override public R on(final Function<? super L, ? extends R> f) {
       return isRight() ? get() : f.apply(left().get());
     }
 
@@ -547,7 +547,7 @@ public abstract class Either<L, R> {
      * @return This projection's value in <code>Some</code> if it exists,
      * otherwise <code>None</code>.
      */
-    Option<A> toOption();
+    Option<? super A> toOption();
 
     /**
      * The value of this projection or the result of the given function on the
@@ -557,6 +557,6 @@ public abstract class Either<L, R> {
      * @return The value of this projection or the result of the given function
      * on the opposing projection's value.
      */
-    A on(Function<? super B, A> function);
+    A on(Function<? super B, ? extends A> function);
   }
 }
