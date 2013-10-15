@@ -102,4 +102,17 @@ public class EitherLeftTest {
     final Either<IOException, String> either = left(new IOException());
     getOrThrow(either);
   }
+
+  @Test public void upcastLeftOnLeft() {
+    Either<Integer, String> e = Either.left(1);
+    Either<Number, String> result = Eithers.<Number, Integer, String>upcastLeft(e);
+    Number expected = 1;
+    assertThat(result.getLeft(), is(expected));
+  }
+
+  @Test public void upcastLeftOnRight() {
+    Either<Integer, String> e = Either.right("a");
+    Either<Number, String> result = Eithers.<Number, Integer, String>upcastLeft(e);
+    assertThat(result.getRight(), is("a"));
+  }
 }
