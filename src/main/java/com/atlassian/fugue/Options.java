@@ -87,6 +87,7 @@ public class Options {
    * @param <AA> the super type of the contained type
    * @param <A> the contained type
    * @return an option of the super type
+   * @since 1.3
    */
   public static <AA, A extends AA> Option<AA> upcast(Option<A> o) {
       return o.map(Functions.<AA>identity());

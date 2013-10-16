@@ -234,6 +234,7 @@ public class Eithers {
    * @param <L> the contained left type
    * @param <R> the contained right type
    * @return an either of left type LL and right type R
+   * @since 1.3
    */
   public static <LL, L extends LL, R> Either<LL, R> upcastLeft(Either<L, R> e) {
     return e.left().map(Functions.<LL>identity());
@@ -248,6 +249,7 @@ public class Eithers {
    * @param <RR> the super type of the contained right type
    * @param <R> the contained right type
    * @return an either of left type L and right type RR
+   * @since 1.3
    */
   public static <L, RR, R extends RR> Either<L, RR> upcastRight(Either<L, R> e) {
     return e.right().map(Functions.<RR>identity());
