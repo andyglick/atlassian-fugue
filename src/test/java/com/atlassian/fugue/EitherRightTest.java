@@ -106,4 +106,17 @@ public class EitherRightTest {
     final Either<IOException, String> either = right("boo yaa!");
     assertThat(getOrThrow(either), is("boo yaa!"));
   }
+
+  @Test public void upcastRightOnRight() {
+    Either<String, Integer> e = Either.right(1);
+    Either<String, Number> result = Eithers.<String, Number, Integer>upcastRight(e);
+    Number expected = 1;
+    assertThat(result.getRight(), is(expected));
+  }
+
+  @Test public void upcastRightOnLeft() {
+    Either<String, Integer> e = Either.left("a");
+    Either<String, Number> result = Eithers.<String, Number, Integer>upcastRight(e);
+    assertThat(result.getLeft(), is("a"));
+  }
 }
