@@ -81,8 +81,9 @@ public class Options {
   }
 
   /**
-   * Upcasts an {@link Option option} of type A to an option of its super type AA.
-   *
+   * Upcasts an {@link Option option} of type A to an option of its super type
+   * AA.
+   * 
    * @param o the source option
    * @param <AA> the super type of the contained type
    * @param <A> the contained type
@@ -90,6 +91,6 @@ public class Options {
    * @since 1.3
    */
   public static <AA, A extends AA> Option<AA> upcast(Option<A> o) {
-      return o.map(Functions.<AA>identity());
+    return o.map(Functions.<AA> identity());
   }
 }
