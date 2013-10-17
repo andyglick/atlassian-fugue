@@ -15,20 +15,14 @@
  */
 package com.atlassian.fugue;
 
-import static com.atlassian.fugue.Either.left;
-import static com.atlassian.fugue.Either.right;
-import static com.atlassian.fugue.Option.none;
-import static com.atlassian.fugue.Option.some;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.ImmutableList.copyOf;
 
 import java.util.Iterator;
-import java.util.List;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
 
@@ -42,7 +36,12 @@ import com.google.common.collect.Iterators;
  * @since 1.1
  */
 public class Functions {
+
+  // /CLOVER:OFF
+
   private Functions() {}
+
+  // /CLOVER:ON
 
   /**
    * Apply f to each element in elements, with each application using the result
@@ -86,22 +85,6 @@ public class Functions {
         return f.apply(new Pair<T, F>(arg1, arg2));
       }
     }, zero, elements);
-  }
-
-  /**
-   * Get the value from a supplier.
-   * 
-   * @param <T> the type returned, note the Supplier can be covariant.
-   * @return a function that extracts the value from a supplier
-   */
-  static <T> Function<Supplier<? extends T>, T> fromSupplier() {
-    return new ValueExtractor<T>();
-  }
-
-  private static class ValueExtractor<T> implements Function<Supplier<? extends T>, T> {
-    public T apply(final Supplier<? extends T> supplier) {
-      return supplier.get();
-    }
   }
 
   /**
@@ -187,8 +170,8 @@ public class Functions {
    * @return a PartialFunction that flatMaps g on to the result of applying f.
    * @since 1.2
    */
-  public static <A, B, C> Function<A, Option<C>> compose(
-    Function<? super B, ? extends Option<? extends C>> bc, Function<? super A, ? extends Option<? extends B>> ab) {
+  public static <A, B, C> Function<A, Option<C>> compose(Function<? super B, ? extends Option<? extends C>> bc,
+    Function<? super A, ? extends Option<? extends B>> ab) {
     return new PartialComposer<A, B, C>(ab, bc);
   }
 
@@ -320,14 +303,19 @@ public class Functions {
   }
 
   /**
-   * @deprecated this is a poor name, use {@link #mapNullToOption(Function)} instead
+   * @deprecated this is a poor name, use {@link #mapNullToOption(Function)}
+   * instead
    * @since 1.2
    */
-  //TODO deprecated in 1.3, remove in >= 1.5
-  @Deprecated
-  public static <A, B> Function<A, Option<B>> lift(Function<? super A, ? extends B> f) {
+  // TODO deprecated in 1.3, remove in >= 1.5
+
+  // /CLOVER:OFF
+
+  @Deprecated public static <A, B> Function<A, Option<B>> lift(Function<? super A, ? extends B> f) {
     return mapNullToOption(f);
   }
+
+  // /CLOVER:ON
 
   static class MapNullToOption<A, B> implements Function<A, Option<B>> {
     private final Function<? super A, ? extends B> f;
@@ -341,123 +329,12 @@ public class Functions {
     }
   }
 
-  /**
-   * Function that can be used to ignore any RuntimeExceptions that a
-   * {@link Supplier} may produce and return null instead.
-   * 
-   * @param <T> the result type
-   * @return a Function that transforms an exception into a null
-   */
-  static <T> Function<Supplier<? extends T>, Supplier<T>> ignoreExceptions() {
-    return new ExceptionIgnorer<T>();
-  }
-
-  static class ExceptionIgnorer<T> implements Function<Supplier<? extends T>, Supplier<T>> {
-    public Supplier<T> apply(final Supplier<? extends T> from) {
-      return new IgnoreAndReturnNull<T>(from);
-    }
-  }
-
-  static class IgnoreAndReturnNull<T> implements Supplier<T> {
-    private final Supplier<? extends T> delegate;
-
-    IgnoreAndReturnNull(final Supplier<? extends T> delegate) {
-      this.delegate = checkNotNull(delegate);
-    }
-
-    public T get() {
-      try {
-        return delegate.get();
-      } catch (final RuntimeException ignore) {
-        return null;
-      }
-    }
-  }
-
-  static <T> Function<T, List<T>> singletonList(final Class<T> c) {
-    return new SingletonList<T>();
-  }
-
-  private static final class SingletonList<T> implements Function<T, List<T>> {
-    public List<T> apply(final T o) {
-      return ImmutableList.of(o);
-    }
-  }
-
-  static Function<String, Either<NumberFormatException, Long>> parseLong() {
-    return ParseLong.INSTANCE;
-  }
-
-  private enum ParseLong implements Function<String, Either<NumberFormatException, Long>> {
-    INSTANCE;
-
-    public Either<NumberFormatException, Long> apply(final String s) {
-      try {
-        return right(Long.valueOf(s));
-      } catch (final NumberFormatException e) {
-        return left(e);
-      }
-    }
-  }
-
   static <A> Function<A, Iterator<A>> singletonIterator() {
     return new Function<A, Iterator<A>>() {
       public Iterator<A> apply(final A a) {
         return Iterators.singletonIterator(a);
       }
     };
-  }
-
-  static <A, X> Function<X, Iterator<A>> emptyIterator() {
-    return new Function<X, Iterator<A>>() {
-      public Iterator<A> apply(final X a) {
-        return ImmutableList.<A> of().iterator();
-      }
-    };
-  }
-
-  static Function<Object, String> toStringFunction() {
-    return com.google.common.base.Functions.toStringFunction();
-  }
-
-  static <A> Effect<A> toEffect(final Function<A, ?> function) {
-    return new Effect<A>() {
-      public void apply(final A a) {
-        function.apply(a);
-      }
-    };
-  }
-
-  static Function<String, Either<NumberFormatException, Integer>> parseInt() {
-    return ParseInt.INSTANCE;
-  }
-
-  private enum ParseInt implements Function<String, Either<NumberFormatException, Integer>> {
-    INSTANCE;
-
-    public Either<NumberFormatException, Integer> apply(final String s) {
-      try {
-        return right(Integer.valueOf(s));
-      } catch (final NumberFormatException e) {
-        return left(e);
-      }
-    }
-  }
-
-  static Function<String, Option<String>> trimToNone() {
-    return TrimToNone.INSTANCE;
-  }
-
-  private enum TrimToNone implements Function<String, Option<String>> {
-    INSTANCE;
-
-    public Option<String> apply(final String s) {
-      if (s == null) {
-        return none();
-      }
-      final String trimmed = s.trim();
-      return trimmed.isEmpty() ? Option.<String> none() : some(trimmed);
-    }
   }
 
   static <T> Function<T, T> identity() {

@@ -16,6 +16,7 @@
 package com.atlassian.fugue;
 
 import static com.atlassian.fugue.Option.some;
+import static com.atlassian.fugue.UtilityFunctions.toStringFunction;
 import static com.google.common.base.Functions.compose;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -31,7 +32,7 @@ public class OptionCompositionTest {
         return input + 1;
       }
     };
-    assertThat(some(1).map(plusOne).map(Functions.toStringFunction()), is(some(1).map(compose(Functions.toStringFunction(), plusOne))));
+    assertThat(some(1).map(plusOne).map(toStringFunction()), is(some(1).map(compose(toStringFunction(), plusOne))));
   }
 
   @Test public void composeNull() {

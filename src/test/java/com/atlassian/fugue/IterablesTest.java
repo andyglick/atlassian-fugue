@@ -179,6 +179,23 @@ public class IterablesTest {
     getOrThrow(UtilityFunctions.<Iterables> defaultCtor().apply(Iterables.class));
   }
 
+  @Test public void revMap() {
+    Iterable<Function<Integer, Integer>> fs = ImmutableList.<Function<Integer, Integer>> of(new Function<Integer, Integer>() {
+      public Integer apply(final Integer from) {
+        return from + 1;
+      }
+    }, new Function<Integer, Integer>() {
+      public Integer apply(final Integer from) {
+        return from + 2;
+      }
+    }, new Function<Integer, Integer>() {
+      public Integer apply(final Integer from) {
+        return from * from;
+      }
+    });
+    assertThat(Iterables.revMap(fs, 3), contains(4, 5, 9));
+  }
+
   /**
    * Splits a string into characters.
    */

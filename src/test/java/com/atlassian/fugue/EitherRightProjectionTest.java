@@ -18,6 +18,7 @@ package com.atlassian.fugue;
 import static com.atlassian.fugue.Either.left;
 import static com.atlassian.fugue.Either.right;
 import static com.atlassian.fugue.UtilityFunctions.reverse;
+import static com.atlassian.fugue.UtilityFunctions.toStringFunction;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -144,11 +145,11 @@ public class EitherRightProjectionTest {
   }
 
   @Test public void onDefined() {
-    assertThat(r.right().on(Functions.toStringFunction()), is("heyaa!"));
+    assertThat(r.right().on(toStringFunction()), is("heyaa!"));
   }
 
   @Test public void onNotDefined() {
-    assertThat(l.right().on(Functions.toStringFunction()), is("12"));
+    assertThat(l.right().on(toStringFunction()), is("12"));
   }
 
   @Test public void mapDefined() {

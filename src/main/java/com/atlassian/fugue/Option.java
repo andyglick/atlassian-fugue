@@ -164,8 +164,6 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A> {
     return Options.find(options);
   }
 
-  // /CLOVER:ON
-
   /**
    * Filter out undefined options.
    * 
@@ -178,6 +176,8 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A> {
   @Deprecated public static <A> Iterable<Option<A>> filterNone(final Iterable<Option<A>> options) {
     return Options.filterNone(options);
   }
+
+  // /CLOVER:ON
 
   //
   // ctors
@@ -237,7 +237,8 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A> {
    * @since 1.1
    */
   public final Option<A> orElse(final Supplier<? extends Option<? extends A>> orElse) {
-    @SuppressWarnings("unchecked") // safe covariant cast
+    @SuppressWarnings("unchecked")
+    // safe covariant cast
     Option<A> result = (Option<A>) fold(orElse, Option.<A> toOption());
     return result;
   }
@@ -378,7 +379,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A> {
     @Override public Object getOrError(final Supplier<String> err) {
       throw new AssertionError(err.get());
     }
-    
+
     @Override public <X extends Throwable> Object getOrThrow(Supplier<X> ifUndefined) throws X {
       throw ifUndefined.get();
     }
@@ -424,7 +425,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A> {
     @Override public A getOrError(final Supplier<String> err) {
       return get();
     }
-    
+
     @Override public <X extends Throwable> A getOrThrow(Supplier<X> ifUndefined) throws X {
       return get();
     }
