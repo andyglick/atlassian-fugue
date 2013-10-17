@@ -224,4 +224,34 @@ public class Eithers {
   public static <L, R> Supplier<Either<L, R>> toRight(final Class<L> leftType, final R r) {
     return Eithers.toRight(r);
   }
+
+  /**
+   * Upcasts an {@link Either either} of left type L to an either of left type LL, which is a super type of L, keeping
+   * the right type unchanged.
+   *
+   * @param e the source either
+   * @param <LL> the super type of the contained left type
+   * @param <L> the contained left type
+   * @param <R> the contained right type
+   * @return an either of left type LL and right type R
+   * @since 1.3
+   */
+  public static <LL, L extends LL, R> Either<LL, R> upcastLeft(Either<L, R> e) {
+    return e.left().map(Functions.<LL>identity());
+  }
+
+  /**
+   * Upcasts an {@link Either either} of right type R to an either of right type RR, which is a super type of R, keeping
+   * the left type unchanged.
+   *
+   * @param e the source either
+   * @param <L> the contained left type
+   * @param <RR> the super type of the contained right type
+   * @param <R> the contained right type
+   * @return an either of left type L and right type RR
+   * @since 1.3
+   */
+  public static <L, RR, R extends RR> Either<L, RR> upcastRight(Either<L, R> e) {
+    return e.right().map(Functions.<RR>identity());
+  }
 }

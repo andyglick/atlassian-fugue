@@ -98,4 +98,17 @@ public class OptionStaticsTest {
   @Test(expected = InvocationTargetException.class) public void nonInstantiable() throws Exception {
     getOrThrow(UtilityFunctions.<Options> defaultCtor().apply(Options.class));
   }
+
+  @Test public void upcastSome() {
+    Option<Integer> some = Option.some(1);
+    Option<Number> result = Options.<Number, Integer>upcast(some);
+    Number expected = 1;
+    assertThat(result.get(), is(expected));
+  }
+
+  @Test public void upcastNone() {
+    Option<Integer> none = Option.none();
+    Option<Number> result = Options.<Number, Integer>upcast(none);
+    assertThat(result, is(sameInstance(Option.<Number>none())));
+  }
 }

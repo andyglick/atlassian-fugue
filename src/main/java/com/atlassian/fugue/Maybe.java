@@ -38,7 +38,7 @@ import com.google.common.base.Supplier;
  * 
  * @since 1.0
  */
-public interface Maybe<A> extends Supplier<A>, Iterable<A>, Effect.Applicant<A> {
+public interface Maybe<A> extends Iterable<A>, Effect.Applicant<A> {
   /**
    * Get the value if defined. Throw an exception otherwise.
    * 

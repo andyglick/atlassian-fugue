@@ -21,11 +21,28 @@ import static com.atlassian.fugue.Either.right;
 import java.lang.reflect.Constructor;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 
 public class UtilityFunctions {
+  public static final Predicate<Integer> isEven = dividableBy(2);
+
+  public static final Predicate<Integer> dividableBy(final int div) {
+    return new Predicate<Integer>() {
+      @Override public boolean apply(Integer input) {
+        return input % div == 0;
+      }
+    };
+  }
+
   public static Function<Integer, Integer> addOne = new Function<Integer, Integer>() {
     public Integer apply(final Integer integer) {
       return integer + 1;
+    }
+  };
+
+  public static Function<Integer, Integer> square = new Function<Integer, Integer>() {
+    @Override public Integer apply(Integer input) {
+      return input * input;
     }
   };
 
@@ -46,11 +63,15 @@ public class UtilityFunctions {
     }
   };
 
-  static final Function2<Integer, Integer, Integer> product = new Function2<Integer, Integer, Integer>() {
+  public static final Function2<Integer, Integer, Integer> product = new Function2<Integer, Integer, Integer>() {
     @Override public Integer apply(final Integer a, final Integer b) {
       return a * b;
     }
   };
+
+  public static Function<Object, String> toStringFunction() {
+    return com.google.common.base.Functions.toStringFunction();
+  }
 
   static <A> Function<Class<A>, Either<Exception, A>> defaultCtor() {
     return new Function<Class<A>, Either<Exception, A>>() {
