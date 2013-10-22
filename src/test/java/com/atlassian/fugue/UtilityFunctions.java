@@ -23,8 +23,28 @@ import java.lang.reflect.Constructor;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 
+import javax.annotation.Nullable;
+
 public class UtilityFunctions {
   public static final Predicate<Integer> isEven = dividableBy(2);
+
+  public static final Function2<Integer, Integer, Integer> sum = new Function2<Integer, Integer, Integer>() {
+    @Override public Integer apply(final Integer a, final Integer b) {
+      return a + b;
+    }
+  };
+
+  public static final Function2<Integer, Integer, Integer> subtract = new Function2<Integer, Integer, Integer>() {
+    @Override public Integer apply(final Integer a, final Integer b) {
+      return a - b;
+    }
+  };
+
+  public static final Function2<Integer, Integer, Integer> product = new Function2<Integer, Integer, Integer>() {
+    @Override public Integer apply(final Integer a, final Integer b) {
+      return a * b;
+    }
+  };
 
   public static final Predicate<Integer> dividableBy(final int div) {
     return new Predicate<Integer>() {
@@ -63,9 +83,26 @@ public class UtilityFunctions {
     }
   };
 
-  public static final Function2<Integer, Integer, Integer> product = new Function2<Integer, Integer, Integer>() {
-    @Override public Integer apply(final Integer a, final Integer b) {
-      return a * b;
+  public static Function2<String, Integer, Option<Character>> charAt = new Function2<String, Integer, Option<Character>>() {
+    @Override public Option<Character> apply(String s, Integer i) {
+      return s != null && i != null && i >=0 && i < s.length() ? Option.some(s.charAt(i)) : Option.<Character>none();
+    }
+  };
+
+  public static Function<Pair<String, Integer>, Option<String>> leftOfString = new Function<Pair<String, Integer>, Option<String>>() {
+    @Override public Option<String> apply(@Nullable Pair<String, Integer> pair) {
+      return pair != null && pair.left() != null && pair.right() != null && pair.right() >=0 && pair.right() <= pair.left().length() ?
+          Option.some(pair.left().substring(0, pair.right())) : Option.<String>none();
+    }
+  };
+
+  public static Function<String, Function<Integer, Boolean>> hasMinLength = new Function<String, Function<Integer, Boolean>>() {
+    @Override public Function<Integer, Boolean> apply(@Nullable final String text) {
+      return new Function<Integer, Boolean>() {
+        @Override public Boolean apply(@Nullable Integer min) {
+          return (text == null ? "" : text).length() >= (min == null ? 0 : min);
+        }
+      };
     }
   };
 
@@ -86,4 +123,6 @@ public class UtilityFunctions {
       }
     };
   }
+
+
 }
