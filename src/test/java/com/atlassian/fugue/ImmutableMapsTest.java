@@ -88,15 +88,14 @@ public class ImmutableMapsTest {
 
     ImmutableMap<String, Integer> expected = ImmutableMap.of("-1", -1, "-2", -2, "-3", -3);
     assertEquals(expected, ImmutableMaps.toMap(source, new Function<Integer, String>() {
-          @Override public String apply(Integer input) {
-            return "-" + input;
-          }
-        }, new Function<Integer, Integer>() {
-          @Override public Integer apply(Integer input) {
-            return input * -1;
-          }
-        }
-    ));
+      @Override public String apply(Integer input) {
+        return "-" + input;
+      }
+    }, new Function<Integer, Integer>() {
+      @Override public Integer apply(Integer input) {
+        return input * -1;
+      }
+    }));
   }
 
   @Test public void testTransformIterablesToMapContainingNull() {
@@ -148,15 +147,14 @@ public class ImmutableMapsTest {
     Iterable<Integer> source = Arrays.asList(1, 2, 3);
 
     ImmutableMaps.toMap(source, new Function<Integer, String>() {
-          @Override public String apply(Integer input) {
-            return String.valueOf(input % 2);
-          }
-        }, new Function<Integer, Integer>() {
-          @Override public Integer apply(Integer input) {
-            return input * -1;
-          }
-        }
-    );
+      @Override public String apply(Integer input) {
+        return String.valueOf(input % 2);
+      }
+    }, new Function<Integer, Integer>() {
+      @Override public Integer apply(Integer input) {
+        return input * -1;
+      }
+    });
   }
 
   @Test public void testMapBy() {
@@ -310,15 +308,14 @@ public class ImmutableMapsTest {
 
     ImmutableMap<Integer, Boolean> expected = ImmutableMap.of(1, true, 2, false, 3, true);
     assertEquals(expected, ImmutableMaps.transform(source, new Function<String, Integer>() {
-          @Override public Integer apply(@Nullable String input) {
-            return input == null ? 0 : input.length();
-          }
-        }, new Function<Integer, Boolean>() {
-          @Override public Boolean apply(@Nullable Integer input) {
-            return input != null && input % 2 != 0;
-          }
-        }
-    ));
+      @Override public Integer apply(@Nullable String input) {
+        return input == null ? 0 : input.length();
+      }
+    }, new Function<Integer, Boolean>() {
+      @Override public Boolean apply(@Nullable Integer input) {
+        return input != null && input % 2 != 0;
+      }
+    }));
   }
 
   @Test public void testTransformKeysAndValuesContainingNullKey() {
@@ -397,15 +394,14 @@ public class ImmutableMapsTest {
     Map<Integer, String> source = ImmutableMap.of(1, "a", 2, "b", 3, "c");
 
     ImmutableMaps.transform(source, new Function<Integer, Boolean>() {
-          @Override public Boolean apply(@Nullable Integer input) {
-            return input != null && input % 2 != 0;
-          }
-        }, new Function<String, Integer>() {
-          @Override public Integer apply(@Nullable String input) {
-            return input == null ? 0 : input.length();
-          }
-        }
-    );
+      @Override public Boolean apply(@Nullable Integer input) {
+        return input != null && input % 2 != 0;
+      }
+    }, new Function<String, Integer>() {
+      @Override public Integer apply(@Nullable String input) {
+        return input == null ? 0 : input.length();
+      }
+    });
   }
 
   @Test public void testTransformKey() {
@@ -527,52 +523,47 @@ public class ImmutableMapsTest {
   @Test public void testCollectEntries() {
     Map<Integer, String> source = ImmutableMap.of(1, "a", 2, "bb", 3, "ccc");
     ImmutableMap<String, Integer> expected = ImmutableMap.of("2", 1, "6", 3);
-    assertEquals(expected, ImmutableMaps.collect(source,
-        new Function<Map.Entry<Integer, String>, Option<Map.Entry<String, Integer>>>() {
-          @Override public Option<Map.Entry<String, Integer>> apply(@Nullable Map.Entry<Integer, String> input) {
-            if (input == null || input.getKey() == null || input.getKey() % 2 == 0 || input.getValue() == null) {
-              return Option.none();
-            }
-            return Option.some(Maps.immutableEntry(String.valueOf(input.getKey() * 2), input.getValue().length()));
-          }
-        }));
+    assertEquals(expected, ImmutableMaps.collect(source, new Function<Map.Entry<Integer, String>, Option<Map.Entry<String, Integer>>>() {
+      @Override public Option<Map.Entry<String, Integer>> apply(@Nullable Map.Entry<Integer, String> input) {
+        if (input == null || input.getKey() == null || input.getKey() % 2 == 0 || input.getValue() == null) {
+          return Option.none();
+        }
+        return Option.some(Maps.immutableEntry(String.valueOf(input.getKey() * 2), input.getValue().length()));
+      }
+    }));
   }
 
   @Test public void testCollectKeysAndValuesWithEitherReturningNone() {
     Map<Integer, String> source = ImmutableMap.of(1, "a", 2, "bbb", 3, "cc");
     ImmutableMap<String, Integer> expected = ImmutableMap.of("2", 1);
-    assertEquals(expected, ImmutableMaps.collect(source,
-        new Function<Integer, Option<String>>() {
-          @Override public Option<String> apply(@Nullable Integer input) {
-            return input != null && input % 2 > 0 ? Option.some(String.valueOf(input * 2)) : Option.none(String.class);
-          }
-        },
-        new Function<String, Option<Integer>>() {
-          @Override public Option<Integer> apply(@Nullable String input) {
-            return input != null && input.length() % 2 > 0 ? Option.some(input.length()) : Option.none(Integer.class);
-          }
-        }));
+    assertEquals(expected, ImmutableMaps.collect(source, new Function<Integer, Option<String>>() {
+      @Override public Option<String> apply(@Nullable Integer input) {
+        return input != null && input % 2 > 0 ? Option.some(String.valueOf(input * 2)) : Option.none(String.class);
+      }
+    }, new Function<String, Option<Integer>>() {
+      @Override public Option<Integer> apply(@Nullable String input) {
+        return input != null && input.length() % 2 > 0 ? Option.some(input.length()) : Option.none(Integer.class);
+      }
+    }));
   }
 
   @Test public void testCollectByKey() {
     Map<Integer, String> source = ImmutableMap.of(1, "a", 2, "bb", 3, "cccc");
     ImmutableMap<String, String> expected = ImmutableMap.of("2", "a", "6", "cccc");
-    assertEquals(expected, ImmutableMaps.collectByKey(source,
-        new Function<Integer, Option<String>>() {
-          @Override public Option<String> apply(@Nullable Integer input) {
-            return input != null && input % 2 > 0 ? Option.some(String.valueOf(input * 2)) : Option.none(String.class);
-          }
-        }));
+    assertEquals(expected, ImmutableMaps.collectByKey(source, new Function<Integer, Option<String>>() {
+      @Override public Option<String> apply(@Nullable Integer input) {
+        return input != null && input % 2 > 0 ? Option.some(String.valueOf(input * 2)) : Option.none(String.class);
+      }
+    }));
   }
 
   @Test public void testCollectByValue() {
     Map<Integer, String> source = ImmutableMap.of(1, "a", 2, "bb", 3, "ccccc");
     ImmutableMap<Integer, Integer> expected = ImmutableMap.of(1, 1, 3, 5);
-    assertEquals(expected, ImmutableMaps.collectByValue(source,
-        new Function<String, Option<Integer>>() {
-          @Override public Option<Integer> apply(@Nullable String input) {
-            return input != null && input.length() % 2 > 0 ? Option.some(input.length()) : Option.none(Integer.class);
-          }
-        }));
+    assertEquals(expected, ImmutableMaps.collectByValue(source, new Function<String, Option<Integer>>() {
+      @Override public Option<Integer> apply(@Nullable String input) {
+        return input != null && input.length() % 2 > 0 ? Option.some(input.length()) : Option.none(Integer.class);
+      }
+    }));
   }
 }
