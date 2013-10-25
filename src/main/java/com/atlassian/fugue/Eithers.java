@@ -31,7 +31,13 @@ import com.google.common.collect.ImmutableList;
  */
 public class Eithers {
 
-    /**
+  // /CLOVER:OFF
+
+  private Eithers() {}
+
+  // /CLOVER:ON
+  
+  /**
    * Extracts an object from an Either, regardless of the side in which it is
    * stored, provided both sides contain the same type. This method will never
    * return null.
@@ -180,8 +186,7 @@ public class Eithers {
   }
 
   public static <L, R> Function<L, Either<L, R>> toLeft() {
-    return new Function<L, Either<L, R>>()
-    {
+    return new Function<L, Either<L, R>>() {
       public Either<L, R> apply(final L from) {
         return Either.left(from);
       }
@@ -194,7 +199,7 @@ public class Eithers {
   }
 
   public static <L, R> Supplier<Either<L, R>> toLeft(final L l) {
-    return compose(Eithers.<L, R>toLeft(), ofInstance(l));
+    return compose(Eithers.<L, R> toLeft(), ofInstance(l));
   }
 
   // allows static import
@@ -203,8 +208,7 @@ public class Eithers {
   }
 
   public static <L, R> Function<R, Either<L, R>> toRight() {
-    return new Function<R, Either<L, R>>()
-    {
+    return new Function<R, Either<L, R>>() {
       public Either<L, R> apply(final R from) {
         return Either.right(from);
       }
@@ -217,7 +221,7 @@ public class Eithers {
   }
 
   public static <L, R> Supplier<Either<L, R>> toRight(final R r) {
-    return compose(Eithers.<L, R>toRight(), ofInstance(r));
+    return compose(Eithers.<L, R> toRight(), ofInstance(r));
   }
 
   // allows static import
@@ -226,9 +230,9 @@ public class Eithers {
   }
 
   /**
-   * Upcasts an {@link Either either} of left type L to an either of left type LL, which is a super type of L, keeping
-   * the right type unchanged.
-   *
+   * Upcasts an {@link Either either} of left type L to an either of left type
+   * LL, which is a super type of L, keeping the right type unchanged.
+   * 
    * @param e the source either
    * @param <LL> the super type of the contained left type
    * @param <L> the contained left type
@@ -237,13 +241,13 @@ public class Eithers {
    * @since 1.3
    */
   public static <LL, L extends LL, R> Either<LL, R> upcastLeft(Either<L, R> e) {
-    return e.left().map(Functions.<LL>identity());
+    return e.left().map(Functions.<LL> identity());
   }
 
   /**
-   * Upcasts an {@link Either either} of right type R to an either of right type RR, which is a super type of R, keeping
-   * the left type unchanged.
-   *
+   * Upcasts an {@link Either either} of right type R to an either of right type
+   * RR, which is a super type of R, keeping the left type unchanged.
+   * 
    * @param e the source either
    * @param <L> the contained left type
    * @param <RR> the super type of the contained right type
@@ -252,6 +256,6 @@ public class Eithers {
    * @since 1.3
    */
   public static <L, RR, R extends RR> Either<L, RR> upcastRight(Either<L, R> e) {
-    return e.right().map(Functions.<RR>identity());
+    return e.right().map(Functions.<RR> identity());
   }
 }

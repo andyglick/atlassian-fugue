@@ -30,6 +30,7 @@ import static org.junit.Assert.assertThat;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 
+import com.google.common.base.Function;
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
@@ -101,14 +102,81 @@ public class OptionStaticsTest {
 
   @Test public void upcastSome() {
     Option<Integer> some = Option.some(1);
-    Option<Number> result = Options.<Number, Integer>upcast(some);
+    Option<Number> result = Options.<Number, Integer> upcast(some);
     Number expected = 1;
     assertThat(result.get(), is(expected));
   }
 
   @Test public void upcastNone() {
     Option<Integer> none = Option.none();
-    Option<Number> result = Options.<Number, Integer>upcast(none);
-    assertThat(result, is(sameInstance(Option.<Number>none())));
+    Option<Number> result = Options.<Number, Integer> upcast(none);
+    assertThat(result, is(sameInstance(Option.<Number> none())));
+  }
+
+  @Test public void lift() {
+    Function<Option<Boolean>, Option<String>> liftedBool2String = liftBool2String();
+    assertThat(liftedBool2String.apply(Option.some(true)), is(Option.some(String.valueOf(true))));
+  }
+
+  @Test public void liftNone() {
+    Function<Option<Boolean>, Option<String>> liftedBool2String = liftBool2String();
+    assertThat(liftedBool2String.apply(Option.<Boolean> none()), is(sameInstance(Option.<String> none())));
+  }
+
+  private Function<Option<Boolean>, Option<String>> liftBool2String() {
+    return Options.lift(UtilityFunctions.bool2String);
+  }
+
+  @Test public void liftFunction() {
+    Function<Option<Boolean>, Option<String>> liftedBool2String = liftBool2StringFunction();
+    assertThat(liftedBool2String.apply(Option.some(true)), is(Option.some(String.valueOf(true))));
+  }
+
+  @Test public void liftFunctionNone() {
+    Function<Option<Boolean>, Option<String>> liftedBool2String = liftBool2StringFunction();
+    assertThat(liftedBool2String.apply(Option.<Boolean> none()), is(sameInstance(Option.<String> none())));
+  }
+
+  private Function<Option<Boolean>, Option<String>> liftBool2StringFunction() {
+    Function<Function<Boolean, String>, Function<Option<Boolean>, Option<String>>> liftFunction = Options.lift();
+    return liftFunction.apply(UtilityFunctions.bool2String);
+  }
+
+  @Test public void ap() {
+    assertThat(Options.ap(Option.some(false), Option.some(UtilityFunctions.bool2String)), is(Option.some(String.valueOf(false))));
+  }
+
+  @Test public void apNone() {
+    assertThat(Options.ap(Option.<Boolean> none(), Option.some(UtilityFunctions.bool2String)), is(sameInstance(Option.<String> none())));
+  }
+
+  @Test public void apNoneFunction() {
+    assertThat(Options.ap(Option.<Boolean> none(), Option.<Function<Boolean, Integer>> none()), is(sameInstance(Option.<Integer> none())));
+  }
+
+  @Test public void lift2() {
+    Function2<Option<String>, Option<Integer>, Option<Option<Character>>> liftedCharAt = Options.lift2(UtilityFunctions.charAt);
+    assertThat(liftedCharAt.apply(Option.some("abc"), Option.some(1)), is(Option.some(Option.some('b'))));
+  }
+
+  @Test public void lift2FirstNone() {
+    Function2<Option<String>, Option<Integer>, Option<Option<Character>>> liftedCharAt = Options.lift2(UtilityFunctions.charAt);
+    assertThat(liftedCharAt.apply(Option.<String> none(), Option.some(1)), is(sameInstance(Option.<Option<Character>> none())));
+  }
+
+  @Test public void lift2SecondNone() {
+    Function2<Option<String>, Option<Integer>, Option<Option<Character>>> liftedCharAt = Options.lift2(UtilityFunctions.charAt);
+    assertThat(liftedCharAt.apply(Option.some("abc"), Option.<Integer> none()), is(sameInstance(Option.<Option<Character>> none())));
+  }
+
+  @Test public void lift2Function() {
+    Function2<Option<String>, Option<Integer>, Option<Option<Character>>> liftedCharAt = liftCharAtFunction();
+    assertThat(liftedCharAt.apply(Option.some("abc"), Option.some(1)), is(Option.some(Option.some('b'))));
+  }
+
+  private Function2<Option<String>, Option<Integer>, Option<Option<Character>>> liftCharAtFunction() {
+    Function<Function2<String, Integer, Option<Character>>, Function2<Option<String>, Option<Integer>, Option<Option<Character>>>> liftFunction = Options
+      .lift2();
+    return liftFunction.apply(UtilityFunctions.charAt);
   }
 }

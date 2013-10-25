@@ -74,6 +74,8 @@ public abstract class Either<L, R> {
   // static utility methods
   //
 
+  // /CLOVER:OFF
+
   /**
    * @deprecated in 1.2 use {@link Eithers#merge(Either)}
    */
@@ -108,6 +110,8 @@ public abstract class Either<L, R> {
   @Deprecated public static <L, R> Either<Iterable<L>, R> sequenceLeft(final Iterable<Either<L, R>> eithers) {
     return Eithers.sequenceLeft(eithers);
   }
+
+  // /CLOVER:ON
 
   //
   // constructors
@@ -312,11 +316,11 @@ public abstract class Either<L, R> {
     @Override public final A getOrError(final Supplier<String> err) {
       return toOption().getOrError(err);
     }
-    
+
     @Override public <X extends Throwable> A getOrThrow(Supplier<X> ifUndefined) throws X {
       return toOption().getOrThrow(ifUndefined);
     }
-    
+
     @Override public final A getOrElse(final Supplier<? extends A> a) {
       return isDefined() ? get() : a.get();
     }

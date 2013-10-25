@@ -23,8 +23,11 @@ import java.util.Iterator;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
+
+import javax.annotation.Nullable;
 
 /**
  * Utility methods for Functions that are in addition to the methods on
@@ -80,11 +83,7 @@ public class Functions {
    * @since 1.1
    */
   public static <F, T> T fold(final Function<Pair<T, F>, T> f, final T zero, final Iterable<F> elements) {
-    return fold(new Function2<T, F, T>() {
-      public T apply(final T arg1, final F arg2) {
-        return f.apply(new Pair<T, F>(arg1, arg2));
-      }
-    }, zero, elements);
+    return fold(toFunction2(f), zero, elements);
   }
 
   /**
@@ -102,6 +101,27 @@ public class Functions {
     return new Function<Function<A, B>, B>() {
       public B apply(final Function<A, B> f) {
         return f.apply(arg);
+      }
+    };
+  }
+
+  /**
+   * Function that takes another function and applies it to the argument
+   * supplied by the parameter.
+   * 
+   * @param lazyA the supplier of the argument that will be applied to any input
+   * functions
+   * @param <A> the type of the argument supplied, and the function input type
+   * @param <B> the result type of the function
+   * @return a function that takes a function from A to B, applies the argument
+   * from the supplier and returns the result
+   * 
+   * @since 1.3
+   */
+  public static <A, B> Function<Function<A, B>, B> apply(final Supplier<A> lazyA) {
+    return new Function<Function<A, B>, B>() {
+      @Override public B apply(Function<A, B> f) {
+        return f.apply(lazyA.get());
       }
     };
   }
@@ -186,6 +206,91 @@ public class Functions {
 
     public Option<C> apply(A a) {
       return ab.apply(a).flatMap(bc);
+    }
+  }
+
+  /**
+   * Converts a function that takes a pair of arguments to a function that takes
+   * two arguments
+   * 
+   * @param fpair the source function that takes a pair of arguments
+   * @param <A> the type of the left of the pair
+   * @param <B> the type of the right of the pair
+   * @param <C> the result type
+   * @return a function that takes two arguments
+   * @since 1.3
+   */
+  public static <A, B, C> Function2<A, B, C> toFunction2(final Function<Pair<A, B>, C> fpair) {
+    checkNotNull(fpair);
+    return new Function2<A, B, C>() {
+      @Override public C apply(A a, B b) {
+        return fpair.apply(Pair.pair(a, b));
+      }
+    };
+  }
+
+  /**
+   * Transforms a function that takes 2 arguments into a function that takes the
+   * first argument and return a new function that takes the second argument and
+   * return the final result.
+   * 
+   * @param f2 the original function that takes 2 arguments
+   * @param <A> the type of the first argument
+   * @param <B> the type of the second argument
+   * @param <C> the type of the final result
+   * @return the curried form of the original function
+   * @since 1.3
+   */
+  public static <A, B, C> Function<A, Function<B, C>> curried(final Function2<A, B, C> f2) {
+    checkNotNull(f2);
+    return new CurriedFunction<A, B, C>(f2);
+  }
+
+  private static class CurriedFunction<A, B, C> implements Function<A, Function<B, C>> {
+    private final Function2<A, B, C> f2;
+
+    CurriedFunction(Function2<A, B, C> f2) {
+      this.f2 = f2;
+    }
+
+    @Override public Function<B, C> apply(final A a) {
+      return new Function<B, C>() {
+        @Override public C apply(B b) {
+          return f2.apply(a, b);
+        }
+      };
+    }
+  }
+
+  /**
+   * Transforms a function from {@code A -> (B -> C)} into a function from
+   * {@code B -> (A -> C)}.
+   * 
+   * @param f2 the original function from {@code A -> (B -> C)}
+   * @param <A> the type of the first argument
+   * @param <B> the type of the second argument
+   * @param <C> the type of the final result
+   * @return the flipped form of the original function
+   * @since 1.3
+   */
+  public static <A, B, C> Function<B, Function<A, C>> flip(final Function<A, Function<B, C>> f2) {
+    checkNotNull(f2);
+    return new FlippedFunction<A, B, C>(f2);
+  }
+
+  private static class FlippedFunction<A, B, C> implements Function<B, Function<A, C>> {
+    private final Function<A, Function<B, C>> f2;
+
+    FlippedFunction(Function<A, Function<B, C>> f2) {
+      this.f2 = f2;
+    }
+
+    @Override public Function<A, C> apply(final B b) {
+      return new Function<A, C>() {
+        @Override public C apply(A a) {
+          return f2.apply(a).apply(b);
+        }
+      };
     }
   }
 
