@@ -74,6 +74,8 @@ public abstract class Either<L, R> {
   // static utility methods
   //
 
+  // /CLOVER:OFF
+
   /**
    * @deprecated in 1.2 use {@link Eithers#merge(Either)}
    */
@@ -108,6 +110,8 @@ public abstract class Either<L, R> {
   @Deprecated public static <L, R> Either<Iterable<L>, R> sequenceLeft(final Iterable<Either<L, R>> eithers) {
     return Eithers.sequenceLeft(eithers);
   }
+
+  // /CLOVER:ON
 
   //
   // constructors

@@ -29,9 +29,11 @@ import com.google.common.collect.Maps;
  */
 public class ImmutableMaps {
 
-  private ImmutableMaps() {
-    throw new UnsupportedOperationException();
-  }
+  // /CLOVER:OFF
+
+  private ImmutableMaps() {}
+
+  // /CLOVER:ON
 
   /**
    * Returns a function that takes a key of type K and a value of type V and

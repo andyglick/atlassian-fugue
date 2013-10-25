@@ -31,6 +31,12 @@ import com.google.common.collect.ImmutableList;
  */
 public class Eithers {
 
+  // /CLOVER:OFF
+
+  private Eithers() {}
+
+  // /CLOVER:ON
+  
   /**
    * Extracts an object from an Either, regardless of the side in which it is
    * stored, provided both sides contain the same type. This method will never
