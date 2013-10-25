@@ -65,7 +65,6 @@ public interface Maybe<A> extends Iterable<A>, Effect.Applicant<A> {
    */
   A getOrElse(final Supplier<? extends A> supplier);
 
-  
   /**
    * Get the value if defined or null if not.
    * <p>
@@ -90,7 +89,7 @@ public interface Maybe<A> extends Iterable<A>, Effect.Applicant<A> {
    * <p>
    * Used when absolutely sure this {@link #isDefined() is defined}.
    * 
-   * @param X the type of the {@link Throwable} that could be thrown. 
+   * @param X the type of the {@link Throwable} that could be thrown.
    * @param msg the message for the error.
    * @throws the throwable the supplier creates if there is no value.
    * @return the contained value.

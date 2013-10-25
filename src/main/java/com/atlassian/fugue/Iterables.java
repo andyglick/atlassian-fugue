@@ -171,9 +171,11 @@ public class Iterables {
 
   /**
    * Filters and maps (aka transforms) the unfiltered iterable.
-   *
-   * Applies the given partial function to each element of the unfiltered iterable. If the application returns none,
-   * the element will be left out; otherwise, the transformed object contained in the Option will be added to the result.
+   * 
+   * Applies the given partial function to each element of the unfiltered
+   * iterable. If the application returns none, the element will be left out;
+   * otherwise, the transformed object contained in the Option will be added to
+   * the result.
    */
   public static <A, B> Iterable<B> collect(Iterable<? extends A> unfiltered, Function<? super A, Option<B>> partial) {
     return new CollectingIterable<A, B>(unfiltered, partial);

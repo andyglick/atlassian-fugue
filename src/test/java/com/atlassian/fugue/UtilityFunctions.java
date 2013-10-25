@@ -85,14 +85,14 @@ public class UtilityFunctions {
 
   public static Function2<String, Integer, Option<Character>> charAt = new Function2<String, Integer, Option<Character>>() {
     @Override public Option<Character> apply(String s, Integer i) {
-      return s != null && i != null && i >=0 && i < s.length() ? Option.some(s.charAt(i)) : Option.<Character>none();
+      return s != null && i != null && i >= 0 && i < s.length() ? Option.some(s.charAt(i)) : Option.<Character> none();
     }
   };
 
   public static Function<Pair<String, Integer>, Option<String>> leftOfString = new Function<Pair<String, Integer>, Option<String>>() {
     @Override public Option<String> apply(@Nullable Pair<String, Integer> pair) {
-      return pair != null && pair.left() != null && pair.right() != null && pair.right() >=0 && pair.right() <= pair.left().length() ?
-          Option.some(pair.left().substring(0, pair.right())) : Option.<String>none();
+      return pair != null && pair.left() != null && pair.right() != null && pair.right() >= 0 && pair.right() <= pair.left().length() ? Option
+        .some(pair.left().substring(0, pair.right())) : Option.<String> none();
     }
   };
 
@@ -123,6 +123,5 @@ public class UtilityFunctions {
       }
     };
   }
-
 
 }

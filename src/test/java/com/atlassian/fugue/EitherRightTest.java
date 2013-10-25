@@ -63,9 +63,11 @@ public class EitherRightTest {
   @Test public void swapIsLeft() {
     assertThat(either.swap().isLeft(), is(true));
   }
+
   @Test public void swapLeftIsEitherRight() {
     assertThat(either.swap().left().get(), is(either.right().get()));
   }
+
   @Test public void swapLeftIsOriginal() {
     assertThat(either.swap().left().get(), is(ORIGINAL_VALUE));
   }
@@ -109,14 +111,14 @@ public class EitherRightTest {
 
   @Test public void upcastRightOnRight() {
     Either<String, Integer> e = Either.right(1);
-    Either<String, Number> result = Eithers.<String, Number, Integer>upcastRight(e);
+    Either<String, Number> result = Eithers.<String, Number, Integer> upcastRight(e);
     Number expected = 1;
     assertThat(result.getRight(), is(expected));
   }
 
   @Test public void upcastRightOnLeft() {
     Either<String, Integer> e = Either.left("a");
-    Either<String, Number> result = Eithers.<String, Number, Integer>upcastRight(e);
+    Either<String, Number> result = Eithers.<String, Number, Integer> upcastRight(e);
     assertThat(result.getLeft(), is("a"));
   }
 }

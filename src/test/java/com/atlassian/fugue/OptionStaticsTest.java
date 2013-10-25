@@ -102,15 +102,15 @@ public class OptionStaticsTest {
 
   @Test public void upcastSome() {
     Option<Integer> some = Option.some(1);
-    Option<Number> result = Options.<Number, Integer>upcast(some);
+    Option<Number> result = Options.<Number, Integer> upcast(some);
     Number expected = 1;
     assertThat(result.get(), is(expected));
   }
 
   @Test public void upcastNone() {
     Option<Integer> none = Option.none();
-    Option<Number> result = Options.<Number, Integer>upcast(none);
-    assertThat(result, is(sameInstance(Option.<Number>none())));
+    Option<Number> result = Options.<Number, Integer> upcast(none);
+    assertThat(result, is(sameInstance(Option.<Number> none())));
   }
 
   @Test public void lift() {
@@ -120,7 +120,7 @@ public class OptionStaticsTest {
 
   @Test public void liftNone() {
     Function<Option<Boolean>, Option<String>> liftedBool2String = liftBool2String();
-    assertThat(liftedBool2String.apply(Option.<Boolean>none()), is(sameInstance(Option.<String>none())));
+    assertThat(liftedBool2String.apply(Option.<Boolean> none()), is(sameInstance(Option.<String> none())));
   }
 
   private Function<Option<Boolean>, Option<String>> liftBool2String() {
@@ -134,7 +134,7 @@ public class OptionStaticsTest {
 
   @Test public void liftFunctionNone() {
     Function<Option<Boolean>, Option<String>> liftedBool2String = liftBool2StringFunction();
-    assertThat(liftedBool2String.apply(Option.<Boolean>none()), is(sameInstance(Option.<String>none())));
+    assertThat(liftedBool2String.apply(Option.<Boolean> none()), is(sameInstance(Option.<String> none())));
   }
 
   private Function<Option<Boolean>, Option<String>> liftBool2StringFunction() {
@@ -143,18 +143,15 @@ public class OptionStaticsTest {
   }
 
   @Test public void ap() {
-    assertThat(Options.ap(Option.some(false), Option.some(UtilityFunctions.bool2String)),
-        is(Option.some(String.valueOf(false))));
+    assertThat(Options.ap(Option.some(false), Option.some(UtilityFunctions.bool2String)), is(Option.some(String.valueOf(false))));
   }
 
   @Test public void apNone() {
-    assertThat(Options.ap(Option.<Boolean>none(), Option.some(UtilityFunctions.bool2String)),
-        is(sameInstance(Option.<String>none())));
+    assertThat(Options.ap(Option.<Boolean> none(), Option.some(UtilityFunctions.bool2String)), is(sameInstance(Option.<String> none())));
   }
 
   @Test public void apNoneFunction() {
-    assertThat(Options.ap(Option.<Boolean>none(), Option.<Function<Boolean, Integer>>none()),
-        is(sameInstance(Option.<Integer>none())));
+    assertThat(Options.ap(Option.<Boolean> none(), Option.<Function<Boolean, Integer>> none()), is(sameInstance(Option.<Integer> none())));
   }
 
   @Test public void lift2() {
@@ -164,12 +161,12 @@ public class OptionStaticsTest {
 
   @Test public void lift2FirstNone() {
     Function2<Option<String>, Option<Integer>, Option<Option<Character>>> liftedCharAt = Options.lift2(UtilityFunctions.charAt);
-    assertThat(liftedCharAt.apply(Option.<String>none(), Option.some(1)), is(sameInstance(Option.<Option<Character>>none())));
+    assertThat(liftedCharAt.apply(Option.<String> none(), Option.some(1)), is(sameInstance(Option.<Option<Character>> none())));
   }
 
   @Test public void lift2SecondNone() {
     Function2<Option<String>, Option<Integer>, Option<Option<Character>>> liftedCharAt = Options.lift2(UtilityFunctions.charAt);
-    assertThat(liftedCharAt.apply(Option.some("abc"), Option.<Integer>none()), is(sameInstance(Option.<Option<Character>>none())));
+    assertThat(liftedCharAt.apply(Option.some("abc"), Option.<Integer> none()), is(sameInstance(Option.<Option<Character>> none())));
   }
 
   @Test public void lift2Function() {
@@ -178,8 +175,8 @@ public class OptionStaticsTest {
   }
 
   private Function2<Option<String>, Option<Integer>, Option<Option<Character>>> liftCharAtFunction() {
-    Function<Function2<String, Integer, Option<Character>>, Function2<Option<String>, Option<Integer>, Option<Option<Character>>>>
-        liftFunction = Options.lift2();
+    Function<Function2<String, Integer, Option<Character>>, Function2<Option<String>, Option<Integer>, Option<Option<Character>>>> liftFunction = Options
+      .lift2();
     return liftFunction.apply(UtilityFunctions.charAt);
   }
 }

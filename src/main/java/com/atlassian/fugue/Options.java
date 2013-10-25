@@ -22,7 +22,6 @@ import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.transform;
 
 import com.google.common.base.Function;
-import com.google.common.base.Supplier;
 
 /**
  * Utility methods for working with iterables of options.
@@ -97,32 +96,33 @@ public class Options {
   }
 
   /**
-   * Lifts a function that takes an A and returns a B into a function that takes an option of A
-   * and returns an option of B.
-   *
+   * Lifts a function that takes an A and returns a B into a function that takes
+   * an option of A and returns an option of B.
+   * 
    * @param f the original function to be lifted
    * @param <A> the input type of the original function
    * @param <B> the result type of the original function
-   * @return a function that takes an option of type A and returns an option of type B
+   * @return a function that takes an option of type A and returns an option of
+   * type B
    * @since 1.3
    */
   public static <A, B> Function<Option<A>, Option<B>> lift(final Function<A, B> f) {
     checkNotNull(f);
     return new Function<Option<A>, Option<B>>() {
-      @Override
-      public Option<B> apply(Option<A> oa) {
+      @Override public Option<B> apply(Option<A> oa) {
         return oa.map(f);
       }
     };
   }
 
   /**
-   * Returns a function that will lift a function that takes an A and returns a B into
-   * a function that takes an option of A and returns an option of B.
-   *
+   * Returns a function that will lift a function that takes an A and returns a
+   * B into a function that takes an option of A and returns an option of B.
+   * 
    * @param <A> the input type of the function that can be lifted
    * @param <B> the result type of the function that can be lifted
-   * @return a function that can lift a function of input type A and result type B into Option
+   * @return a function that can lift a function of input type A and result type
+   * B into Option
    * @since 1.3
    */
   public static <A, B> Function<Function<A, B>, Function<Option<A>, Option<B>>> lift() {
@@ -134,9 +134,9 @@ public class Options {
   }
 
   /**
-   * Applies an option of A to an option of a function with input type A and result type B
-   * and return an option of B.
-   *
+   * Applies an option of A to an option of a function with input type A and
+   * result type B and return an option of B.
+   * 
    * @param oa an option of the argument to the function
    * @param of an option of a function that takes an A and returns a B
    * @param <A> the input type of the function wrapped in the option 'of'
@@ -145,27 +145,27 @@ public class Options {
    * @since 1.3
    */
   public static <A, B> Option<B> ap(final Option<A> oa, Option<Function<A, B>> of) {
-    return of.fold(Option.<B>noneSupplier(), com.google.common.base.Functions.compose(
-        Functions.<Option<A>, Option<B>>apply(oa), Options.<A, B>lift()));
+    return of.fold(Option.<B> noneSupplier(),
+      com.google.common.base.Functions.compose(Functions.<Option<A>, Option<B>> apply(oa), Options.<A, B> lift()));
   }
 
   /**
-   * Lifts a function that takes an A and a B and returns a C into a function that takes an option of A
-   * and an option of B and returns an option of C.
-   *
+   * Lifts a function that takes an A and a B and returns a C into a function
+   * that takes an option of A and an option of B and returns an option of C.
+   * 
    * @param f2 the original function to be lifted
    * @param <A> the input type of the first argument of the original function
    * @param <B> the input type of the second argument of the original function
    * @param <B> the result type of the original function
-   * @return a function that takes an option of type A and an option of B and returns an option of type C
+   * @return a function that takes an option of type A and an option of B and
+   * returns an option of type C
    * @since 1.3
    */
   public static <A, B, C> Function2<Option<A>, Option<B>, Option<C>> lift2(Function2<A, B, C> f2) {
     Function<A, Function<B, C>> curried = Functions.curried(f2);
     final Function<Option<A>, Option<Function<B, C>>> lifted = lift(curried);
     return new Function2<Option<A>, Option<B>, Option<C>>() {
-      @Override
-      public Option<C> apply(Option<A> oa, Option<B> ob) {
+      @Override public Option<C> apply(Option<A> oa, Option<B> ob) {
         Option<Function<B, C>> ofbc = lifted.apply(oa);
         return Options.ap(ob, ofbc);
       }
@@ -173,13 +173,17 @@ public class Options {
   }
 
   /**
-   * Returns a function that will lift a function that takes an A and a B and returns a C into
-   * a function that takes an option of A and an option of B and returns an option of C.
-   *
-   * @param <A> the input type of the first argument of the function that can be lifted
-   * @param <B> the input type of the second argument of the function that can be lifted
+   * Returns a function that will lift a function that takes an A and a B and
+   * returns a C into a function that takes an option of A and an option of B
+   * and returns an option of C.
+   * 
+   * @param <A> the input type of the first argument of the function that can be
+   * lifted
+   * @param <B> the input type of the second argument of the function that can
+   * be lifted
    * @param <C> the result type of the function that can be lifted
-   * @return a function that can lift a function of input type A and B and result type C into Option
+   * @return a function that can lift a function of input type A and B and
+   * result type C into Option
    * @since 1.3
    */
   public static <A, B, C> Function<Function2<A, B, C>, Function2<Option<A>, Option<B>, Option<C>>> lift2() {

@@ -59,6 +59,6 @@ public class FilterLeftTest {
   }
 
   @Test public void emptyIterableFiltersLeftToEmptyIterable() {
-    assertFalse(filterLeft(Collections.<Either<Integer, String>>emptyList()).iterator().hasNext());
+    assertFalse(filterLeft(Collections.<Either<Integer, String>> emptyList()).iterator().hasNext());
   }
 }

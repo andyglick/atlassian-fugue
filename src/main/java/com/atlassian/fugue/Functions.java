@@ -106,14 +106,16 @@ public class Functions {
   }
 
   /**
-   * Function that takes another function and applies it to the argument supplied by the parameter.
-   *
-   * @param lazyA the supplier of the argument that will be applied to any input functions
+   * Function that takes another function and applies it to the argument
+   * supplied by the parameter.
+   * 
+   * @param lazyA the supplier of the argument that will be applied to any input
+   * functions
    * @param <A> the type of the argument supplied, and the function input type
    * @param <B> the result type of the function
-   * @return a function that takes a function from A to B, applies the argument from the supplier and
-   * returns the result
-   *
+   * @return a function that takes a function from A to B, applies the argument
+   * from the supplier and returns the result
+   * 
    * @since 1.3
    */
   public static <A, B> Function<Function<A, B>, B> apply(final Supplier<A> lazyA) {
@@ -208,7 +210,9 @@ public class Functions {
   }
 
   /**
-   * Converts a function that takes a pair of arguments to a function that takes two arguments
+   * Converts a function that takes a pair of arguments to a function that takes
+   * two arguments
+   * 
    * @param fpair the source function that takes a pair of arguments
    * @param <A> the type of the left of the pair
    * @param <B> the type of the right of the pair
@@ -219,17 +223,17 @@ public class Functions {
   public static <A, B, C> Function2<A, B, C> toFunction2(final Function<Pair<A, B>, C> fpair) {
     checkNotNull(fpair);
     return new Function2<A, B, C>() {
-      @Override
-      public C apply(A a, B b) {
+      @Override public C apply(A a, B b) {
         return fpair.apply(Pair.pair(a, b));
       }
     };
   }
 
   /**
-   * Transforms a function that takes 2 arguments into a function that takes the first argument and return a new
-   * function that takes the second argument and return the final result.
-   *
+   * Transforms a function that takes 2 arguments into a function that takes the
+   * first argument and return a new function that takes the second argument and
+   * return the final result.
+   * 
    * @param f2 the original function that takes 2 arguments
    * @param <A> the type of the first argument
    * @param <B> the type of the second argument
@@ -249,11 +253,9 @@ public class Functions {
       this.f2 = f2;
     }
 
-    @Override
-    public Function<B, C> apply(final A a) {
+    @Override public Function<B, C> apply(final A a) {
       return new Function<B, C>() {
-        @Override
-        public C apply(B b) {
+        @Override public C apply(B b) {
           return f2.apply(a, b);
         }
       };
@@ -261,9 +263,9 @@ public class Functions {
   }
 
   /**
-   * Transforms a function from {@code A -> (B -> C)}
-   * into a function from {@code B -> (A -> C)}.
-   *
+   * Transforms a function from {@code A -> (B -> C)} into a function from
+   * {@code B -> (A -> C)}.
+   * 
    * @param f2 the original function from {@code A -> (B -> C)}
    * @param <A> the type of the first argument
    * @param <B> the type of the second argument

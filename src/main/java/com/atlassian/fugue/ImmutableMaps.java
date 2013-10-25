@@ -34,23 +34,24 @@ public class ImmutableMaps {
   }
 
   /**
-   * Returns a function that takes a key of type K and a value of type V and returns a Map entry.
-   *
+   * Returns a function that takes a key of type K and a value of type V and
+   * returns a Map entry.
+   * 
    * @param <K> the type of the key
    * @param <V> the type of the value
-   * @return a function that takes a K and a V and return the corresponding Map entry
+   * @return a function that takes a K and a V and return the corresponding Map
+   * entry
    */
-  public static <K, V> Function2<K, V, Map.Entry<K, V>> mapEntry()
-  {
-    return MapEntryFunction.INSTANCE;
+  public static <K, V> Function2<K, V, Map.Entry<K, V>> mapEntry() {
+    @SuppressWarnings("unchecked")
+    MapEntryFunction<K, V> instance = (MapEntryFunction<K, V>) MapEntryFunction.INSTANCE;
+    return instance;
   }
 
-  private static class MapEntryFunction<K, V> implements Function2<K, V, Map.Entry<K, V>>
-  {
-    static final MapEntryFunction INSTANCE = new MapEntryFunction();
-    @Override
-    public Map.Entry<K, V> apply(K k, V v)
-    {
+  private static class MapEntryFunction<K, V> implements Function2<K, V, Map.Entry<K, V>> {
+    static final MapEntryFunction<Object, Object> INSTANCE = new MapEntryFunction<Object, Object>();
+
+    @Override public Map.Entry<K, V> apply(K k, V v) {
       return Maps.immutableEntry(k, v);
     }
   }
@@ -145,7 +146,7 @@ public class ImmutableMaps {
     final Function<V1, V2> valueTransformer) {
     return toMap(com.google.common.collect.Iterables.transform(fromMap.entrySet(), new Function<Map.Entry<K1, V1>, Map.Entry<K2, V2>>() {
       @Override public Map.Entry<K2, V2> apply(Map.Entry<K1, V1> input) {
-        return input == null ? null : Maps.immutableEntry(keyTransformer.apply(input.getKey()), valueTransformer.apply(input.getValue()));
+        return Maps.immutableEntry(keyTransformer.apply(input.getKey()), valueTransformer.apply(input.getValue()));
       }
     }));
   }
@@ -175,58 +176,57 @@ public class ImmutableMaps {
 
   /**
    * Filters and maps (aka transforms) the source map.
-   *
-   * Applies the given partial function to each entry of the unfiltered map. If the application returns none,
-   * the entry will be left out; otherwise, the transformed entry contained in the Option will be added to the result map.
+   * 
+   * Applies the given partial function to each entry of the unfiltered map. If
+   * the application returns none, the entry will be left out; otherwise, the
+   * transformed entry contained in the Option will be added to the result map.
    */
-  public static <K1, K2, V1, V2> ImmutableMap<K2, V2> collect(Map<K1, V1> fromMap, Function<Map.Entry<K1, V1>, Option<Map.Entry<K2, V2>>> partialFunction)
-  {
+  public static <K1, K2, V1, V2> ImmutableMap<K2, V2> collect(Map<K1, V1> fromMap,
+    Function<Map.Entry<K1, V1>, Option<Map.Entry<K2, V2>>> partialFunction) {
     return toMap(Iterables.collect(fromMap.entrySet(), partialFunction));
   }
 
   /**
    * Filters and maps (aka transforms) the source map.
-   *
-   * Applies the given partial key function and partial value function to the key and value of each entry of
-   * the unfiltered map. If either of the application returns none, the entry will be left out;
-   * otherwise, an entry of transformed key and transformed value contained in the options will be added to the result map.
+   * 
+   * Applies the given partial key function and partial value function to the
+   * key and value of each entry of the unfiltered map. If either of the
+   * application returns none, the entry will be left out; otherwise, an entry
+   * of transformed key and transformed value contained in the options will be
+   * added to the result map.
    */
-  public static <K1, K2, V1, V2> ImmutableMap<K2, V2> collect(Map<K1, V1> fromMap, final Function<K1, Option<K2>> keyPartial, final Function<V1, Option<V2>> valuePartial)
-  {
-    return collect(fromMap, new Function<Map.Entry<K1, V1>, Option<Map.Entry<K2, V2>>>()
-    {
-      @Override
-      public Option<Map.Entry<K2, V2>> apply(Map.Entry<K1, V1> input)
-      {
-        if (input == null) return Option.none();
+  public static <K1, K2, V1, V2> ImmutableMap<K2, V2> collect(Map<K1, V1> fromMap, final Function<K1, Option<K2>> keyPartial,
+    final Function<V1, Option<V2>> valuePartial) {
+    return collect(fromMap, new Function<Map.Entry<K1, V1>, Option<Map.Entry<K2, V2>>>() {
+      @Override public Option<Map.Entry<K2, V2>> apply(Map.Entry<K1, V1> input) {
         Option<K2> ok = keyPartial.apply(input.getKey());
         Option<V2> ov = valuePartial.apply(input.getValue());
-        return Options.lift2(ImmutableMaps.<K2, V2>mapEntry()).apply(ok, ov);
+        return Options.lift2(ImmutableMaps.<K2, V2> mapEntry()).apply(ok, ov);
       }
     });
   }
 
   /**
    * Filters and maps (aka transforms) the source map.
-   *
-   * Applies the given partial key function to the key of each entry of the unfiltered map.
-   * If the application returns none, the entry will be left out;
-   * otherwise, an entry of transformed key contained in the option and the original value will be added to the result map.
+   * 
+   * Applies the given partial key function to the key of each entry of the
+   * unfiltered map. If the application returns none, the entry will be left
+   * out; otherwise, an entry of transformed key contained in the option and the
+   * original value will be added to the result map.
    */
-  public static <K1, K2, V> ImmutableMap<K2, V> collectByKey(Map<K1, V> fromMap, final Function<K1, Option<K2>> keyPartial)
-  {
-    return collect(fromMap, keyPartial, Option.<V>toOption());
+  public static <K1, K2, V> ImmutableMap<K2, V> collectByKey(Map<K1, V> fromMap, final Function<K1, Option<K2>> keyPartial) {
+    return collect(fromMap, keyPartial, Option.<V> toOption());
   }
 
   /**
    * Filters and maps (aka transforms) the source map.
-   *
-   * Applies the given partial value function to the value of each entry of the unfiltered map.
-   * If the application returns none, the entry will be left out;
-   * otherwise, an entry of the original key and the transformed key contained in the option will be added to the result map.
+   * 
+   * Applies the given partial value function to the value of each entry of the
+   * unfiltered map. If the application returns none, the entry will be left
+   * out; otherwise, an entry of the original key and the transformed key
+   * contained in the option will be added to the result map.
    */
-  public static <K, V1, V2> ImmutableMap<K, V2> collectByValue(Map<K, V1> fromMap, final Function<V1, Option<V2>> valuePartial)
-  {
-    return collect(fromMap, Option.<K>toOption(), valuePartial);
+  public static <K, V1, V2> ImmutableMap<K, V2> collectByValue(Map<K, V1> fromMap, final Function<V1, Option<V2>> valuePartial) {
+    return collect(fromMap, Option.<K> toOption(), valuePartial);
   }
 }

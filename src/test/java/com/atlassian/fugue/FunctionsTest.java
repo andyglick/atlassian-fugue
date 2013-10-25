@@ -30,7 +30,7 @@ public class FunctionsTest {
   }
 
   @Test public void functionLazyApply() {
-    assertThat(Functions.<Integer, Integer>apply(Suppliers.ofInstance(8)).apply(square), is(64));
+    assertThat(Functions.<Integer, Integer> apply(Suppliers.ofInstance(8)).apply(square), is(64));
   }
 
   @Test public void functionLazyApplyIsLazy() {
