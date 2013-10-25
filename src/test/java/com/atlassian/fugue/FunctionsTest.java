@@ -17,21 +17,25 @@ package com.atlassian.fugue;
 
 import static com.atlassian.fugue.Functions.matches;
 import static com.atlassian.fugue.Functions.partial;
-import static com.atlassian.fugue.UtilityFunctions.dividableBy;
-import static com.atlassian.fugue.UtilityFunctions.isEven;
-import static com.atlassian.fugue.UtilityFunctions.square;
+import static com.atlassian.fugue.UtilityFunctions.*;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-
 public class FunctionsTest {
 
   @Test public void functionApply() {
     assertThat(Functions.<Integer, Integer> apply(8).apply(square), is(64));
+  }
+
+  @Test public void functionLazyApply() {
+    assertThat(Functions.<Integer, Integer>apply(Suppliers.ofInstance(8)).apply(square), is(64));
+  }
+
+  @Test public void functionLazyApplyIsLazy() {
+    // NoSuchElementException should not be thrown
+    Functions.apply(Suppliers.fromOption(Option.none()));
   }
 
   @Test public void partialNone() {
@@ -82,5 +86,17 @@ public class FunctionsTest {
     assertThat(
       matches(partial(dividableBy(6), square), partial(dividableBy(5), square), partial(dividableBy(4), square), partial(dividableBy(3), square),
         partial(dividableBy(2), square)).apply(1), is(Option.<Integer> none()));
+  }
+
+  @Test public void toFunction2() {
+    assertThat(Functions.toFunction2(leftOfString).apply("abcde", 3), is(Option.some("abc")));
+  }
+
+  @Test public void curried() {
+    assertThat(Functions.curried(subtract).apply(6).apply(2), is(4));
+  }
+
+  @Test public void flipped() {
+    assertThat(Functions.flip(hasMinLength).apply(2).apply("abcde"), is(true));
   }
 }
