@@ -58,6 +58,14 @@
                     </instructions>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <links>
+                        <link>http://docs.guava-libraries.googlecode.com/git-history/v10.0.1/javadoc/</link>
+                    </links>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
