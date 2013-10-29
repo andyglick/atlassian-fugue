@@ -11,8 +11,8 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.atlassian.pom</groupId>
-        <artifactId>atlassian-public-pom</artifactId>
-        <version>39</version>
+        <artifactId>public-pom</artifactId>
+        <version>3.0.2</version>
     </parent>
 
     <groupId>com.atlassian.fugue</groupId>
@@ -58,7 +58,15 @@
                     </instructions>
                 </configuration>
             </plugin>
-
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <links>
+                        <link>http://docs.guava-libraries.googlecode.com/git-history/v10.0.1/javadoc/</link>
+                    </links>
+                    <detectLinks>true</detectLinks>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -160,6 +168,13 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <distributionManagement>
+        <site>
+            <id>atlassian-documentation</id>
+            <url>scpexe://docs-app.internal.atlassian.com/var/www/domains/docs.atlassian.com/${project.artifactId}/${project.version}</url>
+        </site>
+    </distributionManagement>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

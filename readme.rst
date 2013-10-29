@@ -18,7 +18,7 @@ There also additional helper classes for common Function and Supplier operations
 --------------
 Issue Tracking
 --------------
-Issues are tracked in the fugue_ project on bitbucket
+Issues are tracked in the fugue_ project on bitbucket.
 
 .. _fugue: https://bitbucket.org/atlassian/fugue/issues
 
@@ -26,7 +26,7 @@ Issues are tracked in the fugue_ project on bitbucket
 Getting fugue
 --------------
 
-Add the Atlassian public repository
+Add the Atlassian public repository:
 
 .. code-block::
 
@@ -39,7 +39,7 @@ Add the Atlassian public repository
         ...
     </repositories>
 
-And then add fugue as a dependency to your pom.xml
+And then add fugue as a dependency to your pom.xml:
 
 .. code-block::
 
@@ -52,3 +52,10 @@ And then add fugue as a dependency to your pom.xml
         </dependency>
         ...
     </dependencies>
+
+-----------------
+Learn about Fugue
+-----------------
+Browse `API docs for the most recent release`_.
+
+.. _API docs for the most recent release: https://docs.atlassian.com/fugue/1.2.0/apidocs/
