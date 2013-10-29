@@ -11,8 +11,8 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.atlassian.pom</groupId>
-        <artifactId>atlassian-public-pom</artifactId>
-        <version>42</version>
+        <artifactId>public-pom</artifactId>
+        <version>3.0.2</version>
     </parent>
 
     <groupId>com.atlassian.fugue</groupId>
@@ -64,6 +64,7 @@
                     <links>
                         <link>http://docs.guava-libraries.googlecode.com/git-history/v10.0.1/javadoc/</link>
                     </links>
+                    <detectLinks>true</detectLinks>
                 </configuration>
             </plugin>
         </plugins>
