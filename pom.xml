@@ -11,8 +11,8 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.atlassian.pom</groupId>
-        <artifactId>atlassian-public-pom</artifactId>
-        <version>39</version>
+        <artifactId>public-pom</artifactId>
+        <version>3.0.2</version>
     </parent>
 
     <groupId>com.atlassian.fugue</groupId>
@@ -32,6 +32,47 @@
     <modules>
         <module>fugue</module>
     </modules>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                            <goal>bundle</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <instructions>
+                        <Export-Package>
+                            com.atlassian.fugue.*;version="${project.version}"
+                        </Export-Package>
+                        <Import-Package>
+                            com.atlassian.util.concurrent;version="${atlassian-util-concurrent.version}",
+                            com.google.common.base;version="${guava.osgi.version}",
+                            com.google.common.collect;version="${guava.osgi.version}",
+                            org.slf4j;version="${slf4j-api.version}"
+                        </Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <links>
+                        <link>http://docs.guava-libraries.googlecode.com/git-history/v10.0.1/javadoc/</link>
+                    </links>
+                    <detectLinks>true</detectLinks>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <profiles>
         <profile>
@@ -133,6 +174,13 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <distributionManagement>
+        <site>
+            <id>atlassian-documentation</id>
+            <url>scpexe://docs-app.internal.atlassian.com/var/www/domains/docs.atlassian.com/${project.artifactId}/${project.version}</url>
+        </site>
+    </distributionManagement>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
