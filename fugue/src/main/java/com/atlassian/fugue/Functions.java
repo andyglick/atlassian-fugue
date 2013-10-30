@@ -27,8 +27,6 @@ import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
 
-import javax.annotation.Nullable;
-
 /**
  * Utility methods for Functions that are in addition to the methods on
  * {@link com.google.common.base.Functions}.
