@@ -17,7 +17,12 @@ package com.atlassian.fugue;
 
 import static com.atlassian.fugue.Functions.matches;
 import static com.atlassian.fugue.Functions.partial;
-import static com.atlassian.fugue.UtilityFunctions.*;
+import static com.atlassian.fugue.UtilityFunctions.dividableBy;
+import static com.atlassian.fugue.UtilityFunctions.hasMinLength;
+import static com.atlassian.fugue.UtilityFunctions.isEven;
+import static com.atlassian.fugue.UtilityFunctions.leftOfString;
+import static com.atlassian.fugue.UtilityFunctions.square;
+import static com.atlassian.fugue.UtilityFunctions.subtract;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
