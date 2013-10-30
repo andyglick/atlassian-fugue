@@ -17,7 +17,7 @@ package com.atlassian.fugue.scalainterop
 
 import com.atlassian.fugue
 import com.google.common.base.{Function => GuavaFunction, Supplier}
-import com.atlassian.fugue.{Either => FugueEither, Function2 => FugueFunction2, Option => FugueOption}
+import com.atlassian.fugue.{Either => FugueEither, Function2 => FugueFunction2, Option => FugueOption, Pair => FuguePair}
 import java.lang.{Boolean => JBool, Byte => JByte, Double => JDouble, Float => JFloat, Long => JLong, Short => JShort}
 
 sealed trait Converter[A, B] {
@@ -246,4 +246,18 @@ object Converters extends LowPriorityConversions {
   def toEither[A, B, AA, BB](e: FugueEither[A, B])(implicit eva: Converter[A, AA], evb: Converter[B, BB]): Either[AA, BB] =
     fromFugueEither(e).fold(a => Left(eva.convert(a)), b => Right(evb.convert(b)))
 
+  implicit def toFuguePair[A, B](p: (A, B)): FuguePair[A, B] = FuguePair.pair(p._1, p._2)
+
+  implicit def convertFuguePair[A, B, AA, BB](p: FuguePair[A, B])(implicit eva: Converter[A, AA], evb: Converter[B, BB]): FuguePair[AA, BB] =
+    FuguePair.pair(eva.convert(p.left()), evb.convert(p.right()))
+
+  def fromTuple2[A, B, AA, BB](p: (A, B))(implicit eva: Converter[A, AA], evb: Converter[B, BB]): FuguePair[AA, BB] =
+    convertFuguePair(toFuguePair(p))(eva, evb)
+
+  implicit def fromFuguePair[A, B](p: FuguePair[A, B]): (A, B) = (p.left(), p.right())
+
+  def toTuple2[A, B, AA, BB](p: FuguePair[A, B])(implicit eva: Converter[A, AA], evb: Converter[B, BB]): (AA, BB) = {
+    val pair: (A, B) = fromFuguePair(p)
+    (eva.convert(pair._1), evb.convert((pair._2)))
+  }
 }

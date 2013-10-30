@@ -20,7 +20,7 @@ import java.util.Date
 
 import org.junit.Assert._
 import scala.util.control.Exception._
-import com.atlassian.fugue.{ Option => FugueOption, Either => FugueEither, Function2 => FugueFunction2, _ }
+import com.atlassian.fugue.{ Either => FugueEither, Function2 => FugueFunction2, Option => FugueOption, Pair => FuguePair, _ }
 import com.google.common.base.{ Function => GuavaFunction, Supplier}
 
 class ConvertersTest {
@@ -195,5 +195,42 @@ class ConvertersTest {
   @Test def fugueEitherToEitherImplicitly() {
     val e: Either[String, Int] = FugueEither.right[String, Int](1)
     assertEquals(Right(1), e)
+  }
+
+  @Test def fugueEitherToEitherTypeConvertedExplicitly() {
+    val e: Either[String, Int] = toEither(FugueEither.right[String, Integer](1))
+    assertEquals(Right(1), e)
+  }
+
+  @Test def tuple2ToFuguePairImplicitly() {
+    val p: FuguePair[String, Int] = ("abc", 1)
+    assertEquals("abc", p.left())
+    assertEquals(1, p.right())
+  }
+
+  @Test def tuple2ToFuguePairTypeConvertedExplicitly() {
+    val p: FuguePair[String, Integer] = fromTuple2(("abc", 1))
+    assertEquals("abc", p.left())
+    assertEquals(1, p.right())
+  }
+
+  @Test def tuple2ToFuguePairTypeConvertedImplicitly() {
+    val p: FuguePair[String, Int] = ("abc", 1)
+    def f(p: FuguePair[String, Integer]): FuguePair[Integer, String] = FuguePair.pair(p.right(), p.left())
+    val q: FuguePair[Integer, String] = f(p)
+    assertEquals(1, q.left())
+    assertEquals("abc", q.right())
+  }
+
+  @Test def fuguePairToTuple2Implicitly() {
+    val p: (String, Int) = FuguePair.pair("abc", 1)
+    assertEquals("abc", p._1)
+    assertEquals(1, p._2)
+  }
+
+  @Test def fuguePairToTuple2TypeConvertedExplicitly() {
+    val (s: String, i: Int) = toTuple2(FuguePair.pair[String, Integer]("abc", 1))
+    assertEquals("abc", s)
+    assertEquals(1, i)
   }
 }
