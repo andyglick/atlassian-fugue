@@ -23,7 +23,7 @@ import scala.util.control.Exception._
 import com.atlassian.fugue.{ Option => FugueOption, Either => FugueEither, Function2 => FugueFunction2, _ }
 import com.google.common.base.{ Function => GuavaFunction, Supplier}
 
-class ConvertersTests {
+class ConvertersTest {
 
   import Converters._
 
