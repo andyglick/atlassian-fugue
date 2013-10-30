@@ -15,7 +15,6 @@
         <version>1.3.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.atlassian.fugue</groupId>
     <artifactId>fugue</artifactId>
     <packaging>jar</packaging>
     <name>Functional Guava Extensions</name>
