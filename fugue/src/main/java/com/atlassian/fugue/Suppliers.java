@@ -58,7 +58,7 @@ public class Suppliers {
    * @return a {@link Supplier} that always calls {@link Option#get()}, which
    * throws an Exception if the option is None
    * 
-   * @since 1.3
+   * @since 2.0
    */
   public static <A> Supplier<A> fromOption(final Option<A> option) {
     return new Supplier<A>() {

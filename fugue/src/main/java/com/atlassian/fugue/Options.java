@@ -89,7 +89,7 @@ public class Options {
    * @param <AA> the super type of the contained type
    * @param <A> the contained type
    * @return an option of the super type
-   * @since 1.3
+   * @since 2.0
    */
   public static <AA, A extends AA> Option<AA> upcast(Option<A> o) {
     return o.map(Functions.<AA> identity());
@@ -104,7 +104,7 @@ public class Options {
    * @param <B> the result type of the original function
    * @return a function that takes an option of type A and returns an option of
    * type B
-   * @since 1.3
+   * @since 2.0
    */
   public static <A, B> Function<Option<A>, Option<B>> lift(final Function<A, B> f) {
     checkNotNull(f);
@@ -123,7 +123,7 @@ public class Options {
    * @param <B> the result type of the function that can be lifted
    * @return a function that can lift a function of input type A and result type
    * B into Option
-   * @since 1.3
+   * @since 2.0
    */
   public static <A, B> Function<Function<A, B>, Function<Option<A>, Option<B>>> lift() {
     return new Function<Function<A, B>, Function<Option<A>, Option<B>>>() {
@@ -142,7 +142,7 @@ public class Options {
    * @param <A> the input type of the function wrapped in the option 'of'
    * @param <B> the result type of the function wrapped in the option 'of'
    * @return an option of B
-   * @since 1.3
+   * @since 2.0
    */
   public static <A, B> Option<B> ap(final Option<A> oa, Option<Function<A, B>> of) {
     return of.fold(Option.<B> noneSupplier(),
@@ -159,7 +159,7 @@ public class Options {
    * @param <B> the result type of the original function
    * @return a function that takes an option of type A and an option of B and
    * returns an option of type C
-   * @since 1.3
+   * @since 2.0
    */
   public static <A, B, C> Function2<Option<A>, Option<B>, Option<C>> lift2(Function2<A, B, C> f2) {
     Function<A, Function<B, C>> curried = Functions.curried(f2);
@@ -184,7 +184,7 @@ public class Options {
    * @param <C> the result type of the function that can be lifted
    * @return a function that can lift a function of input type A and B and
    * result type C into Option
-   * @since 1.3
+   * @since 2.0
    */
   public static <A, B, C> Function<Function2<A, B, C>, Function2<Option<A>, Option<B>, Option<C>>> lift2() {
     return new Function<Function2<A, B, C>, Function2<Option<A>, Option<B>, Option<C>>>() {
