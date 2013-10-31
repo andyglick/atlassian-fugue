@@ -25,7 +25,7 @@ import com.google.common.collect.Maps;
  * Provides some utility methods to convert Iterables to ImmutableMap, and to
  * transform Maps.
  * 
- * @since 1.3
+ * @since 2.0
  */
 public class ImmutableMaps {
 

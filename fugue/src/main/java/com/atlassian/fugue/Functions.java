@@ -114,7 +114,7 @@ public class Functions {
    * @return a function that takes a function from A to B, applies the argument
    * from the supplier and returns the result
    * 
-   * @since 1.3
+   * @since 2.0
    */
   public static <A, B> Function<Function<A, B>, B> apply(final Supplier<A> lazyA) {
     return new Function<Function<A, B>, B>() {
@@ -216,7 +216,7 @@ public class Functions {
    * @param <B> the type of the right of the pair
    * @param <C> the result type
    * @return a function that takes two arguments
-   * @since 1.3
+   * @since 2.0
    */
   public static <A, B, C> Function2<A, B, C> toFunction2(final Function<Pair<A, B>, C> fpair) {
     checkNotNull(fpair);
@@ -237,7 +237,7 @@ public class Functions {
    * @param <B> the type of the second argument
    * @param <C> the type of the final result
    * @return the curried form of the original function
-   * @since 1.3
+   * @since 2.0
    */
   public static <A, B, C> Function<A, Function<B, C>> curried(final Function2<A, B, C> f2) {
     checkNotNull(f2);
@@ -269,7 +269,7 @@ public class Functions {
    * @param <B> the type of the second argument
    * @param <C> the type of the final result
    * @return the flipped form of the original function
-   * @since 1.3
+   * @since 2.0
    */
   public static <A, B, C> Function<B, Function<A, C>> flip(final Function<A, Function<B, C>> f2) {
     checkNotNull(f2);
@@ -399,7 +399,7 @@ public class Functions {
    * 
    * @param f the function that may return nulls
    * @return a function that converts any nulls into Options
-   * @since 1.3
+   * @since 2.0
    */
   public static <A, B> Function<A, Option<B>> mapNullToOption(Function<? super A, ? extends B> f) {
     return new MapNullToOption<A, B>(f);
@@ -410,7 +410,7 @@ public class Functions {
    * instead
    * @since 1.2
    */
-  // TODO deprecated in 1.3, remove in >= 1.5
+  // TODO deprecated in 2.0, remove in >= 1.5
 
   // /CLOVER:OFF
 
