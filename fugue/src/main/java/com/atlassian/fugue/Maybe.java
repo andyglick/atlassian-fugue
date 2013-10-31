@@ -93,7 +93,7 @@ public interface Maybe<A> extends Iterable<A>, Effect.Applicant<A> {
    * @param msg the message for the error.
    * @throws the throwable the supplier creates if there is no value.
    * @return the contained value.
-   * @since 1.3
+   * @since 2.0
    */
   <X extends Throwable> A getOrThrow(Supplier<X> ifUndefined) throws X;
 
