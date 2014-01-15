@@ -16,7 +16,7 @@
 package com.atlassian.fugue;
 
 /**
- * Contains the a side-effect that may be applied
+ * A thing that performs a side-effect.
  * 
  * @param <A>
  * 

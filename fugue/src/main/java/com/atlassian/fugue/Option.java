@@ -267,7 +267,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A> {
   /**
    * Apply {@code f} to the value if defined.
    * <p>
-   * Transforms to an option of the retry result type.
+   * Transforms to an option of the result type.
    * 
    * @param <B> return type of {@code f}
    * @param f function to apply to wrapped value
@@ -281,7 +281,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A> {
   /**
    * Apply {@code f} to the value if defined.
    * <p>
-   * Transforms to an option of the retry result type.
+   * Transforms to an option of the result type.
    * 
    * @param <B> return type of {@code f}
    * @param f function to apply to wrapped value
