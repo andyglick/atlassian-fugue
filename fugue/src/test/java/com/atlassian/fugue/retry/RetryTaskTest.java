@@ -15,10 +15,8 @@
  */
 package com.atlassian.fugue.retry;
 
-import static junit.framework.Assert.assertSame;
-import static junit.framework.Assert.fail;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -47,16 +45,14 @@ public class RetryTaskTest {
     verify(task).run();
   }
 
-  @Test public void basicTaskRetry() {
+  @Test(expected = RuntimeException.class) public void basicTaskRetry() {
     doThrow(runtimeException).when(task).run();
 
     try {
       new RetryTask(task, ATTEMPTS).run();
-      fail("Expected a exception.");
-    } catch (final RuntimeException e) {
-      assertSame(runtimeException, e);
+    } finally {
+      verify(task, times(ATTEMPTS)).run();
     }
-    verify(task, times(ATTEMPTS)).run();
   }
 
   @Test public void taskWithExceptionHandler() {
@@ -65,18 +61,15 @@ public class RetryTaskTest {
     verifyZeroInteractions(exceptionHandler);
   }
 
-  @Test public void taskRetryWithExceptions() {
+  @Test(expected = RuntimeException.class) public void taskRetryWithExceptions() {
     doThrow(runtimeException).when(task).run();
 
     try {
       new RetryTask(task, ATTEMPTS, exceptionHandler).run();
-      fail("Expected a exception.");
-    } catch (final RuntimeException e) {
-      assertSame(runtimeException, e);
+    } finally {
+      verify(task, times(ATTEMPTS)).run();
+      verify(exceptionHandler, times(ATTEMPTS)).handle(runtimeException);
     }
-
-    verify(task, times(ATTEMPTS)).run();
-    verify(exceptionHandler, times(ATTEMPTS)).handle(runtimeException);
   }
 
   @Test public void taskEarlyExit() {
@@ -96,6 +89,6 @@ public class RetryTaskTest {
     };
 
     new RetryTask(localTask, ATTEMPTS).run();
-    assertThat(failcount.get(), is(2));
+    assertThat(failcount.get(), equalTo(2));
   }
 }

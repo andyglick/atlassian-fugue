@@ -15,9 +15,8 @@
  */
 package com.atlassian.fugue.retry;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertSame;
-import static junit.framework.Assert.fail;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -49,34 +48,28 @@ public class RetryFunctionTest {
     final Integer result = new RetryFunction<String, Integer>(function, ATTEMPTS).apply(INPUT);
 
     verify(function).apply(INPUT);
-    assertEquals(EXPECTED, result);
+    assertThat(result, equalTo(EXPECTED));
   }
 
-  @Test public void basicFunctionRetry() {
+  @Test(expected = RuntimeException.class) public void basicFunctionRetry() {
     when(function.apply(anyString())).thenThrow(runtimeException);
 
     try {
       new RetryFunction<String, Integer>(function, ATTEMPTS).apply(INPUT);
-      fail("Expected a exception.");
-    } catch (final RuntimeException e) {
-      assertSame(runtimeException, e);
+    } finally {
+      verify(function, times(ATTEMPTS)).apply(INPUT);
     }
-
-    verify(function, times(ATTEMPTS)).apply(INPUT);
   }
 
-  @Test public void functionRetryWithExceptionHandler() {
+  @Test(expected = RuntimeException.class) public void functionRetryWithExceptionHandler() {
     when(function.apply(INPUT)).thenThrow(runtimeException);
 
     try {
       new RetryFunction<String, Integer>(function, ATTEMPTS, exceptionHandler).apply(INPUT);
-      fail("Expected a exception.");
-    } catch (final RuntimeException e) {
-      assertSame(runtimeException, e);
+    } finally {
+      verify(function, times(ATTEMPTS)).apply(INPUT);
+      verify(exceptionHandler, times(ATTEMPTS)).handle(runtimeException);
     }
-
-    verify(function, times(ATTEMPTS)).apply(INPUT);
-    verify(exceptionHandler, times(ATTEMPTS)).handle(runtimeException);
   }
 
   @Test public void functionEarlyExit() {
@@ -84,7 +77,7 @@ public class RetryFunctionTest {
       .thenThrow(new RuntimeException("Third attempt")).thenThrow(new RuntimeException("Fourth attempt"));
 
     final Integer result = new RetryFunction<String, Integer>(function, ATTEMPTS).apply(INPUT);
-    assertEquals(EXPECTED, result);
+    assertThat(result, equalTo(EXPECTED));
     verify(function, times(2)).apply(INPUT);
     verifyNoMoreInteractions(function);
   }
