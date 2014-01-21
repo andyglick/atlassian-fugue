@@ -557,6 +557,16 @@ public class ImmutableMapsTest {
     }));
   }
   
+  @Test public void collectByKeyContravariantKeyFunction() {
+    Map<Child, String> source = ImmutableMap.of(new Child(2), "a", new Child(3), "bb", new Child(6), "cccc");
+    ImmutableMap<String, String> expected = ImmutableMap.of("2", "a", "6", "cccc");
+    assertEquals(expected, ImmutableMaps.collectByKey(source, new Function<Parent, Option<String>>() {
+      @Override public Option<String> apply(@Nullable Parent input) {
+        return input.num() % 2 == 0 ? Option.some(String.valueOf(input.num())) : Option.<String> none();
+      }
+    }));
+  }
+
   @Test public void collectByValue() {
     Map<Integer, String> source = ImmutableMap.of(1, "a", 2, "bb", 3, "ccccc");
     ImmutableMap<Integer, Integer> expected = ImmutableMap.of(1, 1, 3, 5);
@@ -565,5 +575,47 @@ public class ImmutableMapsTest {
         return input != null && input.length() % 2 > 0 ? Option.some(input.length()) : Option.none(Integer.class);
       }
     }));
+  }
+
+  @Test public void collectByValueContravariantKeyFunction() {
+    Map<Integer, Child> source = ImmutableMap.of(2, new Child(2), 3, new Child(3), 6, new Child(6));
+    ImmutableMap<Integer, String> expected = ImmutableMap.of(2, "2", 6, "6");
+    assertEquals(expected, ImmutableMaps.collectByValue(source, new Function<Parent, Option<String>>() {
+      @Override public Option<String> apply(@Nullable Parent input) {
+        return input.num() % 2 == 0 ? Option.some(String.valueOf(input.num())) : Option.<String> none();
+      }
+    }));
+  }
+
+  static class Parent {
+    int num() {
+      return -1;
+    }
+  }
+
+  static class Child extends Parent {
+    final int num;
+
+    Child(int num) {
+      this.num = num;
+    }
+
+    int num() {
+      return num;
+    }
+
+    @Override public int hashCode() {
+      return num;
+    }
+
+    @Override public boolean equals(Object obj) {
+      if (this == obj)
+        return true;
+      if (obj == null)
+        return false;
+      if (getClass() != obj.getClass())
+        return false;
+      return num == ((Child) obj).num;
+    }
   }
 }
