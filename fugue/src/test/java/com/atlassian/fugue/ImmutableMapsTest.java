@@ -168,6 +168,17 @@ public class ImmutableMapsTest {
     }));
   }
 
+  @Test public void mapByContravariantKeyFunction() {
+    Iterable<Child> source = Arrays.asList(new Child(1), new Child(2), new Child(3));
+
+    ImmutableMap<String, Child> expected = ImmutableMap.of("+1", new Child(1), "+2", new Child(2), "+3", new Child(3));
+    assertEquals(expected, ImmutableMaps.mapBy(source, new Function<Parent, String>() {
+      @Override public String apply(Parent input) {
+        return "+" + input.num();
+      }
+    }));
+  }
+
   @Test public void mapByContainingNull() {
     Iterable<Integer> source = Arrays.asList(1, null, 3);
 
