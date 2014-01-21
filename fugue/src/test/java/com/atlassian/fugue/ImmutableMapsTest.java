@@ -199,6 +199,14 @@ public class ImmutableMapsTest {
     });
   }
 
+  @Test public void mapToVariance() {
+    assertThat(ImmutableMaps.<Integer, Parent> mapTo(list(1, 2, 3), new Function<Number, Child>() {
+      @Override public Child apply(Number input) {
+        return new Child((Integer) input);
+      }
+    }), equalTo(ImmutableMap.of(1, new Parent(1), 2, new Parent(2), 3, new Parent(3))));
+  }
+
   @Test public void transformEntries() {
     assertThat(
       ImmutableMaps.transform(ImmutableMap.of("a", 1, "b", 2, "c", 3), new Function<Map.Entry<String, Integer>, Map.Entry<Integer, String>>() {
@@ -543,6 +551,14 @@ public class ImmutableMapsTest {
     int num() {
       return Integer.MIN_VALUE;
     }
+
+    @Override public int hashCode() {
+      return num();
+    }
+
+    @Override public boolean equals(Object obj) {
+      return num() == ((GrandParent) obj).num();
+    }
   }
 
   static class Parent extends GrandParent {
@@ -558,20 +574,6 @@ public class ImmutableMapsTest {
 
     int num() {
       return num;
-    }
-
-    @Override public int hashCode() {
-      return num;
-    }
-
-    @Override public boolean equals(Object obj) {
-      if (this == obj)
-        return true;
-      if (obj == null)
-        return false;
-      if (getClass() != obj.getClass())
-        return false;
-      return num == ((Child) obj).num;
     }
   }
 
