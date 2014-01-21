@@ -188,9 +188,8 @@ public class ImmutableMaps {
    * the application returns none, the entry will be left out; otherwise, the
    * transformed entry contained in the Option will be added to the result map.
    */
-  public static <K1, K2, V1, V2> ImmutableMap<K2, V2> collect(Map<K1, V1> fromMap,
-    Function<Map.Entry<K1, V1>, Option<Map.Entry<K2, V2>>> partialFunction) {
-    return toMap(Iterables.collect(fromMap.entrySet(), partialFunction));
+  public static <K1, K2, V1, V2> ImmutableMap<K2, V2> collect(Map<K1, V1> fromMap, Function<Map.Entry<K1, V1>, Option<Map.Entry<K2, V2>>> partial) {
+    return toMap(Iterables.collect(fromMap.entrySet(), partial));
   }
 
   /**
