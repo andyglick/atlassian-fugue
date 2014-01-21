@@ -15,13 +15,17 @@
  */
 package com.atlassian.fugue.scalainterop
 
-import org.junit.Test
 import java.util.Date
 
-import org.junit.Assert._
-import scala.util.control.Exception._
-import com.atlassian.fugue.{ Either => FugueEither, Function2 => FugueFunction2, Option => FugueOption, Pair => FuguePair, _ }
-import com.google.common.base.{ Function => GuavaFunction, Supplier}
+import scala.util.control.Exception.catching
+
+import org.junit.Assert.{ assertEquals, assertSame, assertTrue }
+import org.junit.Test
+
+import com.atlassian.fugue.{ Either => FugueEither, Function2 => FugueFunction2, Option => FugueOption, Pair => FuguePair, Suppliers }
+import com.google.common.base.{ Function => GuavaFunction, Supplier }
+
+import Converters.{ AnyRefConverter, IntConverter, IntegerConverter, convertFugueEither, convertFugueFunction2, convertFugueOption, convertFuguePair, convertGuavaFunction, convertSupplier, fromEither, fromFugueEither, fromFugueFunction2, fromFugueOption, fromFuguePair, fromFunction1, fromFunction2, fromGuavaFunction, fromGuavaSupplier, fromOption, fromSupplier, fromTuple2, toEither, toFugueEither, toFugueFunction2, toFugueOption, toFuguePair, toFunction1, toFunction2, toGuavaFunction, toGuavaSupplier, toOption, toSupplier, toTuple2 }
 
 class ConvertersTest {
 
@@ -50,7 +54,7 @@ class ConvertersTest {
   }
 
   @Test def toSupplierWithTypeConvertedImplicitly() {
-    def f(s: Supplier[Integer]): Integer = s.get() + 1
+    def f(s: Supplier[Integer]): Integer = s.get + 1
     val s: Supplier[Int] = 1
     // Supplier[Int] is converted to Supplier[Integer] implicitly in call: f(s).
     assertEquals(2, f(s))
@@ -162,7 +166,7 @@ class ConvertersTest {
 
   @Test def optionToFugueOptionTypeConvertedImplicitly() {
     val o: FugueOption[Int] = Some(1)
-    def g(o: FugueOption[Integer]): Int = o.fold(Suppliers.ofInstance(0), ((i: Integer) => i + 1) )
+    def g(o: FugueOption[Integer]): Int = o.fold(Suppliers.ofInstance(0), ((i: Integer) => i + 1))
     assertEquals(2, g(o))
   }
 
