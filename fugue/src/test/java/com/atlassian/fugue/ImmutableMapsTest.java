@@ -32,14 +32,14 @@ import static org.junit.Assert.assertEquals;
 
 public class ImmutableMapsTest {
 
-  @Test public void testMapEntry() {
+  @Test public void mapEntry() {
     Function2<String, Integer, Map.Entry<String, Integer>> mapEntryFunction = ImmutableMaps.mapEntry();
     Map.Entry<String, Integer> entry = mapEntryFunction.apply("abc", 1);
     assertThat(entry.getKey(), equalTo("abc"));
     assertThat(entry.getValue(), equalTo(1));
   }
 
-  @Test public void testConvertIterablesOfMapEntriesToMap() {
+  @Test public void convertIterablesOfMapEntriesToMap() {
     @SuppressWarnings("unchecked")
     Iterable<Map.Entry<String, Integer>> source = Arrays
       .asList(Maps.immutableEntry("a", 1), Maps.immutableEntry("b", 2), Maps.immutableEntry("c", 3));
@@ -48,7 +48,7 @@ public class ImmutableMapsTest {
     assertEquals(expected, ImmutableMaps.toMap(source));
   }
 
-  @Test public void testConvertIterablesOfMapEntriesToMapContainingNull() {
+  @Test public void convertIterablesOfMapEntriesToMapContainingNull() {
     @SuppressWarnings("unchecked")
     Iterable<Map.Entry<String, Integer>> source = Arrays.asList(Maps.immutableEntry("a", 1), null, Maps.immutableEntry("c", 3));
 
@@ -56,7 +56,7 @@ public class ImmutableMapsTest {
     assertEquals(expected, ImmutableMaps.toMap(source));
   }
 
-  @Test public void testConvertIterablesOfMapEntriesToMapWithNullKey() {
+  @Test public void convertIterablesOfMapEntriesToMapWithNullKey() {
     @SuppressWarnings("unchecked")
     Iterable<Map.Entry<String, Integer>> source = Arrays.asList(Maps.immutableEntry("a", 1), Maps.<String, Integer> immutableEntry(null, 2),
       Maps.immutableEntry("c", 3));
@@ -65,7 +65,7 @@ public class ImmutableMapsTest {
     assertEquals(expected, ImmutableMaps.toMap(source));
   }
 
-  @Test public void testConvertIterablesOfMapEntriesToMapWithNullValue() {
+  @Test public void convertIterablesOfMapEntriesToMapWithNullValue() {
     @SuppressWarnings("unchecked")
     Iterable<Map.Entry<String, Integer>> source = Arrays.asList(Maps.immutableEntry("a", 1), Maps.<String, Integer> immutableEntry("b", null),
       Maps.immutableEntry("c", 3));
@@ -75,7 +75,7 @@ public class ImmutableMapsTest {
   }
 
   // Allow override instead of throwing exceptions?
-  @Test(expected = IllegalArgumentException.class) public void testConvertIterablesOfMapEntriesToMapWithDuplicateKey() {
+  @Test(expected = IllegalArgumentException.class) public void convertIterablesOfMapEntriesToMapWithDuplicateKey() {
     @SuppressWarnings("unchecked")
     Iterable<Map.Entry<String, Integer>> source = Arrays
       .asList(Maps.immutableEntry("a", 1), Maps.immutableEntry("b", 2), Maps.immutableEntry("b", 3));
@@ -83,7 +83,7 @@ public class ImmutableMapsTest {
     ImmutableMaps.toMap(source);
   }
 
-  @Test public void testTransformIterablesToMap() {
+  @Test public void transformIterablesToMap() {
     Iterable<Integer> source = Arrays.asList(1, 2, 3);
 
     ImmutableMap<String, Integer> expected = ImmutableMap.of("-1", -1, "-2", -2, "-3", -3);
@@ -98,7 +98,7 @@ public class ImmutableMapsTest {
     }));
   }
 
-  @Test public void testTransformIterablesToMapContainingNull() {
+  @Test public void transformIterablesToMapContainingNull() {
     Iterable<Integer> source = Arrays.asList(1, null, 3);
 
     ImmutableMap<String, Integer> expected = ImmutableMap.of("-1", -1, "-null", 0, "-3", -3);
@@ -113,7 +113,7 @@ public class ImmutableMapsTest {
     }));
   }
 
-  @Test public void testTransformIterablesToMapGeneratingNullKey() {
+  @Test public void transformIterablesToMapGeneratingNullKey() {
     Iterable<Integer> source = Arrays.asList(1, null, 3);
 
     ImmutableMap<String, Integer> expected = ImmutableMap.of("-1", -1, "-3", -3);
@@ -128,7 +128,7 @@ public class ImmutableMapsTest {
     }));
   }
 
-  @Test public void testTransformIterablesToMapGeneratingNullValue() {
+  @Test public void transformIterablesToMapGeneratingNullValue() {
     Iterable<Integer> source = Arrays.asList(1, null, 3);
 
     ImmutableMap<String, Integer> expected = ImmutableMap.of("-1", -1, "-3", -3);
@@ -143,7 +143,7 @@ public class ImmutableMapsTest {
     }));
   }
 
-  @Test(expected = IllegalArgumentException.class) public void testTransformIterablesToMapGeneratingDuplicateKey() {
+  @Test(expected = IllegalArgumentException.class) public void transformIterablesToMapGeneratingDuplicateKey() {
     Iterable<Integer> source = Arrays.asList(1, 2, 3);
 
     ImmutableMaps.toMap(source, new Function<Integer, String>() {
@@ -157,7 +157,7 @@ public class ImmutableMapsTest {
     });
   }
 
-  @Test public void testMapBy() {
+  @Test public void mapBy() {
     Iterable<Integer> source = Arrays.asList(1, 2, 3);
 
     ImmutableMap<String, Integer> expected = ImmutableMap.of("+1", 1, "+2", 2, "+3", 3);
@@ -168,7 +168,7 @@ public class ImmutableMapsTest {
     }));
   }
 
-  @Test public void testMapByContainingNull() {
+  @Test public void mapByContainingNull() {
     Iterable<Integer> source = Arrays.asList(1, null, 3);
 
     ImmutableMap<String, Integer> expected = ImmutableMap.of("+1", 1, "+3", 3);
@@ -179,7 +179,7 @@ public class ImmutableMapsTest {
     }));
   }
 
-  @Test(expected = IllegalArgumentException.class) public void testMapByDuplicateKey() {
+  @Test(expected = IllegalArgumentException.class) public void mapByDuplicateKey() {
     Iterable<Integer> source = Arrays.asList(1, 2, 3);
 
     ImmutableMaps.mapBy(source, new Function<Integer, String>() {
@@ -189,7 +189,7 @@ public class ImmutableMapsTest {
     });
   }
 
-  @Test public void testMapTo() {
+  @Test public void mapTo() {
     Iterable<Integer> source = Arrays.asList(1, 2, 3);
 
     ImmutableMap<Integer, String> expected = ImmutableMap.of(1, "+1", 2, "+2", 3, "+3");
@@ -200,7 +200,7 @@ public class ImmutableMapsTest {
     }));
   }
 
-  @Test public void testMapToContainingNull() {
+  @Test public void mapToContainingNull() {
     Iterable<Integer> source = Arrays.asList(1, null, 3);
 
     ImmutableMap<Integer, String> expected = ImmutableMap.of(1, "+1", 3, "+3");
@@ -211,7 +211,7 @@ public class ImmutableMapsTest {
     }));
   }
 
-  @Test(expected = IllegalArgumentException.class) public void testMapToContainingDuplicates() {
+  @Test(expected = IllegalArgumentException.class) public void mapToContainingDuplicates() {
     Iterable<Integer> source = Arrays.asList(1, 2, 1);
 
     ImmutableMaps.mapTo(source, new Function<Integer, String>() {
@@ -221,7 +221,7 @@ public class ImmutableMapsTest {
     });
   }
 
-  @Test public void testTransformEntries() {
+  @Test public void transformEntries() {
     Map<String, Integer> source = ImmutableMap.of("a", 1, "b", 2, "c", 3);
 
     ImmutableMap<Integer, String> expected = ImmutableMap.of(2, "aa", 4, "bb", 6, "cc");
@@ -232,7 +232,7 @@ public class ImmutableMapsTest {
     }));
   }
 
-  @Test public void testTransformEntriesContainingNullKey() {
+  @Test public void transformEntriesContainingNullKey() {
     Map<String, Integer> source = Maps.newHashMap();
     source.put("a", 1);
     source.put(null, 2);
@@ -246,7 +246,7 @@ public class ImmutableMapsTest {
     }));
   }
 
-  @Test public void testTransformEntriesContainingNullValue() {
+  @Test public void transformEntriesContainingNullValue() {
     Map<Integer, String> source = Maps.newHashMap();
     source.put(1, "a");
     source.put(2, null);
@@ -260,7 +260,7 @@ public class ImmutableMapsTest {
     }));
   }
 
-  @Test public void testTransformEntriesReturningNull() {
+  @Test public void transformEntriesReturningNull() {
     Map<Integer, String> source = ImmutableMap.of(1, "a", 2, "b", 3, "c");
 
     ImmutableMap<String, Integer> expected = ImmutableMap.of("aa", 2, "cc", 6);
@@ -271,7 +271,7 @@ public class ImmutableMapsTest {
     }));
   }
 
-  @Test public void testTransformEntriesReturningNullKey() {
+  @Test public void transformEntriesReturningNullKey() {
     Map<Integer, String> source = ImmutableMap.of(1, "a", 2, "b", 3, "c");
 
     ImmutableMap<String, Integer> expected = ImmutableMap.of("aa", 2, "cc", 6);
@@ -282,7 +282,7 @@ public class ImmutableMapsTest {
     }));
   }
 
-  @Test public void testTransformEntriesReturningNullValue() {
+  @Test public void transformEntriesReturningNullValue() {
     Map<Integer, String> source = ImmutableMap.of(1, "a", 2, "b", 3, "c");
 
     ImmutableMap<String, Integer> expected = ImmutableMap.of("aa", 2, "cc", 6);
@@ -293,7 +293,7 @@ public class ImmutableMapsTest {
     }));
   }
 
-  @Test(expected = IllegalArgumentException.class) public void testTransformEntriesReturningDuplicateKey() {
+  @Test(expected = IllegalArgumentException.class) public void transformEntriesReturningDuplicateKey() {
     Map<String, Integer> source = ImmutableMap.of("a", 1, "b", 2, "c", 3);
 
     ImmutableMaps.transform(source, new Function<Map.Entry<String, Integer>, Map.Entry<Integer, String>>() {
@@ -303,7 +303,7 @@ public class ImmutableMapsTest {
     });
   }
 
-  @Test public void testTransformKeysAndValues() {
+  @Test public void transformKeysAndValues() {
     Map<String, Integer> source = ImmutableMap.of("a", 1, "bb", 2, "ccc", 3);
 
     ImmutableMap<Integer, Boolean> expected = ImmutableMap.of(1, true, 2, false, 3, true);
@@ -318,7 +318,7 @@ public class ImmutableMapsTest {
     }));
   }
 
-  @Test public void testTransformKeysAndValuesContainingNullKey() {
+  @Test public void transformKeysAndValuesContainingNullKey() {
     Map<String, Integer> source = Maps.newHashMap();
     source.put("a", 1);
     source.put(null, 2);
@@ -336,7 +336,7 @@ public class ImmutableMapsTest {
     }));
   }
 
-  @Test public void testTransformKeysAndValuesContainingNullValue() {
+  @Test public void transformKeysAndValuesContainingNullValue() {
     Map<Integer, String> source = Maps.newHashMap();
     source.put(1, "a");
     source.put(2, null);
@@ -354,7 +354,7 @@ public class ImmutableMapsTest {
     }));
   }
 
-  @Test public void testTransformKeysAndValuesReturningNullKey() {
+  @Test public void transformKeysAndValuesReturningNullKey() {
     Map<String, Integer> source = Maps.newHashMap();
     source.put("a", 1);
     source.put(null, 2);
@@ -372,7 +372,7 @@ public class ImmutableMapsTest {
     }));
   }
 
-  @Test public void testTransformKeysAndValuesReturningNullValue() {
+  @Test public void transformKeysAndValuesReturningNullValue() {
     Map<Integer, String> source = Maps.newHashMap();
     source.put(1, "a");
     source.put(2, null);
@@ -390,7 +390,7 @@ public class ImmutableMapsTest {
     }));
   }
 
-  @Test(expected = IllegalArgumentException.class) public void testTransformKeysAndValuesReturningDuplicateKey() {
+  @Test(expected = IllegalArgumentException.class) public void transformKeysAndValuesReturningDuplicateKey() {
     Map<Integer, String> source = ImmutableMap.of(1, "a", 2, "b", 3, "c");
 
     ImmutableMaps.transform(source, new Function<Integer, Boolean>() {
@@ -404,7 +404,7 @@ public class ImmutableMapsTest {
     });
   }
 
-  @Test public void testTransformKey() {
+  @Test public void transformKey() {
     Map<String, Integer> source = ImmutableMap.of("a", 10, "bb", 20, "ccc", 30);
 
     ImmutableMap<Integer, Integer> expected = ImmutableMap.of(1, 10, 2, 20, 3, 30);
@@ -415,7 +415,7 @@ public class ImmutableMapsTest {
     }));
   }
 
-  @Test public void testTransformKeyContainingNullKey() {
+  @Test public void transformKeyContainingNullKey() {
     Map<String, Integer> source = Maps.newHashMap();
     source.put("a", 10);
     source.put(null, 20);
@@ -429,7 +429,7 @@ public class ImmutableMapsTest {
     }));
   }
 
-  @Test public void testTransformKeyContainingNullValue() {
+  @Test public void transformKeyContainingNullValue() {
     Map<Integer, String> source = Maps.newHashMap();
     source.put(1, "a");
     source.put(2, null);
@@ -443,7 +443,7 @@ public class ImmutableMapsTest {
     }));
   }
 
-  @Test public void testTransformKeyReturningNullKey() {
+  @Test public void transformKeyReturningNullKey() {
     Map<String, Integer> source = Maps.newHashMap();
     source.put("a", 11);
     source.put(null, 12);
@@ -457,7 +457,7 @@ public class ImmutableMapsTest {
     }));
   }
 
-  @Test(expected = IllegalArgumentException.class) public void testTransformKeyReturningDuplicateKey() {
+  @Test(expected = IllegalArgumentException.class) public void transformKeyReturningDuplicateKey() {
     Map<Integer, String> source = ImmutableMap.of(1, "a", 2, "b", 3, "c");
 
     ImmutableMaps.transformKey(source, new Function<Integer, Boolean>() {
@@ -467,7 +467,7 @@ public class ImmutableMapsTest {
     });
   }
 
-  @Test public void testTransformValue() {
+  @Test public void transformValue() {
     Map<String, Integer> source = ImmutableMap.of("a", 1, "bb", 2, "ccc", 3);
 
     ImmutableMap<String, Boolean> expected = ImmutableMap.of("a", true, "bb", false, "ccc", true);
@@ -478,7 +478,7 @@ public class ImmutableMapsTest {
     }));
   }
 
-  @Test public void testTransformValueContainingNullKey() {
+  @Test public void transformValueContainingNullKey() {
     Map<String, Integer> source = Maps.newHashMap();
     source.put("a", 1);
     source.put(null, 2);
@@ -492,7 +492,7 @@ public class ImmutableMapsTest {
     }));
   }
 
-  @Test public void testTransformValueContainingNullValue() {
+  @Test public void transformValueContainingNullValue() {
     Map<Integer, String> source = Maps.newHashMap();
     source.put(11, "a");
     source.put(12, null);
@@ -506,7 +506,7 @@ public class ImmutableMapsTest {
     }));
   }
 
-  @Test public void testTransformValueReturningNullValue() {
+  @Test public void transformValueReturningNullValue() {
     Map<Integer, String> source = Maps.newHashMap();
     source.put(11, "a");
     source.put(12, null);
@@ -520,7 +520,7 @@ public class ImmutableMapsTest {
     }));
   }
 
-  @Test public void testCollectEntries() {
+  @Test public void collectEntries() {
     Map<Integer, String> source = ImmutableMap.of(1, "a", 2, "bb", 3, "ccc");
     ImmutableMap<String, Integer> expected = ImmutableMap.of("2", 1, "6", 3);
     assertEquals(expected, ImmutableMaps.collect(source, new Function<Map.Entry<Integer, String>, Option<Map.Entry<String, Integer>>>() {
@@ -533,7 +533,7 @@ public class ImmutableMapsTest {
     }));
   }
 
-  @Test public void testCollectKeysAndValuesWithEitherReturningNone() {
+  @Test public void collectKeysAndValuesWithEitherReturningNone() {
     Map<Integer, String> source = ImmutableMap.of(1, "a", 2, "bbb", 3, "cc");
     ImmutableMap<String, Integer> expected = ImmutableMap.of("2", 1);
     assertEquals(expected, ImmutableMaps.collect(source, new Function<Integer, Option<String>>() {
@@ -547,7 +547,7 @@ public class ImmutableMapsTest {
     }));
   }
 
-  @Test public void testCollectByKey() {
+  @Test public void collectByKey() {
     Map<Integer, String> source = ImmutableMap.of(1, "a", 2, "bb", 3, "cccc");
     ImmutableMap<String, String> expected = ImmutableMap.of("2", "a", "6", "cccc");
     assertEquals(expected, ImmutableMaps.collectByKey(source, new Function<Integer, Option<String>>() {
@@ -556,8 +556,8 @@ public class ImmutableMapsTest {
       }
     }));
   }
-
-  @Test public void testCollectByValue() {
+  
+  @Test public void collectByValue() {
     Map<Integer, String> source = ImmutableMap.of(1, "a", 2, "bb", 3, "ccccc");
     ImmutableMap<Integer, Integer> expected = ImmutableMap.of(1, 1, 3, 5);
     assertEquals(expected, ImmutableMaps.collectByValue(source, new Function<String, Option<Integer>>() {
