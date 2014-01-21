@@ -113,7 +113,7 @@ public class ImmutableMaps {
    * will be thrown.
    */
   public static <K, V> ImmutableMap<K, V> mapBy(Iterable<V> fromIterable, final Function<? super V, ? extends K> keyTransformer) {
-    return toMap(fromIterable, keyTransformer, com.google.common.base.Functions.<V> identity());
+    return toMap(fromIterable, keyTransformer, Functions.<V> identity());
   }
 
   /**
@@ -125,7 +125,7 @@ public class ImmutableMaps {
    * thrown.
    */
   public static <K, V> ImmutableMap<K, V> mapTo(Iterable<K> fromIterable, final Function<? super K, ? extends V> valueTransformer) {
-    return toMap(fromIterable, com.google.common.base.Functions.<K> identity(), valueTransformer);
+    return toMap(fromIterable, Functions.<K> identity(), valueTransformer);
   }
 
   /**
@@ -167,7 +167,7 @@ public class ImmutableMaps {
    * keys, {@link IllegalArgumentException} will be thrown.
    */
   public static <K1, K2, V> ImmutableMap<K2, V> transformKey(Map<K1, V> fromMap, final Function<? super K1, ? extends K2> keyTransformer) {
-    return transform(fromMap, keyTransformer, com.google.common.base.Functions.<V> identity());
+    return transform(fromMap, keyTransformer, Functions.<V> identity());
   }
 
   /**
@@ -178,7 +178,7 @@ public class ImmutableMaps {
    * result.
    */
   public static <K, V1, V2> ImmutableMap<K, V2> transformValue(Map<K, V1> fromMap, final Function<? super V1, ? extends V2> valueTransformer) {
-    return transform(fromMap, com.google.common.base.Functions.<K> identity(), valueTransformer);
+    return transform(fromMap, Functions.<K> identity(), valueTransformer);
   }
 
   /**
