@@ -15,19 +15,21 @@
  */
 package com.atlassian.fugue;
 
-import com.google.common.base.Function;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
+import static com.google.common.collect.Maps.immutableEntry;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
 
-import org.junit.Test;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 
-import java.util.Arrays;
-import java.util.Map;
+import org.junit.Test;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
+import com.google.common.base.Function;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 
 public class ImmutableMapsTest {
 
@@ -38,49 +40,38 @@ public class ImmutableMapsTest {
     assertThat(entry.getValue(), equalTo(1));
   }
 
-  @Test public void convertIterablesOfMapEntriesToMap() {
-    @SuppressWarnings("unchecked")
-    Iterable<Map.Entry<String, Integer>> source = Arrays
-      .asList(Maps.immutableEntry("a", 1), Maps.immutableEntry("b", 2), Maps.immutableEntry("c", 3));
+  @Test public void toMap() {
+    Iterable<Map.Entry<String, Integer>> source = list(immutableEntry("a", 1), immutableEntry("b", 2), immutableEntry("c", 3));
 
-    ImmutableMap<String, Integer> expected = ImmutableMap.of("a", 1, "b", 2, "c", 3);
-    assertThat(ImmutableMaps.toMap(source), equalTo(expected));
+    assertThat(ImmutableMaps.toMap(source), equalTo(ImmutableMap.of("a", 1, "b", 2, "c", 3)));
   }
 
-  @Test public void convertIterablesOfMapEntriesToMapContainingNull() {
-    @SuppressWarnings("unchecked")
-    Iterable<Map.Entry<String, Integer>> source = Arrays.asList(Maps.immutableEntry("a", 1), null, Maps.immutableEntry("c", 3));
-
-    assertThat(ImmutableMaps.toMap(source), equalTo(ImmutableMap.of("a", 1, "c", 3)));
+  @Test public void toMapContainingNull() {
+    assertThat(ImmutableMaps.toMap(list(immutableEntry("a", 1), null, immutableEntry("c", 3))), equalTo(ImmutableMap.of("a", 1, "c", 3)));
   }
 
-  @Test public void convertIterablesOfMapEntriesToMapWithNullKey() {
-    @SuppressWarnings("unchecked")
-    Iterable<Map.Entry<String, Integer>> source = Arrays.asList(Maps.immutableEntry("a", 1), Maps.<String, Integer> immutableEntry(null, 2),
-      Maps.immutableEntry("c", 3));
-
-    assertThat(ImmutableMaps.toMap(source), equalTo(ImmutableMap.of("a", 1, "c", 3)));
+  @Test public void toMapWithNullKey() {
+    assertThat(ImmutableMaps.toMap(list(immutableEntry("a", 1), Maps.<String, Integer> immutableEntry(null, 2), immutableEntry("c", 3))),
+      equalTo(ImmutableMap.of("a", 1, "c", 3)));
   }
 
-  @Test public void convertIterablesOfMapEntriesToMapWithNullValue() {
-    @SuppressWarnings("unchecked")
-    Iterable<Map.Entry<String, Integer>> source = Arrays.asList(Maps.immutableEntry("a", 1), Maps.<String, Integer> immutableEntry("b", null),
-      Maps.immutableEntry("c", 3));
+  @Test public void toMapWithNullValue() {
+    assertThat(ImmutableMaps.toMap(list(immutableEntry("a", 1), Maps.<String, Integer> immutableEntry("b", null), immutableEntry("c", 3))),
+      equalTo(ImmutableMap.of("a", 1, "c", 3)));
+  }
 
-    assertThat(ImmutableMaps.toMap(source), equalTo(ImmutableMap.of("a", 1, "c", 3)));
+  @Test public void toMapFunction() {
+    assertThat(ImmutableMaps.toMap(list(immutableEntry("a", 1), immutableEntry("b", 2), immutableEntry("c", 3))),
+      equalTo(ImmutableMap.of("a", 1, "b", 2, "c", 3)));
   }
 
   // Allow override instead of throwing exceptions?
-  @Test(expected = IllegalArgumentException.class) public void convertIterablesOfMapEntriesToMapWithDuplicateKey() {
-    @SuppressWarnings("unchecked")
-    Iterable<Map.Entry<String, Integer>> source = Arrays
-      .asList(Maps.immutableEntry("a", 1), Maps.immutableEntry("b", 2), Maps.immutableEntry("b", 3));
-
-    ImmutableMaps.toMap(source);
+  @Test(expected = IllegalArgumentException.class) public void toMapWithDuplicateKey() {
+    ImmutableMaps.toMap(list(immutableEntry("a", 1), immutableEntry("b", 2), immutableEntry("b", 3)));
   }
 
   @Test public void transformIterablesToMap() {
-    assertThat(ImmutableMaps.toMap(Arrays.asList(1, 2, 3), new Function<Integer, String>() {
+    assertThat(ImmutableMaps.toMap(list(1, 2, 3), new Function<Integer, String>() {
       @Override public String apply(Integer input) {
         return "-" + input;
       }
@@ -92,7 +83,7 @@ public class ImmutableMapsTest {
   }
 
   @Test public void transformIterablesToMapContainingNull() {
-    assertThat(ImmutableMaps.toMap(Arrays.asList(1, null, 3), new Function<Integer, String>() {
+    assertThat(ImmutableMaps.toMap(list(1, null, 3), new Function<Integer, String>() {
       @Override public String apply(Integer input) {
         return "-" + input;
       }
@@ -104,7 +95,7 @@ public class ImmutableMapsTest {
   }
 
   @Test public void transformIterablesToMapGeneratingNullKey() {
-    assertThat(ImmutableMaps.toMap(Arrays.asList(1, null, 3), new Function<Integer, String>() {
+    assertThat(ImmutableMaps.toMap(list(1, null, 3), new Function<Integer, String>() {
       @Override public String apply(Integer input) {
         return input == null ? null : "-" + input;
       }
@@ -116,7 +107,7 @@ public class ImmutableMapsTest {
   }
 
   @Test public void transformIterablesToMapGeneratingNullValue() {
-    assertThat(ImmutableMaps.toMap(Arrays.asList(1, null, 3), new Function<Integer, String>() {
+    assertThat(ImmutableMaps.toMap(list(1, null, 3), new Function<Integer, String>() {
       @Override public String apply(Integer input) {
         return "-" + input;
       }
@@ -128,7 +119,7 @@ public class ImmutableMapsTest {
   }
 
   @Test(expected = IllegalArgumentException.class) public void transformIterablesToMapGeneratingDuplicateKey() {
-    ImmutableMaps.toMap(Arrays.asList(1, 2, 3), new Function<Integer, String>() {
+    ImmutableMaps.toMap(list(1, 2, 3), new Function<Integer, String>() {
       @Override public String apply(Integer input) {
         return String.valueOf(input % 2);
       }
@@ -140,7 +131,7 @@ public class ImmutableMapsTest {
   }
 
   @Test public void mapBy() {
-    assertThat(ImmutableMaps.mapBy(Arrays.asList(1, 2, 3), new Function<Integer, String>() {
+    assertThat(ImmutableMaps.mapBy(list(1, 2, 3), new Function<Integer, String>() {
       @Override public String apply(Integer input) {
         return "+" + input;
       }
@@ -148,7 +139,7 @@ public class ImmutableMapsTest {
   }
 
   @Test public void mapByContravariantKeyFunction() {
-    assertThat(ImmutableMaps.mapBy(Arrays.asList(new Child(1), new Child(2), new Child(3)), new Function<Parent, String>() {
+    assertThat(ImmutableMaps.mapBy(list(new Child(1), new Child(2), new Child(3)), new Function<Parent, String>() {
       @Override public String apply(Parent input) {
         return "+" + input.num();
       }
@@ -156,7 +147,7 @@ public class ImmutableMapsTest {
   }
 
   @Test public void mapByContainingNull() {
-    assertThat(ImmutableMaps.mapBy(Arrays.asList(1, null, 3), new Function<Integer, String>() {
+    assertThat(ImmutableMaps.mapBy(list(1, null, 3), new Function<Integer, String>() {
       @Override public String apply(Integer input) {
         return "+" + input;
       }
@@ -164,7 +155,7 @@ public class ImmutableMapsTest {
   }
 
   @Test(expected = IllegalArgumentException.class) public void mapByDuplicateKey() {
-    ImmutableMaps.mapBy(Arrays.asList(1, 2, 3), new Function<Integer, String>() {
+    ImmutableMaps.mapBy(list(1, 2, 3), new Function<Integer, String>() {
       @Override public String apply(Integer input) {
         return "+" + (input % 2);
       }
@@ -172,7 +163,7 @@ public class ImmutableMapsTest {
   }
 
   @Test public void mapTo() {
-    assertThat(ImmutableMaps.mapTo(Arrays.asList(1, 2, 3), new Function<Integer, String>() {
+    assertThat(ImmutableMaps.mapTo(list(1, 2, 3), new Function<Integer, String>() {
       @Override public String apply(Integer input) {
         return "+" + input;
       }
@@ -180,7 +171,7 @@ public class ImmutableMapsTest {
   }
 
   @Test public void mapToContainingNull() {
-    assertThat(ImmutableMaps.mapTo(Arrays.asList(1, null, 3), new Function<Integer, String>() {
+    assertThat(ImmutableMaps.mapTo(list(1, null, 3), new Function<Integer, String>() {
       @Override public String apply(Integer input) {
         return "+" + input;
       }
@@ -188,7 +179,7 @@ public class ImmutableMapsTest {
   }
 
   @Test(expected = IllegalArgumentException.class) public void mapToContainingDuplicates() {
-    ImmutableMaps.mapTo(Arrays.asList(1, 2, 1), new Function<Integer, String>() {
+    ImmutableMaps.mapTo(list(1, 2, 1), new Function<Integer, String>() {
       @Override public String apply(Integer input) {
         return "+" + input;
       }
@@ -196,11 +187,12 @@ public class ImmutableMapsTest {
   }
 
   @Test public void transformEntries() {
-    assertThat(ImmutableMaps.transform(ImmutableMap.of("a", 1, "b", 2, "c", 3), new Function<Map.Entry<String, Integer>, Map.Entry<Integer, String>>() {
-      @Override public Map.Entry<Integer, String> apply(@Nullable Map.Entry<String, Integer> input) {
-        return Maps.immutableEntry(input.getValue() * 2, input.getKey() + input.getKey());
-      }
-    }), equalTo(ImmutableMap.of(2, "aa", 4, "bb", 6, "cc")));
+    assertThat(
+      ImmutableMaps.transform(ImmutableMap.of("a", 1, "b", 2, "c", 3), new Function<Map.Entry<String, Integer>, Map.Entry<Integer, String>>() {
+        @Override public Map.Entry<Integer, String> apply(@Nullable Map.Entry<String, Integer> input) {
+          return immutableEntry(input.getValue() * 2, input.getKey() + input.getKey());
+        }
+      }), equalTo(ImmutableMap.of(2, "aa", 4, "bb", 6, "cc")));
   }
 
   @Test public void transformEntriesContainingNullKey() {
@@ -211,7 +203,7 @@ public class ImmutableMapsTest {
 
     assertThat(ImmutableMaps.transform(source, new Function<Map.Entry<String, Integer>, Map.Entry<Integer, String>>() {
       @Override public Map.Entry<Integer, String> apply(@Nullable Map.Entry<String, Integer> input) {
-        return Maps.immutableEntry(input.getValue() * 2, input.getKey() + input.getKey());
+        return immutableEntry(input.getValue() * 2, input.getKey() + input.getKey());
       }
     }), equalTo(ImmutableMap.of(2, "aa", 4, "nullnull", 6, "cc")));
   }
@@ -224,39 +216,42 @@ public class ImmutableMapsTest {
 
     assertThat(ImmutableMaps.transform(source, new Function<Map.Entry<Integer, String>, Map.Entry<String, Integer>>() {
       @Override public Map.Entry<String, Integer> apply(@Nullable Map.Entry<Integer, String> input) {
-        return Maps.immutableEntry(input.getValue() + input.getValue(), input.getKey() * 2);
+        return immutableEntry(input.getValue() + input.getValue(), input.getKey() * 2);
       }
     }), equalTo(ImmutableMap.of("aa", 2, "nullnull", 4, "cc", 6)));
   }
 
   @Test public void transformEntriesReturningNull() {
-    assertThat(ImmutableMaps.transform(ImmutableMap.of(1, "a", 2, "b", 3, "c"), new Function<Map.Entry<Integer, String>, Map.Entry<String, Integer>>() {
-      @Override public Map.Entry<String, Integer> apply(@Nullable Map.Entry<Integer, String> input) {
-        return input.getKey() % 2 == 0 ? null : Maps.immutableEntry(input.getValue() + input.getValue(), input.getKey() * 2);
-      }
-    }), equalTo(ImmutableMap.of("aa", 2, "cc", 6)));
+    assertThat(
+      ImmutableMaps.transform(ImmutableMap.of(1, "a", 2, "b", 3, "c"), new Function<Map.Entry<Integer, String>, Map.Entry<String, Integer>>() {
+        @Override public Map.Entry<String, Integer> apply(@Nullable Map.Entry<Integer, String> input) {
+          return input.getKey() % 2 == 0 ? null : immutableEntry(input.getValue() + input.getValue(), input.getKey() * 2);
+        }
+      }), equalTo(ImmutableMap.of("aa", 2, "cc", 6)));
   }
 
   @Test public void transformEntriesReturningNullKey() {
-    assertThat(ImmutableMaps.transform(ImmutableMap.of(1, "a", 2, "b", 3, "c"), new Function<Map.Entry<Integer, String>, Map.Entry<String, Integer>>() {
-      @Override public Map.Entry<String, Integer> apply(@Nullable Map.Entry<Integer, String> input) {
-        return Maps.immutableEntry(input.getKey() % 2 == 0 ? null : input.getValue() + input.getValue(), input.getKey() * 2);
-      }
-    }), equalTo(ImmutableMap.of("aa", 2, "cc", 6)));
+    assertThat(
+      ImmutableMaps.transform(ImmutableMap.of(1, "a", 2, "b", 3, "c"), new Function<Map.Entry<Integer, String>, Map.Entry<String, Integer>>() {
+        @Override public Map.Entry<String, Integer> apply(@Nullable Map.Entry<Integer, String> input) {
+          return immutableEntry(input.getKey() % 2 == 0 ? null : input.getValue() + input.getValue(), input.getKey() * 2);
+        }
+      }), equalTo(ImmutableMap.of("aa", 2, "cc", 6)));
   }
 
   @Test public void transformEntriesReturningNullValue() {
-    assertThat(ImmutableMaps.transform(ImmutableMap.of(1, "a", 2, "b", 3, "c"), new Function<Map.Entry<Integer, String>, Map.Entry<String, Integer>>() {
-      @Override public Map.Entry<String, Integer> apply(@Nullable Map.Entry<Integer, String> input) {
-        return Maps.immutableEntry(input.getValue() + input.getValue(), input.getKey() % 2 == 0 ? null : input.getKey() * 2);
-      }
-    }), equalTo(ImmutableMap.of("aa", 2, "cc", 6)));
+    assertThat(
+      ImmutableMaps.transform(ImmutableMap.of(1, "a", 2, "b", 3, "c"), new Function<Map.Entry<Integer, String>, Map.Entry<String, Integer>>() {
+        @Override public Map.Entry<String, Integer> apply(@Nullable Map.Entry<Integer, String> input) {
+          return immutableEntry(input.getValue() + input.getValue(), input.getKey() % 2 == 0 ? null : input.getKey() * 2);
+        }
+      }), equalTo(ImmutableMap.of("aa", 2, "cc", 6)));
   }
 
   @Test(expected = IllegalArgumentException.class) public void transformEntriesReturningDuplicateKey() {
     ImmutableMaps.transform(ImmutableMap.of("a", 1, "b", 2, "c", 3), new Function<Map.Entry<String, Integer>, Map.Entry<Integer, String>>() {
       @Override public Map.Entry<Integer, String> apply(@Nullable Map.Entry<String, Integer> input) {
-        return Maps.immutableEntry(input.getValue() % 2, input.getKey() + input.getKey());
+        return immutableEntry(input.getValue() % 2, input.getKey() + input.getKey());
       }
     });
   }
@@ -456,14 +451,15 @@ public class ImmutableMapsTest {
   }
 
   @Test public void collectEntries() {
-    assertThat(ImmutableMaps.collect(ImmutableMap.of(1, "a", 2, "bb", 3, "ccc"), new Function<Map.Entry<Integer, String>, Option<Map.Entry<String, Integer>>>() {
-      @Override public Option<Map.Entry<String, Integer>> apply(@Nullable Map.Entry<Integer, String> input) {
-        if (input == null || input.getKey() == null || input.getKey() % 2 == 0 || input.getValue() == null) {
-          return Option.none();
+    assertThat(ImmutableMaps.collect(ImmutableMap.of(1, "a", 2, "bb", 3, "ccc"),
+      new Function<Map.Entry<Integer, String>, Option<Map.Entry<String, Integer>>>() {
+        @Override public Option<Map.Entry<String, Integer>> apply(@Nullable Map.Entry<Integer, String> input) {
+          if (input == null || input.getKey() == null || input.getKey() % 2 == 0 || input.getValue() == null) {
+            return Option.none();
+          }
+          return Option.some(immutableEntry(String.valueOf(input.getKey() * 2), input.getValue().length()));
         }
-        return Option.some(Maps.immutableEntry(String.valueOf(input.getKey() * 2), input.getValue().length()));
-      }
-    }), equalTo(ImmutableMap.of("2", 1, "6", 3)));
+      }), equalTo(ImmutableMap.of("2", 1, "6", 3)));
   }
 
   @Test public void collectKeysAndValuesWithEitherReturningNone() {
@@ -485,13 +481,14 @@ public class ImmutableMapsTest {
       }
     }), equalTo(ImmutableMap.of("2", "a", "6", "cccc")));
   }
-  
+
   @Test public void collectByKeyContravariantKeyFunction() {
-    assertThat(ImmutableMaps.collectByKey(ImmutableMap.of(new Child(2), "a", new Child(3), "bb", new Child(6), "cccc"), new Function<Parent, Option<String>>() {
-      @Override public Option<String> apply(@Nullable Parent input) {
-        return input.num() % 2 == 0 ? Option.some(String.valueOf(input.num())) : Option.<String> none();
-      }
-    }), equalTo(ImmutableMap.of("2", "a", "6", "cccc")));
+    assertThat(ImmutableMaps.collectByKey(ImmutableMap.of(new Child(2), "a", new Child(3), "bb", new Child(6), "cccc"),
+      new Function<Parent, Option<String>>() {
+        @Override public Option<String> apply(@Nullable Parent input) {
+          return input.num() % 2 == 0 ? Option.some(String.valueOf(input.num())) : Option.<String> none();
+        }
+      }), equalTo(ImmutableMap.of("2", "a", "6", "cccc")));
   }
 
   @Test public void collectByValue() {
@@ -505,10 +502,28 @@ public class ImmutableMapsTest {
   @Test public void collectByValueContravariantKeyFunction() {
     assertThat(
       ImmutableMaps.collectByValue(ImmutableMap.of(2, new Child(2), 3, new Child(3), 6, new Child(6)), new Function<Parent, Option<String>>() {
-      @Override public Option<String> apply(@Nullable Parent input) {
-        return input.num() % 2 == 0 ? Option.some(String.valueOf(input.num())) : Option.<String> none();
-      }
-    }), equalTo(ImmutableMap.of(2, "2", 6, "6")));
+        @Override public Option<String> apply(@Nullable Parent input) {
+          return input.num() % 2 == 0 ? Option.some(String.valueOf(input.num())) : Option.<String> none();
+        }
+      }), equalTo(ImmutableMap.of(2, "2", 6, "6")));
+  }
+
+  static <A> Iterable<A> list(A a) {
+    @SuppressWarnings("unchecked")
+    List<A> result = Arrays.asList(a);
+    return result;
+  }
+
+  static <A> Iterable<A> list(A a1, A a2) {
+    @SuppressWarnings("unchecked")
+    List<A> result = Arrays.asList(a1, a2);
+    return result;
+  }
+
+  static <A> Iterable<A> list(A a1, A a2, A a3) {
+    @SuppressWarnings("unchecked")
+    List<A> result = Arrays.asList(a1, a2, a3);
+    return result;
   }
 
   static class Parent {
