@@ -16,6 +16,7 @@
 package com.atlassian.fugue;
 
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
@@ -44,9 +45,10 @@ public class ImmutableMaps {
    * @return a function that takes a K and a V and return the corresponding Map
    * entry
    */
-  @SuppressWarnings ("unchecked")
   public static <K, V> Function2<K, V, Map.Entry<K, V>> mapEntry() {
-    return (MapEntryFunction<K, V>) MapEntryFunction.INSTANCE;
+    @SuppressWarnings("unchecked")
+    MapEntryFunction<K, V> result = (MapEntryFunction<K, V>) MapEntryFunction.INSTANCE;
+    return result;
   }
 
   private static class MapEntryFunction<K, V> implements Function2<K, V, Map.Entry<K, V>> {
@@ -95,7 +97,9 @@ public class ImmutableMaps {
     final Function<? super T, ? extends V> valueTransformer) {
     return toMap(com.google.common.collect.Iterables.transform(fromIterable, new Function<T, Map.Entry<K, V>>() {
       @Override public Map.Entry<K, V> apply(T input) {
-        return Maps.immutableEntry(keyTransformer.apply(input), valueTransformer.apply(input));
+        @SuppressWarnings("unchecked")
+        Entry<K, V> entry = (Entry<K, V>) Maps.immutableEntry(keyTransformer.apply(input), valueTransformer.apply(input));
+        return entry;
       }
     }));
   }
@@ -147,7 +151,9 @@ public class ImmutableMaps {
     final Function<? super V1, ? extends V2> valueTransformer) {
     return toMap(com.google.common.collect.Iterables.transform(fromMap.entrySet(), new Function<Map.Entry<K1, V1>, Map.Entry<K2, V2>>() {
       @Override public Map.Entry<K2, V2> apply(Map.Entry<K1, V1> input) {
-        return Maps.immutableEntry(keyTransformer.apply(input.getKey()), valueTransformer.apply(input.getValue()));
+        @SuppressWarnings("unchecked")
+        Entry<K2, V2> entry = (Entry<K2, V2>) Maps.immutableEntry(keyTransformer.apply(input.getKey()), valueTransformer.apply(input.getValue()));
+        return entry;
       }
     }));
   }
