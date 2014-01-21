@@ -15,7 +15,6 @@
         <version>2.0.1-RC2-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.atlassian.fugue</groupId>
     <artifactId>fugue-scala</artifactId>
     <packaging>jar</packaging>
     <name>Functional Guava Extensions Scala Inter-Ops</name>
@@ -29,7 +28,7 @@
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
-                <version>3.1.5</version>
+                <version>3.1.6</version>
                 <executions>
                     <execution>
                         <goals>
@@ -66,6 +65,11 @@
 
         <!-- Test deps -->
         <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
@@ -75,11 +79,6 @@
                     <artifactId>hamcrest-core</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit-dep</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
