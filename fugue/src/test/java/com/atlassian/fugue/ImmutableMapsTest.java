@@ -61,8 +61,21 @@ public class ImmutableMapsTest {
   }
 
   @Test public void toMapFunction() {
-    assertThat(ImmutableMaps.toMap(list(immutableEntry("a", 1), immutableEntry("b", 2), immutableEntry("c", 3))),
-      equalTo(ImmutableMap.of("a", 1, "b", 2, "c", 3)));
+    assertThat(ImmutableMaps.toMap(list(1, 2, 3), Functions.<Integer> identity(), new Function<Integer, String>() {
+      @Override public String apply(Integer i) {
+        return i.toString();
+      }
+    }), equalTo(ImmutableMap.of(1, "1", 2, "2", 3, "3")));
+  }
+
+  @Test public void toMapFunctionVariance() {
+    Function<GrandParent, Child> f = new Function<GrandParent, Child>() {
+      @Override public Child apply(GrandParent input) {
+        return new Child(input.num());
+      }
+    };
+    assertThat(ImmutableMaps.<Parent, Parent, Parent> toMap(list(new Parent(1), new Parent(2), new Parent(3)), f, f),
+      equalTo(ImmutableMap.<Parent, Parent> of(new Child(1), new Child(1), new Child(2), new Child(2), new Child(3), new Child(3))));
   }
 
   // Allow override instead of throwing exceptions?
@@ -526,17 +539,21 @@ public class ImmutableMapsTest {
     return result;
   }
 
-  static class Parent {
+  static class GrandParent {
     int num() {
-      return -1;
+      return Integer.MIN_VALUE;
     }
   }
 
-  static class Child extends Parent {
+  static class Parent extends GrandParent {
     final int num;
 
-    Child(int num) {
+    Parent(int num) {
       this.num = num;
+    }
+
+    Parent() {
+      this.num = -1;
     }
 
     int num() {
@@ -555,6 +572,12 @@ public class ImmutableMapsTest {
       if (getClass() != obj.getClass())
         return false;
       return num == ((Child) obj).num;
+    }
+  }
+
+  static class Child extends Parent {
+    Child(int num) {
+      super(num);
     }
   }
 }
