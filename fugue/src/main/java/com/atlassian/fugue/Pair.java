@@ -17,6 +17,8 @@ package com.atlassian.fugue;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.io.Serializable;
+
 import com.google.common.base.Function;
 
 /**
@@ -24,7 +26,9 @@ import com.google.common.base.Function;
  * 
  * @since 1.0
  */
-public final class Pair<A, B> {
+public final class Pair<A, B> implements Serializable {
+  private static final long serialVersionUID = 3054071035067921893L;
+
   private static final int HALF_WORD = 16;
 
   /**
