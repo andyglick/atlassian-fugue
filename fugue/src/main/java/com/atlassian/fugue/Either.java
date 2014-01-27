@@ -19,6 +19,7 @@ import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.some;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -47,7 +48,9 @@ import com.google.common.base.Supplier;
  * 
  * @since 1.0
  */
-public abstract class Either<L, R> {
+public abstract class Either<L, R> implements Serializable {
+  private static final long serialVersionUID = -1L;
+
   //
   // factory methods
   //
@@ -196,6 +199,8 @@ public abstract class Either<L, R> {
   //
 
   static final class Left<L, R> extends Either<L, R> {
+    private static final long serialVersionUID = -6846704510630179771L;
+
     private final L value;
 
     public Left(final L value) {
@@ -239,6 +244,8 @@ public abstract class Either<L, R> {
   }
 
   static final class Right<L, R> extends Either<L, R> {
+    private static final long serialVersionUID = 5025077305715784930L;
+
     private final R value;
 
     public Right(final R value) {
