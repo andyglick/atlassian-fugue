@@ -48,7 +48,7 @@ And then add fugue as a dependency to your pom.xml:
         <dependency>
             <groupId>com.atlassian.fugue</groupId>
             <artifactId>fugue</artifactId>
-            <version>2.0.0</version>
+            <version>2.1.0</version>
         </dependency>
         ...
     </dependencies>
@@ -58,4 +58,4 @@ Learn about Fugue
 -----------------
 Browse `API docs for the most recent release`_.
 
-.. _API docs for the most recent release: https://docs.atlassian.com/fugue/1.2.0/apidocs/
+.. _API docs for the most recent release: https://docs.atlassian.com/fugue/2.1.0/apidocs/
