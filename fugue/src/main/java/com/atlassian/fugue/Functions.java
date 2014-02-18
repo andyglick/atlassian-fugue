@@ -58,7 +58,7 @@ public class Functions {
    * 
    * @since 1.1
    */
-  public static <F, T> T fold(final Function2<T, F, T> f, final T zero, final Iterable<F> elements) {
+  public static <F, T> T fold(final Function2<T, F, T> f, final T zero, final Iterable<? extends F> elements) {
     T currentValue = zero;
     for (final F element : elements) {
       currentValue = f.apply(currentValue, element);
@@ -80,7 +80,7 @@ public class Functions {
    * 
    * @since 1.1
    */
-  public static <F, T> T fold(final Function<Pair<T, F>, T> f, final T zero, final Iterable<F> elements) {
+  public static <F, T> T fold(final Function<Pair<T, F>, T> f, final T zero, final Iterable<? extends F> elements) {
     return fold(toFunction2(f), zero, elements);
   }
 

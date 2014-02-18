@@ -24,7 +24,7 @@ import org.junit.Test;
 
 import com.google.common.base.Function;
 
-public class FoldTest {
+public class FunctionsFoldTest {
   @Test public void f2FoldSum() {
     final Function2<Integer, Integer, Integer> add = new Function2<Integer, Integer, Integer>() {
       @Override public Integer apply(final Integer arg1, final Integer arg2) {
@@ -77,5 +77,23 @@ public class FoldTest {
       };
     };
     assertThat(fold(append, "Iterable:", asList(12, 15, 20)), is("Iterable:  12  15  20"));
+  }
+
+  @Test public void f1FoldVariance() {
+    final Function<Pair<Number, Number>, Number> mult = new Function<Pair<Number, Number>, Number>() {
+      @Override public Integer apply(final Pair<Number, Number> arg) {
+        return arg.left().intValue() * arg.right().intValue();
+      }
+    };
+    assertThat(fold(mult, 1, asList(1, 2, 3, 4, 5)), is((Number) 120));
+  }
+
+  @Test public void f2FoldVariance() {
+    final Function2<Number, Number, Number> mult = new Function2<Number, Number, Number>() {
+      @Override public Integer apply(final Number arg1, final Number arg2) {
+        return arg1.intValue() * arg2.intValue();
+      }
+    };
+    assertThat(fold(mult, 1, asList(1, 2, 3, 4, 5)), is((Number) 120));
   }
 }
