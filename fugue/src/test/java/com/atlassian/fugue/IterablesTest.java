@@ -15,6 +15,7 @@
  */
 package com.atlassian.fugue;
 
+
 import static com.atlassian.fugue.Eithers.getOrThrow;
 import static com.atlassian.fugue.Iterables.emptyIterable;
 import static com.atlassian.fugue.Iterables.findFirst;
@@ -40,7 +41,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.AbstractIterator;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Ranges;
+import com.google.common.collect.Range;
 
 public class IterablesTest {
 
@@ -161,7 +162,7 @@ public class IterablesTest {
   }
 
   @Test public void partitionSimple() {
-    Pair<Iterable<Integer>, Iterable<Integer>> part = partition(asList(1, 2, 3, 4), Ranges.greaterThan(2));
+    Pair<Iterable<Integer>, Iterable<Integer>> part = partition(asList(1, 2, 3, 4), Range.greaterThan(2));
     assertThat(part.left(), contains(3, 4));
     assertThat(part.right(), contains(1, 2));
   }
