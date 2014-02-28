@@ -127,28 +127,6 @@ public abstract class Either<L, R> implements Serializable {
   //
 
   /**
-   * Returns <code>true</code> if this either is a left, <code>false</code>
-   * otherwise.
-   * 
-   * @return <code>true</code> if this either is a left, <code>false</code>
-   * otherwise.
-   */
-  public boolean isLeft() {
-    return false;
-  }
-
-  /**
-   * Returns <code>true</code> if this either is a right, <code>false</code>
-   * otherwise.
-   * 
-   * @return <code>true</code> if this either is a right, <code>false</code>
-   * otherwise.
-   */
-  public boolean isRight() {
-    return false;
-  }
-
-  /**
    * Projects this either as a left.
    * 
    * @return A left projection of this either.
@@ -165,16 +143,50 @@ public abstract class Either<L, R> implements Serializable {
   public final RightProjection right() {
     return new RightProjection();
   }
-
-  // value accessor for Left
-  L getLeft() {
-    throw new NoSuchElementException();
+  
+  // right-bias
+  
+  /**
+   * Map the given function across the right hand side value if it is one.
+   * 
+   * @param f The function to map .
+   * @return A new either value after mapping with the function applied if this is a Right.
+   */
+  public final <X> Either<L, X> map(final Function<? super R, X> f) {
+    return right().map(f);
   }
 
-  // value accessor for Right
-  R getRight() {
-    throw new NoSuchElementException();
+  /**
+   * Binds the given function across the right hand side value if it is one.
+   * 
+   * @param f The function to bind.
+   * @return A new either value after binding with the function applied if this is a Right.
+   */
+  public final <X> Either<L, X> flatMap(final Function<? super R, Either<L, X>> f) {
+    return right().flatMap(f);
   }
+
+  //
+  // abstract stuff
+  //
+
+  /**
+   * Returns <code>true</code> if this either is a left, <code>false</code>
+   * otherwise.
+   * 
+   * @return <code>true</code> if this either is a left, <code>false</code>
+   * otherwise.
+   */
+  public abstract boolean isLeft();
+
+  /**
+   * Returns <code>true</code> if this either is a right, <code>false</code>
+   * otherwise.
+   * 
+   * @return <code>true</code> if this either is a right, <code>false</code>
+   * otherwise.
+   */
+  public abstract boolean isRight();
 
   /**
    * If this is a left, then return the left value in right, or vice versa.
@@ -193,6 +205,20 @@ public abstract class Either<L, R> implements Serializable {
    * @return the result of the applies function
    */
   public abstract <V> V fold(Function<? super L, V> ifLeft, Function<? super R, V> ifRight);
+
+  //
+  // protected
+  //
+
+  // value accessor for Left
+  L getLeft() {
+    throw new NoSuchElementException();
+  }
+
+  // value accessor for Right
+  R getRight() {
+    throw new NoSuchElementException();
+  }
 
   //
   // inner class implementations
@@ -214,6 +240,10 @@ public abstract class Either<L, R> implements Serializable {
 
     @Override public boolean isLeft() {
       return true;
+    }
+
+    @Override public boolean isRight() {
+      return false;
     }
 
     @Override public Either<R, L> swap() {
@@ -259,6 +289,10 @@ public abstract class Either<L, R> implements Serializable {
 
     @Override public boolean isRight() {
       return true;
+    }
+
+    @Override public boolean isLeft() {
+      return false;
     }
 
     @Override public Either<R, L> swap() {
