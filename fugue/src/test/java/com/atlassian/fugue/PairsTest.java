@@ -1,7 +1,8 @@
 package com.atlassian.fugue;
 
 import static com.atlassian.fugue.Pair.pair;
-import static com.atlassian.fugue.Pairs.zip;
+import static com.atlassian.fugue.Iterables.unzip;
+import static com.atlassian.fugue.Iterables.zip;
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertThat;
 
@@ -38,13 +39,13 @@ public class PairsTest {
 
   @Test public void unzipLeft() {
     final Iterable<Pair<Integer, String>> pairs = ImmutableList.of(pair(1, "1"), pair(2, "2"), pair(3, "3"), pair(4, "4"));
-    final Pair<Iterable<Integer>, Iterable<String>> ls = Pairs.unzip(pairs);
+    final Pair<Iterable<Integer>, Iterable<String>> ls = unzip(pairs);
     assertThat(ls.left(), contains(1, 2, 3, 4));
   }
 
   @Test public void unzipRight() {
     final Iterable<Pair<Integer, String>> pairs = ImmutableList.of(pair(1, "1"), pair(2, "2"), pair(3, "3"), pair(4, "4"));
-    final Pair<Iterable<Integer>, Iterable<String>> ls = Pairs.unzip(pairs);
+    final Pair<Iterable<Integer>, Iterable<String>> ls = unzip(pairs);
     assertThat(ls.right(), contains("1", "2", "3", "4"));
   }
 }

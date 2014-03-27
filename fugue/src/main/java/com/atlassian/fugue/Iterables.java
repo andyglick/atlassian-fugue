@@ -323,6 +323,21 @@ public class Iterables {
   }
 
   /**
+   * Unzips an iterable of {@link Pair pairs} into a {@link Pair pair} of
+   * iterables.
+   * 
+   * @param <A> LHS type
+   * @param <B> RHS type
+   * @param pairs the values
+   * @return a {@link Pair pair} of {@link Iterable iterable} of the same length
+   * as the input iterable.
+   * @since 2.2
+   */
+  public static <A, B> Pair<Iterable<A>, Iterable<B>> unzip(Iterable<Pair<A, B>> pairs) {
+    return pair(transform(pairs, Pair.<A> leftValue()), transform(pairs, Pair.<B> rightValue()));
+  }
+
+  /**
    * Creates a sequence of {@link Integer integers} from start up to but not
    * including end.
    * 
