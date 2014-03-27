@@ -282,6 +282,8 @@ public class Iterables {
    * @return an {@link Iterable iterable} of pairs, only as long as the shortest
    * input iterable.
    * @since 1.2
+   * 
+   * @see Pairs.unzip for the opposite operation
    */
   public static <A, B> Iterable<Pair<A, B>> zip(final Iterable<A> as, final Iterable<B> bs) {
     return zipWith(Pair.<A, B> pairs()).apply(as, bs);
@@ -682,5 +684,9 @@ public class Iterables {
         throw new UnsupportedOperationException();
       }
     }
+  }
+
+  static <A> int size(Iterable<A> as) {
+    return com.google.common.collect.Iterables.size(as);
   }
 }

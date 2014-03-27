@@ -84,9 +84,10 @@ public final class Pair<A, B> implements Serializable {
    * @return an {@link Iterable iterable} of pairs, only as long as the shortest
    * input iterable.
    * @since 1.1
+   * @deprecated since 2.2 use {@link Pairs#zip} instead
    */
   public static <A, B> Iterable<Pair<A, B>> zip(final Iterable<A> as, final Iterable<B> bs) {
-    return Iterables.zip(as, bs);
+    return Pairs.zip(as, bs);
   }
 
   //
