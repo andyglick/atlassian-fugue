@@ -283,7 +283,7 @@ public class Iterables {
    * input iterable.
    * @since 1.2
    * 
-   * @see Pairs.unzip for the opposite operation
+   * @see {@link #unzip(Iterable)} for the opposite operation
    */
   public static <A, B> Iterable<Pair<A, B>> zip(final Iterable<A> as, final Iterable<B> bs) {
     return zipWith(Pair.<A, B> pairs()).apply(as, bs);
