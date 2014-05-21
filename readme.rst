@@ -58,4 +58,4 @@ Learn about Fugue
 -----------------
 Browse `API docs for the most recent release`_.
 
-.. _API docs for the most recent release: https://docs.atlassian.com/fugue/2.1.0/apidocs/
+.. _API docs for the most recent release: https://docs.atlassian.com/fugue/2.1.0/fugue/apidocs/index.html
