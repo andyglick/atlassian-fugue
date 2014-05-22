@@ -151,6 +151,7 @@ public abstract class Either<L, R> implements Serializable {
    * 
    * @param f The function to map .
    * @return A new either value after mapping with the function applied if this is a Right.
+   * @since 2.2
    */
   public final <X> Either<L, X> map(final Function<? super R, X> f) {
     return right().map(f);
@@ -161,6 +162,7 @@ public abstract class Either<L, R> implements Serializable {
    * 
    * @param f The function to bind.
    * @return A new either value after binding with the function applied if this is a Right.
+   * @since 2.2
    */
   public final <X> Either<L, X> flatMap(final Function<? super R, Either<L, X>> f) {
     return right().flatMap(f);
