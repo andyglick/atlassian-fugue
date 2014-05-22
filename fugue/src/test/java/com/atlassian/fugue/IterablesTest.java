@@ -15,7 +15,6 @@
  */
 package com.atlassian.fugue;
 
-
 import static com.atlassian.fugue.Eithers.getOrThrow;
 import static com.atlassian.fugue.Iterables.emptyIterable;
 import static com.atlassian.fugue.Iterables.findFirst;

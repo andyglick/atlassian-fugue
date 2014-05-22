@@ -13,7 +13,7 @@ import org.junit.Test;
 public class PairSerializationTest {
   @Test public void serialize() throws IOException {
     Pair<Integer, Integer> pair = Pair.pair(1, 2);
-    assertThat(Serializer.<Pair<Integer, Integer>>toObject(toBytes(pair)), equalTo(pair));
+    assertThat(Serializer.<Pair<Integer, Integer>> toObject(toBytes(pair)), equalTo(pair));
   }
 
   @Test(expected = NotSerializableException.class) public void serializeWithNonSerializableLeft() throws IOException {

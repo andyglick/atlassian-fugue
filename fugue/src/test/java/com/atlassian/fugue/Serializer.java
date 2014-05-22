@@ -23,7 +23,7 @@ class Serializer {
       throw new RuntimeException(e);
     }
   }
-  
+
   static class Unserializable {
     static Unserializable instance() {
       return new Unserializable();
