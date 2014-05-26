@@ -170,6 +170,18 @@ public abstract class Either<L, R> implements Serializable {
     return right().flatMap(f);
   }
 
+  /**
+   * Map the given function across the left hand side value if it is one.
+   * 
+   * @param f The function to map.
+   * @return A new either value after mapping with the function applied if this
+   * is a Left.
+   * @since 2.2
+   */
+  public final <X> Either<X, R> leftMap(final Function<? super L, X> f) {
+    return left().map(f);
+  }
+
   //
   // abstract stuff
   //
@@ -209,6 +221,17 @@ public abstract class Either<L, R> implements Serializable {
    * @return the result of the applies function
    */
   public abstract <V> V fold(Function<? super L, V> ifLeft, Function<? super R, V> ifRight);
+
+  /**
+   * Map the given functions across the appropriate side.
+   * 
+   * @param ifLeft The function to map if this Either is a left.
+   * @param ifRight The function to map if this Either is a right.
+   * @return A new either value after mapping with the appropriate function
+   * applied.
+   * @since 2.2
+   */
+  public abstract <LL, RR> Either<LL, RR> bimap(final Function<? super L, ? extends LL> ifLeft, final Function<? super R, ? extends RR> ifRight);
 
   //
   // protected
@@ -258,6 +281,12 @@ public abstract class Either<L, R> implements Serializable {
       return ifLeft.apply(value);
     }
 
+    @Override public <LL, RR> Either<LL, RR> bimap(Function<? super L, ? extends LL> ifLeft, Function<? super R, ? extends RR> ifRight) {
+      @SuppressWarnings("unchecked")
+      final Either<LL, RR> map = (Either<LL, RR>) left().map(ifLeft);
+      return map;
+    }
+
     @Override public boolean equals(final Object o) {
       if (this == o) {
         return true;
@@ -305,6 +334,12 @@ public abstract class Either<L, R> implements Serializable {
 
     @Override public <V> V fold(final Function<? super L, V> ifLeft, final Function<? super R, V> ifRight) {
       return ifRight.apply(value);
+    }
+
+    @Override public <LL, RR> Either<LL, RR> bimap(Function<? super L, ? extends LL> ifLeft, Function<? super R, ? extends RR> ifRight) {
+      @SuppressWarnings("unchecked")
+      final Either<LL, RR> map = (Either<LL, RR>) right().map(ifRight);
+      return map;
     }
 
     @Override public boolean equals(final Object o) {

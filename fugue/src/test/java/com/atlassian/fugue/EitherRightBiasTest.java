@@ -9,22 +9,26 @@ import org.junit.Test;
 
 public class EitherRightBiasTest {
   @Test public void mapRight() {
-    Either<String, Integer> either = Either.right(3);
-    assertThat(either.map(addOne), is(Either.<String, Integer> right(4)));
+    assertThat(Either.<String, Integer> right(3).map(addOne), is(Either.<String, Integer> right(4)));
   }
 
   @Test public void mapLeft() {
-    Either<String, Integer> either = Either.left("foo");
-    assertThat(either.map(addOne), is(either));
+    assertThat(Either.<String, Integer> left("foo").map(addOne), is(Either.<String, Integer> left("foo")));
   }
 
   @Test public void flatMapRight() {
-    Either<Integer, String> either = Either.right("!foo");
-    assertThat(either.flatMap(reverseToEither), is(Either.<Integer, String> right("oof!")));
+    assertThat(Either.<Integer, String> right("!foo").flatMap(reverseToEither), is(Either.<Integer, String> right("oof!")));
   }
 
   @Test public void flatMapLeft() {
-    Either<Integer, String> either = Either.left(5);
-    assertThat(either.flatMap(reverseToEither), is(either));
+    assertThat(Either.<Integer, String> left(5).flatMap(reverseToEither), is(Either.<Integer, String> left(5)));
+  }
+
+  @Test public void leftMapRight() {
+    assertThat(Either.<Integer, String> right("foo").leftMap(addOne), is(Either.<Integer, String> right("foo")));
+  }
+
+  @Test public void leftMapLeft() {
+    assertThat(Either.<Integer, String> left(3).leftMap(addOne), is(Either.<Integer, String> left(4)));
   }
 }
