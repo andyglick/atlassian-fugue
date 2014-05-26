@@ -57,7 +57,7 @@ public class EitherRightTest {
   }
 
   @Test(expected = NoSuchElementException.class) public void getLeft() {
-    either.getLeft();
+    either.left().get();
   }
 
   @Test public void swapIsLeft() {
@@ -119,6 +119,6 @@ public class EitherRightTest {
   @Test public void upcastRightOnLeft() {
     Either<String, Integer> e = Either.left("a");
     Either<String, Number> result = Eithers.<String, Number, Integer> upcastRight(e);
-    assertThat(result.getLeft(), is("a"));
+    assertThat(result.left().get(), is("a"));
   }
 }

@@ -234,7 +234,7 @@ public abstract class Either<L, R> implements Serializable {
   public abstract <LL, RR> Either<LL, RR> bimap(final Function<? super L, ? extends LL> ifLeft, final Function<? super R, ? extends RR> ifRight);
 
   //
-  // protected
+  // internal only, should not be accessed from outside this class
   //
 
   // value accessor for Left

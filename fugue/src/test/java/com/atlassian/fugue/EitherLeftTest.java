@@ -109,7 +109,7 @@ public class EitherLeftTest {
     Either<Integer, String> e = Either.left(1);
     Either<Number, String> result = Eithers.<Number, Integer, String> upcastLeft(e);
     Number expected = 1;
-    assertThat(result.getLeft(), is(expected));
+    assertThat(result.left().get(), is(expected));
   }
 
   @Test public void upcastLeftOnRight() {
