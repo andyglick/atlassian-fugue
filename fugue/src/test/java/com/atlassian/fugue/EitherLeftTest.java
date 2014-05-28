@@ -52,10 +52,6 @@ public class EitherLeftTest {
     either.getRight();
   }
 
-  @Test public void getLeft() {
-    assertThat(either.getLeft(), is(true));
-  }
-
   @Test public void swapIsRight() {
     assertThat(either.swap().isRight(), is(true));
   }
