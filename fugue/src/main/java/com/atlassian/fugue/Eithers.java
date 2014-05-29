@@ -96,13 +96,13 @@ public class Eithers {
   }
 
   /**
-   * Collect the right values if there are only rights, otherwise return the
-   * first left encountered.
+   * Collect the left values if there are only lefts, otherwise return the
+   * first right encountered.
    * 
    * @param <L> the left type
    * @param <R>
    * @param eithers an Iterable of Either<L, R>
-   * @return either the iterable of right values, or the first left encountered.
+   * @return either the iterable of left values, or the first right encountered.
    */
   public static <L, R> Either<Iterable<L>, R> sequenceLeft(final Iterable<Either<L, R>> eithers) {
     Iterable<L> it = ImmutableList.of();
