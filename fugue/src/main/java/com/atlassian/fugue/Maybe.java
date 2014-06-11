@@ -50,6 +50,7 @@ public interface Maybe<A> extends Iterable<A>, Effect.Applicant<A> {
   /**
    * Get the value if defined, otherwise returns {@code other}.
    * 
+   * @param <B> the destination type
    * @param other value to return if this {@link #isEmpty() is empty}
    * @return wrapped value if this {@link #isDefined() is defined}, otherwise
    * returns {@code other}
@@ -70,6 +71,8 @@ public interface Maybe<A> extends Iterable<A>, Effect.Applicant<A> {
    * <p>
    * Although the use of null is discouraged, code written to use these must
    * often interface with code that expects and returns nulls.
+   * 
+   * @return the value or null if not defined
    */
   A getOrNull();
 
@@ -79,7 +82,6 @@ public interface Maybe<A> extends Iterable<A>, Effect.Applicant<A> {
    * Used when absolutely sure this {@link #isDefined() is defined}.
    * 
    * @param msg the message for the error.
-   * @throws an {@link AssertionError} if not defined.
    * @return the contained value.
    */
   A getOrError(Supplier<String> msg);
@@ -89,9 +91,9 @@ public interface Maybe<A> extends Iterable<A>, Effect.Applicant<A> {
    * <p>
    * Used when absolutely sure this {@link #isDefined() is defined}.
    * 
-   * @param X the type of the {@link Throwable} that could be thrown.
-   * @param msg the message for the error.
-   * @throws the throwable the supplier creates if there is no value.
+   * @param <X> the type of the {@link Throwable} that could be thrown.
+   * @param ifUndefined the supplier of the throwable.
+   * @throws X the throwable the supplier creates if there is no value.
    * @return the contained value.
    * @since 2.0
    */

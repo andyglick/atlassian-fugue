@@ -56,6 +56,8 @@ public abstract class Either<L, R> implements Serializable {
   //
 
   /**
+   * @param <L> the LHS type
+   * @param <R> the RHS type
    * @param left the value to be stored, must not be null
    * @return a Left containing the supplied value
    */
@@ -65,6 +67,8 @@ public abstract class Either<L, R> implements Serializable {
   }
 
   /**
+   * @param <L> the LHS type
+   * @param <R> the RHS type
    * @param right the value to be stored, must not be null
    * @return a Right containing the supplied value
    */
@@ -80,6 +84,14 @@ public abstract class Either<L, R> implements Serializable {
   // /CLOVER:OFF
 
   /**
+   * Extracts an object from an Either, regardless of the side in which it is
+   * stored, provided both sides contain the same type. This method will never
+   * return null.
+   * 
+   * @param <T> the type for bothe the LHS and the RHS
+   * @param either use whichever side holds the value to return
+   * @return the value from whichever side holds it
+   * 
    * @deprecated in 1.2 use {@link Eithers#merge(Either)}
    */
   @Deprecated public static <T> T merge(final Either<T, T> either) {
@@ -87,6 +99,18 @@ public abstract class Either<L, R> implements Serializable {
   }
 
   /**
+   * Creates an Either based on a boolean expression. If predicate is true, a
+   * Right will be returned containing the supplied right value; if it is false,
+   * a Left will be returned containing the supplied left value.
+   * 
+   * @param <L> the LHS type
+   * @param <R> the RHS type
+   * @param predicate if predicate is true, a Right will be returned if it is
+   * false, a Left will be returned containing the supplied left value
+   * @param right the RHS value
+   * @param left the LHS value
+   * @return the either containing the value selected by the predicate
+   * 
    * @deprecated in 1.2 use {@link Eithers#cond(boolean, Object, Object)}
    */
   @Deprecated public static <L, R> Either<L, R> cond(final boolean predicate, final R right, final L left) {
@@ -94,6 +118,16 @@ public abstract class Either<L, R> implements Serializable {
   }
 
   /**
+   * Simplifies extracting a value or throwing a checked exception from an
+   * Either.
+   * 
+   * @param <X> the LHS type, extending Exception
+   * @param <A> the RHS type
+   * @param either containing wither the value to return or an exception to
+   * throw
+   * @return the value from the RHS
+   * @throws X the exception on the LHS
+   * 
    * @deprecated in 1.2 use {@link Eithers#getOrThrow(Either)}
    */
   @Deprecated public static <X extends Exception, A> A getOrThrow(final Either<X, A> either) throws X {
@@ -101,6 +135,14 @@ public abstract class Either<L, R> implements Serializable {
   }
 
   /**
+   * Collect the right values if there are only rights, otherwise return the
+   * first left encountered.
+   * 
+   * @param <L> the LFS type
+   * @param <R> the RHS type
+   * @param eithers an Iterable of Eithers
+   * @return either the iterable of right values, or the first left encountered.
+   * 
    * @deprecated in 1.2 use {@link Eithers#sequenceRight(Iterable)}
    */
   @Deprecated public static <L, R> Either<L, Iterable<R>> sequenceRight(final Iterable<Either<L, R>> eithers) {
@@ -108,6 +150,14 @@ public abstract class Either<L, R> implements Serializable {
   }
 
   /**
+   * Collect the right values if there are only rights, otherwise return the
+   * first left encountered.
+   * 
+   * @param <L> the LFS type
+   * @param <R> the RHS type
+   * @param eithers an Iterable of Eithers
+   * @return either the iterable of right values, or the first left encountered.
+   * 
    * @deprecated in 1.2 use {@link Eithers#sequenceLeft(Iterable)}
    */
   @Deprecated public static <L, R> Either<Iterable<L>, R> sequenceLeft(final Iterable<Either<L, R>> eithers) {
@@ -149,6 +199,7 @@ public abstract class Either<L, R> implements Serializable {
   /**
    * Map the given function across the right hand side value if it is one.
    * 
+   * @param <X> the RHS type
    * @param f The function to map .
    * @return A new either value after mapping with the function applied if this
    * is a Right.
@@ -161,7 +212,8 @@ public abstract class Either<L, R> implements Serializable {
   /**
    * Binds the given function across the right hand side value if it is one.
    * 
-   * @param f The function to bind.
+   * @param <X> the RHS type
+   * @param f the function to bind.
    * @return A new either value after binding with the function applied if this
    * is a Right.
    * @since 2.2
@@ -173,6 +225,7 @@ public abstract class Either<L, R> implements Serializable {
   /**
    * Map the given function across the left hand side value if it is one.
    * 
+   * @param <X> the LHS type
    * @param f The function to map.
    * @return A new either value after mapping with the function applied if this
    * is a Left.
@@ -216,6 +269,7 @@ public abstract class Either<L, R> implements Serializable {
    * Applies the function to the wrapped value, applying ifLeft it this is a
    * Left and ifRight if this is a Right.
    * 
+   * @param <V> the destination type
    * @param ifLeft the function to apply if this is a Left
    * @param ifRight the function to apply if this is a Right
    * @return the result of the applies function
@@ -225,6 +279,8 @@ public abstract class Either<L, R> implements Serializable {
   /**
    * Map the given functions across the appropriate side.
    * 
+   * @param <LL> the LHS type
+   * @param <RR> the RHS type
    * @param ifLeft The function to map if this Either is a left.
    * @param ifRight The function to map if this Either is a right.
    * @return A new either value after mapping with the appropriate function
@@ -441,6 +497,7 @@ public abstract class Either<L, R> implements Serializable {
     /**
      * Map the given function across this projection's value if it has one.
      * 
+     * @param <X> the LHS type
      * @param f The function to map across this projection.
      * @return A new either value after mapping.
      */
@@ -451,6 +508,7 @@ public abstract class Either<L, R> implements Serializable {
     /**
      * Binds the given function across this projection's value if it has one.
      * 
+     * @param <X> the LHS type
      * @param f The function to bind across this projection.
      * @return A new either value after binding.
      */
@@ -465,6 +523,7 @@ public abstract class Either<L, R> implements Serializable {
     /**
      * Anonymous bind through this projection.
      * 
+     * @param <X> the LHS type
      * @param e The value to bind with.
      * @return An either after binding through this projection.
      */
@@ -477,6 +536,7 @@ public abstract class Either<L, R> implements Serializable {
      * predicate <code>p</code> does not hold for the value, otherwise, returns
      * a right in <code>Some</code>.
      * 
+     * @param <X> the RHS type
      * @param f The predicate function to test on this projection's value.
      * @return <code>None</code> if this projection has no value or if the given
      * predicate <code>p</code> does not hold for the value, otherwise, returns
@@ -493,6 +553,7 @@ public abstract class Either<L, R> implements Serializable {
     /**
      * Function application on this projection's value.
      * 
+     * @param <X> the LHS type
      * @param either The either of the function to apply on this projection's
      * value.
      * @return The result of function application within either.
@@ -541,6 +602,7 @@ public abstract class Either<L, R> implements Serializable {
     /**
      * Map the given function across this projection's value if it has one.
      * 
+     * @param <X> the RHS type
      * @param f The function to map across this projection.
      * @return A new either value after mapping.
      */
@@ -551,6 +613,7 @@ public abstract class Either<L, R> implements Serializable {
     /**
      * Binds the given function across this projection's value if it has one.
      * 
+     * @param <X> the RHS type
      * @param f The function to bind across this projection.
      * @return A new either value after binding.
      */
@@ -565,6 +628,7 @@ public abstract class Either<L, R> implements Serializable {
     /**
      * Anonymous bind through this projection.
      * 
+     * @param <X> the RHS type
      * @param e The value to bind with.
      * @return An either after binding through this projection.
      */
@@ -577,6 +641,7 @@ public abstract class Either<L, R> implements Serializable {
      * predicate <code>p</code> does not hold for the value, otherwise, returns
      * a left in <code>Some</code>.
      * 
+     * @param <X> the LHS type
      * @param f The predicate function to test on this projection's value.
      * @return <code>None</code> if this projection has no value or if the given
      * predicate <code>p</code> does not hold for the value, otherwise, returns
@@ -593,6 +658,7 @@ public abstract class Either<L, R> implements Serializable {
     /**
      * Function application on this projection's value.
      * 
+     * @param <X> the RHS type
      * @param either The either of the function to apply on this projection's
      * value.
      * @return The result of function application within either.
@@ -641,6 +707,6 @@ public abstract class Either<L, R> implements Serializable {
      * @return The value of this projection or the result of the given function
      * on the opposing projection's value.
      */
-    A on(Function<? super B, ? extends A> function);
+    A on(Function<? super B, ? extends A> f);
   }
 }
