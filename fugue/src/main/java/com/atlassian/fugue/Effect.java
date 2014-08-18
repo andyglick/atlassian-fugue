@@ -41,6 +41,6 @@ public interface Effect<A> {
      * 
      * @param effect the input to use for performing the effect.
      */
-    void foreach(Effect<A> effect);
+    void foreach(Effect<? super A> effect);
   }
 }
