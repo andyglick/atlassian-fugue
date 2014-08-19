@@ -17,11 +17,14 @@ package com.atlassian.fugue;
 
 import static com.atlassian.fugue.Option.some;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
 import org.junit.Test;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import com.google.common.base.Supplier;
 
 public class OptionVarianceTest {
@@ -88,5 +91,24 @@ public class OptionVarianceTest {
     Option<Child> opt = some(new Child());
     Option<Parent> mapped = some.orElse(opt);
     assertThat(mapped.get(), notNullValue());
+  }
+
+  @Test public void forAll() {
+    Option<Parent> some = some(new Parent());
+    Predicate<Grand> p = Predicates.alwaysTrue();
+    assertThat(some.forall(p), equalTo(true));
+  }
+
+  @Test public void exist() {
+    Option<Parent> some = some(new Parent());
+    Predicate<Grand> p = Predicates.alwaysTrue();
+    assertThat(some.exists(p), equalTo(true));
+  }
+
+  @Test public void forEach() {
+    Maybe<Child> some = some(new Child());
+    Count<Grand> e = new Count<Grand>();
+    some.foreach(e);
+    assertThat(e.count(), equalTo(1));
   }
 }

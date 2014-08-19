@@ -542,7 +542,7 @@ public abstract class Either<L, R> implements Serializable {
      * predicate <code>p</code> does not hold for the value, otherwise, returns
      * a right in <code>Some</code>.
      */
-    public <X> Option<Either<L, X>> filter(final Predicate<L> f) {
+    public <X> Option<Either<L, X>> filter(final Predicate<? super L> f) {
       if (isLeft() && f.apply(get())) {
         final Either<L, X> result = new Left<L, X>(get());
         return some(result);

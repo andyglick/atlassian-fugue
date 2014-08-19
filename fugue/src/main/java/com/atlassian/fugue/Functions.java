@@ -133,11 +133,11 @@ public class Functions {
    * otherwise a None
    * @since 1.2
    */
-  public static <A, B extends A> Function<A, Option<B>> isInstanceOf(Class<B> cls) {
+  public static <A, B> Function<A, Option<B>> isInstanceOf(Class<B> cls) {
     return new InstanceOf<A, B>(cls);
   }
 
-  static class InstanceOf<A, B extends A> implements Function<A, Option<B>> {
+  static class InstanceOf<A, B> implements Function<A, Option<B>> {
     private final Class<B> cls;
 
     InstanceOf(Class<B> cls) {
@@ -221,7 +221,7 @@ public class Functions {
   public static <A, B, C> Function2<A, B, C> toFunction2(final Function<Pair<A, B>, C> fpair) {
     checkNotNull(fpair);
     return new Function2<A, B, C>() {
-	@Override public C apply(A a, B b) {
+      @Override public C apply(A a, B b) {
         return fpair.apply(Pair.pair(a, b));
       }
     };

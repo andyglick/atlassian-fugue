@@ -199,10 +199,10 @@ public class IterablesTest {
   /**
    * Splits a string into characters.
    */
-  class CharSplitter implements Iterable<String> {
-    private final String from;
+  static class CharSplitter implements Iterable<String> {
+    private final CharSequence from;
 
-    CharSplitter(final String from) {
+    CharSplitter(final CharSequence from) {
       this.from = from;
     }
 
@@ -214,7 +214,7 @@ public class IterablesTest {
           if (index >= from.length()) {
             return endOfData();
           }
-          return from.substring(index, ++index); // up by 1
+          return from.subSequence(index, ++index).toString(); // up by 1
         }
       };
     }
