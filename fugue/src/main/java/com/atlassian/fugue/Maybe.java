@@ -118,7 +118,7 @@ public interface Maybe<A> extends Iterable<A>, Effect.Applicant<A> {
    * @return {@code true} if defined and the predicate returns true for the
    * contained value, {@code false} otherwise.
    */
-  boolean exists(final Predicate<A> p);
+  boolean exists(final Predicate<? super A> p);
 
   /**
    * @return an iterator over the contained value {@link #isDefined() if
@@ -134,5 +134,5 @@ public interface Maybe<A> extends Iterable<A>, Effect.Applicant<A> {
    * @return <code>true</code> if no value or returns the result of the
    * application of the given function to the value.
    */
-  boolean forall(final Predicate<A> p);
+  boolean forall(final Predicate<? super A> p);
 }

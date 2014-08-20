@@ -437,7 +437,7 @@ public abstract class Either<L, R> implements Serializable {
       return isDefined() ? some(get()) : Option.<A> none();
     }
 
-    @Override public final boolean exists(final Predicate<A> f) {
+    @Override public final boolean exists(final Predicate<? super A> f) {
       return isDefined() && f.apply(get());
     }
 
@@ -445,7 +445,7 @@ public abstract class Either<L, R> implements Serializable {
       return isDefined() ? get() : null;
     }
 
-    @Override public final boolean forall(final Predicate<A> f) {
+    @Override public final boolean forall(final Predicate<? super A> f) {
       return isEmpty() || f.apply(get());
     }
 
@@ -465,7 +465,7 @@ public abstract class Either<L, R> implements Serializable {
       return isDefined() ? get() : x;
     }
 
-    @Override public final void foreach(final Effect<A> f) {
+    @Override public final void foreach(final Effect<? super A> f) {
       if (isDefined()) {
         f.apply(get());
       }
@@ -542,7 +542,7 @@ public abstract class Either<L, R> implements Serializable {
      * predicate <code>p</code> does not hold for the value, otherwise, returns
      * a right in <code>Some</code>.
      */
-    public <X> Option<Either<L, X>> filter(final Predicate<L> f) {
+    public <X> Option<Either<L, X>> filter(final Predicate<? super L> f) {
       if (isLeft() && f.apply(get())) {
         final Either<L, X> result = new Left<L, X>(get());
         return some(result);
@@ -647,7 +647,7 @@ public abstract class Either<L, R> implements Serializable {
      * predicate <code>p</code> does not hold for the value, otherwise, returns
      * a left in <code>Some</code>.
      */
-    public <X> Option<Either<X, R>> filter(final Predicate<R> f) {
+    public <X> Option<Either<X, R>> filter(final Predicate<? super R> f) {
       if (isRight() && f.apply(get())) {
         final Either<X, R> result = new Right<X, R>(get());
         return some(result);

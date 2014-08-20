@@ -246,12 +246,12 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
     return result;
   }
 
-  @Override public final boolean exists(final Predicate<A> p) {
+  @Override public final boolean exists(final Predicate<? super A> p) {
     checkNotNull(p);
     return isDefined() && p.apply(get());
   }
 
-  @Override public boolean forall(final Predicate<A> p) {
+  @Override public boolean forall(final Predicate<? super A> p) {
     return isEmpty() || p.apply(get());
   }
 
@@ -437,7 +437,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
       return get();
     }
 
-    @Override public void foreach(final Effect<A> effect) {
+    @Override public void foreach(final Effect<? super A> effect) {
       effect.apply(value);
     }
   }

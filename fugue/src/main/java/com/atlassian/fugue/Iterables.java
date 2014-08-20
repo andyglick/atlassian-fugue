@@ -136,7 +136,7 @@ public class Iterables {
    * {@code collection}
    * @since 1.1
    */
-  public static <A, B> Iterable<B> flatMap(final Iterable<A> collection, final Function<A, Iterable<B>> f) {
+  public static <A, B> Iterable<B> flatMap(final Iterable<A> collection, final Function<? super A, ? extends Iterable<? extends B>> f) {
     return concat(transform(collection, f));
   }
 
