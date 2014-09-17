@@ -15,6 +15,7 @@
  */
 package com.atlassian.fugue;
 
+import com.google.common.base.Function;
 import com.google.common.base.Supplier;
 
 /**
@@ -64,6 +65,19 @@ public class Suppliers {
     return new Supplier<A>() {
       @Override public A get() {
         return option.get();
+      }
+    };
+  }
+
+  /**
+   * @return a {@link Supplier} that always calls {@link Function#apply(Object)}
+   * 
+   * @since 2.2
+   */
+  public static <A, B> Supplier<B> fromFunction(final Function<? super A, ? extends B> f, final A a) {
+    return new Supplier<B>() {
+      @Override public B get() {
+        return f.apply(a);
       }
     };
   }
