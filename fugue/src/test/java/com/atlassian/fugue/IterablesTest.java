@@ -38,6 +38,7 @@ import org.junit.Test;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import com.google.common.collect.AbstractIterator;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
@@ -175,24 +176,33 @@ public class IterablesTest {
     assertThat(result, contains("1", "2", "3", "A", "B", "C"));
   }
 
+  @Test public void findFirstFunctionWorks() {
+    assertThat(findFirst(Predicates.equalTo(3)).apply(asList(1, 2, 3)), is(some(3)));
+  }
+
+  @Test public void findFirstFunctionFails() {
+    assertThat(findFirst(Predicates.equalTo(3)).apply(asList(1, 2, 4)), is(Option.<Integer> none()));
+  }
+
   @Test(expected = InvocationTargetException.class) public void nonInstantiable() throws Exception {
     getOrThrow(UtilityFunctions.<Iterables> defaultCtor().apply(Iterables.class));
   }
 
   @Test public void revMap() {
-    Iterable<Function<Integer, Integer>> fs = ImmutableList.<Function<Integer, Integer>> of(new Function<Integer, Integer>() {
-      public Integer apply(final Integer from) {
-        return from + 1;
-      }
-    }, new Function<Integer, Integer>() {
-      public Integer apply(final Integer from) {
-        return from + 2;
-      }
-    }, new Function<Integer, Integer>() {
-      public Integer apply(final Integer from) {
-        return from * from;
-      }
-    });
+    Iterable<Function<Integer, Integer>> fs = ImmutableList.<Function<Integer, Integer>> of(
+      new Function<Integer, Integer>() {
+        public Integer apply(final Integer from) {
+          return from + 1;
+        }
+      }, new Function<Integer, Integer>() {
+        public Integer apply(final Integer from) {
+          return from + 2;
+        }
+      }, new Function<Integer, Integer>() {
+        public Integer apply(final Integer from) {
+          return from * from;
+        }
+      });
     assertThat(Iterables.revMap(fs, 3), contains(4, 5, 9));
   }
 

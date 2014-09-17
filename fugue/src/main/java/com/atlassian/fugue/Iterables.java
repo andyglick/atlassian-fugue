@@ -107,6 +107,25 @@ public class Iterables {
   }
 
   /**
+   * Partial application of the predicate argument to
+   * {@link #findFirst(Iterable, Predicate)} returning a function that takes an
+   * {@link Iterable} as its argument
+   * 
+   * @param predicate the predicate to use to determine if an element is
+   * eligible to be returned
+   * @return a Function that takes an {@link Iterable} as its argument, and
+   * returns the first element that satisfies the predicate
+   * @since 2.2
+   */
+  public static <A> Function<Iterable<A>, Option<A>> findFirst(final Predicate<? super A> predicate) {
+    return new Function<Iterable<A>, Option<A>>() {
+      @Override public Option<A> apply(Iterable<A> input) {
+        return findFirst(input, predicate);
+      }
+    };
+  }
+
+  /**
    * If {@code as} is empty, returns {@code none()}. Otherwise, returns
    * {@code some(get(as, 0))}.
    * 
@@ -136,7 +155,8 @@ public class Iterables {
    * {@code collection}
    * @since 1.1
    */
-  public static <A, B> Iterable<B> flatMap(final Iterable<A> collection, final Function<? super A, ? extends Iterable<? extends B>> f) {
+  public static <A, B> Iterable<B> flatMap(final Iterable<A> collection,
+    final Function<? super A, ? extends Iterable<? extends B>> f) {
     return concat(transform(collection, f));
   }
 
