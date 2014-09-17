@@ -22,6 +22,7 @@ import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.transform;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 
 /**
  * Utility methods for working with iterables of options.
@@ -129,6 +130,24 @@ public class Options {
     return new Function<Function<A, B>, Function<Option<A>, Option<B>>>() {
       @Override public Function<Option<A>, Option<B>> apply(Function<A, B> f) {
         return lift(f);
+      }
+    };
+  }
+  
+  /**
+   * Lifts a predicate that takes an A into a predicate that takes
+   * an option of A.
+   * 
+   * @param pred the original predicate to be lifted
+   * @param <A> the input type of the predicate
+   * @return a predicate that takes an option of type A 
+   * @since 2.2
+   */
+  public static <A, B> Predicate<Option<A>> lift(final Predicate<? super A> pred) {
+    checkNotNull(pred);
+    return new Predicate<Option<A>>() {
+      @Override public boolean apply(Option<A> oa) {
+        return oa.exists(pred);
       }
     };
   }
