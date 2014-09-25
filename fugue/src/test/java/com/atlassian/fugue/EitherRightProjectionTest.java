@@ -37,7 +37,7 @@ public class EitherRightProjectionTest {
       return "boo!";
     }
   };
-  Function<String, Either<Integer, String>> reverseToEither = new Function<String, Either<Integer, String>>() {
+  static Function<String, Either<Integer, String>> reverseToEither = new Function<String, Either<Integer, String>>() {
     @Override public Either<Integer, String> apply(final String from) {
       return right(reverse.apply(from));
     }

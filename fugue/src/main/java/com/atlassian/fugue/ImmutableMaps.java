@@ -16,6 +16,7 @@
 package com.atlassian.fugue;
 
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
@@ -46,8 +47,8 @@ public class ImmutableMaps {
    */
   public static <K, V> Function2<K, V, Map.Entry<K, V>> mapEntry() {
     @SuppressWarnings("unchecked")
-    MapEntryFunction<K, V> instance = (MapEntryFunction<K, V>) MapEntryFunction.INSTANCE;
-    return instance;
+    MapEntryFunction<K, V> result = (MapEntryFunction<K, V>) MapEntryFunction.INSTANCE;
+    return result;
   }
 
   private static class MapEntryFunction<K, V> implements Function2<K, V, Map.Entry<K, V>> {
@@ -92,11 +93,13 @@ public class ImmutableMaps {
    * ignored. If keyTransformer returns the same key for multiple entries,
    * {@link IllegalArgumentException} will be thrown.
    */
-  public static <T, K, V> ImmutableMap<K, V> toMap(Iterable<T> fromIterable, final Function<T, K> keyTransformer,
-    final Function<T, V> valueTransformer) {
+  public static <T, K, V> ImmutableMap<K, V> toMap(Iterable<T> fromIterable, final Function<? super T, ? extends K> keyTransformer,
+    final Function<? super T, ? extends V> valueTransformer) {
     return toMap(com.google.common.collect.Iterables.transform(fromIterable, new Function<T, Map.Entry<K, V>>() {
       @Override public Map.Entry<K, V> apply(T input) {
-        return Maps.immutableEntry(keyTransformer.apply(input), valueTransformer.apply(input));
+        @SuppressWarnings("unchecked")
+        Entry<K, V> entry = (Entry<K, V>) Maps.immutableEntry(keyTransformer.apply(input), valueTransformer.apply(input));
+        return entry;
       }
     }));
   }
@@ -109,8 +112,8 @@ public class ImmutableMaps {
    * returns the same key for multiple entries, {@link IllegalArgumentException}
    * will be thrown.
    */
-  public static <K, V> ImmutableMap<K, V> mapBy(Iterable<V> fromIterable, final Function<V, K> keyTransformer) {
-    return toMap(fromIterable, keyTransformer, com.google.common.base.Functions.<V> identity());
+  public static <K, V> ImmutableMap<K, V> mapBy(Iterable<V> fromIterable, final Function<? super V, ? extends K> keyTransformer) {
+    return toMap(fromIterable, keyTransformer, Functions.<V> identity());
   }
 
   /**
@@ -121,8 +124,8 @@ public class ImmutableMaps {
    * duplicate entries in the iterable, {@link IllegalArgumentException} will be
    * thrown.
    */
-  public static <K, V> ImmutableMap<K, V> mapTo(Iterable<K> fromIterable, final Function<K, V> valueTransformer) {
-    return toMap(fromIterable, com.google.common.base.Functions.<K> identity(), valueTransformer);
+  public static <K, V> ImmutableMap<K, V> mapTo(Iterable<K> fromIterable, final Function<? super K, ? extends V> valueTransformer) {
+    return toMap(fromIterable, Functions.<K> identity(), valueTransformer);
   }
 
   /**
@@ -144,11 +147,13 @@ public class ImmutableMaps {
    * discarded in the result. If the keyTransformer function returns the same
    * key for multiple entries, {@link IllegalArgumentException} will be thrown.
    */
-  public static <K1, K2, V1, V2> ImmutableMap<K2, V2> transform(Map<K1, V1> fromMap, final Function<K1, K2> keyTransformer,
-    final Function<V1, V2> valueTransformer) {
+  public static <K1, K2, V1, V2> ImmutableMap<K2, V2> transform(Map<K1, V1> fromMap, final Function<? super K1, ? extends K2> keyTransformer,
+    final Function<? super V1, ? extends V2> valueTransformer) {
     return toMap(com.google.common.collect.Iterables.transform(fromMap.entrySet(), new Function<Map.Entry<K1, V1>, Map.Entry<K2, V2>>() {
       @Override public Map.Entry<K2, V2> apply(Map.Entry<K1, V1> input) {
-        return Maps.immutableEntry(keyTransformer.apply(input.getKey()), valueTransformer.apply(input.getValue()));
+        @SuppressWarnings("unchecked")
+        Entry<K2, V2> entry = (Entry<K2, V2>) Maps.immutableEntry(keyTransformer.apply(input.getKey()), valueTransformer.apply(input.getValue()));
+        return entry;
       }
     }));
   }
@@ -161,8 +166,8 @@ public class ImmutableMaps {
    * result. If the {@code function} returns the same result key for multiple
    * keys, {@link IllegalArgumentException} will be thrown.
    */
-  public static <K1, K2, V> ImmutableMap<K2, V> transformKey(Map<K1, V> fromMap, final Function<K1, K2> keyTransformer) {
-    return transform(fromMap, keyTransformer, com.google.common.base.Functions.<V> identity());
+  public static <K1, K2, V> ImmutableMap<K2, V> transformKey(Map<K1, V> fromMap, final Function<? super K1, ? extends K2> keyTransformer) {
+    return transform(fromMap, keyTransformer, Functions.<V> identity());
   }
 
   /**
@@ -172,8 +177,8 @@ public class ImmutableMaps {
    * an entry contains a <code>null</code> key, it will also be discarded in the
    * result.
    */
-  public static <K, V1, V2> ImmutableMap<K, V2> transformValue(Map<K, V1> fromMap, final Function<V1, V2> valueTransformer) {
-    return transform(fromMap, com.google.common.base.Functions.<K> identity(), valueTransformer);
+  public static <K, V1, V2> ImmutableMap<K, V2> transformValue(Map<K, V1> fromMap, final Function<? super V1, ? extends V2> valueTransformer) {
+    return transform(fromMap, Functions.<K> identity(), valueTransformer);
   }
 
   /**
@@ -183,9 +188,8 @@ public class ImmutableMaps {
    * the application returns none, the entry will be left out; otherwise, the
    * transformed entry contained in the Option will be added to the result map.
    */
-  public static <K1, K2, V1, V2> ImmutableMap<K2, V2> collect(Map<K1, V1> fromMap,
-    Function<Map.Entry<K1, V1>, Option<Map.Entry<K2, V2>>> partialFunction) {
-    return toMap(Iterables.collect(fromMap.entrySet(), partialFunction));
+  public static <K1, K2, V1, V2> ImmutableMap<K2, V2> collect(Map<K1, V1> fromMap, Function<Map.Entry<K1, V1>, Option<Map.Entry<K2, V2>>> partial) {
+    return toMap(Iterables.collect(fromMap.entrySet(), partial));
   }
 
   /**
@@ -197,8 +201,8 @@ public class ImmutableMaps {
    * of transformed key and transformed value contained in the options will be
    * added to the result map.
    */
-  public static <K1, K2, V1, V2> ImmutableMap<K2, V2> collect(Map<K1, V1> fromMap, final Function<K1, Option<K2>> keyPartial,
-    final Function<V1, Option<V2>> valuePartial) {
+  public static <K1, K2, V1, V2> ImmutableMap<K2, V2> collect(Map<K1, V1> fromMap, final Function<? super K1, Option<K2>> keyPartial,
+    final Function<? super V1, Option<V2>> valuePartial) {
     return collect(fromMap, new Function<Map.Entry<K1, V1>, Option<Map.Entry<K2, V2>>>() {
       @Override public Option<Map.Entry<K2, V2>> apply(Map.Entry<K1, V1> input) {
         Option<K2> ok = keyPartial.apply(input.getKey());
@@ -216,7 +220,7 @@ public class ImmutableMaps {
    * out; otherwise, an entry of transformed key contained in the option and the
    * original value will be added to the result map.
    */
-  public static <K1, K2, V> ImmutableMap<K2, V> collectByKey(Map<K1, V> fromMap, final Function<K1, Option<K2>> keyPartial) {
+  public static <K1, K2, V> ImmutableMap<K2, V> collectByKey(Map<K1, V> fromMap, final Function<? super K1, Option<K2>> keyPartial) {
     return collect(fromMap, keyPartial, Option.<V> toOption());
   }
 
@@ -228,7 +232,7 @@ public class ImmutableMaps {
    * out; otherwise, an entry of the original key and the transformed key
    * contained in the option will be added to the result map.
    */
-  public static <K, V1, V2> ImmutableMap<K, V2> collectByValue(Map<K, V1> fromMap, final Function<V1, Option<V2>> valuePartial) {
+  public static <K, V1, V2> ImmutableMap<K, V2> collectByValue(Map<K, V1> fromMap, final Function<? super V1, Option<V2>> valuePartial) {
     return collect(fromMap, Option.<K> toOption(), valuePartial);
   }
 }

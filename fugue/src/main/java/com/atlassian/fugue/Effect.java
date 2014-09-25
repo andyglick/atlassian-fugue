@@ -16,15 +16,17 @@
 package com.atlassian.fugue;
 
 /**
- * Contains the a side-effect that may be applied
+ * A thing that performs a side-effect.
  * 
- * @param <A>
+ * @param <A> the type that this Effect takes as input
  * 
  * @since 1.0
  */
 public interface Effect<A> {
   /**
    * Perform the side-effect.
+   * 
+   * @param a the input to use for performing the effect.
    */
   void apply(A a);
 
@@ -36,7 +38,9 @@ public interface Effect<A> {
   public interface Applicant<A> {
     /**
      * Perform the given side-effect for each contained element.
+     * 
+     * @param effect the input to use for performing the effect.
      */
-    void foreach(Effect<A> effect);
+    void foreach(Effect<? super A> effect);
   }
 }

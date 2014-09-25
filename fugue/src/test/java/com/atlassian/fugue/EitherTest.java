@@ -19,19 +19,19 @@ import static com.atlassian.fugue.Either.left;
 import static com.atlassian.fugue.Either.right;
 import static com.atlassian.fugue.Eithers.cond;
 import static com.atlassian.fugue.Eithers.merge;
+import static com.atlassian.fugue.UtilityFunctions.addOne;
+import static com.atlassian.fugue.UtilityFunctions.square;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
-
-import com.google.common.base.Function;
 
 public class EitherTest {
   @Test(expected = NullPointerException.class) public void testNullLeft() {
     Either.left(null);
   }
 
-  @Test public void testLeftCreation() {
+  @Test public void leftCreation() {
     final Either<Boolean, Integer> left = left(true);
     assertThat(left.isLeft(), is(true));
     assertThat(left.left().get(), is(true));
@@ -41,51 +41,33 @@ public class EitherTest {
     right(null);
   }
 
-  @Test public void testRightCreation() {
+  @Test public void rightCreation() {
     final Either<Boolean, Integer> right = right(1);
     assertThat(right.isRight(), is(true));
     assertThat(right.right().get(), is(1));
   }
 
-  @Test public void testLeftMerge() {
+  @Test public void leftMerge() {
     assertThat(merge(Either.<String, String> left("Ponies.")), is("Ponies."));
   }
 
-  @Test public void testRightMerge() {
+  @Test public void rightMerge() {
     assertThat(merge(Either.<String, String> right("Unicorns.")), is("Unicorns."));
   }
 
-  @Test public void testCondTrue() {
+  @Test public void condTrue() {
     assertThat(cond(true, 7, "Pegasus."), is(Either.<Integer, String> right("Pegasus.")));
   }
 
-  @Test public void testCondFalse() {
+  @Test public void condFalse() {
     assertThat(cond(false, 7, "Pegasus."), is(Either.<Integer, String> left(7)));
   }
 
-  static class GenericTest<A> {
-    private final Either<Exception, A> either;
+  @Test public void bimapRight() {
+    assertThat(Either.<Integer, Integer> right(3).bimap(square, addOne), is(Either.<Integer, Integer> right(4)));
+  }
 
-    public GenericTest(Either<Exception, A> either) {
-      this.either = either;
-    }
-
-    public Exception getException() {
-      return either.left().get();
-    }
-
-    public A getValue() {
-      return either.right().get();
-    }
-
-    public <B> GenericTest<B> map(Function<A, B> func) {
-      return new GenericTest<B>(either.right().map(func));
-    }
-
-    public <B> GenericTest<B> flatMap(Function<A, GenericTest<B>> func) {
-      @SuppressWarnings("unchecked")
-      GenericTest<B> left = (GenericTest<B>) this;
-      return either.fold(Functions.<Exception, GenericTest<B>> constant(left), func);
-    }
+  @Test public void bimapLeft() {
+    assertThat(Either.<Integer, Integer> left(7).bimap(square, addOne), is(Either.<Integer, Integer> left(49)));
   }
 }

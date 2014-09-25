@@ -36,11 +36,15 @@ public class Eithers {
   private Eithers() {}
 
   // /CLOVER:ON
-  
+
   /**
    * Extracts an object from an Either, regardless of the side in which it is
    * stored, provided both sides contain the same type. This method will never
    * return null.
+   * 
+   * @param <T> the type for both the LHS and the RHS
+   * @param either use whichever side holds the value to return
+   * @return the value from whichever side holds it
    */
   public static <T> T merge(final Either<T, T> either) {
     if (either.isLeft()) {
@@ -53,6 +57,14 @@ public class Eithers {
    * Creates an Either based on a boolean expression. If predicate is true, a
    * Right will be returned containing the supplied right value; if it is false,
    * a Left will be returned containing the supplied left value.
+   * 
+   * @param <L> the LHS type
+   * @param <R> the RHS type
+   * @param predicate if predicate is true, a Right will be returned if it is false,
+   * a Left will be returned containing the supplied left value.
+   * @param left the LHS value
+   * @param right the RHS value
+   * @return an either with the appropriately selected value
    */
   public static <L, R> Either<L, R> cond(final boolean predicate, final L left, final R right) {
     return predicate ? Either.<L, R> right(right) : Either.<L, R> left(left);
@@ -79,9 +91,9 @@ public class Eithers {
    * Collect the right values if there are only rights, otherwise return the
    * first left encountered.
    * 
-   * @param <L> the left type
-   * @param <R>
-   * @param eithers an Iterable of Either<L, R>
+   * @param <L> the LHS type
+   * @param <R> the RHS type
+   * @param eithers an Iterable of either values
    * @return either the iterable of right values, or the first left encountered.
    */
   public static <L, R> Either<L, Iterable<R>> sequenceRight(final Iterable<Either<L, R>> eithers) {
@@ -96,13 +108,13 @@ public class Eithers {
   }
 
   /**
-   * Collect the right values if there are only rights, otherwise return the
-   * first left encountered.
+   * Collect the left values if there are only lefts, otherwise return the
+   * first right encountered.
    * 
-   * @param <L> the left type
-   * @param <R>
-   * @param eithers an Iterable of Either<L, R>
-   * @return either the iterable of right values, or the first left encountered.
+   * @param <L> the LHS type
+   * @param <R> the RHS type
+   * @param eithers an Iterable of either values
+   * @return either the iterable of left values, or the first right encountered.
    */
   public static <L, R> Either<Iterable<L>, R> sequenceLeft(final Iterable<Either<L, R>> eithers) {
     Iterable<L> it = ImmutableList.of();
@@ -117,6 +129,10 @@ public class Eithers {
 
   /**
    * A predicate that tests if the supplied either is a left.
+   * 
+   * @param <L> the LHS type
+   * @param <R> the RHS type
+   * @return the predicate testing left-hand-sidedness
    */
   public static <L, R> Predicate<Either<L, R>> isLeft() {
     return new Predicate<Either<L, R>>() {
@@ -128,6 +144,10 @@ public class Eithers {
 
   /**
    * A predicate that tests if the supplied either is a right.
+   * 
+   * @param <L> the LHS type
+   * @param <R> the RHS type
+   * @return the predicate testing right-hand-sidedness
    */
   public static <L, R> Predicate<Either<L, R>> isRight() {
     return new Predicate<Either<L, R>>() {
@@ -139,8 +159,12 @@ public class Eithers {
 
   /**
    * A function that maps an either to an option of its left type. The Function
-   * will return {@link Option.Some some) containing the either's left value if
-   * isLeft() is true, {@link Option.None none} otherwise.
+   * will return a defined {@link Option} containing the either's left value if
+   * {Either#isLeft()} is true, an undefined {@link Option} otherwise.
+   * 
+   * @param <L> the LHS type
+   * @param <R> the RHS type
+   * @return the function returning a defined option for left-hand-sided eithers
    */
   public static <L, R> Function<Either<L, R>, Option<L>> leftMapper() {
     return new Function<Either<L, R>, Option<L>>() {
@@ -152,8 +176,12 @@ public class Eithers {
 
   /**
    * A function that maps an either to an option of its right type. The Function
-   * will return {@link Option.Some some) containing the either's right value if
-   * isRight() is true, {@link Option.None none} otherwise.
+   * will return a defined {@link Option} containing the either's right value if
+   * {Either#isRight()} is true, an undefined {@link Option} otherwise.
+   * 
+   * @param <L> the LHS type
+   * @param <R> the RHS type
+   * @return the function returning a defined option for right-hand-sided eithers
    */
   public static <L, R> Function<Either<L, R>, Option<R>> rightMapper() {
     return new Function<Either<L, R>, Option<R>>() {
@@ -167,6 +195,8 @@ public class Eithers {
    * Takes an {@link Iterable} of {@link Either eithers}, and collects the left
    * values of every either which has a left value
    * 
+   * @param <L> the LHS type
+   * @param <R> the RHS type
    * @param it iterable of eithers to filter and transform from
    * @return the left values contained in the contents of it
    */
@@ -178,6 +208,8 @@ public class Eithers {
    * Takes an {@link Iterable} of {@link Either eithers}, and collects the right
    * values of every either which has a left value
    * 
+   * @param <L> the LHS type
+   * @param <R> the RHS type
    * @param it iterable of eithers to filter and transform from
    * @return the right values contained in the contents of it
    */

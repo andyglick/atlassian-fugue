@@ -15,9 +15,8 @@
  */
 package com.atlassian.fugue.retry;
 
-import static junit.framework.Assert.assertEquals;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -64,21 +63,21 @@ public class ExceptionHandlersTest {
 
     handler.handle(exception);
 
-    assertEquals("12", sb.toString());
+    assertThat(sb.toString(), equalTo("12"));
   }
 
   @Test public void loggingExceptionHandler() {
     Logger logger = mock(Logger.class);
     ExceptionHandler exceptionHandler = ExceptionHandlers.loggingExceptionHandler(logger);
 
-    assertThat(((ExceptionHandlers.LoggingExceptionHandler) exceptionHandler).logger(), is(logger));
+    assertThat(((ExceptionHandlers.LoggingExceptionHandler) exceptionHandler).logger(), equalTo(logger));
   }
 
   @Test public void loggingExceptionHandlerNull() {
     ExceptionHandler exceptionHandler = ExceptionHandlers.loggingExceptionHandler(null);
 
     assertThat(exceptionHandler.getClass(), Matchers.<Class<? extends ExceptionHandler>> is(ExceptionHandlers.LoggingExceptionHandler.class));
-    assertThat(((ExceptionHandlers.LoggingExceptionHandler) exceptionHandler).logger(), is(ExceptionHandlers.logger()));
+    assertThat(((ExceptionHandlers.LoggingExceptionHandler) exceptionHandler).logger(), equalTo(ExceptionHandlers.logger()));
   }
 
   @Test(expected = InvocationTargetException.class) public void nonInstantiable() throws NoSuchMethodException, InvocationTargetException,

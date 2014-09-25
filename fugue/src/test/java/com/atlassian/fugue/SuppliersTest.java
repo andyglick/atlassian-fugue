@@ -69,4 +69,12 @@ public class SuppliersTest {
   @Test(expected = NoSuchElementException.class) public void fromOptionNoneThrows() {
     Suppliers.fromOption(Option.none()).get();
   }
+
+  @Test public void fromFunctionInt() {
+    assertThat(Suppliers.fromFunction(UtilityFunctions.square, 4).get(), is(16));
+  }
+
+  @Test public void fromFunctionString() {
+    assertThat(Suppliers.fromFunction(UtilityFunctions.reverse, "collywobble").get(), is("elbbowylloc"));
+  }
 }

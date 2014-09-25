@@ -19,6 +19,7 @@ import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.some;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -47,12 +48,16 @@ import com.google.common.base.Supplier;
  * 
  * @since 1.0
  */
-public abstract class Either<L, R> {
+public abstract class Either<L, R> implements Serializable {
+  private static final long serialVersionUID = -1L;
+
   //
   // factory methods
   //
 
   /**
+   * @param <L> the LHS type
+   * @param <R> the RHS type
    * @param left the value to be stored, must not be null
    * @return a Left containing the supplied value
    */
@@ -62,6 +67,8 @@ public abstract class Either<L, R> {
   }
 
   /**
+   * @param <L> the LHS type
+   * @param <R> the RHS type
    * @param right the value to be stored, must not be null
    * @return a Right containing the supplied value
    */
@@ -77,6 +84,14 @@ public abstract class Either<L, R> {
   // /CLOVER:OFF
 
   /**
+   * Extracts an object from an Either, regardless of the side in which it is
+   * stored, provided both sides contain the same type. This method will never
+   * return null.
+   * 
+   * @param <T> the type for bothe the LHS and the RHS
+   * @param either use whichever side holds the value to return
+   * @return the value from whichever side holds it
+   * 
    * @deprecated in 1.2 use {@link Eithers#merge(Either)}
    */
   @Deprecated public static <T> T merge(final Either<T, T> either) {
@@ -84,6 +99,18 @@ public abstract class Either<L, R> {
   }
 
   /**
+   * Creates an Either based on a boolean expression. If predicate is true, a
+   * Right will be returned containing the supplied right value; if it is false,
+   * a Left will be returned containing the supplied left value.
+   * 
+   * @param <L> the LHS type
+   * @param <R> the RHS type
+   * @param predicate if predicate is true, a Right will be returned if it is
+   * false, a Left will be returned containing the supplied left value
+   * @param right the RHS value
+   * @param left the LHS value
+   * @return the either containing the value selected by the predicate
+   * 
    * @deprecated in 1.2 use {@link Eithers#cond(boolean, Object, Object)}
    */
   @Deprecated public static <L, R> Either<L, R> cond(final boolean predicate, final R right, final L left) {
@@ -91,6 +118,16 @@ public abstract class Either<L, R> {
   }
 
   /**
+   * Simplifies extracting a value or throwing a checked exception from an
+   * Either.
+   * 
+   * @param <X> the LHS type, extending Exception
+   * @param <A> the RHS type
+   * @param either containing wither the value to return or an exception to
+   * throw
+   * @return the value from the RHS
+   * @throws X the exception on the LHS
+   * 
    * @deprecated in 1.2 use {@link Eithers#getOrThrow(Either)}
    */
   @Deprecated public static <X extends Exception, A> A getOrThrow(final Either<X, A> either) throws X {
@@ -98,6 +135,14 @@ public abstract class Either<L, R> {
   }
 
   /**
+   * Collect the right values if there are only rights, otherwise return the
+   * first left encountered.
+   * 
+   * @param <L> the LFS type
+   * @param <R> the RHS type
+   * @param eithers an Iterable of Eithers
+   * @return either the iterable of right values, or the first left encountered.
+   * 
    * @deprecated in 1.2 use {@link Eithers#sequenceRight(Iterable)}
    */
   @Deprecated public static <L, R> Either<L, Iterable<R>> sequenceRight(final Iterable<Either<L, R>> eithers) {
@@ -105,6 +150,14 @@ public abstract class Either<L, R> {
   }
 
   /**
+   * Collect the right values if there are only rights, otherwise return the
+   * first left encountered.
+   * 
+   * @param <L> the LFS type
+   * @param <R> the RHS type
+   * @param eithers an Iterable of Eithers
+   * @return either the iterable of right values, or the first left encountered.
+   * 
    * @deprecated in 1.2 use {@link Eithers#sequenceLeft(Iterable)}
    */
   @Deprecated public static <L, R> Either<Iterable<L>, R> sequenceLeft(final Iterable<Either<L, R>> eithers) {
@@ -124,28 +177,6 @@ public abstract class Either<L, R> {
   //
 
   /**
-   * Returns <code>true</code> if this either is a left, <code>false</code>
-   * otherwise.
-   * 
-   * @return <code>true</code> if this either is a left, <code>false</code>
-   * otherwise.
-   */
-  public boolean isLeft() {
-    return false;
-  }
-
-  /**
-   * Returns <code>true</code> if this either is a right, <code>false</code>
-   * otherwise.
-   * 
-   * @return <code>true</code> if this either is a right, <code>false</code>
-   * otherwise.
-   */
-  public boolean isRight() {
-    return false;
-  }
-
-  /**
    * Projects this either as a left.
    * 
    * @return A left projection of this either.
@@ -163,15 +194,68 @@ public abstract class Either<L, R> {
     return new RightProjection();
   }
 
-  // value accessor for Left
-  L getLeft() {
-    throw new NoSuchElementException();
+  // right-bias
+
+  /**
+   * Map the given function across the right hand side value if it is one.
+   * 
+   * @param <X> the RHS type
+   * @param f The function to map .
+   * @return A new either value after mapping with the function applied if this
+   * is a Right.
+   * @since 2.2
+   */
+  public final <X> Either<L, X> map(final Function<? super R, X> f) {
+    return right().map(f);
   }
 
-  // value accessor for Right
-  R getRight() {
-    throw new NoSuchElementException();
+  /**
+   * Binds the given function across the right hand side value if it is one.
+   * 
+   * @param <X> the RHS type
+   * @param f the function to bind.
+   * @return A new either value after binding with the function applied if this
+   * is a Right.
+   * @since 2.2
+   */
+  public final <X> Either<L, X> flatMap(final Function<? super R, Either<L, X>> f) {
+    return right().flatMap(f);
   }
+
+  /**
+   * Map the given function across the left hand side value if it is one.
+   * 
+   * @param <X> the LHS type
+   * @param f The function to map.
+   * @return A new either value after mapping with the function applied if this
+   * is a Left.
+   * @since 2.2
+   */
+  public final <X> Either<X, R> leftMap(final Function<? super L, X> f) {
+    return left().map(f);
+  }
+
+  //
+  // abstract stuff
+  //
+
+  /**
+   * Returns <code>true</code> if this either is a left, <code>false</code>
+   * otherwise.
+   * 
+   * @return <code>true</code> if this either is a left, <code>false</code>
+   * otherwise.
+   */
+  public abstract boolean isLeft();
+
+  /**
+   * Returns <code>true</code> if this either is a right, <code>false</code>
+   * otherwise.
+   * 
+   * @return <code>true</code> if this either is a right, <code>false</code>
+   * otherwise.
+   */
+  public abstract boolean isRight();
 
   /**
    * If this is a left, then return the left value in right, or vice versa.
@@ -185,17 +269,47 @@ public abstract class Either<L, R> {
    * Applies the function to the wrapped value, applying ifLeft it this is a
    * Left and ifRight if this is a Right.
    * 
+   * @param <V> the destination type
    * @param ifLeft the function to apply if this is a Left
    * @param ifRight the function to apply if this is a Right
    * @return the result of the applies function
    */
   public abstract <V> V fold(Function<? super L, V> ifLeft, Function<? super R, V> ifRight);
 
+  /**
+   * Map the given functions across the appropriate side.
+   * 
+   * @param <LL> the LHS type
+   * @param <RR> the RHS type
+   * @param ifLeft The function to map if this Either is a left.
+   * @param ifRight The function to map if this Either is a right.
+   * @return A new either value after mapping with the appropriate function
+   * applied.
+   * @since 2.2
+   */
+  public abstract <LL, RR> Either<LL, RR> bimap(final Function<? super L, ? extends LL> ifLeft, final Function<? super R, ? extends RR> ifRight);
+
+  //
+  // internal only, should not be accessed from outside this class
+  //
+
+  // value accessor for Left
+  L getLeft() {
+    throw new NoSuchElementException();
+  }
+
+  // value accessor for Right
+  R getRight() {
+    throw new NoSuchElementException();
+  }
+
   //
   // inner class implementations
   //
 
   static final class Left<L, R> extends Either<L, R> {
+    private static final long serialVersionUID = -6846704510630179771L;
+
     private final L value;
 
     public Left(final L value) {
@@ -211,12 +325,22 @@ public abstract class Either<L, R> {
       return true;
     }
 
+    @Override public boolean isRight() {
+      return false;
+    }
+
     @Override public Either<R, L> swap() {
       return right(value);
     }
 
     @Override public <V> V fold(final Function<? super L, V> ifLeft, final Function<? super R, V> ifRight) {
       return ifLeft.apply(value);
+    }
+
+    @Override public <LL, RR> Either<LL, RR> bimap(Function<? super L, ? extends LL> ifLeft, Function<? super R, ? extends RR> ifRight) {
+      @SuppressWarnings("unchecked")
+      final Either<LL, RR> map = (Either<LL, RR>) left().map(ifLeft);
+      return map;
     }
 
     @Override public boolean equals(final Object o) {
@@ -239,6 +363,8 @@ public abstract class Either<L, R> {
   }
 
   static final class Right<L, R> extends Either<L, R> {
+    private static final long serialVersionUID = 5025077305715784930L;
+
     private final R value;
 
     public Right(final R value) {
@@ -254,12 +380,22 @@ public abstract class Either<L, R> {
       return true;
     }
 
+    @Override public boolean isLeft() {
+      return false;
+    }
+
     @Override public Either<R, L> swap() {
       return left(value);
     }
 
     @Override public <V> V fold(final Function<? super L, V> ifLeft, final Function<? super R, V> ifRight) {
       return ifRight.apply(value);
+    }
+
+    @Override public <LL, RR> Either<LL, RR> bimap(Function<? super L, ? extends LL> ifLeft, Function<? super R, ? extends RR> ifRight) {
+      @SuppressWarnings("unchecked")
+      final Either<LL, RR> map = (Either<LL, RR>) right().map(ifRight);
+      return map;
     }
 
     @Override public boolean equals(final Object o) {
@@ -301,7 +437,7 @@ public abstract class Either<L, R> {
       return isDefined() ? some(get()) : Option.<A> none();
     }
 
-    @Override public final boolean exists(final Predicate<A> f) {
+    @Override public final boolean exists(final Predicate<? super A> f) {
       return isDefined() && f.apply(get());
     }
 
@@ -309,7 +445,7 @@ public abstract class Either<L, R> {
       return isDefined() ? get() : null;
     }
 
-    @Override public final boolean forall(final Predicate<A> f) {
+    @Override public final boolean forall(final Predicate<? super A> f) {
       return isEmpty() || f.apply(get());
     }
 
@@ -329,7 +465,7 @@ public abstract class Either<L, R> {
       return isDefined() ? get() : x;
     }
 
-    @Override public final void foreach(final Effect<A> f) {
+    @Override public final void foreach(final Effect<? super A> f) {
       if (isDefined()) {
         f.apply(get());
       }
@@ -361,6 +497,7 @@ public abstract class Either<L, R> {
     /**
      * Map the given function across this projection's value if it has one.
      * 
+     * @param <X> the LHS type
      * @param f The function to map across this projection.
      * @return A new either value after mapping.
      */
@@ -371,6 +508,7 @@ public abstract class Either<L, R> {
     /**
      * Binds the given function across this projection's value if it has one.
      * 
+     * @param <X> the LHS type
      * @param f The function to bind across this projection.
      * @return A new either value after binding.
      */
@@ -385,6 +523,7 @@ public abstract class Either<L, R> {
     /**
      * Anonymous bind through this projection.
      * 
+     * @param <X> the LHS type
      * @param e The value to bind with.
      * @return An either after binding through this projection.
      */
@@ -397,12 +536,13 @@ public abstract class Either<L, R> {
      * predicate <code>p</code> does not hold for the value, otherwise, returns
      * a right in <code>Some</code>.
      * 
+     * @param <X> the RHS type
      * @param f The predicate function to test on this projection's value.
      * @return <code>None</code> if this projection has no value or if the given
      * predicate <code>p</code> does not hold for the value, otherwise, returns
      * a right in <code>Some</code>.
      */
-    public <X> Option<Either<L, X>> filter(final Predicate<L> f) {
+    public <X> Option<Either<L, X>> filter(final Predicate<? super L> f) {
       if (isLeft() && f.apply(get())) {
         final Either<L, X> result = new Left<L, X>(get());
         return some(result);
@@ -413,6 +553,7 @@ public abstract class Either<L, R> {
     /**
      * Function application on this projection's value.
      * 
+     * @param <X> the LHS type
      * @param either The either of the function to apply on this projection's
      * value.
      * @return The result of function application within either.
@@ -461,6 +602,7 @@ public abstract class Either<L, R> {
     /**
      * Map the given function across this projection's value if it has one.
      * 
+     * @param <X> the RHS type
      * @param f The function to map across this projection.
      * @return A new either value after mapping.
      */
@@ -471,6 +613,7 @@ public abstract class Either<L, R> {
     /**
      * Binds the given function across this projection's value if it has one.
      * 
+     * @param <X> the RHS type
      * @param f The function to bind across this projection.
      * @return A new either value after binding.
      */
@@ -485,6 +628,7 @@ public abstract class Either<L, R> {
     /**
      * Anonymous bind through this projection.
      * 
+     * @param <X> the RHS type
      * @param e The value to bind with.
      * @return An either after binding through this projection.
      */
@@ -497,12 +641,13 @@ public abstract class Either<L, R> {
      * predicate <code>p</code> does not hold for the value, otherwise, returns
      * a left in <code>Some</code>.
      * 
+     * @param <X> the LHS type
      * @param f The predicate function to test on this projection's value.
      * @return <code>None</code> if this projection has no value or if the given
      * predicate <code>p</code> does not hold for the value, otherwise, returns
      * a left in <code>Some</code>.
      */
-    public <X> Option<Either<X, R>> filter(final Predicate<R> f) {
+    public <X> Option<Either<X, R>> filter(final Predicate<? super R> f) {
       if (isRight() && f.apply(get())) {
         final Either<X, R> result = new Right<X, R>(get());
         return some(result);
@@ -513,6 +658,7 @@ public abstract class Either<L, R> {
     /**
      * Function application on this projection's value.
      * 
+     * @param <X> the RHS type
      * @param either The either of the function to apply on this projection's
      * value.
      * @return The result of function application within either.
@@ -561,6 +707,6 @@ public abstract class Either<L, R> {
      * @return The value of this projection or the result of the given function
      * on the opposing projection's value.
      */
-    A on(Function<? super B, ? extends A> function);
+    A on(Function<? super B, ? extends A> f);
   }
 }

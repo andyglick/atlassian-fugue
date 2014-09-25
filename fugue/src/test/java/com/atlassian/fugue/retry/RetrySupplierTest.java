@@ -15,9 +15,8 @@
  */
 package com.atlassian.fugue.retry;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertSame;
-import static junit.framework.Assert.fail;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -48,20 +47,21 @@ public class RetrySupplierTest {
     final String result = new RetrySupplier<String>(supplier, ATTEMPTS).get();
 
     verify(supplier).get();
-    assertEquals(RESULT, result);
+    assertThat(result, equalTo(RESULT));
   }
 
-  @Test public void basicSupplierRetry() {
+  @Test(expected = IllegalArgumentException.class) public void basicSupplierRequiresPositiveTries() {
+      new RetrySupplier<String>(supplier, 0).get();
+  }
+
+  @Test(expected = RuntimeException.class) public void basicSupplierRetry() {
     when(supplier.get()).thenThrow(runtimeException);
 
     try {
       new RetrySupplier<String>(supplier, ATTEMPTS).get();
-      fail("Expected a exception.");
-    } catch (final RuntimeException e) {
-      assertSame(runtimeException, e);
+    } finally {
+      verify(supplier, times(ATTEMPTS)).get();
     }
-
-    verify(supplier, times(ATTEMPTS)).get();
   }
 
   @Test public void supplierWithExceptionHandler() {
@@ -69,22 +69,19 @@ public class RetrySupplierTest {
     final String result = new RetrySupplier<String>(supplier, ATTEMPTS, exceptionHandler).get();
 
     verify(supplier).get();
-    assertEquals(RESULT, result);
+    assertThat(result, equalTo(RESULT));
     verifyZeroInteractions(exceptionHandler);
   }
 
-  @Test public void supplierRetryWithExceptions() {
+  @Test(expected = RuntimeException.class) public void supplierRetryWithExceptions() {
     when(supplier.get()).thenThrow(runtimeException);
 
     try {
       new RetrySupplier<String>(supplier, ATTEMPTS, exceptionHandler).get();
-      fail("Expected a exception.");
-    } catch (final RuntimeException e) {
-      assertSame(runtimeException, e);
+    } finally {
+      verify(supplier, times(ATTEMPTS)).get();
+      verify(exceptionHandler, times(ATTEMPTS)).handle(runtimeException);
     }
-
-    verify(supplier, times(ATTEMPTS)).get();
-    verify(exceptionHandler, times(ATTEMPTS)).handle(runtimeException);
   }
 
   @Test public void supplierEarlyExit() {
@@ -92,7 +89,7 @@ public class RetrySupplierTest {
       .thenThrow(new RuntimeException("Fourth attempt"));
 
     final String result = new RetrySupplier<String>(supplier, ATTEMPTS).get();
-    assertEquals(RESULT, result);
+    assertThat(result, equalTo(RESULT));
     verify(supplier, times(2)).get();
     verifyNoMoreInteractions(supplier);
   }

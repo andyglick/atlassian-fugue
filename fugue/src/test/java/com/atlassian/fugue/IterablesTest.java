@@ -38,9 +38,10 @@ import org.junit.Test;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import com.google.common.collect.AbstractIterator;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Ranges;
+import com.google.common.collect.Range;
 
 public class IterablesTest {
 
@@ -161,7 +162,7 @@ public class IterablesTest {
   }
 
   @Test public void partitionSimple() {
-    Pair<Iterable<Integer>, Iterable<Integer>> part = partition(asList(1, 2, 3, 4), Ranges.greaterThan(2));
+    Pair<Iterable<Integer>, Iterable<Integer>> part = partition(asList(1, 2, 3, 4), Range.greaterThan(2));
     assertThat(part.left(), contains(3, 4));
     assertThat(part.right(), contains(1, 2));
   }
@@ -175,34 +176,43 @@ public class IterablesTest {
     assertThat(result, contains("1", "2", "3", "A", "B", "C"));
   }
 
+  @Test public void findFirstFunctionWorks() {
+    assertThat(findFirst(Predicates.equalTo(3)).apply(asList(1, 2, 3)), is(some(3)));
+  }
+
+  @Test public void findFirstFunctionFails() {
+    assertThat(findFirst(Predicates.equalTo(3)).apply(asList(1, 2, 4)), is(Option.<Integer> none()));
+  }
+
   @Test(expected = InvocationTargetException.class) public void nonInstantiable() throws Exception {
     getOrThrow(UtilityFunctions.<Iterables> defaultCtor().apply(Iterables.class));
   }
 
   @Test public void revMap() {
-    Iterable<Function<Integer, Integer>> fs = ImmutableList.<Function<Integer, Integer>> of(new Function<Integer, Integer>() {
-      public Integer apply(final Integer from) {
-        return from + 1;
-      }
-    }, new Function<Integer, Integer>() {
-      public Integer apply(final Integer from) {
-        return from + 2;
-      }
-    }, new Function<Integer, Integer>() {
-      public Integer apply(final Integer from) {
-        return from * from;
-      }
-    });
+    Iterable<Function<Integer, Integer>> fs = ImmutableList.<Function<Integer, Integer>> of(
+      new Function<Integer, Integer>() {
+        public Integer apply(final Integer from) {
+          return from + 1;
+        }
+      }, new Function<Integer, Integer>() {
+        public Integer apply(final Integer from) {
+          return from + 2;
+        }
+      }, new Function<Integer, Integer>() {
+        public Integer apply(final Integer from) {
+          return from * from;
+        }
+      });
     assertThat(Iterables.revMap(fs, 3), contains(4, 5, 9));
   }
 
   /**
    * Splits a string into characters.
    */
-  class CharSplitter implements Iterable<String> {
-    private final String from;
+  static class CharSplitter implements Iterable<String> {
+    private final CharSequence from;
 
-    CharSplitter(final String from) {
+    CharSplitter(final CharSequence from) {
       this.from = from;
     }
 
@@ -214,7 +224,7 @@ public class IterablesTest {
           if (index >= from.length()) {
             return endOfData();
           }
-          return from.substring(index, ++index); // up by 1
+          return from.subSequence(index, ++index).toString(); // up by 1
         }
       };
     }

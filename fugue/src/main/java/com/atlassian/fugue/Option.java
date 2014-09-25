@@ -18,6 +18,7 @@ package com.atlassian.fugue;
 import static com.atlassian.fugue.Suppliers.ofInstance;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -62,7 +63,9 @@ import com.google.common.collect.Iterators;
  * 
  * @since 1.0
  */
-public abstract class Option<A> implements Iterable<A>, Maybe<A> {
+public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
+  private static final long serialVersionUID = 7849097310208471377L;
+
   /**
    * Factory method for {@link Option} instances.
    * 
@@ -243,12 +246,12 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A> {
     return result;
   }
 
-  @Override public final boolean exists(final Predicate<A> p) {
+  @Override public final boolean exists(final Predicate<? super A> p) {
     checkNotNull(p);
     return isDefined() && p.apply(get());
   }
 
-  @Override public boolean forall(final Predicate<A> p) {
+  @Override public boolean forall(final Predicate<? super A> p) {
     return isEmpty() || p.apply(get());
   }
 
@@ -267,7 +270,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A> {
   /**
    * Apply {@code f} to the value if defined.
    * <p>
-   * Transforms to an option of the retry result type.
+   * Transforms to an option of the result type.
    * 
    * @param <B> return type of {@code f}
    * @param f function to apply to wrapped value
@@ -281,7 +284,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A> {
   /**
    * Apply {@code f} to the value if defined.
    * <p>
-   * Transforms to an option of the retry result type.
+   * Transforms to an option of the result type.
    * 
    * @param <B> return type of {@code f}
    * @param f function to apply to wrapped value
@@ -364,6 +367,8 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A> {
   //
 
   private static final Option<Object> NONE = new Option<Object>() {
+    private static final long serialVersionUID = -1978333494161467110L;
+
     @Override public <B> B fold(final Supplier<? extends B> none, final Function<? super Object, ? extends B> some) {
       return none.get();
     }
@@ -404,6 +409,8 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A> {
    * The big one, the actual implementation class.
    */
   private static final class Some<A> extends Option<A> {
+    private static final long serialVersionUID = 5542513144209030852L;
+
     private final A value;
 
     private Some(final A value) {
@@ -430,7 +437,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A> {
       return get();
     }
 
-    @Override public void foreach(final Effect<A> effect) {
+    @Override public void foreach(final Effect<? super A> effect) {
       effect.apply(value);
     }
   }

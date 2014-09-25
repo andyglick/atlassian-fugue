@@ -107,6 +107,25 @@ public class Iterables {
   }
 
   /**
+   * Partial application of the predicate argument to
+   * {@link #findFirst(Iterable, Predicate)} returning a function that takes an
+   * {@link Iterable} as its argument
+   * 
+   * @param predicate the predicate to use to determine if an element is
+   * eligible to be returned
+   * @return a Function that takes an {@link Iterable} as its argument, and
+   * returns the first element that satisfies the predicate
+   * @since 2.2
+   */
+  public static <A> Function<Iterable<A>, Option<A>> findFirst(final Predicate<? super A> predicate) {
+    return new Function<Iterable<A>, Option<A>>() {
+      @Override public Option<A> apply(Iterable<A> input) {
+        return findFirst(input, predicate);
+      }
+    };
+  }
+
+  /**
    * If {@code as} is empty, returns {@code none()}. Otherwise, returns
    * {@code some(get(as, 0))}.
    * 
@@ -136,7 +155,8 @@ public class Iterables {
    * {@code collection}
    * @since 1.1
    */
-  public static <A, B> Iterable<B> flatMap(final Iterable<A> collection, final Function<A, Iterable<B>> f) {
+  public static <A, B> Iterable<B> flatMap(final Iterable<A> collection,
+    final Function<? super A, ? extends Iterable<? extends B>> f) {
     return concat(transform(collection, f));
   }
 
@@ -282,6 +302,8 @@ public class Iterables {
    * @return an {@link Iterable iterable} of pairs, only as long as the shortest
    * input iterable.
    * @since 1.2
+   * 
+   * @see {@link #unzip(Iterable)} for the opposite operation
    */
   public static <A, B> Iterable<Pair<A, B>> zip(final Iterable<A> as, final Iterable<B> bs) {
     return zipWith(Pair.<A, B> pairs()).apply(as, bs);
@@ -318,6 +340,21 @@ public class Iterables {
    */
   public static <A> Iterable<Pair<A, Integer>> zipWithIndex(final Iterable<A> as) {
     return zip(as, rangeTo(0, Integer.MAX_VALUE));
+  }
+
+  /**
+   * Unzips an iterable of {@link Pair pairs} into a {@link Pair pair} of
+   * iterables.
+   * 
+   * @param <A> LHS type
+   * @param <B> RHS type
+   * @param pairs the values
+   * @return a {@link Pair pair} of {@link Iterable iterable} of the same length
+   * as the input iterable.
+   * @since 2.2
+   */
+  public static <A, B> Pair<Iterable<A>, Iterable<B>> unzip(Iterable<Pair<A, B>> pairs) {
+    return pair(transform(pairs, Pair.<A> leftValue()), transform(pairs, Pair.<B> rightValue()));
   }
 
   /**
@@ -682,5 +719,9 @@ public class Iterables {
         throw new UnsupportedOperationException();
       }
     }
+  }
+
+  static <A> int size(Iterable<A> as) {
+    return com.google.common.collect.Iterables.size(as);
   }
 }

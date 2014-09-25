@@ -69,7 +69,7 @@ public class RetrySupplier<T> implements Supplier<T> {
    */
   public RetrySupplier(Supplier<T> supplier, int tries, ExceptionHandler handler, Runnable beforeRetry) {
     Preconditions.checkNotNull(supplier);
-    Preconditions.checkArgument(tries >= 0, "Tries must not be negative");
+    Preconditions.checkArgument(tries > 0, "Tries must be strictly positive");
     Preconditions.checkNotNull(handler);
 
     this.beforeRetry = beforeRetry;
