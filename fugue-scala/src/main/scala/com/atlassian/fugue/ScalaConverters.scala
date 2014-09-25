@@ -22,20 +22,20 @@ import java.lang.{ Boolean => JBool, Byte => JByte, Double => JDouble, Float => 
 /**
  * Useful for converting Fugue and Guava types to Scala and vice-versa.
  *
- * to use, simply `import ScalaConverters._` and then add `.toScala` and `.toJava` as required.
+ * to use, simply `import ScalaConverters._` and then add `.toScala` and `.asJava` as required.
  *
  * Note that the Fugue/Guava side will have Java types such as `java.lang.Integer` and the Scala
- * side will have the Scala equivalents such as `Int`. You will not be able to convert unless
+ * side will have the Scala equivalents such as `Int`.
  */
-object ScalaConverters {
+object ScalaConverters extends LowPriorityConverters {
   import Iso._
 
   implicit class ToJavaSyntax[A](val a: A) extends AnyVal {
-    def toJava[B](implicit iso: B <~> A): B = iso toJava a
+    def asJava[B](implicit iso: B <~> A): B = iso asA a
   }
 
   implicit class ToScalaSyntax[A](val a: A) extends AnyVal {
-    def toScala[B](implicit iso: A <~> B): B = iso toScala a
+    def asScala[B](implicit iso: A <~> B): B = iso asB a
   }
 
   implicit val IntIso = Iso[Integer, Int](identity)(identity)
@@ -46,54 +46,60 @@ object ScalaConverters {
   implicit val ShortIso = Iso[JShort, Short](identity)(identity)
   implicit val FloatIso = Iso[JFloat, Float](identity)(identity)
   implicit val DoubleIso = Iso[JDouble, Double](identity)(identity)
-  implicit val StringIso = Iso[String, String](identity)(identity)
   implicit val VoidIso = Iso[Void, scala.Unit] { _ => () } { _ => null }
   implicit val UnitIso = Iso[Unit, scala.Unit] { _ => () } { _ => Unit.VALUE }
 
   implicit def SupplierIso[A, AA](implicit ev: A <~> AA) =
     Iso[Supplier[A], () => AA] {
-      a => () => a.get.toScala
+      a => () => a.get.asScala
     } {
-      a => new Supplier[A] { def get = a().toJava }
+      a => new Supplier[A] { def get = a().asJava }
     }
 
   implicit def FunctionIso[A, AA, B, BB](implicit eva: A <~> AA, evb: B <~> BB) =
     Iso[Function[A, B], AA => BB] {
-      f => a => f.apply(a.toJava).toScala
+      f => a => f.apply(a.asJava).asScala
     } {
-      f => new Function[A, B] { def apply(a: A): B = f(a.toScala).toJava }
+      f => new Function[A, B] { def apply(a: A): B = f(a.asScala).asJava }
     }
 
   implicit def Function2Iso[A, AA, B, BB, C, CC](implicit ia: A <~> AA, ib: B <~> BB, ic: C <~> CC) =
     Iso[Function2[A, B, C], (AA, BB) => CC] {
-      f => { case (a, b) => f.apply(a.toJava, b.toJava).toScala }
+      f => { case (a, b) => f.apply(a.asJava, b.asJava).asScala }
     } {
-      f => new Function2[A, B, C] { def apply(a: A, b: B): C = f(a.toScala, b.toScala).toJava }
+      f => new Function2[A, B, C] { def apply(a: A, b: B): C = f(a.asScala, b.asScala).asJava }
     }
 
   implicit def OptionIso[A, B](implicit i: A <~> B): Iso[Option[A], scala.Option[B]] =
     Iso[Option[A], scala.Option[B]] {
-      o => if (o.isEmpty) None else Some(o.get.toScala)
+      o => if (o.isEmpty) None else Some(o.get.asScala)
     } {
-      o => o.fold(Option.none[A])(b => Option.some(b.toJava))
+      o => o.fold(Option.none[A])(b => Option.some(b.asJava))
     }
 
   implicit def EitherIso[A, AA, B, BB](implicit ia: A <~> AA, ib: B <~> BB) =
     Iso[Either[A, B], scala.Either[AA, BB]] {
       _.fold(
-        new Function[A, scala.Either[AA, BB]] { def apply(a: A) = Left(a.toScala) },
-        new Function[B, scala.Either[AA, BB]] { def apply(b: B) = Right(b.toScala) }
+        new Function[A, scala.Either[AA, BB]] { def apply(a: A) = Left(a.asScala) },
+        new Function[B, scala.Either[AA, BB]] { def apply(b: B) = Right(b.asScala) }
       )
     } {
-      _.fold(a => Either.left(a.toJava), b => Either.right(b.toJava))
+      _.fold(a => Either.left(a.asJava), b => Either.right(b.asJava))
     }
 
   implicit def PairIso[A, AA, B, BB](implicit ia: A <~> AA, ib: B <~> BB) =
     Iso[Pair[A, B], (AA, BB)] {
-      p => (p.left.toScala, p.right.toScala)
+      p => (p.left.asScala, p.right.asScala)
     } {
-      case (a, b) => Pair.pair(a.toJava, b.toJava)
+      case (a, b) => Pair.pair(a.asJava, b.asJava)
     }
+}
+
+trait LowPriorityConverters {
+  import Iso._
+  
+  implicit def AnyRefIso[A <: AnyRef] =
+    Iso[A, A](identity)(identity)
 }
 
 /**
@@ -101,9 +107,9 @@ object ScalaConverters {
  *
  * Must be natural and a proper bijection, cannot be partial.
  */
-sealed trait Iso[A, S] {
-  def toScala(a: A): S
-  def toJava(s: S): A
+sealed trait Iso[A, B] {
+  def asB(a: A): B
+  def asA(s: B): A
 }
 
 object Iso {
@@ -111,7 +117,7 @@ object Iso {
 
   def apply[A, B](f: A => B)(g: B => A): A <~> B =
     new (A <~> B) {
-      def toScala(a: A): B = f(a)
-      def toJava(b: B): A = g(b)
+      def asB(a: A): B = f(a)
+      def asA(b: B): A = g(b)
     }
 }
