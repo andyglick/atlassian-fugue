@@ -16,8 +16,7 @@
 package com.atlassian.fugue
 
 import com.atlassian.fugue
-import com.google.common.base.{ Function => GuavaFunction, Supplier }
-import com.atlassian.fugue.{ Either => FugueEither, Function2 => FugueFunction2, Option => FugueOption, Pair => FuguePair, Unit => FUnit }
+import com.google.common.base.{ Function, Supplier }
 import java.lang.{ Boolean => JBool, Byte => JByte, Double => JDouble, Float => JFloat, Long => JLong, Short => JShort }
 
 /**
@@ -59,10 +58,10 @@ object ScalaConverters {
     }
 
   implicit def FunctionIso[A, AA, B, BB](implicit eva: A <~> AA, evb: B <~> BB) =
-    Iso[GuavaFunction[A, B], AA => BB] {
+    Iso[Function[A, B], AA => BB] {
       f => a => f.apply(a.toJava).toScala
     } {
-      f => new GuavaFunction[A, B] { def apply(a: A): B = f(a.toScala).toJava }
+      f => new Function[A, B] { def apply(a: A): B = f(a.toScala).toJava }
     }
 
   implicit def Function2Iso[A, AA, B, BB, C, CC](implicit ia: A <~> AA, ib: B <~> BB, ic: C <~> CC) =
@@ -82,8 +81,8 @@ object ScalaConverters {
   implicit def EitherIso[A, AA, B, BB](implicit ia: A <~> AA, ib: B <~> BB) =
     Iso[Either[A, B], scala.Either[AA, BB]] {
       _.fold(
-        new GuavaFunction[A, scala.Either[AA, BB]] { def apply(a: A) = Left(a.toScala) },
-        new GuavaFunction[B, scala.Either[AA, BB]] { def apply(b: B) = Right(b.toScala) }
+        new Function[A, scala.Either[AA, BB]] { def apply(a: A) = Left(a.toScala) },
+        new Function[B, scala.Either[AA, BB]] { def apply(b: B) = Right(b.toScala) }
       )
     } {
       _.fold(a => Either.left(a.toJava), b => Either.right(b.toJava))
@@ -97,17 +96,17 @@ object ScalaConverters {
     }
 }
 
-object Iso {
-  /** 
-   * Isomorphism/Bijection between Java and Scala types.
-   * 
-   * Must be natural and a proper bijection, cannot be partial.
-   */
-  sealed trait Iso[A, S] {
-    def toScala(a: A): S
-    def toJava(s: S): A
-  }
+/**
+ * Isomorphism/Bijection between Java and Scala types.
+ *
+ * Must be natural and a proper bijection, cannot be partial.
+ */
+sealed trait Iso[A, S] {
+  def toScala(a: A): S
+  def toJava(s: S): A
+}
 
+object Iso {
   type <~>[A, B] = Iso[A, B]
 
   def apply[A, B](f: A => B)(g: B => A): A <~> B =
