@@ -65,21 +65,21 @@ object ScalaConverters {
       f => new GuavaFunction[A, B] { def apply(a: A): B = f(a.toScala).toJava }
     }
 
-  implicit def Function2Iso[A, AA, B, BB, C, CC](implicit eva: A <~> AA, evb: B <~> BB, evc: C <~> CC) =
+  implicit def Function2Iso[A, AA, B, BB, C, CC](implicit ia: A <~> AA, ib: B <~> BB, ic: C <~> CC) =
     Iso[Function2[A, B, C], (AA, BB) => CC] {
       f => { case (a, b) => f.apply(a.toJava, b.toJava).toScala }
     } {
       f => new Function2[A, B, C] { def apply(a: A, b: B): C = f(a.toScala, b.toScala).toJava }
     }
 
-  implicit def OptionIso[A, B](implicit ev: A <~> B): Iso[Option[A], scala.Option[B]] =
+  implicit def OptionIso[A, B](implicit i: A <~> B): Iso[Option[A], scala.Option[B]] =
     Iso[Option[A], scala.Option[B]] {
       o => if (o.isEmpty) None else Some(o.get.toScala)
     } {
       o => o.fold(Option.none[A])(b => Option.some(b.toJava))
     }
 
-  implicit def EitherIso[A, AA, B, BB](implicit eva: A <~> AA, evb: B <~> BB) =
+  implicit def EitherIso[A, AA, B, BB](implicit ia: A <~> AA, ib: B <~> BB) =
     Iso[Either[A, B], scala.Either[AA, BB]] {
       _.fold(
         new GuavaFunction[A, scala.Either[AA, BB]] { def apply(a: A) = Left(a.toScala) },
@@ -89,7 +89,7 @@ object ScalaConverters {
       _.fold(a => Either.left(a.toJava), b => Either.right(b.toJava))
     }
 
-  implicit def PairIso[A, AA, B, BB](implicit isoa: Iso[A, AA], isob: Iso[B, BB]) =
+  implicit def PairIso[A, AA, B, BB](implicit ia: A <~> AA, ib: B <~> BB) =
     Iso[Pair[A, B], (AA, BB)] {
       p => (p.left.toScala, p.right.toScala)
     } {
@@ -97,12 +97,12 @@ object ScalaConverters {
     }
 }
 
-trait LowPriorityConverters {
-  import Iso._
-
-}
-
 object Iso {
+  /** 
+   * Isomorphism/Bijection between Java and Scala types.
+   * 
+   * Must be natural and a proper bijection, cannot be partial.
+   */
   sealed trait Iso[A, S] {
     def toScala(a: A): S
     def toJava(s: S): A
@@ -110,8 +110,8 @@ object Iso {
 
   type <~>[A, B] = Iso[A, B]
 
-  private[fugue] def apply[A, B](f: A => B)(g: B => A): A <~> B =
-    new Iso[A, B] {
+  def apply[A, B](f: A => B)(g: B => A): A <~> B =
+    new (A <~> B) {
       def toScala(a: A): B = f(a)
       def toJava(b: B): A = g(b)
     }
