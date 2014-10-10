@@ -21,6 +21,7 @@ import static com.google.common.collect.ImmutableList.copyOf;
 
 import java.util.Iterator;
 
+import com.atlassian.util.concurrent.NotNull;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Supplier;
@@ -80,7 +81,8 @@ public class Functions {
    * 
    * @since 1.1
    */
-  public static <F, S, T extends S> T fold(final Function<Pair<S, F>, T> f, final T zero, final Iterable<? extends F> elements) {
+  public static <F, S, T extends S> T fold(final Function<Pair<S, F>, T> f, final T zero,
+    final Iterable<? extends F> elements) {
     return fold(toFunction2(f), zero, elements);
   }
 
@@ -197,7 +199,8 @@ public class Functions {
     private final Function<? super A, ? extends Option<? extends B>> ab;
     private final Function<? super B, ? extends Option<? extends C>> bc;
 
-    PartialComposer(Function<? super A, ? extends Option<? extends B>> ab, Function<? super B, ? extends Option<? extends C>> bc) {
+    PartialComposer(Function<? super A, ? extends Option<? extends B>> ab,
+      Function<? super B, ? extends Option<? extends C>> bc) {
       this.ab = checkNotNull(ab);
       this.bc = checkNotNull(bc);
     }
@@ -342,7 +345,8 @@ public class Functions {
   public static <A, B> Function<A, Option<B>> matches(Function<? super A, ? extends Option<? extends B>> f1,
     Function<? super A, ? extends Option<? extends B>> f2, Function<? super A, ? extends Option<? extends B>> f3,
     Function<? super A, ? extends Option<? extends B>> f4) {
-    Matcher<A, B> result = new Matcher<A, B>(ImmutableList.<Function<? super A, ? extends Option<? extends B>>> of(f1, f2, f3, f4));
+    Matcher<A, B> result = new Matcher<A, B>(ImmutableList.<Function<? super A, ? extends Option<? extends B>>> of(f1,
+      f2, f3, f4));
     return result;
   }
 
@@ -419,6 +423,52 @@ public class Functions {
   }
 
   // /CLOVER:ON
+
+  /**
+   * Takes a Function and memoizes (caches) the result for each input. This
+   * memoization is weak, so it shouldn't leak memory on its own, but equally it
+   * may expunge entries if no-one else is holding the reference in the
+   * meantime.
+   * <p>
+   * NOTE: it is very important that the docs on the input type are read
+   * carefully. Failure to heed adhere to this will lead to unspecified
+   * behavior (bugs!)
+   * 
+   * @param <A> the input type, like any cache, this type should be a value,
+   * that is it should be immutable and have correct hashcode and equals
+   * implementations.
+   * @param <B> the output type
+   * @param f the function who's output will be memoized
+   * 
+   * @since 2.2
+   */
+  public static <A, B> Function<A, B> weakMemoize(Function<A, B> f) {
+    return WeakMemoizer.weakMemoizer(f);
+  }
+
+  /**
+   * Get a function that uses the Supplier as a factory for all inputs.
+   * 
+   * @param <D> the key type, ignored
+   * @param <R> the result type
+   * @param supplier called for all inputs
+   * @return the function
+   */
+  static <D, R> Function<D, R> fromSupplier(final @NotNull Supplier<R> supplier) {
+    return new FromSupplier<D, R>(supplier);
+  }
+
+  static class FromSupplier<D, R> implements Function<D, R> {
+    private final Supplier<R> supplier;
+
+    FromSupplier(final Supplier<R> supplier) {
+      this.supplier = checkNotNull(supplier, "supplier");
+    }
+
+    public R apply(final D ignore) {
+      return supplier.get();
+    }
+  };
 
   static class MapNullToOption<A, B> implements Function<A, Option<B>> {
     private final Function<? super A, ? extends B> f;
