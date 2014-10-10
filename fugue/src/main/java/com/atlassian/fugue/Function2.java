@@ -32,6 +32,10 @@ public interface Function2<F1, F2, T> {
    * does not cause any observable side effect * the computation is
    * <em>consistent with equals</em>; that is, Objects.equal(a, b) implies that
    * Objects.equal(function.apply(a), function.apply(b)).
+   * 
+   * @param arg1 the first argument
+   * @param arg2 the second argument
+   * @return the result, should not be null
    */
   T apply(F1 arg1, F2 arg2);
 }

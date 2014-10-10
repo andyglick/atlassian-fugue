@@ -70,10 +70,12 @@ public class ImmutableMaps {
    * 
    * @param <K> the key type
    * @param <V> the value type
+   * @param from the iterable we use as the source 
+   * @return the transformed map
    */
-  public static <K, V> ImmutableMap<K, V> toMap(Iterable<Map.Entry<K, V>> fromIterable) {
+  public static <K, V> ImmutableMap<K, V> toMap(Iterable<Map.Entry<K, V>> from) {
     ImmutableMap.Builder<K, V> mapBuilder = ImmutableMap.builder();
-    for (Map.Entry<K, V> entry : fromIterable) {
+    for (Map.Entry<K, V> entry : from) {
       if (entry != null) {
         K key = entry.getKey();
         V value = entry.getValue();
@@ -99,10 +101,14 @@ public class ImmutableMaps {
    * @param <T> the input type
    * @param <K> the key type
    * @param <V> the value type
+   * @param from the iterable we use as the source 
+   * @param keyTransformer transform keys
+   * @param valueTransformer transform values
+   * @return the transformed map
    */
-  public static <T, K, V> ImmutableMap<K, V> toMap(Iterable<T> fromIterable, final Function<? super T, ? extends K> keyTransformer,
+  public static <T, K, V> ImmutableMap<K, V> toMap(Iterable<T> from, final Function<? super T, ? extends K> keyTransformer,
     final Function<? super T, ? extends V> valueTransformer) {
-    return toMap(com.google.common.collect.Iterables.transform(fromIterable, new Function<T, Map.Entry<K, V>>() {
+    return toMap(com.google.common.collect.Iterables.transform(from, new Function<T, Map.Entry<K, V>>() {
       @Override public Map.Entry<K, V> apply(T input) {
         @SuppressWarnings("unchecked")
         Entry<K, V> entry = (Entry<K, V>) Maps.immutableEntry(keyTransformer.apply(input), valueTransformer.apply(input));
@@ -121,9 +127,12 @@ public class ImmutableMaps {
    * 
    * @param <K> the key type
    * @param <V> the value type
+   * @param from the iterable we use as the source 
+   * @param keyTransformer transform keys
+   * @return the transformed map
    */
-  public static <K, V> ImmutableMap<K, V> mapBy(Iterable<V> fromIterable, final Function<? super V, ? extends K> keyTransformer) {
-    return toMap(fromIterable, keyTransformer, Functions.<V> identity());
+  public static <K, V> ImmutableMap<K, V> mapBy(Iterable<V> from, final Function<? super V, ? extends K> keyTransformer) {
+    return toMap(from, keyTransformer, Functions.<V> identity());
   }
 
   /**
@@ -136,9 +145,12 @@ public class ImmutableMaps {
    * 
    * @param <K> the key type
    * @param <V> the value type
+   * @param from the iterable we use as the source 
+   * @param valueTransformer transform values
+   * @return the transformed map
    */
-  public static <K, V> ImmutableMap<K, V> mapTo(Iterable<K> fromIterable, final Function<? super K, ? extends V> valueTransformer) {
-    return toMap(fromIterable, Functions.<K> identity(), valueTransformer);
+  public static <K, V> ImmutableMap<K, V> mapTo(Iterable<K> from, final Function<? super K, ? extends V> valueTransformer) {
+    return toMap(from, Functions.<K> identity(), valueTransformer);
   }
 
   /**
@@ -153,9 +165,12 @@ public class ImmutableMaps {
    * @param <K2> the output key type 
    * @param <V1> the input value type
    * @param <V2> the output value type
+   * @param from the map we use as the source 
+   * @param function transform keys and values
+   * @return the transformed map
    */
-  public static <K1, K2, V1, V2> ImmutableMap<K2, V2> transform(Map<K1, V1> fromMap, Function<Map.Entry<K1, V1>, Map.Entry<K2, V2>> function) {
-    return toMap(com.google.common.collect.Iterables.transform(fromMap.entrySet(), function));
+  public static <K1, K2, V1, V2> ImmutableMap<K2, V2> transform(Map<K1, V1> from, Function<Map.Entry<K1, V1>, Map.Entry<K2, V2>> function) {
+    return toMap(com.google.common.collect.Iterables.transform(from.entrySet(), function));
   }
 
   /**
@@ -169,10 +184,14 @@ public class ImmutableMaps {
    * @param <K2> the output key type 
    * @param <V1> the input value type
    * @param <V2> the output value type
+   * @param from the map we use as the source 
+   * @param keyTransformer transform keys
+   * @param valueTransformer transform values
+   * @return the transformed map
    */
-  public static <K1, K2, V1, V2> ImmutableMap<K2, V2> transform(Map<K1, V1> fromMap, final Function<? super K1, ? extends K2> keyTransformer,
+  public static <K1, K2, V1, V2> ImmutableMap<K2, V2> transform(Map<K1, V1> from, final Function<? super K1, ? extends K2> keyTransformer,
     final Function<? super V1, ? extends V2> valueTransformer) {
-    return toMap(com.google.common.collect.Iterables.transform(fromMap.entrySet(), new Function<Map.Entry<K1, V1>, Map.Entry<K2, V2>>() {
+    return toMap(com.google.common.collect.Iterables.transform(from.entrySet(), new Function<Map.Entry<K1, V1>, Map.Entry<K2, V2>>() {
       @Override public Map.Entry<K2, V2> apply(Map.Entry<K1, V1> input) {
         @SuppressWarnings("unchecked")
         Entry<K2, V2> entry = (Entry<K2, V2>) Maps.immutableEntry(keyTransformer.apply(input.getKey()), valueTransformer.apply(input.getValue()));
@@ -192,9 +211,12 @@ public class ImmutableMaps {
    * @param <K1> the input key type
    * @param <K2> the output key type 
    * @param <V> the value type
+   * @param from the map we use as the source 
+   * @param keyTransformer transform keys
+   * @return the transformed map
    */
-  public static <K1, K2, V> ImmutableMap<K2, V> transformKey(Map<K1, V> fromMap, final Function<? super K1, ? extends K2> keyTransformer) {
-    return transform(fromMap, keyTransformer, Functions.<V> identity());
+  public static <K1, K2, V> ImmutableMap<K2, V> transformKey(Map<K1, V> from, final Function<? super K1, ? extends K2> keyTransformer) {
+    return transform(from, keyTransformer, Functions.<V> identity());
   }
 
   /**
@@ -204,12 +226,15 @@ public class ImmutableMaps {
    * an entry contains a <code>null</code> key, it will also be discarded in the
    * result.
    * 
-   * @param <K1> the key type
+   * @param <K> the key type
    * @param <V1> the input value type
    * @param <V2> the output value type
+   * @param from the iterable we use as the source 
+   * @param valueTransformer transform values
+   * @return the transformed map
    */
-  public static <K, V1, V2> ImmutableMap<K, V2> transformValue(Map<K, V1> fromMap, final Function<? super V1, ? extends V2> valueTransformer) {
-    return transform(fromMap, Functions.<K> identity(), valueTransformer);
+  public static <K, V1, V2> ImmutableMap<K, V2> transformValue(Map<K, V1> from, final Function<? super V1, ? extends V2> valueTransformer) {
+    return transform(from, Functions.<K> identity(), valueTransformer);
   }
 
   /**
@@ -223,9 +248,12 @@ public class ImmutableMaps {
    * @param <K2> the output key type 
    * @param <V1> the input value type
    * @param <V2> the output value type
+   * @param from the iterable we use as the source 
+   * @param partial transform and select entries
+   * @return the transformed map
    */
-  public static <K1, K2, V1, V2> ImmutableMap<K2, V2> collect(Map<K1, V1> fromMap, Function<Map.Entry<K1, V1>, Option<Map.Entry<K2, V2>>> partial) {
-    return toMap(Iterables.collect(fromMap.entrySet(), partial));
+  public static <K1, K2, V1, V2> ImmutableMap<K2, V2> collect(Map<K1, V1> from, Function<Map.Entry<K1, V1>, Option<Map.Entry<K2, V2>>> partial) {
+    return toMap(Iterables.collect(from.entrySet(), partial));
   }
 
   /**
@@ -241,10 +269,14 @@ public class ImmutableMaps {
    * @param <K2> the output key type 
    * @param <V1> the input value type
    * @param <V2> the output value type
+   * @param from the iterable we use as the source 
+   * @param keyPartial transform and collect keys
+   * @param valuePartial transform and collect values
+   * @return the transformed map
    */
-  public static <K1, K2, V1, V2> ImmutableMap<K2, V2> collect(Map<K1, V1> fromMap, final Function<? super K1, Option<K2>> keyPartial,
+  public static <K1, K2, V1, V2> ImmutableMap<K2, V2> collect(Map<K1, V1> from, final Function<? super K1, Option<K2>> keyPartial,
     final Function<? super V1, Option<V2>> valuePartial) {
-    return collect(fromMap, new Function<Map.Entry<K1, V1>, Option<Map.Entry<K2, V2>>>() {
+    return collect(from, new Function<Map.Entry<K1, V1>, Option<Map.Entry<K2, V2>>>() {
       @Override public Option<Map.Entry<K2, V2>> apply(Map.Entry<K1, V1> input) {
         Option<K2> ok = keyPartial.apply(input.getKey());
         Option<V2> ov = valuePartial.apply(input.getValue());
@@ -264,9 +296,12 @@ public class ImmutableMaps {
    * @param <K1> the input key type
    * @param <K2> the output key type 
    * @param <V> the value type
+   * @param from the iterable we use as the source 
+   * @param keyPartial transform and collect keys
+   * @return the transformed map
    */
-  public static <K1, K2, V> ImmutableMap<K2, V> collectByKey(Map<K1, V> fromMap, final Function<? super K1, Option<K2>> keyPartial) {
-    return collect(fromMap, keyPartial, Option.<V> toOption());
+  public static <K1, K2, V> ImmutableMap<K2, V> collectByKey(Map<K1, V> from, final Function<? super K1, Option<K2>> keyPartial) {
+    return collect(from, keyPartial, Option.<V> toOption());
   }
 
   /**
@@ -280,8 +315,11 @@ public class ImmutableMaps {
    * @param <K> the key type
    * @param <V1> the input value type
    * @param <V2> the output value type
+   * @param from the iterable we use as the source 
+   * @param valuePartial transform and collect values
+   * @return the transformed map
    */
-  public static <K, V1, V2> ImmutableMap<K, V2> collectByValue(Map<K, V1> fromMap, final Function<? super V1, Option<V2>> valuePartial) {
-    return collect(fromMap, Option.<K> toOption(), valuePartial);
+  public static <K, V1, V2> ImmutableMap<K, V2> collectByValue(Map<K, V1> from, final Function<? super V1, Option<V2>> valuePartial) {
+    return collect(from, Option.<K> toOption(), valuePartial);
   }
 }

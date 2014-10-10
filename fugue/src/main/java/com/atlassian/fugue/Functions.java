@@ -50,6 +50,8 @@ public class Functions {
    * of the previous application as the other argument to f. zero is used as the
    * first 'result' value. The final result is returned.
    * 
+   * @param <F> the element type
+   * @param <T> the final result type
    * @param f the function to apply to all the elements
    * @param zero the starting point for the function
    * @param elements the series of which each element will be accumulated into a
@@ -72,6 +74,9 @@ public class Functions {
    * of the previous application as the other argument to f. zero is used as the
    * first 'result' value. The final result is returned.
    * 
+   * @param <F> the element type
+   * @param <S> the accumulator function input type
+   * @param <T> the final result type
    * @param f the function to apply to all elements
    * @param zero the starting point for the function
    * @param elements the series of which each element will be accumulated into a
@@ -130,6 +135,8 @@ public class Functions {
    * Partial Function that does a type check and matches if the value is of the
    * right type.
    * 
+   * @param <A> the input type
+   * @param <B> the type we expect it to be
    * @param cls the type to check against.
    * @return a function that returns a Some with the value if of the right type
    * otherwise a None
@@ -154,6 +161,8 @@ public class Functions {
   /**
    * Create a PartialFunction from a {@link Predicate} and a {@link Function}.
    * 
+   * @param <A> the input type
+   * @param <B> the output type
    * @param p the predicate to test the value against.
    * @param f the function to apply if the predicate passes.
    * @return a PartialFunction that tests the supplied predicate before applying
@@ -185,6 +194,9 @@ public class Functions {
    * AKA <a href="http://stackoverflow.com/a/7833488/210216">
    * "compose, fishy, compose"</a>
    * 
+   * @param <A> the input type
+   * @param <B> the middle type
+   * @param <C> the output type
    * @param bc partial function from {@code B -> C}
    * @param ab partial function from {@code A -> B}
    * @return a PartialFunction that flatMaps g on to the result of applying f.
@@ -214,10 +226,10 @@ public class Functions {
    * Converts a function that takes a pair of arguments to a function that takes
    * two arguments
    * 
-   * @param fpair the source function that takes a pair of arguments
    * @param <A> the type of the left of the pair
    * @param <B> the type of the right of the pair
    * @param <C> the result type
+   * @param fpair the source function that takes a pair of arguments
    * @return a function that takes two arguments
    * @since 2.0
    */
@@ -235,10 +247,10 @@ public class Functions {
    * first argument and return a new function that takes the second argument and
    * return the final result.
    * 
-   * @param f2 the original function that takes 2 arguments
    * @param <A> the type of the first argument
    * @param <B> the type of the second argument
    * @param <C> the type of the final result
+   * @param f2 the original function that takes 2 arguments
    * @return the curried form of the original function
    * @since 2.0
    */
@@ -267,10 +279,10 @@ public class Functions {
    * Transforms a function from {@code A -> (B -> C)} into a function from
    * {@code B -> (A -> C)}.
    * 
-   * @param f2 the original function from {@code A -> (B -> C)}
    * @param <A> the type of the first argument
    * @param <B> the type of the second argument
    * @param <C> the type of the final result
+   * @param f2 the original function from {@code A -> (B -> C)}
    * @return the flipped form of the original function
    * @since 2.0
    */
@@ -299,6 +311,8 @@ public class Functions {
    * Creates a stack of matcher functions and returns the first result that
    * matches.
    * 
+   * @param <A> the input type
+   * @param <B> the output type
    * @param f1 partial function, tried in order.
    * @param f2 partial function, tried in order.
    * @return a PartialFunction that composes all the functions and tries each
@@ -316,6 +330,8 @@ public class Functions {
    * Creates a stack of matcher functions and returns the first result that
    * matches.
    * 
+   * @param <A> the input type
+   * @param <B> the output type
    * @param f1 partial function, tried in order.
    * @param f2 partial function, tried in order.
    * @param f3 partial function, tried in order.
@@ -334,6 +350,8 @@ public class Functions {
    * Creates a stack of matcher functions and returns the first result that
    * matches.
    * 
+   * @param <A> the input type
+   * @param <B> the output type
    * @param f1 partial function, tried in order.
    * @param f2 partial function, tried in order.
    * @param f3 partial function, tried in order.
@@ -354,6 +372,8 @@ public class Functions {
    * Creates a stack of matcher functions and returns the first result that
    * matches.
    * 
+   * @param <A> the input type
+   * @param <B> the output type
    * @param f1 partial function, tried in order.
    * @param f2 partial function, tried in order.
    * @param f3 partial function, tried in order.
@@ -401,6 +421,8 @@ public class Functions {
    * Maps a function that returns nulls into a Partial function that returns an
    * Option of the result.
    * 
+   * @param <A> the input type
+   * @param <B> the output type
    * @param f the function that may return nulls
    * @return a function that converts any nulls into Options
    * @since 2.0
@@ -412,6 +434,11 @@ public class Functions {
   /**
    * @deprecated this is a poor name, use {@link #mapNullToOption(Function)}
    * instead
+   * 
+   * @param <A> the input type
+   * @param <B> the output type
+   * @param f the function that may return nulls
+   * @return a function that converts any nulls into Options
    * @since 1.2
    */
   // TODO deprecated in 2.0, remove in >= 1.5
@@ -431,14 +458,16 @@ public class Functions {
    * meantime.
    * <p>
    * NOTE: it is very important that the docs on the input type are read
-   * carefully. Failure to heed adhere to this will lead to unspecified
-   * behavior (bugs!)
+   * carefully. Failure to heed adhere to this will lead to unspecified behavior
+   * (bugs!)
    * 
    * @param <A> the input type, like any cache, this type should be a value,
    * that is it should be immutable and have correct hashcode and equals
    * implementations.
    * @param <B> the output type
    * @param f the function who's output will be memoized
+   * @return a function that memoizes the results of the function using the
+   * input as a weak key
    * 
    * @since 2.2
    */

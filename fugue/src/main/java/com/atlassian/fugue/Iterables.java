@@ -79,6 +79,7 @@ public class Iterables {
    * {@code Collections.emptyList()} in code that otherwise deals only with
    * iterables.
    * 
+   * @param <T> the type
    * @return an empty iterable
    * @since 1.2
    */
@@ -93,6 +94,7 @@ public class Iterables {
    * be named find; in this case it is named findFirst to avoid clashing with
    * static imports from Guava's {@link com.google.common.collect.Iterables}.
    * 
+   * @param <T> the type
    * @param elements the iterable to search for a matching element
    * @param predicate the predicate to use to determine if an element is
    * eligible to be returned
@@ -111,6 +113,7 @@ public class Iterables {
    * {@link #findFirst(Iterable, Predicate)} returning a function that takes an
    * {@link Iterable} as its argument
    * 
+   * @param <A> the type
    * @param predicate the predicate to use to determine if an element is
    * eligible to be returned
    * @return a Function that takes an {@link Iterable} as its argument, and
@@ -196,9 +199,15 @@ public class Iterables {
    * iterable. If the application returns none, the element will be left out;
    * otherwise, the transformed object contained in the Option will be added to
    * the result.
+   * 
+   * @param <A> the input type
+   * @param <B> the output type
+   * @param from the input iterable
+   * @param partial the collecting function
+   * @return the collected iterable
    */
-  public static <A, B> Iterable<B> collect(Iterable<? extends A> unfiltered, Function<? super A, Option<B>> partial) {
-    return new CollectingIterable<A, B>(unfiltered, partial);
+  public static <A, B> Iterable<B> collect(Iterable<? extends A> from, Function<? super A, Option<B>> partial) {
+    return new CollectingIterable<A, B>(from, partial);
   }
 
   /**
@@ -217,9 +226,9 @@ public class Iterables {
   /**
    * Filter an {@code Iterable} into a {@code Pair} of {@code Iterable}'s.
    * 
+   * @param <A> the type
    * @param iterable to be filtered
    * @param predicate to filter each element
-   * @param <A>
    * @return a pair where the left matches the predicate, and the right does
    * not.
    */
@@ -294,6 +303,7 @@ public class Iterables {
 
   /**
    * Zips two iterables into a single iterable that produces {@link Pair pairs}.
+   * See unzip(Iterable) for the opposite operation
    * 
    * @param <A> LHS type
    * @param <B> RHS type
@@ -302,7 +312,6 @@ public class Iterables {
    * @return an {@link Iterable iterable} of pairs, only as long as the shortest
    * input iterable.
    * 
-   * @see {@link #unzip(Iterable)} for the opposite operation
    * 
    * @since 1.2
    */
@@ -335,6 +344,7 @@ public class Iterables {
    * Takes an Iterable, and returns an Iterable of a Pair of the original
    * element and its index starting at zero.
    * 
+   * @param <A> the type
    * @param as the original iterable
    * @return the decorated iterable that generates pairs.
    * @since 1.2

@@ -71,19 +71,18 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    * 
    * @param <A> the contained type
    * @param a the value to hold
-   * @return a {@link Option.Some} if the parameter is not null or a
-   * {@link Option.None} if it is
+   * @return a Some if the parameter is not null or a None if it is
    */
   public static <A> Option<A> option(final A a) {
     return (a == null) ? Option.<A> none() : some(a);
   }
 
   /**
-   * Factory method for {@link Option.Some Some} instances.
+   * Factory method for Some instances.
    * 
    * @param <A> the contained type
    * @param value the value to hold
-   * @return a {@link Option.Some Some} if the parameter is not null
+   * @return a Some if the parameter is not null
    * @throws NullPointerException if the parameter is null
    */
   public static <A> Option<A> some(final A value) {
@@ -92,10 +91,10 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   }
 
   /**
-   * Factory method for {@link Option.None none} instances.
+   * Factory method for None instances.
    * 
    * @param <A> the held type
-   * @return a {@link Option.None none}
+   * @return a None
    */
   public static <A> Option<A> none() {
     @SuppressWarnings("unchecked")
@@ -104,22 +103,22 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   }
 
   /**
-   * Factory method for {@link Option.None none} instances where the type token
+   * Factory method for None instances where the type token
    * is handy. Allows calling in-line where the type inferencer would otherwise
    * complain.
    * 
    * @param <A> the contained type
    * @param type token of the right type, unused, only here for the type
    * inferencer
-   * @return a {@link Option.None none}
+   * @return a None
    */
   public static <A> Option<A> none(final Class<A> type) {
     return none();
   }
 
   /**
-   * Function for wrapping values in a {@link Option.Some some} or
-   * {@link Option.None none}.
+   * Function for wrapping values in a Some or
+   * None.
    * 
    * @param <A> the contained type
    * @return a {@link Function} to wrap values
@@ -143,11 +142,11 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   }
 
   /**
-   * Supplies {@link Option.None none} as required. Useful as the zero value for
+   * Supplies None as required. Useful as the zero value for
    * folds.
    * 
    * @param <A> the contained type
-   * @return a {@link Supplier} of {@link Option.None none} instances
+   * @return a {@link Supplier} of None instances
    */
   public static <A> Supplier<Option<A>> noneSupplier() {
     return ofInstance(Option.<A> none());
@@ -155,7 +154,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
 
   /**
    * Find the first option that isDefined, or if there aren't any, then
-   * {@link Option.None none}.
+   * None.
    * 
    * @param <A> the contained type
    * @param options an Iterable of options to search through
@@ -195,11 +194,11 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
 
   /**
    * If this is a some value apply the some function, otherwise get the
-   * {@link Option.None none} value.
+   * None value.
    * 
    * @param <B> the result type
    * @param none the supplier of the None type
-   * @param some the function to apply if this is a {@link Option.Some Some}
+   * @param some the function to apply if this is a Some
    * @return the appropriate value
    */
   public abstract <B> B fold(Supplier<? extends B> none, Function<? super A, ? extends B> some);
