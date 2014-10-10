@@ -1,3 +1,4 @@
+=====
 fugue
 =====
 Functional Extensions to Guava
@@ -14,10 +15,12 @@ as well as a Pair.
 
 There also additional helper classes for common Function and Supplier operations.
 
+--------------
 Issue Tracking
 --------------
 Issues are tracked in the [fugue](https://bitbucket.org/atlassian/fugue/issues) project on bitbucket.
 
+--------------
 Getting fugue
 --------------
 
@@ -46,6 +49,7 @@ And then add fugue as a dependency to your pom.xml:
         ...
     </dependencies>
 
+-----------------
 Scala Integration
 -----------------
 
