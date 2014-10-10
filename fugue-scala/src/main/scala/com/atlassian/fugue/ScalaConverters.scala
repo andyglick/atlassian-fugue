@@ -22,10 +22,12 @@ import java.lang.{ Boolean => JBool, Byte => JByte, Double => JDouble, Float => 
 /**
  * Useful for converting Fugue and Guava types to Scala and vice-versa.
  *
- * to use, simply `import ScalaConverters._` and then add `.toScala` and `.asJava` as required.
+ * to use, simply `import ScalaConverters._` and then add `.asScala` and `.asJava` as required.
  *
  * Note that the Fugue/Guava side will have Java types such as `java.lang.Integer` and the Scala
- * side will have the Scala equivalents such as `Int`.
+ * side will have the Scala equivalents such as `Int`. It will pass reference types though unchanged.
+ *
+ * @since 2.2
  */
 object ScalaConverters extends LowPriorityConverters {
   import Iso._
@@ -97,7 +99,7 @@ object ScalaConverters extends LowPriorityConverters {
 
 trait LowPriorityConverters {
   import Iso._
-  
+
   implicit def AnyRefIso[A <: AnyRef] =
     Iso[A, A](identity)(identity)
 }
