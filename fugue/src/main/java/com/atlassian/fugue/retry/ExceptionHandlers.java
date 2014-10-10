@@ -55,6 +55,9 @@ public class ExceptionHandlers {
   /**
    * Chain a series of ExceptionHandlers together to be executed subsequently;
    * if one throws an exception, subsequent handlers will not be executed.
+   * 
+   * @param handlers the chain of {@link ExceptionHandler handlers} to chain
+   * @return an ExceptionHandler composing the supplied handlers
    */
   public static ExceptionHandler chain(ExceptionHandler... handlers) {
     return new CompositeExceptionHandler(handlers);

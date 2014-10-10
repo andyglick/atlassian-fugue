@@ -51,7 +51,7 @@ public class RetryTask implements Runnable {
    * null
    */
   public RetryTask(final Runnable task, int tries, ExceptionHandler handler) {
-    this(task, tries, handler, new NoOpBeforeRetryTask());
+    this(task, tries, handler, new NoOp());
   }
 
   /**

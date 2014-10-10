@@ -39,6 +39,7 @@ public class Options {
    * 
    * @param <A> the contained type
    * @param options an Iterable of options to search through
+   * @return the first defined option, or none if there aren't any
    */
   public static <A> Option<A> find(final Iterable<Option<A>> options) {
     for (final Option<A> option : options) {
@@ -143,7 +144,7 @@ public class Options {
    * @return a predicate that takes an option of type A 
    * @since 2.2
    */
-  public static <A, B> Predicate<Option<A>> lift(final Predicate<? super A> pred) {
+  public static <A> Predicate<Option<A>> lift(final Predicate<? super A> pred) {
     checkNotNull(pred);
     return new Predicate<Option<A>>() {
       @Override public boolean apply(Option<A> oa) {
@@ -175,7 +176,7 @@ public class Options {
    * @param f2 the original function to be lifted
    * @param <A> the input type of the first argument of the original function
    * @param <B> the input type of the second argument of the original function
-   * @param <B> the result type of the original function
+   * @param <C> the result type of the original function
    * @return a function that takes an option of type A and an option of B and
    * returns an option of type C
    * @since 2.0

@@ -34,8 +34,11 @@ public final class Pair<A, B> implements Serializable {
   /**
    * Factory method for static Pair growth.
    * 
+   * @param <A> the left value type
+   * @param <B> the right value type
    * @param left value, cannot be null
    * @param right value, cannot be null
+   * @return the Pair containing the passed values
    */
   public static <A, B> Pair<A, B> pair(final A left, final B right) {
     return new Pair<A, B>(left, right);
@@ -43,6 +46,9 @@ public final class Pair<A, B> implements Serializable {
 
   /**
    * Factory method for a Pair factory function.
+   * @param <A> the left value type
+   * @param <B> the right value type
+   * @return a function that constructs Pairs
    */
   public static <A, B> Function2<A, B, Pair<A, B>> pairs() {
     return new Function2<A, B, Pair<A, B>>() {
@@ -55,7 +61,7 @@ public final class Pair<A, B> implements Serializable {
   /**
    * Function for accessing the left value of {@link Pair pairs}.
    * 
-   * @param A the left value type
+   * @param <A> the left value type
    * @return a Function that given a {@link Pair} returns the left side value
    * @since 1.1
    */
@@ -66,7 +72,7 @@ public final class Pair<A, B> implements Serializable {
   /**
    * Function for accessing the right value of {@link Pair pairs}.
    * 
-   * @param B the right value type
+   * @param <B> the right value type
    * @return a Function that given a {@link Pair} returns the right side value
    * @since 1.1
    */

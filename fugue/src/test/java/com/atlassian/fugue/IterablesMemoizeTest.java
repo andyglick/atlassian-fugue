@@ -38,8 +38,8 @@ import com.google.common.collect.ImmutableList;
     final Iterable<String> memoized = memoize(transform(ImmutableList.of(1), toString));
 
     // iterate over it a few times
-    for (final String _ : memoized) {}
-    for (final String _ : memoized) {}
+    for (final String ignore : memoized) {}
+    for (final String ignore : memoized) {}
 
     assertThat(toString.count.get(), is(equalTo(1)));
   }
@@ -49,8 +49,8 @@ import com.google.common.collect.ImmutableList;
     final Iterable<String> memoized = memoize(transform(ImmutableList.of(1, 2, 3, 4), toString));
 
     // iterate over it a few times
-    for (final String _ : memoized) {}
-    for (final String _ : memoized) {}
+    for (final String ignore : memoized) {}
+    for (final String ignore : memoized) {}
 
     assertThat(toString.count.get(), is(equalTo(4)));
   }
@@ -61,7 +61,7 @@ import com.google.common.collect.ImmutableList;
 
   @Test public void assertThatMemoizedTransformedIterableHasSameElementsAsOriginalIterableOnSecondIteration() {
     final Iterable<String> memoized = memoize(transform(ImmutableList.of(1, 2, 3, 4), counting(toStringFunction(Integer.class))));
-    for (final String _ : memoized) {}
+    for (final String ignore : memoized) {}
     assertThat(memoized, contains("1", "2", "3", "4"));
   }
 
@@ -70,8 +70,8 @@ import com.google.common.collect.ImmutableList;
     final Iterable<Integer> memoized = memoize(filter(ImmutableList.of(1, 2, 3, 4), even));
 
     // iterate over it a few times
-    for (final Integer _ : memoized) {}
-    for (final Integer _ : memoized) {}
+    for (final Integer ignore : memoized) {}
+    for (final Integer ignore : memoized) {}
 
     assertThat(even.count.get(), is(equalTo(4)));
   }
@@ -85,7 +85,7 @@ import com.google.common.collect.ImmutableList;
     final CountingPredicate<Integer> even = counting(even());
     final Iterable<Integer> memoized = memoize(filter(ImmutableList.of(1, 2, 3, 4), even));
 
-    for (final Integer _ : memoized) {}
+    for (final Integer ignore : memoized) {}
 
     assertThat(memoized, contains(2, 4));
   }

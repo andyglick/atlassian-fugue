@@ -32,16 +32,16 @@ import com.google.common.collect.Iterators;
 
 /**
  * A class that encapsulates missing values. An Option may be either
- * {@link Option.Some some} value or {@link Option.None none}.
+ * <em>some</em> value or <em>none</em>.
  * <p>
  * If it is a value it may be tested with the {@link #isDefined()} method, but
  * more often it is useful to either return the value or an alternative if
  * {@link #getOrElse(Object) not set}, or {@link #map(Function) map} or
  * {@link #filter(Predicate) filter}.
  * <p>
- * Mapping a {@link Option.None none} of type A to type B will simply return
- * {@link Option.None none} of type B if performed on a none of type A.
- * Similarly, filtering will always fail on a {@link Option.None none}.
+ * Mapping a <em>none</em> of type A to type B will simply return a none of type
+ * B if performed on a none of type A. Similarly, filtering will always fail on
+ * a <em>none</em>.
  * <p>
  * This class is often used as an alternative to <code>null</code> where
  * <code>null</code> may be used to represent an optional value. There are
@@ -55,9 +55,8 @@ import com.google.common.collect.Iterators;
  * optionality, it can be {@link Functions#lift(Function) lifted} into a partial
  * function and then {@link #flatMap(Function) flat mapped} instead.
  * <p>
- * While this class is public and abstract it does not expose a constructor as
- * only the concrete {@link Option.Some Some} and {@link Option.None None}
- * subclasses are meant to be used.
+ * Note: while this class is public and abstract it does not expose a
+ * constructor as only the concrete internal subclasses are designed to be used.
  * 
  * @param <A> the value type the option contains
  * 
@@ -103,9 +102,8 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   }
 
   /**
-   * Factory method for None instances where the type token
-   * is handy. Allows calling in-line where the type inferencer would otherwise
-   * complain.
+   * Factory method for None instances where the type token is handy. Allows
+   * calling in-line where the type inferencer would otherwise complain.
    * 
    * @param <A> the contained type
    * @param type token of the right type, unused, only here for the type
@@ -117,8 +115,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   }
 
   /**
-   * Function for wrapping values in a Some or
-   * None.
+   * Function for wrapping values in a Some or None.
    * 
    * @param <A> the contained type
    * @return a {@link Function} to wrap values
@@ -142,8 +139,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   }
 
   /**
-   * Supplies None as required. Useful as the zero value for
-   * folds.
+   * Supplies None as required. Useful as the zero value for folds.
    * 
    * @param <A> the contained type
    * @return a {@link Supplier} of None instances
@@ -153,11 +149,11 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   }
 
   /**
-   * Find the first option that isDefined, or if there aren't any, then
-   * None.
+   * Find the first option that isDefined, or if there aren't any, then None.
    * 
    * @param <A> the contained type
    * @param options an Iterable of options to search through
+   * @return the first option that isDefined, or none
    * 
    * @deprecated since 1.1 use {@link Options#find(Iterable)} instead
    */
@@ -193,8 +189,8 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   //
 
   /**
-   * If this is a some value apply the some function, otherwise get the
-   * None value.
+   * If this is a some value apply the some function, otherwise get the None
+   * value.
    * 
    * @param <B> the result type
    * @param none the supplier of the None type
@@ -302,6 +298,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    * {@link #none()}.
    * 
    * @param p the predicate to test
+   * @return this option, or none
    */
   public final Option<A> filter(final Predicate<? super A> p) {
     checkNotNull(p);
@@ -309,10 +306,14 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   }
 
   /**
-   * @return a {@link Left} containing the given supplier's value if this is
-   * empty, or a {@link Right} containing this option's value if this option is
-   * defined.
+   * Creates an Either from this Option. Puts the contained value in a right if
+   * {@link #isDefined()} otherwise puts the supplier's value in a left.
+   * 
+   * @param <X> the left type
    * @param left the Supplier to evaluate and return if this is empty
+   * @return the content of this option if defined as a right, or the supplier's
+   * content as a left if not
+   * 
    * @see toLeft
    */
   public final <X> Either<X, A> toRight(final Supplier<X> left) {
@@ -320,11 +321,15 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   }
 
   /**
-   * @return a {@link Right} containing the given supplier's value if this is
-   * empty, or a {@link Left} containing this option's value if this option is
-   * defined.
+   * Creates an Either from this Option. Puts the contained value in a left if
+   * {@link #isDefined()} otherwise puts the supplier's value in a right.
+   * 
+   * @param <X> the right type
    * @param right the Supplier to evaluate and return if this is empty
-   * @see toLeft
+   * @return the content of this option if defined as a left, or the supplier's
+   * content as a right if not defined.
+   * 
+   * @see toRight
    */
   public final <X> Either<A, X> toLeft(final Supplier<X> right) {
     return isEmpty() ? Either.<A, X> right(right.get()) : Either.<A, X> left(get());

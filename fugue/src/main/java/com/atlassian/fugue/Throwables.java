@@ -56,6 +56,7 @@ public final class Throwables {
    * }
    * </pre>
    * 
+   * @param <R> the type of the Throwable to propagate, must be a RuntimeException
    * @param throwable the Throwable to propagate
    * @param function the function to transform the throwable into a runtime
    * exception
@@ -101,6 +102,7 @@ public final class Throwables {
    * }
    * </pre>
    * 
+   * @param <R> the type of the Throwable to propagate, must be a RuntimeException
    * @param throwable the Throwable to propagate
    * @param runtimeType the type of exception to use.
    * @return nothing will ever be returned; this return type is only for your

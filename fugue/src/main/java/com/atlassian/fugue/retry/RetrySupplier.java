@@ -56,7 +56,7 @@ public class RetrySupplier<T> implements Supplier<T> {
    * null
    */
   public RetrySupplier(Supplier<T> supplier, int tries, ExceptionHandler handler) {
-    this(supplier, tries, handler, new NoOpBeforeRetryTask());
+    this(supplier, tries, handler, new NoOp());
   }
 
   /**

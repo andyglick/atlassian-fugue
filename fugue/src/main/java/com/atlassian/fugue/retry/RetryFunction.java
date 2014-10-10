@@ -15,6 +15,8 @@
  */
 package com.atlassian.fugue.retry;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Suppliers;
@@ -58,7 +60,7 @@ public class RetryFunction<F, T> implements Function<F, T> {
    * null
    */
   public RetryFunction(Function<F, T> function, int tries, ExceptionHandler handler) {
-    this(function, tries, handler, new NoOpBeforeRetryTask());
+    this(function, tries, handler, new NoOp());
   }
 
   /**
@@ -67,16 +69,15 @@ public class RetryFunction<F, T> implements Function<F, T> {
    * positive
    * @param handler reacts to exceptions thrown by the supplier, must not be
    * null
+   * @param beforeRetry an effect that is run before a retry attempt
    */
   public RetryFunction(Function<F, T> function, int tries, ExceptionHandler handler, Runnable beforeRetry) {
-    this.beforeRetry = beforeRetry;
-    Preconditions.checkNotNull(function);
-    Preconditions.checkArgument(tries >= 0, "Tries must not be negative");
-    Preconditions.checkNotNull(handler);
 
-    this.function = function;
+    this.function = checkNotNull(function);
+    this.handler = checkNotNull(handler);
+    Preconditions.checkArgument(tries >= 0, "Tries must not be negative");
     this.tries = tries;
-    this.handler = handler;
+    this.beforeRetry = checkNotNull(beforeRetry);
   }
 
   /**

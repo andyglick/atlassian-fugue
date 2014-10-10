@@ -51,6 +51,7 @@ public class RetryFactory {
    * @param task which will be wrapped for retrial. It should be idempotent on
    * failure.
    * @param tries the number of times to re-attempt the call
+   * @param handler passed any exceptions that are encountered
    * @return a runnable which can be used to call another runnable multiple
    * times when that runnable may fail sporadically
    */
@@ -60,12 +61,13 @@ public class RetryFactory {
 
   /**
    * Decorates a runnable so that it retries a number of times before being
-   * allowed to fail.
+   * allowed to fail, backing off exponentially in time.
    * 
    * @param task which will be wrapped for retrial. It should be idempotent on
    * failure.
    * @param tries the number of times to re-attempt the call
    * @param handler which acts on exceptions thrown by the wrapped supplier
+   * @param backoff time to wait in millis each time
    * @return a runnable which can be used to call another runnable multiple
    * times when that runnable may fail sporadically
    */
@@ -80,11 +82,11 @@ public class RetryFactory {
    * @param supplier which will be wrapped for retrial. It should be idempotent
    * on failure.
    * @param tries the number of times to re-attempt the call
-   * @param <T> The type of the object returned by supplier
+   * @param <A> The type of the object returned by supplier
    * @return a supplier which can be used to call another supplier multiple
    * times when that supplier may fail sporadically
    */
-  public static <T> Supplier<T> create(Supplier<T> supplier, int tries) {
+  public static <A> Supplier<A> create(Supplier<A> supplier, int tries) {
     return create(supplier, tries, ExceptionHandlers.ignoreExceptionHandler());
   }
 
@@ -95,44 +97,45 @@ public class RetryFactory {
    * @param supplier which will be wrapped for retrial. It should be idempotent
    * on failure.
    * @param tries the number of times to re-attempt the call
-   * @param <T> The type of the object returned by supplier
+   * @param <A> The type of the object returned by supplier
    * @param handler which acts on exceptions thrown by the wrapped supplier
    * @return a supplier which can be used to call another supplier multiple
    * times when that supplier may fail sporadically
    */
-  public static <T> Supplier<T> create(Supplier<T> supplier, int tries, ExceptionHandler handler) {
-    return new RetrySupplier<T>(supplier, tries, handler);
+  public static <A> Supplier<A> create(Supplier<A> supplier, int tries, ExceptionHandler handler) {
+    return new RetrySupplier<A>(supplier, tries, handler);
   }
 
   /**
    * Decorates a supplier so that it retries a number of times before being
-   * allowed to fail.
+   * allowed to fail, backing-off in time exponentially.
    * 
+   * @param <A> The type of the object returned by supplier
    * @param supplier which will be wrapped for retrial. It should be idempotent
    * on failure.
    * @param tries the number of times to re-attempt the call
-   * @param <T> The type of the object returned by supplier
    * @param handler which acts on exceptions thrown by the wrapped supplier
+   * @param backoff time to wait in millis each time
    * @return a supplier which can be used to call another supplier multiple
    * times when that supplier may fail sporadically
    */
-  public static <T> Supplier<T> create(Supplier<T> supplier, int tries, ExceptionHandler handler, long backoff) {
-    return new RetrySupplier<T>(supplier, tries, handler, new BeforeRetryExponentialBackoffTask(backoff));
+  public static <A> Supplier<A> create(Supplier<A> supplier, int tries, ExceptionHandler handler, long backoff) {
+    return new RetrySupplier<A>(supplier, tries, handler, new BeforeRetryExponentialBackoffTask(backoff));
   }
 
   /**
    * Decorates a function so that it retries a number of times before being
    * allowed to fail.
    * 
+   * @param <A> the type of the parameter the function accepts
+   * @param <B> the type of the result of the function's apply method
    * @param function which will be wrapped for retrial. It should be idempotent
    * on failure.
    * @param tries the number of times to re-attempt the call
-   * @param <F> the type of the parameter the function accepts
-   * @param <T> the type of the result of the function's apply method
    * @return a function which can be used to invoke another function multiple
    * times when that function may fail sporadically
    */
-  public static <F, T> Function<F, T> create(Function<F, T> function, int tries) {
+  public static <A, B> Function<A, B> create(Function<A, B> function, int tries) {
     return create(function, tries, ExceptionHandlers.ignoreExceptionHandler());
   }
 
@@ -140,16 +143,16 @@ public class RetryFactory {
    * Decorates a function so that it retries a number of times before being
    * allowed to fail.
    * 
+   * @param <A> the type of the parameter the function accepts
+   * @param <B> the type of the result of the function's apply method
    * @param function which will be wrapped for retrial. It should be idempotent
    * on failure.
    * @param tries the number of times to re-attempt the call
-   * @param <F> the type of the parameter the function accepts
-   * @param <T> the type of the result of the function's apply method
    * @param handler which acts on exceptions thrown by the wrapped supplier
    * @return a function which can be used to invoke another function multiple
    * times when that function may fail sporadically
    */
-  public static <F, T> Function<F, T> create(Function<F, T> function, int tries, ExceptionHandler handler) {
+  public static <A, B> Function<A, B> create(Function<A, B> function, int tries, ExceptionHandler handler) {
     return create(function, tries, handler, 0);
   }
 
@@ -160,14 +163,14 @@ public class RetryFactory {
    * @param function which will be wrapped for retrial. It should be idempotent
    * on failure.
    * @param tries the number of times to re-attempt the call
-   * @param <F> the type of the parameter the function accepts
-   * @param <T> the type of the result of the function's apply method
+   * @param <A> the type of the parameter the function accepts
+   * @param <B> the type of the result of the function's apply method
    * @param handler which acts on exceptions thrown by the wrapped supplier
+   * @param backoff time to wait in millis each time
    * @return a function which can be used to invoke another function multiple
    * times when that function may fail sporadically
    */
-  public static <F, T> Function<F, T> create(Function<F, T> function, int tries, ExceptionHandler handler, long backoff) {
-    return new RetryFunction<F, T>(function, tries, handler, new BeforeRetryExponentialBackoffTask(backoff));
+  public static <A, B> Function<A, B> create(Function<A, B> function, int tries, ExceptionHandler handler, long backoff) {
+    return new RetryFunction<A, B>(function, tries, handler, new BeforeRetryExponentialBackoffTask(backoff));
   }
-
 }

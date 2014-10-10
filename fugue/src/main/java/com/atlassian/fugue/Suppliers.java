@@ -26,13 +26,19 @@ import com.google.common.base.Supplier;
  */
 public class Suppliers {
   /**
+   * Creates a {@link Supplier} of a constant value.
+   * 
+   * @param <A> the type
+   * @param instance the constant value to supply
    * @return a supplier that always supplies {@code instance}.
    */
-  public static <T> Supplier<T> ofInstance(final T instance) {
+  public static <A> Supplier<A> ofInstance(final A instance) {
     return com.google.common.base.Suppliers.ofInstance(instance);
   }
 
   /**
+   * Supplies true.
+   * 
    * @return a supplier that always supplies {@code true}.
    */
   public static Supplier<Boolean> alwaysTrue() {
@@ -40,6 +46,8 @@ public class Suppliers {
   }
 
   /**
+   * Supplies false.
+   * 
    * @return a supplier that always supplies {@code false}.
    */
   public static Supplier<Boolean> alwaysFalse() {
@@ -47,6 +55,9 @@ public class Suppliers {
   }
 
   /**
+   * Always returns null. Not a very good idea.
+   * 
+   * @param <A> the type
    * @return a supplier that always supplies {@code null}.
    */
   public static <A> Supplier<A> alwaysNull() {
@@ -56,6 +67,11 @@ public class Suppliers {
   }
 
   /**
+   * Turns an Option into a supplier, but throws an exception if undefined. Not
+   * a very good idea.
+   * 
+   * @param <A> the type
+   * @param option the option to attempt to get values from
    * @return a {@link Supplier} that always calls {@link Option#get()}, which
    * throws an Exception if the option is None
    * 
@@ -70,6 +86,13 @@ public class Suppliers {
   }
 
   /**
+   * Constantly applies the input value to the supplied function, and returns
+   * the result.
+   * 
+   * @param <A> the input type
+   * @param <B> the result type
+   * @param f the function
+   * @param a the value
    * @return a {@link Supplier} that always calls {@link Function#apply(Object)}
    * 
    * @since 2.2

@@ -26,6 +26,8 @@ public interface ExceptionHandler {
   /**
    * Act on an exception, this method should be called by clients when an
    * exception occurs in wrapped code.
+   * 
+   * @param exception the exception to handle
    */
   void handle(RuntimeException exception);
 }
