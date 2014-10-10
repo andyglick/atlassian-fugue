@@ -163,8 +163,8 @@ public class Iterables {
   /**
    * Applies each function in {@code fs} to {@code arg}.
    * 
-   * @param A the argument type
-   * @param B the function output and type of the elements of the final
+   * @param <A> the argument type
+   * @param <B> the function output and type of the elements of the final
    * iterable.
    * @param fs an iterable of functions that the arg will be applied to
    * @param arg the argument to apply to the functions
@@ -301,9 +301,10 @@ public class Iterables {
    * @param bs right values
    * @return an {@link Iterable iterable} of pairs, only as long as the shortest
    * input iterable.
-   * @since 1.2
    * 
    * @see {@link #unzip(Iterable)} for the opposite operation
+   * 
+   * @since 1.2
    */
   public static <A, B> Iterable<Pair<A, B>> zip(final Iterable<A> as, final Iterable<B> bs) {
     return zipWith(Pair.<A, B> pairs()).apply(as, bs);

@@ -71,8 +71,8 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    * 
    * @param <A> the contained type
    * @param a the value to hold
-   * @return a {@link Option.Some Some} if the parameter is not null or a
-   * {@link Option.None none} if it is
+   * @return a {@link Option.Some} if the parameter is not null or a
+   * {@link Option.None} if it is
    */
   public static <A> Option<A> option(final A a) {
     return (a == null) ? Option.<A> none() : some(a);

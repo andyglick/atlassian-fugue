@@ -30,7 +30,7 @@ import com.google.common.base.Supplier;
  * the implementing Maybe sub-type):
  * <ul>
  * <li>&lt;B&gt; M&lt;B&gt; map(Function&lt;? super A, B&gt;)
- * <li>&lt;B&gt; M&lt;B&gt; flatMap(Function&lt;? super A, M&ltB&gt&gt;)
+ * <li>&lt;B&gt; M&lt;B&gt; flatMap(Function&lt;? super A, M&ltB&gt;&gt;)
  * <li>M&lt;A&gt; filter(final Predicate<? super A> p);
  * </ul>
  * 

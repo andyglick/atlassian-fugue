@@ -40,8 +40,8 @@ public class ImmutableMaps {
    * Returns a function that takes a key of type K and a value of type V and
    * returns a Map entry.
    * 
-   * @param <K> the type of the key
-   * @param <V> the type of the value
+   * @param <K> the key type
+   * @param <V> the value type
    * @return a function that takes a K and a V and return the corresponding Map
    * entry
    */
@@ -62,11 +62,14 @@ public class ImmutableMaps {
   /**
    * Builds an immutable map from the given iterable of
    * {@link java.util.Map.Entry}.
-   * <p/>
+   * <p>
    * Any <code>null</code> entries will be filtered out. Additionally, any
    * entries containing <code>null</code> key or value will also be filtered
    * out. If multiple entries return the same key,
    * {@link IllegalArgumentException} will be thrown.
+   * 
+   * @param <K> the key type
+   * @param <V> the value type
    */
   public static <K, V> ImmutableMap<K, V> toMap(Iterable<Map.Entry<K, V>> fromIterable) {
     ImmutableMap.Builder<K, V> mapBuilder = ImmutableMap.builder();
@@ -86,12 +89,16 @@ public class ImmutableMaps {
    * Builds an immutable map from the given iterable, with key derived from the
    * application of the iterable to the keyTransformer, and value derived from
    * the application of the iterable to the valueTransformer.
-   * <p/>
+   * <p>
    * <code>null</code> value is allowed and will be passed to the keyTransformer
    * and valueTransformer. However, if either the keyTransformer or the
    * valueTransformer returns <code>null</code> for an entry, the entry is
    * ignored. If keyTransformer returns the same key for multiple entries,
    * {@link IllegalArgumentException} will be thrown.
+   * 
+   * @param <T> the input type
+   * @param <K> the key type
+   * @param <V> the value type
    */
   public static <T, K, V> ImmutableMap<K, V> toMap(Iterable<T> fromIterable, final Function<? super T, ? extends K> keyTransformer,
     final Function<? super T, ? extends V> valueTransformer) {
@@ -107,10 +114,13 @@ public class ImmutableMaps {
   /**
    * Builds an immutable map that is keyed by the result of applying
    * keyTransformer to each element of the given iterable of values.
-   * <p/>
+   * <p>
    * <code>null</code> value is allowed but will be ignored. If keyTransformer
    * returns the same key for multiple entries, {@link IllegalArgumentException}
    * will be thrown.
+   * 
+   * @param <K> the key type
+   * @param <V> the value type
    */
   public static <K, V> ImmutableMap<K, V> mapBy(Iterable<V> fromIterable, final Function<? super V, ? extends K> keyTransformer) {
     return toMap(fromIterable, keyTransformer, Functions.<V> identity());
@@ -119,10 +129,13 @@ public class ImmutableMaps {
   /**
    * Builds an immutable map from the given iterable and compute the value by
    * applying the valueTransformer.
-   * <p/>
+   * <p>
    * <code>null</code> value is allowed but will be ignored. If there are
    * duplicate entries in the iterable, {@link IllegalArgumentException} will be
    * thrown.
+   * 
+   * @param <K> the key type
+   * @param <V> the value type
    */
   public static <K, V> ImmutableMap<K, V> mapTo(Iterable<K> fromIterable, final Function<? super K, ? extends V> valueTransformer) {
     return toMap(fromIterable, Functions.<K> identity(), valueTransformer);
@@ -135,6 +148,11 @@ public class ImmutableMaps {
    * key or value, that entry is discarded in the result. If the function
    * returns entries with the same key for multiple entries,
    * {@link IllegalArgumentException} will be thrown.
+   * 
+   * @param <K1> the input key type
+   * @param <K2> the output key type 
+   * @param <V1> the input value type
+   * @param <V2> the output value type
    */
   public static <K1, K2, V1, V2> ImmutableMap<K2, V2> transform(Map<K1, V1> fromMap, Function<Map.Entry<K1, V1>, Map.Entry<K2, V2>> function) {
     return toMap(com.google.common.collect.Iterables.transform(fromMap.entrySet(), function));
@@ -146,6 +164,11 @@ public class ImmutableMaps {
    * entry, a <code>null</code> key or value is returned, that entry is
    * discarded in the result. If the keyTransformer function returns the same
    * key for multiple entries, {@link IllegalArgumentException} will be thrown.
+   * 
+   * @param <K1> the input key type
+   * @param <K2> the output key type 
+   * @param <V1> the input value type
+   * @param <V2> the output value type
    */
   public static <K1, K2, V1, V2> ImmutableMap<K2, V2> transform(Map<K1, V1> fromMap, final Function<? super K1, ? extends K2> keyTransformer,
     final Function<? super V1, ? extends V2> valueTransformer) {
@@ -165,6 +188,10 @@ public class ImmutableMaps {
    * entry contains a <code>null</code> value, it will also be discarded in the
    * result. If the {@code function} returns the same result key for multiple
    * keys, {@link IllegalArgumentException} will be thrown.
+   * 
+   * @param <K1> the input key type
+   * @param <K2> the output key type 
+   * @param <V> the value type
    */
   public static <K1, K2, V> ImmutableMap<K2, V> transformKey(Map<K1, V> fromMap, final Function<? super K1, ? extends K2> keyTransformer) {
     return transform(fromMap, keyTransformer, Functions.<V> identity());
@@ -176,6 +203,10 @@ public class ImmutableMaps {
    * valueTransformer for any entry, that entry is discarded in the result. If
    * an entry contains a <code>null</code> key, it will also be discarded in the
    * result.
+   * 
+   * @param <K1> the key type
+   * @param <V1> the input value type
+   * @param <V2> the output value type
    */
   public static <K, V1, V2> ImmutableMap<K, V2> transformValue(Map<K, V1> fromMap, final Function<? super V1, ? extends V2> valueTransformer) {
     return transform(fromMap, Functions.<K> identity(), valueTransformer);
@@ -187,6 +218,11 @@ public class ImmutableMaps {
    * Applies the given partial function to each entry of the unfiltered map. If
    * the application returns none, the entry will be left out; otherwise, the
    * transformed entry contained in the Option will be added to the result map.
+   * 
+   * @param <K1> the input key type
+   * @param <K2> the output key type 
+   * @param <V1> the input value type
+   * @param <V2> the output value type
    */
   public static <K1, K2, V1, V2> ImmutableMap<K2, V2> collect(Map<K1, V1> fromMap, Function<Map.Entry<K1, V1>, Option<Map.Entry<K2, V2>>> partial) {
     return toMap(Iterables.collect(fromMap.entrySet(), partial));
@@ -200,6 +236,11 @@ public class ImmutableMaps {
    * application returns none, the entry will be left out; otherwise, an entry
    * of transformed key and transformed value contained in the options will be
    * added to the result map.
+   * 
+   * @param <K1> the input key type
+   * @param <K2> the output key type 
+   * @param <V1> the input value type
+   * @param <V2> the output value type
    */
   public static <K1, K2, V1, V2> ImmutableMap<K2, V2> collect(Map<K1, V1> fromMap, final Function<? super K1, Option<K2>> keyPartial,
     final Function<? super V1, Option<V2>> valuePartial) {
@@ -219,6 +260,10 @@ public class ImmutableMaps {
    * unfiltered map. If the application returns none, the entry will be left
    * out; otherwise, an entry of transformed key contained in the option and the
    * original value will be added to the result map.
+   * 
+   * @param <K1> the input key type
+   * @param <K2> the output key type 
+   * @param <V> the value type
    */
   public static <K1, K2, V> ImmutableMap<K2, V> collectByKey(Map<K1, V> fromMap, final Function<? super K1, Option<K2>> keyPartial) {
     return collect(fromMap, keyPartial, Option.<V> toOption());
@@ -231,6 +276,10 @@ public class ImmutableMaps {
    * unfiltered map. If the application returns none, the entry will be left
    * out; otherwise, an entry of the original key and the transformed key
    * contained in the option will be added to the result map.
+   * 
+   * @param <K> the key type
+   * @param <V1> the input value type
+   * @param <V2> the output value type
    */
   public static <K, V1, V2> ImmutableMap<K, V2> collectByValue(Map<K, V1> fromMap, final Function<? super V1, Option<V2>> valuePartial) {
     return collect(fromMap, Option.<K> toOption(), valuePartial);
