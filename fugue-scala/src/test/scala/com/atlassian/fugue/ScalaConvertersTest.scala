@@ -24,7 +24,7 @@ import org.junit.Test
 import org.hamcrest.Matchers.is
 
 
-import com.google.common.base.{ Function => GuavaFunction, Supplier }
+import com.google.common.base.{ Function, Predicate, Supplier }
 
 class ScalaConvertersTest {
 
@@ -45,30 +45,38 @@ class ScalaConvertersTest {
   }
 
   @Test def function1ToGuavaFunctionImplicitly {
-    val g: GuavaFunction[String, Integer] = { (s: String) => s.length }.asJava
+    val g: Function[String, Integer] = { (s: String) => s.length }.asJava
     assertThat(new Integer(3), is(g.apply("abc")))
   }
 
   @Test def function1ToGuavaFunctionTypeConvertedExplicitly {
-    val g: GuavaFunction[Integer, Integer] = ((i: Int) => i * 2).asJava
+    val g: Function[Integer, Integer] = ((i: Int) => i * 2).asJava
     assertThat(new Integer(4), is(g.apply(2)))
   }
 
   @Test def function1ToGuavaFunctionTypeConvertedImplicitly {
-    def f(ff: GuavaFunction[Integer, Integer]): Integer = ff.apply(2)
-    val g: GuavaFunction[Integer, Integer] = ((i: Int) => i * 2).asJava
+    def f(ff: Function[Integer, Integer]): Integer = ff.apply(2)
+    val g: Function[Integer, Integer] = ((i: Int) => i * 2).asJava
     assertThat(new Integer(4), is(f(g)))
   }
 
   @Test def guavaFunctionToFunction1Implicitly {
-    val f: (Int => Int) = new GuavaFunction[Integer, Integer] {
+    val f: (Int => Int) = new Function[Integer, Integer] {
       def apply(input: Integer): Integer = input + 1
     }.asScala
     assertThat(3, is(f(2)))
   }
 
+  @Test def guavaPredicateToFunction1Implicitly {
+    val f: (Int => Boolean) = new Predicate[Integer] {
+      def apply(input: Integer): Boolean = input % 2 == 0
+    }.asScala
+    assertThat(f(2), is(true))
+    assertThat(f(3), is(false))
+  }
+
   @Test def guavaFunctionToFunction1TypeConvertedExplicitly {
-    val f: (Int => Int) = (new GuavaFunction[Integer, Integer] {
+    val f: (Int => Int) = (new Function[Integer, Integer] {
       def apply(input: Integer): Integer = input + 1
     }).asScala
     assertThat(3, is(f(2)))
@@ -132,8 +140,24 @@ class ScalaConvertersTest {
   }
 
   @Test def convertSameType {
-    val (d1, d2) = Pair.pair(new Date(1), new Date(2)).asScala
+    val (d1, d2) = Pair.pair(new Date(1), new Date(2)).asScala[(Date, Date)]
     assertThat(new Date(1), is(d1))
     assertThat(new Date(2), is(d2))
+  }
+
+  @Test def complexToScala {
+    val j = new Function[Pair[Integer, String], Option[Integer]] {
+      def apply(p: Pair[Integer, String]) = Option.some(3.asJava)
+    }
+    // should infer: ((Int, String)) => scala.Option[Int]
+    val s = j.asScala 
+    assertThat(s(2, ""), is(scala.Option(3)))
+  }
+
+  @Test def complexToJava {
+    val s: ((Int, String)) => scala.Option[Int] = { case (a, b) => scala.Option(3) }
+    // should infer: Function[Pair[Integer, String], Option[Integer]]
+    val j = s.asJava 
+    assertThat(j(Pair.pair(2, "")), is(Option.option(3.asJava)))
   }
 }

@@ -15,22 +15,28 @@
  */
 package com.atlassian.fugue
 
-import com.atlassian.fugue
-import com.google.common.base.{ Function, Supplier }
-import java.lang.{ Boolean => JBool, Byte => JByte, Double => JDouble, Float => JFloat, Long => JLong, Short => JShort }
+import java.lang.{Boolean => JBool, Byte => JByte, Double => JDouble, Float => JFloat, Long => JLong, Short => JShort}
+
+import annotation.implicitNotFound
+
+import com.google.common.base.{Function, Predicate, Supplier}
 
 /**
  * Useful for converting Fugue and Guava types to Scala and vice-versa.
  *
  * to use, simply `import ScalaConverters._` and then add `.asScala` and `.asJava` as required.
  *
- * Note that the Fugue/Guava side will have Java types such as `java.lang.Integer` and the Scala
+ * Note: that the Fugue/Guava side will have Java types such as `java.lang.Integer` and the Scala
  * side will have the Scala equivalents such as `Int`. It will pass reference types though unchanged.
+ *
+ * Also note that a `Function[Pair[A, B], C]` converts to an `((A, B)) => C` – note the inner parens,
+ * it converts to a tupled (1 arg that is a tuple) function. You can turn that into an
+ * `(A, B) => C` with `scala.Function.untupled _'
  *
  * @since 2.2
  */
 object ScalaConverters extends LowPriorityConverters {
-  import Iso._
+  import Iso.<~>
 
   implicit class ToJavaSyntax[A](val a: A) extends AnyVal {
     def asJava[B](implicit iso: B <~> A): B = iso asA a
@@ -58,18 +64,25 @@ object ScalaConverters extends LowPriorityConverters {
       a => new Supplier[A] { def get = a().asJava }
     }
 
-  implicit def FunctionIso[A, AA, B, BB](implicit eva: A <~> AA, evb: B <~> BB) =
+  implicit def FunctionIso[A, AA, B, BB](implicit eva: A <~> AA, evb: B <~> BB): Iso[Function[A, B], AA => BB] =
     Iso[Function[A, B], AA => BB] {
-      f => a => f.apply(a.asJava).asScala
+      f => a => f(a.asJava).asScala
     } {
       f => new Function[A, B] { def apply(a: A): B = f(a.asScala).asJava }
     }
 
   implicit def Function2Iso[A, AA, B, BB, C, CC](implicit ia: A <~> AA, ib: B <~> BB, ic: C <~> CC) =
     Iso[Function2[A, B, C], (AA, BB) => CC] {
-      f => { case (a, b) => f.apply(a.asJava, b.asJava).asScala }
+      f => { case (a, b) => f(a.asJava, b.asJava).asScala }
     } {
       f => new Function2[A, B, C] { def apply(a: A, b: B): C = f(a.asScala, b.asScala).asJava }
+    }
+
+  implicit def PredicateIso[A, AA](implicit eva: A <~> AA) =
+    Iso[Predicate[A], AA => Boolean] {
+      f => a => f(a.asJava)
+    } {
+      f => new Predicate[A] { def apply(a: A): Boolean = f(a.asScala) }
     }
 
   implicit def OptionIso[A, B](implicit i: A <~> B): Iso[Option[A], scala.Option[B]] =
@@ -89,7 +102,7 @@ object ScalaConverters extends LowPriorityConverters {
       _.fold(a => Either.left(a.asJava), b => Either.right(b.asJava))
     }
 
-  implicit def PairIso[A, AA, B, BB](implicit ia: A <~> AA, ib: B <~> BB) =
+  implicit def PairIso[A, AA, B, BB](implicit ia: A <~> AA, ib: B <~> BB): Iso[Pair[A, B], (AA, BB)] =
     Iso[Pair[A, B], (AA, BB)] {
       p => (p.left.asScala, p.right.asScala)
     } {
@@ -101,7 +114,7 @@ trait LowPriorityConverters {
   import Iso._
 
   implicit def AnyRefIso[A <: AnyRef] =
-    Iso[A, A](identity)(identity)
+    Iso.id[A]
 }
 
 /**
@@ -109,12 +122,34 @@ trait LowPriorityConverters {
  *
  * Must be natural and a proper bijection, cannot be partial.
  */
+@implicitNotFound(
+  msg = """Cannot find Iso instance
+  from: ${A} 
+    to: ${B} 
+
+– usually this is because Scala can't infer one of the types correctly, try specifying the type parameters directly with: 
+    
+     asScala[OutType]
+     asJava[OutType]
+    
+  Alternately there may not be an Iso for your type.
+    
+  If you need to construct one that simply passes the type through to the other side otherwise side use:
+    
+    implicit val MyTypeIso = Iso.id[MyType]
+    """
+)
 sealed trait Iso[A, B] {
   def asB(a: A): B
   def asA(s: B): A
 }
 
 object Iso {
+  /**
+   * Construct an Iso that passes through the type to be used on both sides
+   */
+  def id[A] = same[A, A]
+
   type <~>[A, B] = Iso[A, B]
 
   def apply[A, B](f: A => B)(g: B => A): A <~> B =
@@ -122,4 +157,6 @@ object Iso {
       def asB(a: A): B = f(a)
       def asA(b: B): A = g(b)
     }
+
+  def same[A, B](implicit asB: A =:= B, asA: B =:= A) = Iso(asB)(asA)
 }
