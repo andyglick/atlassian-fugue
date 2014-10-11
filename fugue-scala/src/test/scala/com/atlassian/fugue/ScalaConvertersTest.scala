@@ -23,7 +23,6 @@ import org.junit.Assert.{ assertEquals, assertSame, assertThat, assertTrue }
 import org.junit.Test
 import org.hamcrest.Matchers.is
 
-
 import com.google.common.base.{ Function, Predicate, Supplier }
 
 class ScalaConvertersTest {
@@ -150,14 +149,14 @@ class ScalaConvertersTest {
       def apply(p: Pair[Integer, String]) = Option.some(3.asJava)
     }
     // should infer: ((Int, String)) => scala.Option[Int]
-    val s = j.asScala 
+    val s = j.asScala
     assertThat(s(2, ""), is(scala.Option(3)))
   }
 
   @Test def complexToJava {
     val s: ((Int, String)) => scala.Option[Int] = { case (a, b) => scala.Option(3) }
     // should infer: Function[Pair[Integer, String], Option[Integer]]
-    val j = s.asJava 
+    val j = s.asJava
     assertThat(j(Pair.pair(2, "")), is(Option.option(3.asJava)))
   }
 }
