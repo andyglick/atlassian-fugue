@@ -1,8 +1,6 @@
-=====
-fugue
-=====
-Functional Extensions to Guava
-------------------------------
+# fugue
+
+## Functional Extensions to Guava
 
 Google's guava project is a solid utility library providing many useful interfaces
 and utilities, and it is a very commonly added dependency for most projects.
@@ -15,14 +13,11 @@ as well as a Pair.
 
 There also additional helper classes for common Function and Supplier operations.
 
---------------
-Issue Tracking
---------------
+## Issue Tracking
+
 Issues are tracked in the [fugue](https://bitbucket.org/atlassian/fugue/issues) project on bitbucket.
 
---------------
-Getting fugue
---------------
+## Getting fugue
 
 Add the Atlassian public repository:
 
@@ -49,9 +44,7 @@ And then add fugue as a dependency to your pom.xml:
         ...
     </dependencies>
 
------------------
-Scala Integration
------------------
+## Scala Integration
 
 From 2.2 there is a fugue-scala module that adds some helper methods to convert common 
 Fugue and Guava classes into their Scala equivalents. For instance, to convert a scala function
