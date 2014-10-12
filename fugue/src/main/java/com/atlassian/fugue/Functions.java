@@ -217,7 +217,7 @@ public class Functions {
     @Override public String toString() {
       return "InstanceOf";
     }
-    
+
     @Override public int hashCode() {
       return cls.hashCode();
     };
@@ -252,7 +252,7 @@ public class Functions {
     public Option<B> apply(A a) {
       return (p.apply(a)) ? Option.<B> option(f.apply(a)) : Option.<B> none();
     }
-    
+
     @Override public String toString() {
       return "Partial";
     }
@@ -296,11 +296,11 @@ public class Functions {
     public Option<C> apply(A a) {
       return ab.apply(a).flatMap(bc);
     }
-    
+
     @Override public String toString() {
       return "PartialComposer";
     }
-    
+
     @Override public int hashCode() {
       return bc.hashCode() ^ ab.hashCode();
     }
@@ -365,7 +365,7 @@ public class Functions {
     @Override public String toString() {
       return "CurriedFunction";
     }
-    
+
     @Override public int hashCode() {
       return f2.hashCode();
     }
@@ -519,11 +519,11 @@ public class Functions {
       }
       return Option.none();
     }
-    
+
     @Override public String toString() {
       return "Matcher";
     }
-    
+
     @Override public int hashCode() {
       return fs.hashCode();
     }
@@ -620,11 +620,11 @@ public class Functions {
     public R apply(final D ignore) {
       return supplier.get();
     }
-    
+
     @Override public String toString() {
       return "FromSupplier";
     }
-    
+
     @Override public int hashCode() {
       return supplier.hashCode();
     }
