@@ -152,7 +152,7 @@ public class OptionTest {
   //
 
   private Function<Integer, Option<Integer>> liftedIncrement() {
-    return compose(Functions.<Integer> option(), increment());
+    return compose(Functions.<Integer> nullToOption(), increment());
   }
 
   private Function<Integer, Integer> increment() {

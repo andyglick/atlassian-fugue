@@ -19,7 +19,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.ImmutableList.copyOf;
 
+import java.io.Serializable;
 import java.util.Iterator;
+
+import javax.annotation.Nullable;
 
 import com.atlassian.util.concurrent.NotNull;
 import com.google.common.base.Function;
@@ -44,6 +47,52 @@ public class Functions {
   private Functions() {}
 
   // /CLOVER:ON
+  /**
+   * Returns the composition of two functions. For {@code f: A->B} and
+   * {@code g: B->C}, composition is defined as the function h such that
+   * {@code h(a) == g(f(a))} for each {@code a}.
+   *
+   * @param g the second function to apply
+   * @param f the first function to apply
+   * @return the composition of {@code f} and {@code g}
+   * @see <a href="//en.wikipedia.org/wiki/Function_composition">function
+   * composition</a>
+   */
+  public static <A, B, C> Function<A, C> compose(Function<? super B, ? extends C> g, Function<? super A, ? extends B> f) {
+    return new FunctionComposition<A, B, C>(g, f);
+  }
+
+  private static class FunctionComposition<A, B, C> implements Function<A, C>, Serializable {
+    private final Function<? super B, ? extends C> g;
+    private final Function<? super A, ? extends B> f;
+
+    FunctionComposition(Function<? super B, ? extends C> g, Function<? super A, ? extends B> f) {
+      this.g = checkNotNull(g);
+      this.f = checkNotNull(f);
+    }
+
+    @Override public C apply(@Nullable A a) {
+      return g.apply(f.apply(a));
+    }
+
+    @Override public boolean equals(@Nullable Object obj) {
+      if (obj instanceof FunctionComposition) {
+        FunctionComposition<?, ?, ?> that = (FunctionComposition<?, ?, ?>) obj;
+        return f.equals(that.f) && g.equals(that.g);
+      }
+      return false;
+    }
+
+    @Override public int hashCode() {
+      return f.hashCode() ^ g.hashCode();
+    }
+
+    @Override public String toString() {
+      return g.toString() + "(" + f.toString() + ")";
+    }
+
+    private static final long serialVersionUID = 0;
+  }
 
   /**
    * Apply f to each element in elements, with each application using the result
@@ -107,6 +156,10 @@ public class Functions {
       public B apply(final Function<A, B> f) {
         return f.apply(arg);
       }
+
+      @Override public String toString() {
+        return "Apply";
+      }
     };
   }
 
@@ -127,6 +180,10 @@ public class Functions {
     return new Function<Function<A, B>, B>() {
       @Override public B apply(Function<A, B> f) {
         return f.apply(lazyA.get());
+      }
+
+      @Override public String toString() {
+        return "ApplySupplier";
       }
     };
   }
@@ -156,6 +213,16 @@ public class Functions {
     public Option<B> apply(A a) {
       return (cls.isAssignableFrom(a.getClass())) ? Option.some(cls.cast(a)) : Option.<B> none();
     }
+
+    @Override public String toString() {
+      return "InstanceOf";
+    }
+    
+    @Override public int hashCode() {
+      return cls.hashCode();
+    };
+
+    static final long serialVersionUID = 0;
   }
 
   /**
@@ -185,6 +252,14 @@ public class Functions {
     public Option<B> apply(A a) {
       return (p.apply(a)) ? Option.<B> option(f.apply(a)) : Option.<B> none();
     }
+    
+    @Override public String toString() {
+      return "Partial";
+    }
+
+    @Override public int hashCode() {
+      return f.hashCode() ^ p.hashCode();
+    }
   }
 
   /**
@@ -202,7 +277,8 @@ public class Functions {
    * @return a PartialFunction that flatMaps g on to the result of applying f.
    * @since 1.2
    */
-  public static <A, B, C> Function<A, Option<C>> compose(Function<? super B, ? extends Option<? extends C>> bc,
+
+  public static <A, B, C> Function<A, Option<C>> composeOption(Function<? super B, ? extends Option<? extends C>> bc,
     Function<? super A, ? extends Option<? extends B>> ab) {
     return new PartialComposer<A, B, C>(ab, bc);
   }
@@ -219,6 +295,14 @@ public class Functions {
 
     public Option<C> apply(A a) {
       return ab.apply(a).flatMap(bc);
+    }
+    
+    @Override public String toString() {
+      return "PartialComposer";
+    }
+    
+    @Override public int hashCode() {
+      return bc.hashCode() ^ ab.hashCode();
     }
   }
 
@@ -238,6 +322,10 @@ public class Functions {
     return new Function2<A, B, C>() {
       @Override public C apply(A a, B b) {
         return fpair.apply(Pair.pair(a, b));
+      }
+
+      @Override public String toString() {
+        return "ToFunction2";
       }
     };
   }
@@ -273,6 +361,14 @@ public class Functions {
         }
       };
     }
+
+    @Override public String toString() {
+      return "CurriedFunction";
+    }
+    
+    @Override public int hashCode() {
+      return f2.hashCode();
+    }
   }
 
   /**
@@ -304,6 +400,14 @@ public class Functions {
           return f2.apply(a).apply(b);
         }
       };
+    }
+
+    @Override public String toString() {
+      return "FlippedFunction";
+    }
+
+    @Override public int hashCode() {
+      return f2.hashCode();
     }
   }
 
@@ -415,6 +519,14 @@ public class Functions {
       }
       return Option.none();
     }
+    
+    @Override public String toString() {
+      return "Matcher";
+    }
+    
+    @Override public int hashCode() {
+      return fs.hashCode();
+    }
   }
 
   /**
@@ -428,7 +540,18 @@ public class Functions {
    * @since 2.0
    */
   public static <A, B> Function<A, Option<B>> mapNullToOption(Function<? super A, ? extends B> f) {
-    return new MapNullToOption<A, B>(f);
+    return Functions.compose(Functions.<B> nullToOption(), f);
+  }
+
+  /**
+   * Function that turns null inputs into a none, and not-null inputs into some.
+   * 
+   * @param <A> the input type
+   * @return a function that never returns nulls.
+   * @since 2.3
+   */
+  public static <A> Function<A, Option<A>> nullToOption() {
+    return new ToOption<A>();
   }
 
   /**
@@ -497,17 +620,23 @@ public class Functions {
     public R apply(final D ignore) {
       return supplier.get();
     }
+    
+    @Override public String toString() {
+      return "FromSupplier";
+    }
+    
+    @Override public int hashCode() {
+      return supplier.hashCode();
+    }
   };
 
-  static class MapNullToOption<A, B> implements Function<A, Option<B>> {
-    private final Function<? super A, ? extends B> f;
+  static <T> Function<T, T> identity() {
+    return com.google.common.base.Functions.identity();
+  }
 
-    MapNullToOption(Function<? super A, ? extends B> f) {
-      this.f = f;
-    }
-
-    @Override public Option<B> apply(A a) {
-      return Option.<B> option(f.apply(a));
+  static class ToOption<A> implements Function<A, Option<A>> {
+    public Option<A> apply(final A from) {
+      return Option.option(from);
     }
   }
 
@@ -517,20 +646,6 @@ public class Functions {
         return Iterators.singletonIterator(a);
       }
     };
-  }
-
-  static <T> Function<T, T> identity() {
-    return com.google.common.base.Functions.identity();
-  }
-
-  static <A> Function<A, Option<A>> option() {
-    return new ToOption<A>();
-  }
-
-  private static class ToOption<A> implements Function<A, Option<A>> {
-    public Option<A> apply(final A from) {
-      return Option.option(from);
-    }
   }
 
   static <A, B> Function<A, B> constant(final B constant) {
