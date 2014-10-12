@@ -22,8 +22,6 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import com.atlassian.fugue.Either.Left;
-import com.atlassian.fugue.Either.Right;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
