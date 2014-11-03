@@ -44,7 +44,21 @@ And then add fugue as a dependency to your pom.xml:
         ...
     </dependencies>
 
+## Guava compatibility
+
+This library mostly only depends on core Guava functionality and should be compatible with
+very old versions of Guava, and certainly with the newest versions. However, the tests may 
+rely on API that is only available in later versions (at the time of writing a minimum of 
+14.0 was needed to run the tests).
+
 ## Scala Integration
 
-From 2.2 there is a fugue-scala module that adds some helper methods to convert common 
-Fugue and Guava classes into their Scala equivalents. For instance, to convert a scala function
+From 2.2 there is a fugue-scala module that adds some helper methods in Scala to convert common 
+Fugue and Guava classes into their Scala equivalents and vice-versa. For instance, to convert a 
+scala function `f` to a Guava `Function<A, B>` there is syntax `.asJava` available and to go the 
+other way you can use `.asJava`.
+
+To enable this syntax you need to add the following to your scope:
+
+    import com.atlassian.fugue.ScalaConverters._
+
