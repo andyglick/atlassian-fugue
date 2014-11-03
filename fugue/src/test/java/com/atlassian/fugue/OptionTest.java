@@ -36,6 +36,7 @@ import java.util.NoSuchElementException;
 import org.junit.Test;
 
 import com.google.common.base.Function;
+import com.google.common.collect.ImmutableList;
 
 public class OptionTest {
   @Test public void foldOnNoneReturnsValueFromSupplier() {
@@ -145,6 +146,15 @@ public class OptionTest {
 
   @Test public void noneOrElseSupplierReturnsOrElse() {
     assertThat(none(int.class).orElse(Suppliers.ofInstance(some(2))), is(equalTo(some(2))));
+  }
+  
+  @Test public void someDefined() {
+    assertThat(com.google.common.collect.Iterables.filter(ImmutableList.of(some(3)), Option.<Integer> defined()).iterator().hasNext(), is(true));
+  }
+  
+  @Test public void noneNotDefined() {
+    //throw new RuntimeException();
+    assertThat(com.google.common.collect.Iterables.filter(ImmutableList.of(none(int.class)), Option.<Integer> defined()).iterator().hasNext(), is(false));
   }
 
   //

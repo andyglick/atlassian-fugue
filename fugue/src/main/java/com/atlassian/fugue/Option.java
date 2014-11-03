@@ -130,10 +130,8 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    * @param <A> the contained type
    * @return a {@link Predicate} that returns true only for defined options
    */
-  public static <A> Predicate<? super A> defined() {
-    @SuppressWarnings("unchecked")
-    final Predicate<A> result = (Predicate<A>) DEFINED;
-    return result;
+  public static <A> Predicate<Option<A>> defined() {
+    return new Defined<A>();
   }
 
   /**
@@ -397,8 +395,8 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   private static final Supplier<String> NONE_STRING = Suppliers.ofInstance("none()");
   private static final Supplier<Integer> NONE_HASH = Suppliers.ofInstance(31);
 
-  static final Predicate<Option<?>> DEFINED = new Predicate<Option<?>>() {
-    @Override public boolean apply(final Option<?> option) {
+  static final class Defined<A> implements Predicate<Option<A>> {
+    @Override public boolean apply(final Option<A> option) {
       return option.isDefined();
     }
   };
@@ -410,7 +408,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   /**
    * The big one, the actual implementation class.
    */
-  private static final class Some<A> extends Option<A> {
+  static final class Some<A> extends Option<A> {
     private static final long serialVersionUID = 5542513144209030852L;
 
     private final A value;
@@ -444,7 +442,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
     }
   }
 
-  private enum SomeString implements Function<Object, String> {
+  enum SomeString implements Function<Object, String> {
     INSTANCE;
 
     public String apply(final Object obj) {
@@ -458,7 +456,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
     }
   }
 
-  private enum SomeHashCode implements Function<Object, Integer> {
+  enum SomeHashCode implements Function<Object, Integer> {
     INSTANCE;
 
     public Integer apply(final Object a) {
@@ -472,7 +470,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
     }
   }
 
-  private static class ToOption<A> implements Function<A, Option<A>> {
+  static class ToOption<A> implements Function<A, Option<A>> {
     @Override public Option<A> apply(final A a) {
       return option(a);
     }

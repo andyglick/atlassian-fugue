@@ -58,7 +58,7 @@ public class Options {
    * @return the filtered options
    */
   public static <A> Iterable<Option<A>> filterNone(final Iterable<Option<A>> options) {
-    return filter(options, defined());
+    return filter(options, Option.<A> defined());
   }
 
   /**
