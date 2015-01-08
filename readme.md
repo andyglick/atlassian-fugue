@@ -62,3 +62,9 @@ To enable this syntax you need to add the following to your scope:
 
     import com.atlassian.fugue.ScalaConverters._
 
+## Contributors
+
+Source code should be formatted according to the local style, which is encoded in the formatter
+rules in:
+
+    src/etc/eclipse/formatter.xml
