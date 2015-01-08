@@ -18,6 +18,7 @@ package com.atlassian.fugue;
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.some;
 import static com.atlassian.fugue.Pair.pair;
+import static com.atlassian.fugue.Suppliers.ofInstance;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Predicates.not;
@@ -25,6 +26,8 @@ import static com.google.common.collect.Iterables.concat;
 import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Sets.newTreeSet;
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableCollection;
 
 import java.util.Iterator;
 import java.util.List;
@@ -34,6 +37,7 @@ import java.util.TreeSet;
 import com.atlassian.util.concurrent.LazyReference;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.base.Supplier;
 import com.google.common.collect.AbstractIterator;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
@@ -87,6 +91,17 @@ public class Iterables {
     @SuppressWarnings("unchecked")
     Iterable<T> result = (Iterable<T>) EMPTY;
     return result;
+  }
+
+  /**
+   * Creates an Iterable from the underlying array of elements.
+   * 
+   * @param as the elements to iterate over
+   * @return an Iterable across the underlying elements
+   * @since 2.3
+   */
+  public static <A> Iterable<A> iterable(A... as) {
+    return unmodifiableCollection(asList(as));
   }
 
   /**
@@ -729,6 +744,60 @@ public class Iterables {
       @Override public void remove() {
         throw new UnsupportedOperationException();
       }
+    }
+  }
+
+  /**
+   * Intersperse an element between all the elements in an iterable.
+   * 
+   * @param <A> the type of the elements.
+   * @param as the source iterable.
+   * @param a the element to intersperse between the source elements.
+   * @return a new Iterable that intersperses the element between the source.
+   * @since 2.3
+   */
+  public static <A> Iterable<A> intersperse(Iterable<? extends A> as, A a) {
+    return intersperse(as, ofInstance(a));
+  }
+
+  /**
+   * Intersperse an element between all the elements in an iterable.
+   * 
+   * @param <A> the type of the elements.
+   * @param as the source iterable.
+   * @param a the supplier of elements to intersperse between the source elements.
+   * @return a new Iterable that intersperses the element between the source.
+   * @since 2.3
+   */
+  public static <A> Iterable<A> intersperse(Iterable<? extends A> as, Supplier<A> a) {
+    return new Intersperse<A>(as, a);
+  }
+
+  static final class Intersperse<A> implements Iterable<A> {
+    private final Iterable<? extends A> as;
+    private final Supplier<A> a;
+
+    Intersperse(Iterable<? extends A> as, Supplier<A> a) {
+      this.as = as;
+      this.a = a;
+    }
+
+    @Override public Iterator<A> iterator() {
+      return new AbstractIterator<A>() {
+        private final Iterator<? extends A> it = as.iterator();
+        private boolean inter = false;
+
+        @Override protected A computeNext() {
+          if (!it.hasNext()) {
+            return endOfData();
+          }
+          try {
+            return inter ? a.get() : it.next();
+          } finally {
+            inter = !inter;
+          }
+        }
+      };
     }
   }
 
