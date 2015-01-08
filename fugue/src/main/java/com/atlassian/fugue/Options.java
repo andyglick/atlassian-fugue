@@ -15,7 +15,6 @@
  */
 package com.atlassian.fugue;
 
-import static com.atlassian.fugue.Option.defined;
 import static com.atlassian.fugue.Option.none;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Iterables.filter;
@@ -25,7 +24,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 
 /**
- * Utility methods for working with iterables of options.
+ * Utility methods for working with {@link Option options}.
  * 
  * @since 1.1
  */
@@ -35,7 +34,34 @@ public class Options {
   }
 
   /**
-   * Find the first option that isDefined, or if there aren't any, then none.
+   * Function that turns null values into a Some or None.
+   * 
+   * @param <A> the contained type
+   * @return a {@link Function} to wrap values in the appropriate {@link Option}
+   * 
+   * @since 2.3
+   */
+  public static <A> Function<A, Option<A>> toOption() {
+    return Option.toOption();
+  }
+
+  /**
+   * Take a function that may return null and instead return an {@link Option}.
+   * 
+   * @param <A> the input type
+   * @param <B> the output type
+   * @param f the function that returns nulls
+   * @return a {@link Function} that returns Option instead of null
+   * 
+   * @since 2.3
+   */
+  public static <A, B> Function<A, Option<B>> filterNull(Function<? super A, ? extends B> f) {
+    return Functions.compose(Options.<B> toOption(), f);
+  }
+
+  /**
+   * Find the first option that {@link Option#isDefined() isDefined}, or if
+   * there aren't any, then none.
    * 
    * @param <A> the contained type
    * @param options an Iterable of options to search through
@@ -134,14 +160,14 @@ public class Options {
       }
     };
   }
-  
+
   /**
-   * Lifts a predicate that takes an A into a predicate that takes
-   * an option of A.
+   * Lifts a predicate that takes an A into a predicate that takes an option of
+   * A.
    * 
    * @param pred the original predicate to be lifted
    * @param <A> the input type of the predicate
-   * @return a predicate that takes an option of type A 
+   * @return a predicate that takes an option of type A
    * @since 2.2
    */
   public static <A> Predicate<Option<A>> lift(final Predicate<? super A> pred) {
