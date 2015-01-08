@@ -34,32 +34,6 @@ public class Options {
   }
 
   /**
-   * Function that turns null values into a Some or None.
-   * 
-   * @param <A> the contained type
-   * @return a {@link Function} to wrap values in the appropriate {@link Option}
-   * 
-   * @since 2.3
-   */
-  public static <A> Function<A, Option<A>> toOption() {
-    return Option.toOption();
-  }
-
-  /**
-   * Take a function that may return null and instead return an {@link Option}.
-   * 
-   * @param <A> the input type
-   * @param <B> the output type
-   * @param f the function that returns nulls
-   * @return a {@link Function} that returns Option instead of null
-   * 
-   * @since 2.3
-   */
-  public static <A, B> Function<A, Option<B>> filterNull(Function<? super A, ? extends B> f) {
-    return Functions.compose(Options.<B> toOption(), f);
-  }
-
-  /**
    * Find the first option that {@link Option#isDefined() isDefined}, or if
    * there aren't any, then none.
    * 
