@@ -46,6 +46,10 @@
         <jsr305.version>2.0.1</jsr305.version>
     </properties>
 
+    <issueManagement>
+        <system>Bitbucket</system>
+        <url>https://bitbucket.org/atlassian/fugue/issues</url>
+    </issueManagement>
     <ciManagement>
         <system>Bamboo</system>
         <url>https://ecosystem-bamboo.internal.atlassian.com/browse/FUGUE</url>
