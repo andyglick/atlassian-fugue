@@ -16,6 +16,7 @@
 package com.atlassian.fugue
 
 import java.util.Date
+import com.atlassian.fugue.mango.Function.{Predicate, Supplier, Function => FugueFunction, Function2 => FugueFunction2}
 
 import scala.util.control.Exception.catching
 
@@ -23,18 +24,16 @@ import org.junit.Assert.{ assertEquals, assertSame, assertThat, assertTrue }
 import org.junit.Test
 import org.hamcrest.Matchers.is
 
-import com.google.common.base.{ Function, Predicate, Supplier }
-
 class ScalaConvertersTest {
 
   import ScalaConverters._
 
-  @Test def fromSupplierWithTypeConvertedExplicitly {
-    lazy val converted: () => Int = (Suppliers.ofInstance(1.asInstanceOf[Integer])).asScala
+  @Test def fromSupplierWithTypeConvertedExplicitly() {
+    lazy val converted: () => Int = Suppliers.ofInstance(1.asInstanceOf[Integer]).asScala
     assertThat(1, is(converted()))
   }
 
-  @Test def fromSupplierLazily {
+  @Test def fromSupplierLazily() {
     lazy val converted: () => String = Suppliers.fromOption[String](Option.none()).asScala
     val either: scala.Either[Throwable, String] = catching(classOf[NoSuchElementException]) either {
       converted()
@@ -43,30 +42,30 @@ class ScalaConvertersTest {
     assertTrue(either.left.get.isInstanceOf[NoSuchElementException])
   }
 
-  @Test def function1ToGuavaFunctionImplicitly {
-    val g: Function[String, Integer] = { (s: String) => s.length }.asJava
+  @Test def function1ToGuavaFunctionImplicitly() {
+    val g: FugueFunction[String, Integer] = { (s: String) => s.length }.asJava
     assertThat(new Integer(3), is(g.apply("abc")))
   }
 
-  @Test def function1ToGuavaFunctionTypeConvertedExplicitly {
-    val g: Function[Integer, Integer] = ((i: Int) => i * 2).asJava
+  @Test def function1ToGuavaFunctionTypeConvertedExplicitly() {
+    val g: FugueFunction[Integer, Integer] = ((i: Int) => i * 2).asJava
     assertThat(new Integer(4), is(g.apply(2)))
   }
 
-  @Test def function1ToGuavaFunctionTypeConvertedImplicitly {
+  @Test def function1ToGuavaFunctionTypeConvertedImplicitly() {
     def f(ff: Function[Integer, Integer]): Integer = ff.apply(2)
-    val g: Function[Integer, Integer] = ((i: Int) => i * 2).asJava
+    val g: FugueFunction[Integer, Integer] = ((i: Int) => i * 2).asJava
     assertThat(new Integer(4), is(f(g)))
   }
 
-  @Test def guavaFunctionToFunction1Implicitly {
-    val f: (Int => Int) = new Function[Integer, Integer] {
+  @Test def guavaFunctionToFunction1Implicitly() {
+    val f: (Int => Int) = new FugueFunction[Integer, Integer] {
       def apply(input: Integer): Integer = input + 1
     }.asScala
     assertThat(3, is(f(2)))
   }
 
-  @Test def guavaPredicateToFunction1Implicitly {
+  @Test def guavaPredicateToFunction1Implicitly() {
     val f: (Int => Boolean) = new Predicate[Integer] {
       def apply(input: Integer): Boolean = input % 2 == 0
     }.asScala
@@ -74,78 +73,78 @@ class ScalaConvertersTest {
     assertThat(f(3), is(false))
   }
 
-  @Test def guavaFunctionToFunction1TypeConvertedExplicitly {
-    val f: (Int => Int) = (new Function[Integer, Integer] {
+  @Test def guavaFunctionToFunction1TypeConvertedExplicitly() {
+    val f: (Int => Int) = new FugueFunction[Integer, Integer] {
       def apply(input: Integer): Integer = input + 1
-    }).asScala
+    }.asScala
     assertThat(3, is(f(2)))
   }
 
-  @Test def function2ToFugueFunction2Implicitly {
-    val f: Function2[String, Integer, String] = { (s: String, i: Int) => s * i }.asJava
+  @Test def function2ToFugueFunction2Implicitly() {
+    val f: FugueFunction2[String, Integer, String] = { (s: String, i: Int) => s * i }.asJava
     assertThat("abcabc", is(f.apply("abc", 2)))
   }
 
-  @Test def function2ToFugueFunction2TypeConvertedExplicitly {
-    val f: Function2[String, Integer, String] = { (s: String, i: Int) => s * i }.asJava
+  @Test def function2ToFugueFunction2TypeConvertedExplicitly() {
+    val f: FugueFunction2[String, Integer, String] = { (s: String, i: Int) => s * i }.asJava
     assertThat("abcabc", is(f.apply("abc", 2)))
   }
 
-  @Test def function2ToFugueFunction2TypeConvertedImplicitly {
-    val f: Function2[String, Integer, String] = { (s: String, i: Int) => s * i }.asJava
-    def g(ff: Function2[String, Integer, String]): String = ff.apply("abc", 2)
+  @Test def function2ToFugueFunction2TypeConvertedImplicitly() {
+    val f: FugueFunction2[String, Integer, String] = { (s: String, i: Int) => s * i }.asJava
+    def g(ff: FugueFunction2[String, Integer, String]): String = ff.apply("abc", 2)
     assertThat("abcabc", is(g(f)))
   }
 
-  @Test def fugueFunction2ToFunction2Implicitly {
-    val f: (String, Int) => String = new Function2[String, Integer, String] {
+  @Test def fugueFunction2ToFunction2Implicitly() {
+    val f: (String, Int) => String = new FugueFunction2[String, Integer, String] {
       def apply(s: String, i: Integer): String = s * i
     }.asScala
     assertThat("abcabc", is(f("abc", 2)))
   }
 
-  @Test def fugueFunction2ToFunction2TypeConvertedExplicitly {
-    val f = (new Function2[String, Integer, String] {
+  @Test def fugueFunction2ToFunction2TypeConvertedExplicitly() {
+    val f: (String, Int) => String = new FugueFunction2[String, Integer, String] {
       def apply(s: String, i: Integer): String = s * i
-    }).asScala
+    }.asScala
     assertThat("abcabc", is(f("abc", 2)))
   }
 
-  @Test def optionToFugueOption {
+  @Test def optionToFugueOption() {
     val o: Option[Integer] = Some(1).asInstanceOf[scala.Option[Int]].asJava
     assertThat(Option.some(new Integer(1)), is(o))
   }
 
-  @Test def fugueOptionToOption {
+  @Test def fugueOptionToOption() {
     val o: scala.Option[Int] = Option.some(Integer.valueOf(1)).asScala
     assertThat(Some(1), is(o))
   }
 
-  @Test def eitherToFugueEitherTypeConvertedExplicitly {
+  @Test def eitherToFugueEitherTypeConvertedExplicitly() {
     val e: Either[String, Integer] = (Right(1): scala.Either[String, Int]).asJava
     assertThat(Either.right[String, Integer](1), is(e))
   }
 
-  @Test def tuple2ToFuguePairImplicitly {
+  @Test def tuple2ToFuguePairImplicitly() {
     val p: Pair[String, Integer] = ("abc", 1).asJava
     assertThat("abc", is(p.left))
     assertThat(new Integer(1), is(p.right))
   }
 
-  @Test def fuguePairToTuple2 {
+  @Test def fuguePairToTuple2() {
     val (s, i) = Pair.pair("abc", Integer.valueOf(1)).asScala
     assertThat("abc", is(s))
     assertThat(1, is(i))
   }
 
-  @Test def convertSameType {
+  @Test def convertSameType() {
     val (d1, d2) = Pair.pair(new Date(1), new Date(2)).asScala[(Date, Date)]
     assertThat(new Date(1), is(d1))
     assertThat(new Date(2), is(d2))
   }
 
-  @Test def complexToScala {
-    val j = new Function[Pair[Integer, String], Option[Integer]] {
+  @Test def complexToScala() {
+    val j = new FugueFunction[Pair[Integer, String], Option[Integer]] {
       def apply(p: Pair[Integer, String]) = Option.some(3.asJava)
     }
     // should infer: ((Int, String)) => scala.Option[Int]
@@ -153,9 +152,9 @@ class ScalaConvertersTest {
     assertThat(s(2, ""), is(scala.Option(3)))
   }
 
-  @Test def complexToJava {
+  @Test def complexToJava() {
     val s: ((Int, String)) => scala.Option[Int] = { case (a, b) => scala.Option(3) }
-    // should infer: Function[Pair[Integer, String], Option[Integer]]
+    // should infer: FugueFunction[Pair[Integer, String], Option[Integer]]
     val j = s.asJava
     assertThat(j(Pair.pair(2, "")), is(Option.option(3.asJava)))
   }

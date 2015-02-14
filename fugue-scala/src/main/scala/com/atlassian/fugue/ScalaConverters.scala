@@ -17,9 +17,10 @@ package com.atlassian.fugue
 
 import java.lang.{Boolean => JBool, Byte => JByte, Double => JDouble, Float => JFloat, Long => JLong, Short => JShort}
 
-import annotation.implicitNotFound
+import com.atlassian.fugue.mango.Function.{Predicate, Supplier, Function => FugueFunction}
 
-import com.google.common.base.{Function, Predicate, Supplier}
+import annotation.implicitNotFound
+import scala.language.implicitConversions
 
 /**
  * Useful for converting Fugue and Guava types to Scala and vice-versa.
@@ -31,7 +32,7 @@ import com.google.common.base.{Function, Predicate, Supplier}
  *
  * Also note that a `Function[Pair[A, B], C]` converts to an `((A, B)) => C` – note the inner parens,
  * it converts to a tupled (1 arg that is a tuple) function. You can turn that into an
- * `(A, B) => C` with `scala.Function.untupled _'
+ * `(A, B) => C` with `scala.Function.untupled _`
  *
  * @since 2.2
  */
@@ -46,22 +47,22 @@ object ScalaConverters extends LowPriorityConverters {
     def asScala[B](implicit iso: A <~> B): B = iso asB a
   }
 
-  implicit val IntIso = Iso[Integer, Int](identity)(identity)
-  implicit val LongIso = Iso[JLong, Long](identity)(identity)
-  implicit val BoolIso = Iso[JBool, Boolean](identity)(identity)
-  implicit val CharacterIso = Iso[Character, Char](identity)(identity)
-  implicit val ByteIso = Iso[JByte, Byte](identity)(identity)
-  implicit val ShortIso = Iso[JShort, Short](identity)(identity)
-  implicit val FloatIso = Iso[JFloat, Float](identity)(identity)
-  implicit val DoubleIso = Iso[JDouble, Double](identity)(identity)
+  implicit val IntIso = Iso[Integer, Int](identity[Integer])(identity[Int])
+  implicit val LongIso = Iso[JLong, Long](identity[JLong])(identity[Long])
+  implicit val BoolIso = Iso[JBool, Boolean](identity[JBool])(identity[Boolean])
+  implicit val CharacterIso = Iso[Character, Char](identity[Character])(identity[Char])
+  implicit val ByteIso = Iso[JByte, Byte](identity[JByte])(identity[Byte])
+  implicit val ShortIso = Iso[JShort, Short](identity[JShort])(identity[Short])
+  implicit val FloatIso = Iso[JFloat, Float](identity[JFloat])(identity[Float])
+  implicit val DoubleIso = Iso[JDouble, Double](identity[JDouble])(identity[Double])
   implicit val VoidIso = Iso[Void, scala.Unit] { _ => () } { _ => null }
   implicit val UnitIso = Iso[Unit, scala.Unit] { _ => () } { _ => Unit.VALUE }
 
-  implicit def SupplierIso[A, AA](implicit ev: A <~> AA) =
+  implicit def SupplierIso[A, AA](implicit ev: A <~> AA): <~>[Supplier[A], () => AA] =
     Iso[Supplier[A], () => AA] {
       a => () => a.get.asScala
     } {
-      a => new Supplier[A] { def get = a().asJava }
+      a => new Supplier.AbstractSupplier[A] { def get = a().asJava }
     }
 
   implicit def FunctionIso[A, AA, B, BB](implicit eva: A <~> AA, evb: B <~> BB): Iso[Function[A, B], AA => BB] =
@@ -71,14 +72,14 @@ object ScalaConverters extends LowPriorityConverters {
       f => new Function[A, B] { def apply(a: A): B = f(a.asScala).asJava }
     }
 
-  implicit def Function2Iso[A, AA, B, BB, C, CC](implicit ia: A <~> AA, ib: B <~> BB, ic: C <~> CC) =
+  implicit def Function2Iso[A, AA, B, BB, C, CC](implicit ia: A <~> AA, ib: B <~> BB, ic: C <~> CC): <~>[(A, B) => C, (AA, BB) => CC] =
     Iso[Function2[A, B, C], (AA, BB) => CC] {
       f => { case (a, b) => f(a.asJava, b.asJava).asScala }
     } {
       f => new Function2[A, B, C] { def apply(a: A, b: B): C = f(a.asScala, b.asScala).asJava }
     }
 
-  implicit def PredicateIso[A, AA](implicit eva: A <~> AA) =
+  implicit def PredicateIso[A, AA](implicit eva: A <~> AA): <~>[Predicate[A], (AA) => Boolean] =
     Iso[Predicate[A], AA => Boolean] {
       f => a => f(a.asJava)
     } {
@@ -92,11 +93,11 @@ object ScalaConverters extends LowPriorityConverters {
       o => o.fold(Option.none[A])(b => Option.some(b.asJava))
     }
 
-  implicit def EitherIso[A, AA, B, BB](implicit ia: A <~> AA, ib: B <~> BB) =
+  implicit def EitherIso[A, AA, B, BB](implicit ia: A <~> AA, ib: B <~> BB): <~>[Either[A, B], scala.Either[AA, BB]] =
     Iso[Either[A, B], scala.Either[AA, BB]] {
       _.fold(
-        new Function[A, scala.Either[AA, BB]] { def apply(a: A) = Left(a.asScala) },
-        new Function[B, scala.Either[AA, BB]] { def apply(b: B) = Right(b.asScala) }
+        new FugueFunction[A, scala.Either[AA, BB]] { def apply(a: A) = Left(a.asScala) },
+        new FugueFunction[B, scala.Either[AA, BB]] { def apply(b: B) = Right(b.asScala) }
       )
     } {
       _.fold(a => Either.left(a.asJava), b => Either.right(b.asJava))
@@ -113,7 +114,7 @@ object ScalaConverters extends LowPriorityConverters {
 trait LowPriorityConverters {
   import Iso._
 
-  implicit def AnyRefIso[A <: AnyRef] =
+  implicit def AnyRefIso[A <: AnyRef]: <~>[A, A] =
     Iso.id[A]
 }
 
