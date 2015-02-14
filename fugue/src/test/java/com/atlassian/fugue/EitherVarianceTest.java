@@ -21,10 +21,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
+import com.atlassian.fugue.mango.Predicates;
 import org.junit.Test;
 
 import com.atlassian.fugue.mango.Function.Predicate;
-import com.google.common.base.Predicates;
 
 public class EitherVarianceTest {
   private final Either<String, Integer> l = left("heyaa!");

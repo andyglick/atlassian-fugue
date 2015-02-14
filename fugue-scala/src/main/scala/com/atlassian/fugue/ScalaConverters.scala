@@ -17,9 +17,9 @@ package com.atlassian.fugue
 
 import java.lang.{Boolean => JBool, Byte => JByte, Double => JDouble, Float => JFloat, Long => JLong, Short => JShort}
 
-import com.atlassian.fugue.mango.Function.{Predicate, Supplier, Function => FugueFunction}
+import com.atlassian.fugue.mango.Function.{Function => FugueFunction, Function2 => FugueFunction2, Predicate, Supplier}
 
-import annotation.implicitNotFound
+import scala.annotation.implicitNotFound
 import scala.language.implicitConversions
 
 /**
@@ -37,7 +37,7 @@ import scala.language.implicitConversions
  * @since 2.2
  */
 object ScalaConverters extends LowPriorityConverters {
-  import Iso.<~>
+  import com.atlassian.fugue.Iso.<~>
 
   implicit class ToJavaSyntax[A](val a: A) extends AnyVal {
     def asJava[B](implicit iso: B <~> A): B = iso asA a
@@ -65,25 +65,25 @@ object ScalaConverters extends LowPriorityConverters {
       a => new Supplier.AbstractSupplier[A] { def get = a().asJava }
     }
 
-  implicit def FunctionIso[A, AA, B, BB](implicit eva: A <~> AA, evb: B <~> BB): Iso[Function[A, B], AA => BB] =
-    Iso[Function[A, B], AA => BB] {
+  implicit def FunctionIso[A, AA, B, BB](implicit eva: A <~> AA, evb: B <~> BB): Iso[FugueFunction[A, B], AA => BB] =
+    Iso[FugueFunction[A, B], AA => BB] {
       f => a => f(a.asJava).asScala
     } {
-      f => new Function[A, B] { def apply(a: A): B = f(a.asScala).asJava }
+      f => new FugueFunction[A, B] { def apply(a: A): B = f(a.asScala).asJava }
     }
 
-  implicit def Function2Iso[A, AA, B, BB, C, CC](implicit ia: A <~> AA, ib: B <~> BB, ic: C <~> CC): <~>[(A, B) => C, (AA, BB) => CC] =
-    Iso[Function2[A, B, C], (AA, BB) => CC] {
+  implicit def Function2Iso[A, AA, B, BB, C, CC](implicit ia: A <~> AA, ib: B <~> BB, ic: C <~> CC): <~>[FugueFunction2[A, B, C], (AA, BB) => CC] =
+    Iso[FugueFunction2[A, B, C], (AA, BB) => CC] {
       f => { case (a, b) => f(a.asJava, b.asJava).asScala }
     } {
-      f => new Function2[A, B, C] { def apply(a: A, b: B): C = f(a.asScala, b.asScala).asJava }
+      f => new FugueFunction2[A, B, C] { def apply(a: A, b: B): C = f(a.asScala, b.asScala).asJava }
     }
 
   implicit def PredicateIso[A, AA](implicit eva: A <~> AA): <~>[Predicate[A], (AA) => Boolean] =
     Iso[Predicate[A], AA => Boolean] {
       f => a => f(a.asJava)
     } {
-      f => new Predicate[A] { def apply(a: A): Boolean = f(a.asScala) }
+      f => new Predicate[A] { def apply(a: A): JBool = f(a.asScala) }
     }
 
   implicit def OptionIso[A, B](implicit i: A <~> B): Iso[Option[A], scala.Option[B]] =
@@ -112,7 +112,7 @@ object ScalaConverters extends LowPriorityConverters {
 }
 
 trait LowPriorityConverters {
-  import Iso._
+  import com.atlassian.fugue.Iso._
 
   implicit def AnyRefIso[A <: AnyRef]: <~>[A, A] =
     Iso.id[A]
@@ -125,18 +125,18 @@ trait LowPriorityConverters {
  */
 @implicitNotFound(
   msg = """Cannot find Iso instance
-  from: ${A} 
-    to: ${B} 
+  from: ${A}
+    to: ${B}
 
-– usually this is because Scala can't infer one of the types correctly, try specifying the type parameters directly with: 
-    
+– usually this is because Scala can't infer one of the types correctly, try specifying the type parameters directly with:
+
      asScala[OutType]
      asJava[OutType]
-    
+
   Alternately there may not be an Iso for your type.
-    
+
   If you need to construct one that simply passes the type through to the other side otherwise side use:
-    
+
     implicit val MyTypeIso = Iso.id[MyType]
     """
 )

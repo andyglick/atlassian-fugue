@@ -15,26 +15,21 @@
  */
 package com.atlassian.fugue;
 
-import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
-import static com.atlassian.fugue.mango.Preconditions.checkState;
-import static com.google.common.collect.ImmutableList.copyOf;
+import com.atlassian.fugue.mango.Function.Function;
+import com.atlassian.fugue.mango.Function.Function2;
+import com.atlassian.fugue.mango.Function.Predicate;
+import com.atlassian.fugue.mango.Function.Supplier;
+import com.atlassian.fugue.mango.Iterators;
+import com.atlassian.util.concurrent.NotNull;
 
+import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.Iterator;
 
-import javax.annotation.Nullable;
-
-import com.atlassian.fugue.mango.Function.Function2;
-import com.atlassian.util.concurrent.NotNull;
-import com.atlassian.fugue.mango.Function.Function;
-import com.atlassian.fugue.mango.Function.Predicate;
-import com.atlassian.fugue.mango.Function.Supplier;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterators;
+import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
 
 /**
- * Utility methods for Functions that are in addition to the methods on
- * {@link com.google.common.base.Functions}.
+ * Utility methods for Functions
  * <P>
  * Note that this class defines Partial Functions to be functions that return an
  * {@link Option} of the result type, and has some methods for creating them.
@@ -413,124 +408,6 @@ public class Functions {
   }
 
   /**
-   * Creates a stack of matcher functions and returns the first result that
-   * matches.
-   * 
-   * @param <A> the input type
-   * @param <B> the output type
-   * @param f1 partial function, tried in order.
-   * @param f2 partial function, tried in order.
-   * @return a PartialFunction that composes all the functions and tries each
-   * one in sequence.
-   * @since 1.2
-   */
-  public static <A, B> Function<A, Option<B>> matches(Function<? super A, ? extends Option<? extends B>> f1,
-    Function<? super A, ? extends Option<? extends B>> f2) {
-    @SuppressWarnings("unchecked")
-    Matcher<A, B> result = matcher(f1, f2);
-    return result;
-  }
-
-  /**
-   * Creates a stack of matcher functions and returns the first result that
-   * matches.
-   * 
-   * @param <A> the input type
-   * @param <B> the output type
-   * @param f1 partial function, tried in order.
-   * @param f2 partial function, tried in order.
-   * @param f3 partial function, tried in order.
-   * @return a PartialFunction that composes all the functions and tries each
-   * one in sequence.
-   * @since 1.2
-   */
-  public static <A, B> Function<A, Option<B>> matches(Function<? super A, ? extends Option<? extends B>> f1,
-    Function<? super A, ? extends Option<? extends B>> f2, Function<? super A, ? extends Option<? extends B>> f3) {
-    @SuppressWarnings("unchecked")
-    Matcher<A, B> result = matcher(f1, f2, f3);
-    return result;
-  }
-
-  /**
-   * Creates a stack of matcher functions and returns the first result that
-   * matches.
-   * 
-   * @param <A> the input type
-   * @param <B> the output type
-   * @param f1 partial function, tried in order.
-   * @param f2 partial function, tried in order.
-   * @param f3 partial function, tried in order.
-   * @param f4 partial function, tried in order.
-   * @return a PartialFunction that composes all the functions and tries each
-   * one in sequence.
-   * @since 1.2
-   */
-  public static <A, B> Function<A, Option<B>> matches(Function<? super A, ? extends Option<? extends B>> f1,
-    Function<? super A, ? extends Option<? extends B>> f2, Function<? super A, ? extends Option<? extends B>> f3,
-    Function<? super A, ? extends Option<? extends B>> f4) {
-    Matcher<A, B> result = new Matcher<A, B>(ImmutableList.<Function<? super A, ? extends Option<? extends B>>> of(f1,
-      f2, f3, f4));
-    return result;
-  }
-
-  /**
-   * Creates a stack of matcher functions and returns the first result that
-   * matches.
-   * 
-   * @param <A> the input type
-   * @param <B> the output type
-   * @param f1 partial function, tried in order.
-   * @param f2 partial function, tried in order.
-   * @param f3 partial function, tried in order.
-   * @param f4 partial function, tried in order.
-   * @param f5 partial function, tried in order.
-   * @param fs partial functions, tried in order.
-   * @return a PartialFunction that composes all the functions and tries each
-   * one in sequence.
-   * @since 1.2
-   */
-  public static <A, B> Function<A, Option<B>> matches(Function<? super A, ? extends Option<? extends B>> f1,
-    Function<? super A, ? extends Option<? extends B>> f2, Function<? super A, ? extends Option<? extends B>> f3,
-    Function<? super A, ? extends Option<? extends B>> f4, Function<? super A, ? extends Option<? extends B>> f5,
-    Function<? super A, ? extends Option<? extends B>>... fs) {
-    Matcher<A, B> result = new Matcher<A, B>(com.google.common.collect.Iterables.concat(
-      ImmutableList.<Function<? super A, ? extends Option<? extends B>>> of(f1, f2, f3, f4, f5), copyOf(fs)));
-    return result;
-  }
-
-  /* utility copy function */
-  private static <A, B> Matcher<A, B> matcher(Function<? super A, ? extends Option<? extends B>>... fs) {
-    return new Matcher<A, B>(copyOf(fs));
-  }
-
-  static class Matcher<A, B> implements Function<A, Option<B>> {
-    private final Iterable<Function<? super A, ? extends Option<? extends B>>> fs;
-
-    Matcher(Iterable<Function<? super A, ? extends Option<? extends B>>> fs) {
-      this.fs = checkNotNull(fs);
-      checkState(!Iterables.isEmpty().apply(this.fs));
-    }
-
-    public Option<B> apply(A a) {
-      for (Function<? super A, ? extends Option<? extends B>> f : fs) {
-        @SuppressWarnings("unchecked")
-        Option<B> b = (Option<B>) f.apply(a);
-        if (b.isDefined())
-          return b;
-      }
-      return Option.none();
-    }
-
-    @Override public String toString() {
-      return "Matcher";
-    }
-
-    @Override public int hashCode() {
-      return fs.hashCode();
-    }
-  }
-
-  /**
    * Maps a function that returns nulls into a Partial function that returns an
    * Option of the result.
    * 
@@ -629,7 +506,17 @@ public class Functions {
     @Override public int hashCode() {
       return supplier.hashCode();
     }
-  };
+  }
+
+  public static <A> Function<A, Iterator<A>> singletonIterator(){
+    return new Function<A, Iterator<A>>() {
+      @Override
+      public Iterator<A> apply(final A a) {
+        return Iterators.singletonIterator(a);
+      }
+    };
+  }
+
 
   /**
    * Returns the identity function.
@@ -659,14 +546,6 @@ public class Functions {
     public Option<A> apply(final A from) {
       return Option.option(from);
     }
-  }
-
-  static <A> Function<A, Iterator<A>> singletonIterator() {
-    return new Function<A, Iterator<A>>() {
-      public Iterator<A> apply(final A a) {
-        return Iterators.singletonIterator(a);
-      }
-    };
   }
 
   static <A, B> Function<A, B> constant(final B constant) {

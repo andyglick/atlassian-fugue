@@ -17,8 +17,6 @@ package com.atlassian.fugue;
 
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
-import static com.google.common.collect.Iterables.filter;
-import static com.google.common.collect.Iterables.transform;
 
 import com.atlassian.fugue.mango.Function.Function;
 import com.atlassian.fugue.mango.Function.Function2;
@@ -49,29 +47,6 @@ public class Options {
       }
     }
     return none();
-  }
-
-  /**
-   * Filter out undefined options.
-   * 
-   * @param <A> the contained type
-   * @param options many options that may or may not be defined
-   * @return the filtered options
-   */
-  public static <A> Iterable<Option<A>> filterNone(final Iterable<Option<A>> options) {
-    return filter(options, Option.<A> defined());
-  }
-
-  /**
-   * Flattens an {@link Iterable} of {@link Option options} into an iterable of
-   * the things, filtering out any nones.
-   * 
-   * @param <A> the contained type
-   * @param options the iterable of options
-   * @return an {@link Iterable} of the contained type
-   */
-  public static <A> Iterable<A> flatten(final Iterable<Option<A>> options) {
-    return transform(filterNone(options), new SomeAccessor<A>());
   }
 
   /**
@@ -148,7 +123,7 @@ public class Options {
   public static <A> Predicate<Option<A>> lift(final Predicate<? super A> pred) {
     checkNotNull(pred);
     return new Predicate<Option<A>>() {
-      @Override public boolean apply(Option<A> oa) {
+      @Override public Boolean apply(Option<A> oa) {
         return oa.exists(pred);
       }
     };

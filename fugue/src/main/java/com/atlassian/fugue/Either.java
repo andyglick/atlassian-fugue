@@ -134,36 +134,6 @@ public abstract class Either<L, R> implements Serializable {
     return Eithers.getOrThrow(either);
   }
 
-  /**
-   * Collect the right values if there are only rights, otherwise return the
-   * first left encountered.
-   * 
-   * @param <L> the LFS type
-   * @param <R> the RHS type
-   * @param eithers an Iterable of Eithers
-   * @return either the iterable of right values, or the first left encountered.
-   * 
-   * @deprecated in 1.2 use {@link Eithers#sequenceRight(Iterable)}
-   */
-  @Deprecated public static <L, R> Either<L, Iterable<R>> sequenceRight(final Iterable<Either<L, R>> eithers) {
-    return Eithers.sequenceRight(eithers);
-  }
-
-  /**
-   * Collect the right values if there are only rights, otherwise return the
-   * first left encountered.
-   * 
-   * @param <L> the LFS type
-   * @param <R> the RHS type
-   * @param eithers an Iterable of Eithers
-   * @return either the iterable of right values, or the first left encountered.
-   * 
-   * @deprecated in 1.2 use {@link Eithers#sequenceLeft(Iterable)}
-   */
-  @Deprecated public static <L, R> Either<Iterable<L>, R> sequenceLeft(final Iterable<Either<L, R>> eithers) {
-    return Eithers.sequenceLeft(eithers);
-  }
-
   // /CLOVER:ON
 
   //

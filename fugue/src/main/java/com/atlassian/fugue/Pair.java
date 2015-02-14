@@ -45,7 +45,7 @@ public final class Pair<A, B> implements Serializable {
     return new Pair<A, B>(left, right);
   }
 
-  /**
+  /**g
    * Factory method for a Pair factory function.
    * @param <A> the left value type
    * @param <B> the right value type
@@ -79,21 +79,6 @@ public final class Pair<A, B> implements Serializable {
    */
   public static <B> Function<Pair<?, B>, B> rightValue() {
     return new RightAccessor<B>();
-  }
-
-  /**
-   * Zips two iterables into a single iterable that produces {@link Pair pairs}.
-   * 
-   * @param <A> LHS type
-   * @param <B> RHS type
-   * @param as left values
-   * @param bs right values
-   * @return an {@link Iterable iterable} of pairs, only as long as the shortest
-   * input iterable.
-   * @since 1.1
-   */
-  public static <A, B> Iterable<Pair<A, B>> zip(final Iterable<A> as, final Iterable<B> bs) {
-    return Iterables.zip(as, bs);
   }
 
   //

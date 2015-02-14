@@ -17,11 +17,8 @@ package com.atlassian.fugue;
 
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.some;
-import static com.atlassian.fugue.Options.filterNone;
 import static com.atlassian.fugue.Suppliers.ofInstance;
 import static com.atlassian.fugue.UtilityFunctions.toStringFunction;
-import static com.google.common.collect.ImmutableList.of;
-import static com.google.common.collect.Iterables.size;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.emptyIterable;
@@ -29,13 +26,11 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.junit.Test;
 
 import com.atlassian.fugue.mango.Function.Function;
-import com.google.common.collect.ImmutableList;
 
 public class OptionTest {
   @Test public void foldOnNoneReturnsValueFromSupplier() {
@@ -110,11 +105,6 @@ public class OptionTest {
     assertThat(some(1).hashCode(), is(some(1).hashCode()));
   }
 
-  @Test public void filterNones() {
-    final List<Option<Integer>> list = of(some(1), none(Integer.class), some(2));
-    assertThat(size(filterNone(list)), is(equalTo(2)));
-  }
-
   @Test public void noneSomeEquality() {
     assertThat(none().equals(some("")), is(false));
   }
@@ -145,15 +135,6 @@ public class OptionTest {
 
   @Test public void noneOrElseSupplierReturnsOrElse() {
     assertThat(none(int.class).orElse(ofInstance(some(2))), is(equalTo(some(2))));
-  }
-  
-  @Test public void someDefined() {
-    assertThat(com.google.common.collect.Iterables.filter(ImmutableList.of(some(3)), Option.<Integer> defined()).iterator().hasNext(), is(true));
-  }
-  
-  @Test public void noneNotDefined() {
-    //throw new RuntimeException();
-    assertThat(com.google.common.collect.Iterables.filter(ImmutableList.of(none(int.class)), Option.<Integer> defined()).iterator().hasNext(), is(false));
   }
 
   //

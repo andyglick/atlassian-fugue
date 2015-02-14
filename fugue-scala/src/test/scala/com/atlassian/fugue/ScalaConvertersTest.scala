@@ -16,6 +16,7 @@
 package com.atlassian.fugue
 
 import java.util.Date
+import java.lang.{Boolean => JBool}
 import com.atlassian.fugue.mango.Function.{Predicate, Supplier, Function => FugueFunction, Function2 => FugueFunction2}
 
 import scala.util.control.Exception.catching
@@ -53,7 +54,7 @@ class ScalaConvertersTest {
   }
 
   @Test def function1ToGuavaFunctionTypeConvertedImplicitly() {
-    def f(ff: Function[Integer, Integer]): Integer = ff.apply(2)
+    def f(ff: FugueFunction[Integer, Integer]): Integer = ff.apply(2)
     val g: FugueFunction[Integer, Integer] = ((i: Int) => i * 2).asJava
     assertThat(new Integer(4), is(f(g)))
   }
@@ -67,7 +68,7 @@ class ScalaConvertersTest {
 
   @Test def guavaPredicateToFunction1Implicitly() {
     val f: (Int => Boolean) = new Predicate[Integer] {
-      def apply(input: Integer): Boolean = input % 2 == 0
+      def apply(input: Integer): JBool = input % 2 == 0
     }.asScala
     assertThat(f(2), is(true))
     assertThat(f(3), is(false))
@@ -145,17 +146,17 @@ class ScalaConvertersTest {
 
   @Test def complexToScala() {
     val j = new FugueFunction[Pair[Integer, String], Option[Integer]] {
-      def apply(p: Pair[Integer, String]) = Option.some(3.asJava)
+      def apply(p: Pair[Integer, String]) = Option.some(p.left() + 1)
     }
     // should infer: ((Int, String)) => scala.Option[Int]
-    val s = j.asScala
-    assertThat(s(2, ""), is(scala.Option(3)))
+    val s = j.asScala[((Int, String)) => scala.Option[Integer]]
+    assertThat(s((2, "")), is(scala.Option(3.asJava)))
   }
 
   @Test def complexToJava() {
     val s: ((Int, String)) => scala.Option[Int] = { case (a, b) => scala.Option(3) }
     // should infer: FugueFunction[Pair[Integer, String], Option[Integer]]
     val j = s.asJava
-    assertThat(j(Pair.pair(2, "")), is(Option.option(3.asJava)))
+    assertThat(j(Pair.pair(2.asJava, "")), is(Option.option(3.asJava)))
   }
 }

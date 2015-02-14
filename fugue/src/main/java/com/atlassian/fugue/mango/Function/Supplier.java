@@ -6,7 +6,7 @@ package com.atlassian.fugue.mango.Function;
 public interface Supplier<A> extends Function<Object, A> {
   abstract public A get();
 
-  public static abstract class AbstractSupplier<A> implements Supplier<A> {
+  public abstract class AbstractSupplier<A> implements Supplier<A> {
     public A apply(Object v) {
       return get();
     }

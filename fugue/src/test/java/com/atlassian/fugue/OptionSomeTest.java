@@ -15,27 +15,18 @@
  */
 package com.atlassian.fugue;
 
+import com.atlassian.fugue.mango.Function.Supplier;
+import com.atlassian.fugue.mango.Predicates;
+import org.junit.Test;
+
+import java.util.Iterator;
+
 import static com.atlassian.fugue.Option.none;
-import static com.atlassian.fugue.Option.option;
 import static com.atlassian.fugue.Option.some;
 import static com.atlassian.fugue.Suppliers.ofInstance;
 import static com.atlassian.fugue.UtilityFunctions.addOne;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import com.atlassian.fugue.mango.Predicates;
-import org.junit.Test;
-
-import com.atlassian.fugue.mango.Function.Function;
-import com.atlassian.fugue.mango.Function.Supplier;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 public class OptionSomeTest {
   private static final Integer ORIGINAL_VALUE = 1;
@@ -68,23 +59,6 @@ public class OptionSomeTest {
 
   @Test public void map() {
     assertThat(some.map(addOne).get(), is(2));
-  }
-
-  @Test public void superTypesPermittedOnFilter() {
-    final ArrayList<Integer> list = Lists.newArrayList(1, 2);
-    final Option<ArrayList<Integer>> option = option(list);
-    final Option<ArrayList<Integer>> nopt = option.filter(Predicates.<List<Integer>> alwaysTrue());
-    assertThat(nopt, sameInstance(option));
-  }
-
-  @Test public void superTypesPermittedOnMap() {
-    final Option<ArrayList<Integer>> option = option(Lists.newArrayList(1, 2));
-    final Option<Set<Number>> set = option.map(new Function<List<Integer>, Set<Number>>() {
-      public Set<Number> apply(final List<Integer> list) {
-        return Sets.<Number> newHashSet(list);
-      }
-    });
-    assertThat(set.get().size(), is(option.get().size()));
   }
 
   @Test(expected = NullPointerException.class) public void filterForNull() {

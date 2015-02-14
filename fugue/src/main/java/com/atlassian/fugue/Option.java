@@ -15,18 +15,18 @@
  */
 package com.atlassian.fugue;
 
-import static com.atlassian.fugue.Suppliers.ofInstance;
-import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
+import com.atlassian.fugue.mango.Function.Function;
+import com.atlassian.fugue.mango.Function.Predicate;
+import com.atlassian.fugue.mango.Function.Supplier;
+import com.atlassian.fugue.mango.Iterators;
+import com.atlassian.fugue.mango.Preconditions;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import com.atlassian.fugue.mango.Function.Function;
-import com.atlassian.fugue.mango.Preconditions;
-import com.atlassian.fugue.mango.Function.Predicate;
-import com.atlassian.fugue.mango.Function.Supplier;
+import static com.atlassian.fugue.Suppliers.ofInstance;
+import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
 
 /**
  * A class that encapsulates missing values. An Option may be either
@@ -144,33 +144,6 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
     return ofInstance(Option.<A> none());
   }
 
-  /**
-   * Find the first option that isDefined, or if there aren't any, then None.
-   * 
-   * @param <A> the contained type
-   * @param options an Iterable of options to search through
-   * @return the first option that isDefined, or none
-   * 
-   * @deprecated since 1.1 use {@link Options#find(Iterable)} instead
-   */
-  // /CLOVER:OFF
-  @Deprecated public static <A> Option<A> find(final Iterable<Option<A>> options) {
-    return Options.find(options);
-  }
-
-  /**
-   * Filter out undefined options.
-   * 
-   * @param <A> the contained type
-   * @param options many options that may or may not be defined
-   * @return the filtered options
-   * 
-   * @deprecated since 1.1 use {@link Options#filterNone(Iterable)} instead
-   */
-  @Deprecated public static <A> Iterable<Option<A>> filterNone(final Iterable<Option<A>> options) {
-    return Options.filterNone(options);
-  }
-
   // /CLOVER:ON
 
   //
@@ -251,7 +224,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   }
 
   @Override public final Iterator<A> iterator() {
-    return fold(Suppliers.ofInstance(Collections.<A>emptyIterator()), Functions.<A> singletonIterator());
+    return fold(Suppliers.ofInstance(Iterators.<A> emptyIterator()), Functions.<A> singletonIterator());
   }
 
   //

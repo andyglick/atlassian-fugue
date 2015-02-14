@@ -30,10 +30,6 @@ public class FunctionMatcherTest {
     };
   }
 
-  @Test(expected = NullPointerException.class) public void nullFirst() {
-    Functions.matches(null, toInt(1));
-  }
-
   @Test(expected = NullPointerException.class) public void nullSecond() {
     Functions.compose(toInt(1), null);
   }
