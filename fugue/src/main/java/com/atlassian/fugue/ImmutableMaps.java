@@ -18,7 +18,8 @@ package com.atlassian.fugue;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.google.common.base.Function;
+import com.atlassian.fugue.mango.Function.Function;
+import com.atlassian.fugue.mango.Function.Function2;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 

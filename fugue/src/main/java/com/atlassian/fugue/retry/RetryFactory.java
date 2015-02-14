@@ -15,8 +15,8 @@
  */
 package com.atlassian.fugue.retry;
 
-import com.google.common.base.Function;
-import com.google.common.base.Supplier;
+import com.atlassian.fugue.mango.Function.Function;
+import com.atlassian.fugue.mango.Function.Supplier;
 
 /**
  * Provides factory methods for RetryFunction, RetryTask, and RetrySupplier.

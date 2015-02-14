@@ -24,7 +24,7 @@ import javax.annotation.Nullable;
 
 import org.junit.Test;
 
-import com.google.common.base.Function;
+import com.atlassian.fugue.mango.Function.Function;
 
 public class FunctionComposeTest {
   Function<String, Option<Integer>> toInt = new Function<String, Option<Integer>>() {

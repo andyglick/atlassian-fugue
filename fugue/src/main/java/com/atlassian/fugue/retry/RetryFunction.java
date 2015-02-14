@@ -17,8 +17,8 @@ package com.atlassian.fugue.retry;
 
 import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
 
-import com.google.common.base.Function;
-import com.google.common.base.Suppliers;
+import com.atlassian.fugue.Suppliers;
+import com.atlassian.fugue.mango.Function.Function;
 import com.atlassian.fugue.mango.Preconditions;
 
 /**

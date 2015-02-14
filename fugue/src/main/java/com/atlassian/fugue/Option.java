@@ -19,14 +19,14 @@ import static com.atlassian.fugue.Suppliers.ofInstance;
 import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.base.Supplier;
-import com.google.common.collect.Iterators;
+import com.atlassian.fugue.mango.Function.Function;
 import com.atlassian.fugue.mango.Preconditions;
+import com.atlassian.fugue.mango.Function.Predicate;
+import com.atlassian.fugue.mango.Function.Supplier;
 
 /**
  * A class that encapsulates missing values. An Option may be either
@@ -34,7 +34,7 @@ import com.atlassian.fugue.mango.Preconditions;
  * <p>
  * If it is a value it may be tested with the {@link #isDefined()} method, but
  * more often it is useful to either return the value or an alternative if
- * {@link #getOrElse(Object) not set}, or {@link #map(Function) map} or
+ * {@link #getOrElse(Object) not set}, or {@link #map(com.atlassian.fugue.mango.Function.Function) map} or
  * {@link #filter(Predicate) filter}.
  * <p>
  * Mapping a <em>none</em> of type A to type B will simply return a none of type
@@ -50,8 +50,8 @@ import com.atlassian.fugue.mango.Preconditions;
  * href=http://en.wikipedia.org/wiki/Functor>Functor composition law</a>. Note
  * however, that this should be rare as functions that return <code>null</code>
  * is a bad idea anyway. <b>Note</b> that if a function returns null to indicate
- * optionality, it can be {@link Functions#lift(Function) lifted} into a partial
- * function and then {@link #flatMap(Function) flat mapped} instead.
+ * optionality, it can be {@link Functions#lift(com.atlassian.fugue.mango.Function.Function) lifted} into a partial
+ * function and then {@link #flatMap(com.atlassian.fugue.mango.Function.Function) flat mapped} instead.
  * <p>
  * Note: while this class is public and abstract it does not expose a
  * constructor as only the concrete internal subclasses are designed to be used.
@@ -116,7 +116,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    * Function for wrapping values in a Some or None.
    * 
    * @param <A> the contained type
-   * @return a {@link Function} to wrap values
+   * @return a {@link com.atlassian.fugue.mango.Function.Function} to wrap values
    * 
    * @since 1.1
    */
@@ -251,7 +251,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   }
 
   @Override public final Iterator<A> iterator() {
-    return fold(Suppliers.ofInstance(Iterators.<A> emptyIterator()), Functions.<A> singletonIterator());
+    return fold(Suppliers.ofInstance(Collections.<A>emptyIterator()), Functions.<A> singletonIterator());
   }
 
   //

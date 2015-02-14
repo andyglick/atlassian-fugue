@@ -19,7 +19,8 @@ import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
 
 import java.io.Serializable;
 
-import com.google.common.base.Function;
+import com.atlassian.fugue.mango.Function.Function;
+import com.atlassian.fugue.mango.Function.Function2;
 
 /**
  * Represents a pair of objects.

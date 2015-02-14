@@ -23,16 +23,16 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
+import com.atlassian.fugue.mango.Predicates;
 import org.junit.Test;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicates;
-import com.google.common.base.Supplier;
+import com.atlassian.fugue.mango.Function.Function;
+import com.atlassian.fugue.mango.Function.Supplier;
 
 public class EitherRightProjectionTest {
   private final Either<Integer, String> r = right("heyaa!");
   private final Either<Integer, String> l = left(12);
-  final Supplier<String> boo = new Supplier<String>() {
+  final Supplier<String> boo = new Supplier.AbstractSupplier<String>() {
     @Override public String get() {
       return "boo!";
     }
@@ -219,7 +219,7 @@ public class EitherRightProjectionTest {
   }
 
   @Test public void getOrThrowRight() throws MyException {
-    assertThat(r.right().getOrThrow(new Supplier<MyException>() {
+    assertThat(r.right().getOrThrow(new Supplier.AbstractSupplier<MyException>() {
       @Override public MyException get() {
         return new MyException();
       }
@@ -227,7 +227,7 @@ public class EitherRightProjectionTest {
   }
 
   @Test(expected = MyException.class) public void getOrThrowLeft() throws MyException {
-    l.right().getOrThrow(new Supplier<MyException>() {
+    l.right().getOrThrow(new Supplier.AbstractSupplier<MyException>() {
       @Override public MyException get() {
         return new MyException();
       }

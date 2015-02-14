@@ -17,11 +17,13 @@ package com.atlassian.fugue;
 
 import static com.atlassian.fugue.Either.left;
 import static com.atlassian.fugue.Either.right;
+import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
 
 import java.lang.reflect.Constructor;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
+import com.atlassian.fugue.mango.Function.Function;
+import com.atlassian.fugue.mango.Function.Function2;
+import com.atlassian.fugue.mango.Function.Predicate;
 
 import javax.annotation.Nullable;
 
@@ -48,7 +50,7 @@ public class UtilityFunctions {
 
   public static final Predicate<Integer> dividableBy(final int div) {
     return new Predicate<Integer>() {
-      @Override public boolean apply(Integer input) {
+      @Override public Boolean apply(Integer input) {
         return input % div == 0;
       }
     };
@@ -106,8 +108,24 @@ public class UtilityFunctions {
     }
   };
 
-  public static Function<Object, String> toStringFunction() {
-    return com.google.common.base.Functions.toStringFunction();
+  public static Function<Object, String> toStringFunction(){
+    return ToStringFunction.INSTANCE;
+  }
+
+  // enum singleton pattern
+  private enum ToStringFunction implements Function<Object, String> {
+    INSTANCE;
+
+    @Override
+    public String apply(Object o) {
+      checkNotNull(o);
+      return o.toString();
+    }
+
+    @Override
+    public String toString() {
+      return "toString";
+    }
   }
 
   static <A> Function<Class<A>, Either<Exception, A>> defaultCtor() {

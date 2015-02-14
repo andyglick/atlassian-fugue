@@ -28,7 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
-import com.google.common.base.Function;
+import com.atlassian.fugue.mango.Function.Function;
 
 public class RetryFunctionTest {
   private static final int ATTEMPTS = 4;

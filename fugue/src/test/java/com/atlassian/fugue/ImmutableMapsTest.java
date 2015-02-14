@@ -25,9 +25,10 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import com.atlassian.fugue.mango.Function.Function2;
 import org.junit.Test;
 
-import com.google.common.base.Function;
+import com.atlassian.fugue.mango.Function.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 

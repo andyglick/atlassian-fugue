@@ -17,13 +17,12 @@ package com.atlassian.fugue;
 
 import static com.atlassian.fugue.Option.some;
 import static com.atlassian.fugue.UtilityFunctions.toStringFunction;
-import static com.google.common.base.Functions.compose;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import org.junit.Test;
 
-import com.google.common.base.Function;
+import com.atlassian.fugue.mango.Function.Function;
 
 public class OptionCompositionTest {
   @Test public void composeLaw() {
@@ -32,7 +31,7 @@ public class OptionCompositionTest {
         return input + 1;
       }
     };
-    assertThat(some(1).map(plusOne).map(toStringFunction()), is(some(1).map(compose(toStringFunction(), plusOne))));
+    assertThat(some(1).map(plusOne).map(toStringFunction()), is(some(1).map(Functions.compose(toStringFunction(), plusOne))));
   }
 
   @Test public void composeNull() {
@@ -42,6 +41,6 @@ public class OptionCompositionTest {
       }
     };
     Function<Object, String> constant = Functions.constant("foo");
-    assertThat(some(1).map(nasty).map(constant), is(some(1).map(compose(constant, nasty))));
+    assertThat(some(1).map(nasty).map(constant), is(some(1).map(Functions.compose(constant, nasty))));
   }
 }

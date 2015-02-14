@@ -28,8 +28,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
+import com.atlassian.fugue.mango.Function.Function;
+import com.atlassian.fugue.mango.Function.Predicate;
 import com.google.common.collect.ImmutableList;
 
 @SuppressWarnings("unused") public class IterablesMemoizeTest {

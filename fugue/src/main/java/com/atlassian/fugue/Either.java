@@ -23,9 +23,9 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.base.Supplier;
+import com.atlassian.fugue.mango.Function.Function;
+import com.atlassian.fugue.mango.Function.Predicate;
+import com.atlassian.fugue.mango.Function.Supplier;
 
 /**
  * A class that acts as a container for a value of one of two types. An Either

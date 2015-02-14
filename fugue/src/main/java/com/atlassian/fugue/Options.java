@@ -20,8 +20,9 @@ import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
 import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.transform;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
+import com.atlassian.fugue.mango.Function.Function;
+import com.atlassian.fugue.mango.Function.Function2;
+import com.atlassian.fugue.mango.Function.Predicate;
 
 /**
  * Utility methods for working with {@link Option options}.
@@ -166,7 +167,7 @@ public class Options {
    */
   public static <A, B> Option<B> ap(final Option<A> oa, Option<Function<A, B>> of) {
     return of.fold(Option.<B> noneSupplier(),
-      com.google.common.base.Functions.compose(Functions.<Option<A>, Option<B>> apply(oa), Options.<A, B> lift()));
+        Functions.compose(Functions.<Option<A>, Option<B>> apply(oa), Options.<A, B> lift()));
   }
 
   /**

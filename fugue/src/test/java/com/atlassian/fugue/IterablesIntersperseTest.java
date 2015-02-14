@@ -22,7 +22,7 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import com.google.common.base.Supplier;
+import com.atlassian.fugue.mango.Function.Supplier;
 
 public class IterablesIntersperseTest {
 

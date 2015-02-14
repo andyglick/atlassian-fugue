@@ -20,7 +20,7 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import com.google.common.base.Function;
+import com.atlassian.fugue.mango.Function.Function;
 
 public class FunctionMapNullToOptionTest {
 
@@ -29,7 +29,7 @@ public class FunctionMapNullToOptionTest {
   }
 
   @Test public void testLiftingNotNull() {
-    assertThat(Functions.mapNullToOption(com.google.common.base.Functions.<String> identity()).apply("mx1tr1x"), is(Option.some("mx1tr1x")));
+    assertThat(Functions.mapNullToOption(Functions.<String> identity()).apply("mx1tr1x"), is(Option.some("mx1tr1x")));
   }
 
   static <A, B> Function<A, B> nullProducer() {

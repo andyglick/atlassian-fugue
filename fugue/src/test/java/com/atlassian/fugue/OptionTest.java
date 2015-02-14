@@ -18,9 +18,8 @@ package com.atlassian.fugue;
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.some;
 import static com.atlassian.fugue.Options.filterNone;
+import static com.atlassian.fugue.Suppliers.ofInstance;
 import static com.atlassian.fugue.UtilityFunctions.toStringFunction;
-import static com.google.common.base.Functions.compose;
-import static com.google.common.base.Suppliers.ofInstance;
 import static com.google.common.collect.ImmutableList.of;
 import static com.google.common.collect.Iterables.size;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -35,7 +34,7 @@ import java.util.NoSuchElementException;
 
 import org.junit.Test;
 
-import com.google.common.base.Function;
+import com.atlassian.fugue.mango.Function.Function;
 import com.google.common.collect.ImmutableList;
 
 public class OptionTest {
@@ -141,11 +140,11 @@ public class OptionTest {
   }
 
   @Test public void someOrElseSupplierReturnsOriginal() {
-    assertThat(some(1).orElse(Suppliers.ofInstance(some(2))), is(equalTo(some(1))));
+    assertThat(some(1).orElse(ofInstance(some(2))), is(equalTo(some(1))));
   }
 
   @Test public void noneOrElseSupplierReturnsOrElse() {
-    assertThat(none(int.class).orElse(Suppliers.ofInstance(some(2))), is(equalTo(some(2))));
+    assertThat(none(int.class).orElse(ofInstance(some(2))), is(equalTo(some(2))));
   }
   
   @Test public void someDefined() {
@@ -162,7 +161,7 @@ public class OptionTest {
   //
 
   private Function<Integer, Option<Integer>> liftedIncrement() {
-    return compose(Functions.<Integer> nullToOption(), increment());
+    return Functions.compose(Functions.<Integer>nullToOption(), increment());
   }
 
   private Function<Integer, Integer> increment() {

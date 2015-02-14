@@ -21,7 +21,7 @@ import static com.google.common.base.Throwables.propagateIfPossible;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import com.google.common.base.Function;
+import com.atlassian.fugue.mango.Function.Function;
 
 /**
  * Static utility methods pertaining to instances of {@link Throwable} not
@@ -85,7 +85,7 @@ public final class Throwables {
    * {@code IllegalAccessException}, {@code InvocationTargetException}) will be
    * thrown wrapped in a simple {@code RuntimeException}. If you can't make your
    * exception match those criteria, you might want to look at using
-   * {@link #propagate(Throwable, Function)}.
+   * {@link #propagate(Throwable, com.atlassian.fugue.mango.Function.Function)}.
    * <p>
    * 
    * Example usage:

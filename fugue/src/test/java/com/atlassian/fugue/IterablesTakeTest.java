@@ -29,8 +29,6 @@ import java.util.NoSuchElementException;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
-import com.google.common.base.Functions;
-
 public class IterablesTakeTest {
   @Test public void takeOneFromList() {
     assertThat(take(3, asList(1, 2, 3, 4)), contains(1, 2, 3));

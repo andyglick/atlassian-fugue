@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import com.google.common.base.Function;
+import com.atlassian.fugue.mango.Function.Function;
 
 /**
  * {@link WeakMemoizer} caches the result of another function. The result is

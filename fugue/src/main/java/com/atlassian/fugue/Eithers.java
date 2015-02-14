@@ -15,13 +15,11 @@
  */
 package com.atlassian.fugue;
 
-import static com.google.common.base.Suppliers.compose;
-import static com.google.common.base.Suppliers.ofInstance;
 import static com.google.common.collect.Iterables.transform;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.base.Supplier;
+import com.atlassian.fugue.mango.Function.Function;
+import com.atlassian.fugue.mango.Function.Predicate;
+import com.atlassian.fugue.mango.Function.Supplier;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -231,7 +229,7 @@ public class Eithers {
   }
 
   public static <L, R> Supplier<Either<L, R>> toLeft(final L l) {
-    return compose(Eithers.<L, R> toLeft(), ofInstance(l));
+    return Suppliers.compose(Eithers.<L, R>toLeft(), Suppliers.<L>ofInstance(l));
   }
 
   // allows static import
@@ -253,7 +251,7 @@ public class Eithers {
   }
 
   public static <L, R> Supplier<Either<L, R>> toRight(final R r) {
-    return compose(Eithers.<L, R> toRight(), ofInstance(r));
+    return Suppliers.compose(Eithers.<L, R>toRight(), Suppliers.<R>ofInstance(r));
   }
 
   // allows static import

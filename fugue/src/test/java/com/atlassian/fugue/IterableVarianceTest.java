@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.google.common.base.Function;
+import com.atlassian.fugue.mango.Function.Function;
 import com.google.common.collect.ImmutableList;
 
 public class IterableVarianceTest {

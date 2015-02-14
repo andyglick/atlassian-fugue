@@ -20,9 +20,10 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+import com.atlassian.fugue.mango.Function.Function2;
 import org.junit.Test;
 
-import com.google.common.base.Function;
+import com.atlassian.fugue.mango.Function.Function;
 
 public class FunctionsFoldTest {
   @Test public void f2FoldSum() {

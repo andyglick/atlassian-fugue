@@ -23,7 +23,7 @@ import static org.hamcrest.Matchers.is;
 
 import org.junit.Test;
 
-import com.google.common.base.Predicate;
+import com.atlassian.fugue.mango.Function.Predicate;
 import com.google.common.base.Predicates;
 
 public class EitherVarianceTest {

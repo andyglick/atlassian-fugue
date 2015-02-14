@@ -28,7 +28,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.google.common.base.Function;
+import com.atlassian.fugue.mango.Function.Function;
 
 @RunWith(MockitoJUnitRunner.class) public final class ThrowablesTest {
   @Mock private Function<Throwable, RuntimeException> function;
