@@ -39,9 +39,7 @@
                             com.atlassian.fugue.*;version="${project.version}"
                         </Export-Package>
                         <Import-Package>
-                            com.atlassian.util.concurrent;version="${atlassian-util-concurrent.version}",
-                            com.google.common.base;version="${guava.osgi.version}",
-                            com.google.common.collect;version="${guava.osgi.version}",
+                            com.atlassian.util.concurrent;version="${atlassian-util-concurrent.version}"
                             org.slf4j;version="${slf4j-api.version}"
                         </Import-Package>
                     </instructions>
@@ -61,11 +59,6 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-nop</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <!-- findbugs is only useful for compile/analysis, not needed 
