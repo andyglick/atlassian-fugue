@@ -16,17 +16,17 @@
 package com.atlassian.fugue;
 
 import static com.atlassian.fugue.Suppliers.ofInstance;
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
 
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import com.google.common.base.Function;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Iterators;
+import com.atlassian.fugue.mango.Preconditions;
 
 /**
  * A class that encapsulates missing values. An Option may be either
@@ -310,7 +310,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    * @return the content of this option if defined as a right, or the supplier's
    * content as a left if not
    * 
-   * @see toLeft
+   * @see Option#toLeft
    */
   public final <X> Either<X, A> toRight(final Supplier<X> left) {
     return isEmpty() ? Either.<X, A> left(left.get()) : Either.<X, A> right(get());
@@ -325,7 +325,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    * @return the content of this option if defined as a left, or the supplier's
    * content as a right if not defined.
    * 
-   * @see toRight
+   * @see Option#toRight
    */
   public final <X> Either<A, X> toLeft(final Supplier<X> right) {
     return isEmpty() ? Either.<A, X> right(right.get()) : Either.<A, X> left(get());
@@ -389,14 +389,14 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
       throw ifUndefined.get();
     }
 
-    @Override public void foreach(final Effect<Object> effect) {}
+    @Override public void foreach(final Effect<? super Object> effect) {}
   };
 
   private static final Supplier<String> NONE_STRING = Suppliers.ofInstance("none()");
   private static final Supplier<Integer> NONE_HASH = Suppliers.ofInstance(31);
 
   static final class Defined<A> implements Predicate<Option<A>> {
-    @Override public boolean apply(final Option<A> option) {
+    @Override public Boolean apply(final Option<A> option) {
       return option.isDefined();
     }
   };

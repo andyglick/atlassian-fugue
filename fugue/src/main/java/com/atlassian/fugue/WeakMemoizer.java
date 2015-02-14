@@ -16,7 +16,7 @@
 
 package com.atlassian.fugue;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
 
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;

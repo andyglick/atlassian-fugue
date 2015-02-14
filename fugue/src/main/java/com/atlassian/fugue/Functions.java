@@ -15,8 +15,8 @@
  */
 package com.atlassian.fugue;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
+import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
+import static com.atlassian.fugue.mango.Preconditions.checkState;
 import static com.google.common.collect.ImmutableList.copyOf;
 
 import java.io.Serializable;

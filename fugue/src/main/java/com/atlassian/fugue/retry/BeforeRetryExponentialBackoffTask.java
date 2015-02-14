@@ -15,7 +15,7 @@
  */
 package com.atlassian.fugue.retry;
 
-import com.google.common.base.Preconditions;
+import com.atlassian.fugue.mango.Preconditions;
 
 /**
  * A backoff task for use in a retry -function, -supplier, or -task. This should

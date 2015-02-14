@@ -15,11 +15,11 @@
  */
 package com.atlassian.fugue.retry;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
 
 import com.google.common.base.Function;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Suppliers;
+import com.atlassian.fugue.mango.Preconditions;
 
 /**
  * A Function which wraps the apply method of another Function and attempts it

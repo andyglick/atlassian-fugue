@@ -15,8 +15,8 @@
  */
 package com.atlassian.fugue.retry;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
+import com.atlassian.fugue.mango.Preconditions;
 
 /**
  * A Supplier which wraps the apply method of another Supplier and attempts it

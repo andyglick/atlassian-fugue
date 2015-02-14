@@ -17,7 +17,7 @@ package com.atlassian.fugue;
 
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.some;
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
 
 import java.io.Serializable;
 import java.util.Iterator;
