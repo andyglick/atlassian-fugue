@@ -26,11 +26,11 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import com.atlassian.fugue.mango.Function.MangoSupplier;
 import com.atlassian.fugue.mango.Predicates;
 import org.junit.Test;
 
 import java.util.function.Function;
-import com.atlassian.fugue.mango.Function.Supplier;
 
 public class OptionNoneTest {
   private final Option<Integer> none = none();
@@ -165,7 +165,7 @@ public class OptionNoneTest {
   }
 
   @Test(expected = MyException.class) public void getOrThrow() throws MyException {
-    none.getOrThrow(new Supplier.AbstractSupplier<MyException>() {
+    none.getOrThrow(new MangoSupplier<MyException>() {
       @Override public MyException get() {
         return new MyException();
       }

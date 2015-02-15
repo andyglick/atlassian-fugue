@@ -16,7 +16,7 @@
 package com.atlassian.fugue.retry;
 
 import java.util.function.Function;
-import com.atlassian.fugue.mango.Function.Supplier;
+import java.util.function.Supplier;
 
 /**
  * Provides factory methods for RetryFunction, RetryTask, and RetrySupplier.

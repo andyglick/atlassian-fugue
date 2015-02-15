@@ -15,7 +15,7 @@
  */
 package com.atlassian.fugue;
 
-import com.atlassian.fugue.mango.Function.Supplier;
+import com.atlassian.fugue.mango.Function.MangoSupplier;
 import com.atlassian.fugue.mango.Predicates;
 import org.junit.Test;
 
@@ -142,7 +142,7 @@ public class OptionSomeTest {
   }
 
   @Test public void getOrThrow() throws MyException {
-    assertThat(some.getOrThrow(new Supplier.AbstractSupplier<MyException>() {
+    assertThat(some.getOrThrow(new MangoSupplier<MyException>() {
       @Override public MyException get() {
         return new MyException();
       }

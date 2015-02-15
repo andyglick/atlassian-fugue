@@ -15,8 +15,8 @@
  */
 package com.atlassian.fugue.retry;
 
+import com.atlassian.fugue.mango.Function.MangoSupplier;
 import com.atlassian.fugue.mango.Preconditions;
-import com.atlassian.fugue.mango.Function.Supplier;
 
 /**
  * A Runable which wraps the apply method of another Runnable and attempts it a
@@ -64,7 +64,7 @@ public class RetryTask implements Runnable {
   public RetryTask(final Runnable task, int tries, ExceptionHandler handler, Runnable beforeRetry) {
     Preconditions.checkNotNull(task, "task");
 
-    retrySupplier = new RetrySupplier<Object>(new Supplier.AbstractSupplier<Object>() {
+    retrySupplier = new RetrySupplier<Object>(new MangoSupplier<Object>() {
       public Object get() {
         task.run();
         return null;

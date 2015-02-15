@@ -7,7 +7,7 @@ import static org.junit.Assert.assertSame;
 
 import com.atlassian.fugue.WeakMemoizer.MappedReference;
 import java.util.function.Function;
-import com.atlassian.fugue.mango.Function.Supplier;
+import java.util.function.Supplier;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -19,11 +19,6 @@ public class WeakMemoizerTest {
 
   static final Function<Integer, String> lock() {
     return Functions.fromSupplier(new Supplier<String>() {
-      @Override
-      public String apply(Object o) {
-        return get();
-      }
-
       public String get() {
         return "test";
       }

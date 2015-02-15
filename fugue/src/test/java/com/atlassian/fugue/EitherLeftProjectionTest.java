@@ -23,16 +23,17 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
+import com.atlassian.fugue.mango.Function.MangoSupplier;
 import com.atlassian.fugue.mango.Predicates;
 import org.junit.Test;
 
 import java.util.function.Function;
-import com.atlassian.fugue.mango.Function.Supplier;
+import java.util.function.Supplier;
 
 public class EitherLeftProjectionTest {
   private final Either<String, Integer> l = left("heyaa!");
   private final Either<String, Integer> r = right(12);
-  final Supplier<String> boo = new Supplier.AbstractSupplier<String>() {
+  final Supplier<String> boo = new MangoSupplier<String>() {
     @Override public String get() {
       return "boo!";
     }
@@ -219,7 +220,7 @@ public class EitherLeftProjectionTest {
   }
 
   @Test public void getOrThrowLeft() throws MyException {
-    assertThat(l.left().getOrThrow(new Supplier.AbstractSupplier<MyException>() {
+    assertThat(l.left().getOrThrow(new MangoSupplier<MyException>() {
       @Override public MyException get() {
         return new MyException();
       }
@@ -227,7 +228,7 @@ public class EitherLeftProjectionTest {
   }
 
   @Test(expected = MyException.class) public void getOrThrowRight() throws MyException {
-    r.left().getOrThrow(new Supplier.AbstractSupplier<MyException>() {
+    r.left().getOrThrow(new MangoSupplier<MyException>() {
       @Override public MyException get() {
         return new MyException();
       }

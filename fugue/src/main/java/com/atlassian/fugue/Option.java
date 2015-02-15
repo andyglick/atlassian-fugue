@@ -17,7 +17,7 @@ package com.atlassian.fugue;
 
 import java.util.function.Function;
 import com.atlassian.fugue.mango.Function.Predicate;
-import com.atlassian.fugue.mango.Function.Supplier;
+import java.util.function.Supplier;
 import com.atlassian.fugue.mango.Iterators;
 import com.atlassian.fugue.mango.Preconditions;
 

@@ -15,8 +15,10 @@
  */
 package com.atlassian.fugue;
 
+import com.atlassian.fugue.mango.Function.MangoSupplier;
+
 import java.util.function.Function;
-import com.atlassian.fugue.mango.Function.Supplier;
+import java.util.function.Supplier;
 
 /**
  * Provide utility functions for the class of functions
@@ -34,7 +36,7 @@ public class Suppliers {
    */
   public static <A> Supplier<A> ofInstance(final A a)
   {
-    return new  Supplier.AbstractSupplier<A>(){
+    return new  MangoSupplier<A>(){
       @Override
       public A get()
       {
@@ -55,7 +57,7 @@ public class Suppliers {
    */
   public static <A, B> Supplier<B> compose(final Function<? super A, B> transform, final Supplier<A> first)
   {
-    return new Supplier.AbstractSupplier<B>()
+    return new MangoSupplier<B>()
     {
       @Override
       public B get()
@@ -107,7 +109,7 @@ public class Suppliers {
    * @since 2.0
    */
   public static <A> Supplier<A> fromOption(final Option<A> option) {
-    return new Supplier.AbstractSupplier<A>() {
+    return new MangoSupplier<A>() {
       @Override public A get() {
         return option.get();
       }
@@ -127,7 +129,7 @@ public class Suppliers {
    * @since 2.2
    */
   public static <A, B> Supplier<B> fromFunction(final Function<? super A, ? extends B> f, final A a) {
-    return new Supplier.AbstractSupplier<B>() {
+    return new MangoSupplier<B>() {
       @Override public B get() {
         return f.apply(a);
       }

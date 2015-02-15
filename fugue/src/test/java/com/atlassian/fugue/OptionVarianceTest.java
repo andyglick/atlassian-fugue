@@ -20,12 +20,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
+import com.atlassian.fugue.mango.Function.MangoSupplier;
 import com.atlassian.fugue.mango.Predicates;
 import org.junit.Test;
 
 import java.util.function.Function;
 import com.atlassian.fugue.mango.Function.Predicate;
-import com.atlassian.fugue.mango.Function.Supplier;
+import java.util.function.Supplier;
 
 public class OptionVarianceTest {
 
@@ -59,7 +60,7 @@ public class OptionVarianceTest {
 
   @Test public void orElse() {
     Option<Parent> some = some(new Parent());
-    Supplier<Option<Child>> f = new Supplier.AbstractSupplier<Option<Child>>() {
+    Supplier<Option<Child>> f = new MangoSupplier<Option<Child>>() {
       @Override public Option<Child> get() {
         return some(new Child());
       }
@@ -77,7 +78,7 @@ public class OptionVarianceTest {
 
   @Test public void getOrElseSupplier() {
     Option<Parent> some = some(new Parent());
-    Supplier<Child> f = new Supplier.AbstractSupplier<Child>() {
+    Supplier<Child> f = new MangoSupplier<Child>() {
       @Override public Child get() {
         return new Child();
       }

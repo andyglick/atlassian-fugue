@@ -28,7 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
-import com.atlassian.fugue.mango.Function.Supplier;
+import java.util.function.Supplier;
 
 public class RetrySupplierTest {
   private static final int ATTEMPTS = 4;

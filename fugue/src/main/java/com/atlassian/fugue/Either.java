@@ -25,7 +25,7 @@ import java.util.NoSuchElementException;
 
 import java.util.function.Function;
 import com.atlassian.fugue.mango.Function.Predicate;
-import com.atlassian.fugue.mango.Function.Supplier;
+import java.util.function.Supplier;
 
 /**
  * A class that acts as a container for a value of one of two types. An Either

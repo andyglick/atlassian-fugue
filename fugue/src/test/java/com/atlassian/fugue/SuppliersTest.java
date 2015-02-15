@@ -22,7 +22,7 @@ import java.util.NoSuchElementException;
 
 import org.junit.Test;
 
-import com.atlassian.fugue.mango.Function.Supplier;
+import java.util.function.Supplier;
 
 public class SuppliersTest {
 
