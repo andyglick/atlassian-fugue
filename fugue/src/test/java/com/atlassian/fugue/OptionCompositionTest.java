@@ -22,7 +22,7 @@ import static org.hamcrest.Matchers.is;
 
 import org.junit.Test;
 
-import com.atlassian.fugue.mango.Function.Function;
+import java.util.function.Function;
 
 public class OptionCompositionTest {
   @Test public void composeLaw() {

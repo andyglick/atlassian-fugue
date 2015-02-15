@@ -19,7 +19,7 @@ import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
 
 import java.io.Serializable;
 
-import com.atlassian.fugue.mango.Function.Function;
+import java.util.function.Function;
 import com.atlassian.fugue.mango.Function.Function2;
 
 /**

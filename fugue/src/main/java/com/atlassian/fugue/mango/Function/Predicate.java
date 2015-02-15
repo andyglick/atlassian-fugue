@@ -1,4 +1,7 @@
 package com.atlassian.fugue.mango.Function;
 
-public interface Predicate<A> extends Function<A, Boolean> {
+import java.util.function.Function;
+
+public interface Predicate<A> extends Function<A, Boolean>
+{
 }

@@ -23,7 +23,7 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import com.atlassian.fugue.mango.Function.Function;
+import java.util.function.Function;
 import com.atlassian.fugue.mango.Function.Predicate;
 import com.atlassian.fugue.mango.Function.Supplier;
 

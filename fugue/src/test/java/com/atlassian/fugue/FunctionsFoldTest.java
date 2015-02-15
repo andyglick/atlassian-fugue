@@ -23,7 +23,7 @@ import static org.junit.Assert.assertThat;
 import com.atlassian.fugue.mango.Function.Function2;
 import org.junit.Test;
 
-import com.atlassian.fugue.mango.Function.Function;
+import java.util.function.Function;
 
 public class FunctionsFoldTest {
   @Test public void f2FoldSum() {

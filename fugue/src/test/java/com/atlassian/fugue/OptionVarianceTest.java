@@ -23,7 +23,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import com.atlassian.fugue.mango.Predicates;
 import org.junit.Test;
 
-import com.atlassian.fugue.mango.Function.Function;
+import java.util.function.Function;
 import com.atlassian.fugue.mango.Function.Predicate;
 import com.atlassian.fugue.mango.Function.Supplier;
 

@@ -30,7 +30,8 @@
 
     <modules>
         <module>fugue</module>
-        <module>fugue-scala</module>
+        <!-- todo-alex ask the scala wizards for help here -->
+        <!--<module>fugue-scala</module>-->
     </modules>
 
     <properties>

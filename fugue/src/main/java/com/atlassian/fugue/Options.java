@@ -18,7 +18,7 @@ package com.atlassian.fugue;
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
 
-import com.atlassian.fugue.mango.Function.Function;
+import java.util.function.Function;
 import com.atlassian.fugue.mango.Function.Function2;
 import com.atlassian.fugue.mango.Function.Predicate;
 

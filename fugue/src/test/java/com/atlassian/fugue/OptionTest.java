@@ -30,7 +30,7 @@ import java.util.NoSuchElementException;
 
 import org.junit.Test;
 
-import com.atlassian.fugue.mango.Function.Function;
+import java.util.function.Function;
 
 public class OptionTest {
   @Test public void foldOnNoneReturnsValueFromSupplier() {

@@ -18,7 +18,7 @@ package com.atlassian.fugue.retry;
 import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
 
 import com.atlassian.fugue.Suppliers;
-import com.atlassian.fugue.mango.Function.Function;
+import java.util.function.Function;
 import com.atlassian.fugue.mango.Preconditions;
 
 /**

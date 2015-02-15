@@ -20,7 +20,7 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import com.atlassian.fugue.mango.Function.Function;
+import java.util.function.Function;
 
 public class FunctionMapNullToOptionTest {
 
