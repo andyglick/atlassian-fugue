@@ -15,18 +15,19 @@
  */
 package com.atlassian.fugue;
 
-import java.util.function.Function;
-import com.atlassian.fugue.mango.Function.Function2;
-import com.atlassian.fugue.mango.Function.Predicate;
-import java.util.function.Supplier;
-import com.atlassian.fugue.mango.Iterators;
-import com.atlassian.util.concurrent.NotNull;
+import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
 
-import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.Iterator;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
-import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
+import javax.annotation.Nullable;
+
+import com.atlassian.fugue.mango.Iterators;
+import com.atlassian.fugue.mango.Function.Function2;
+import com.atlassian.fugue.mango.Function.Predicate;
+import com.atlassian.util.concurrent.NotNull;
 
 /**
  * Utility methods for Functions
@@ -222,7 +223,8 @@ public class Functions {
   }
 
   /**
-   * Create a PartialFunction from a {@link Predicate} and a {@link com.atlassian.fugue.mango.Function.Function}.
+   * Create a PartialFunction from a {@link Predicate} and a
+   * {@link com.atlassian.fugue.mango.Function.Function}.
    * 
    * @param <A> the input type
    * @param <B> the output type
@@ -433,7 +435,8 @@ public class Functions {
   }
 
   /**
-   * @deprecated this is a poor name, use {@link #mapNullToOption(com.atlassian.fugue.mango.Function.Function)}
+   * @deprecated this is a poor name, use
+   * {@link #mapNullToOption(com.atlassian.fugue.mango.Function.Function)}
    * instead
    * 
    * @param <A> the input type
@@ -508,21 +511,18 @@ public class Functions {
     }
   }
 
-  public static <A> Function<A, Iterator<A>> singletonIterator(){
+  public static <A> Function<A, Iterator<A>> singletonIterator() {
     return new Function<A, Iterator<A>>() {
-      @Override
-      public Iterator<A> apply(final A a) {
+      @Override public Iterator<A> apply(final A a) {
         return Iterators.singletonIterator(a);
       }
     };
   }
 
-
   /**
    * Returns the identity function.
    */
-  @SuppressWarnings("unchecked")
-  public static <A> Function<A, A> identity() {
+  @SuppressWarnings("unchecked") public static <A> Function<A, A> identity() {
     // cast a singleton Function<Object, Object> to a more useful type
     return (Function<A, A>) IdentityFunction.INSTANCE;
   }
@@ -531,13 +531,11 @@ public class Functions {
   private enum IdentityFunction implements Function<Object, Object> {
     INSTANCE;
 
-    @Override
-    public Object apply(Object o) {
-     return o;
+    @Override public Object apply(Object o) {
+      return o;
     }
 
-    @Override
-    public String toString() {
+    @Override public String toString() {
       return "identity";
     }
   }

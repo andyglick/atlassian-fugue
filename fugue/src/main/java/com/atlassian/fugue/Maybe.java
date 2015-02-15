@@ -17,9 +17,9 @@ package com.atlassian.fugue;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.function.Supplier;
 
 import com.atlassian.fugue.mango.Function.Predicate;
-import java.util.function.Supplier;
 
 /**
  * Implemented by things that may or may not contain a value.
@@ -29,9 +29,9 @@ import java.util.function.Supplier;
  * (due to the lack of higher-kinded types). These are for instance (where M is
  * the implementing Maybe sub-type):
  * <ul>
- * <li> &lt;B&gt; M&lt;B&gt; map(Function&lt;? super A, B&gt;)
- * <li> &lt;B&gt; M&lt;B&gt; flatMap(Function&lt;? super A, M&lt;B&gt;&gt;)
- * <li> M&lt;A&gt; filter(final Predicate&gt;? super A&lt; p)
+ * <li>&lt;B&gt; M&lt;B&gt; map(Function&lt;? super A, B&gt;)
+ * <li>&lt;B&gt; M&lt;B&gt; flatMap(Function&lt;? super A, M&lt;B&gt;&gt;)
+ * <li>M&lt;A&gt; filter(final Predicate&gt;? super A&lt; p)
  * </ul>
  * 
  * @param <A> the contained type

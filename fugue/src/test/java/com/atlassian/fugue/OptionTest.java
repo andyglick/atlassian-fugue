@@ -27,10 +27,9 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
 import java.util.NoSuchElementException;
+import java.util.function.Function;
 
 import org.junit.Test;
-
-import java.util.function.Function;
 
 public class OptionTest {
   @Test public void foldOnNoneReturnsValueFromSupplier() {
@@ -142,7 +141,7 @@ public class OptionTest {
   //
 
   private Function<Integer, Option<Integer>> liftedIncrement() {
-    return Functions.compose(Functions.<Integer>nullToOption(), increment());
+    return Functions.compose(Functions.<Integer> nullToOption(), increment());
   }
 
   private Function<Integer, Integer> increment() {

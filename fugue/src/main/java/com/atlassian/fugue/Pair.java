@@ -18,8 +18,8 @@ package com.atlassian.fugue;
 import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
 
 import java.io.Serializable;
-
 import java.util.function.Function;
+
 import com.atlassian.fugue.mango.Function.Function2;
 
 /**
@@ -45,8 +45,9 @@ public final class Pair<A, B> implements Serializable {
     return new Pair<A, B>(left, right);
   }
 
-  /**g
-   * Factory method for a Pair factory function.
+  /**
+   * g Factory method for a Pair factory function.
+   * 
    * @param <A> the left value type
    * @param <B> the right value type
    * @return a function that constructs Pairs

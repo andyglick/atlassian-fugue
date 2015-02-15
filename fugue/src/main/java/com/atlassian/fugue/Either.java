@@ -22,10 +22,10 @@ import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
 import java.util.function.Function;
-import com.atlassian.fugue.mango.Function.Predicate;
 import java.util.function.Supplier;
+
+import com.atlassian.fugue.mango.Function.Predicate;
 
 /**
  * A class that acts as a container for a value of one of two types. An Either
@@ -257,7 +257,8 @@ public abstract class Either<L, R> implements Serializable {
    * applied.
    * @since 2.2
    */
-  public abstract <LL, RR> Either<LL, RR> bimap(final Function<? super L, ? extends LL> ifLeft, final Function<? super R, ? extends RR> ifRight);
+  public abstract <LL, RR> Either<LL, RR> bimap(final Function<? super L, ? extends LL> ifLeft,
+    final Function<? super R, ? extends RR> ifRight);
 
   //
   // internal only, should not be accessed from outside this class
@@ -307,7 +308,8 @@ public abstract class Either<L, R> implements Serializable {
       return ifLeft.apply(value);
     }
 
-    @Override public <LL, RR> Either<LL, RR> bimap(Function<? super L, ? extends LL> ifLeft, Function<? super R, ? extends RR> ifRight) {
+    @Override public <LL, RR> Either<LL, RR> bimap(Function<? super L, ? extends LL> ifLeft,
+      Function<? super R, ? extends RR> ifRight) {
       @SuppressWarnings("unchecked")
       final Either<LL, RR> map = (Either<LL, RR>) left().map(ifLeft);
       return map;
@@ -362,7 +364,8 @@ public abstract class Either<L, R> implements Serializable {
       return ifRight.apply(value);
     }
 
-    @Override public <LL, RR> Either<LL, RR> bimap(Function<? super L, ? extends LL> ifLeft, Function<? super R, ? extends RR> ifRight) {
+    @Override public <LL, RR> Either<LL, RR> bimap(Function<? super L, ? extends LL> ifLeft,
+      Function<? super R, ? extends RR> ifRight) {
       @SuppressWarnings("unchecked")
       final Either<LL, RR> map = (Either<LL, RR>) right().map(ifRight);
       return map;

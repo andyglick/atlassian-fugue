@@ -15,8 +15,8 @@
  */
 package com.atlassian.fugue.retry;
 
-import com.atlassian.fugue.mango.Function.MangoSupplier;
 import com.atlassian.fugue.mango.Preconditions;
+import com.atlassian.fugue.mango.Function.MangoSupplier;
 
 /**
  * A Runable which wraps the apply method of another Runnable and attempts it a

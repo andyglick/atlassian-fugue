@@ -15,14 +15,14 @@
  */
 package com.atlassian.fugue;
 
-import com.atlassian.fugue.mango.Function.MangoSupplier;
-
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import com.atlassian.fugue.mango.Function.MangoSupplier;
+
 /**
- * Provide utility functions for the class of functions
- * that supply a return value when invoked.
+ * Provide utility functions for the class of functions that supply a return
+ * value when invoked.
  * 
  * @since 1.0
  */
@@ -34,34 +34,28 @@ public class Suppliers {
    * @param a the constant value to supply
    * @return a supplier that always supplies {@code instance}.
    */
-  public static <A> Supplier<A> ofInstance(final A a)
-  {
-    return new  MangoSupplier<A>(){
-      @Override
-      public A get()
-      {
+  public static <A> Supplier<A> ofInstance(final A a) {
+    return new MangoSupplier<A>() {
+      @Override public A get() {
         return a;
       }
     };
   }
 
   /**
-   * Create a new {@link Supplier} by transforming the result calling
-   * the first {@link Supplier}
+   * Create a new {@link Supplier} by transforming the result calling the first
+   * {@link Supplier}
    *
-   * @param transform function to transform the result of a {@link Supplier} of A's to B's
+   * @param transform function to transform the result of a {@link Supplier} of
+   * A's to B's
    * @param first a {@link Supplier} of A's
    * @param <A> return type of the {@link Supplier} to transform
    * @param <B> return type of the new {@link Supplier}
    * @return a new {@link Supplier} returning B's
    */
-  public static <A, B> Supplier<B> compose(final Function<? super A, B> transform, final Supplier<A> first)
-  {
-    return new MangoSupplier<B>()
-    {
-      @Override
-      public B get()
-      {
+  public static <A, B> Supplier<B> compose(final Function<? super A, B> transform, final Supplier<A> first) {
+    return new MangoSupplier<B>() {
+      @Override public B get() {
         return transform.apply(first.get());
       }
     };
@@ -124,7 +118,8 @@ public class Suppliers {
    * @param <B> the result type
    * @param f the function
    * @param a the value
-   * @return a {@link Supplier} that always calls {@link com.atlassian.fugue.mango.Function.Function#apply(Object)}
+   * @return a {@link Supplier} that always calls
+   * {@link com.atlassian.fugue.mango.Function.Function#apply(Object)}
    * 
    * @since 2.2
    */
@@ -142,6 +137,7 @@ public class Suppliers {
     public Boolean apply(Object o) {
       return get();
     }
+
     public Boolean get() {
       return true;
     }

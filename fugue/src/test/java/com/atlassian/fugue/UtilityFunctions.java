@@ -20,12 +20,12 @@ import static com.atlassian.fugue.Either.right;
 import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
 
 import java.lang.reflect.Constructor;
-
 import java.util.function.Function;
-import com.atlassian.fugue.mango.Function.Function2;
-import com.atlassian.fugue.mango.Function.Predicate;
 
 import javax.annotation.Nullable;
+
+import com.atlassian.fugue.mango.Function.Function2;
+import com.atlassian.fugue.mango.Function.Predicate;
 
 public class UtilityFunctions {
   public static final Predicate<Integer> isEven = dividableBy(2);
@@ -93,8 +93,9 @@ public class UtilityFunctions {
 
   public static Function<Pair<String, Integer>, Option<String>> leftOfString = new Function<Pair<String, Integer>, Option<String>>() {
     @Override public Option<String> apply(@Nullable Pair<String, Integer> pair) {
-      return pair != null && pair.left() != null && pair.right() != null && pair.right() >= 0 && pair.right() <= pair.left().length() ? Option
-        .some(pair.left().substring(0, pair.right())) : Option.<String> none();
+      return pair != null && pair.left() != null && pair.right() != null && pair.right() >= 0
+        && pair.right() <= pair.left().length() ? Option.some(pair.left().substring(0, pair.right())) : Option
+        .<String> none();
     }
   };
 
@@ -108,7 +109,7 @@ public class UtilityFunctions {
     }
   };
 
-  public static Function<Object, String> toStringFunction(){
+  public static Function<Object, String> toStringFunction() {
     return ToStringFunction.INSTANCE;
   }
 
@@ -116,14 +117,12 @@ public class UtilityFunctions {
   private enum ToStringFunction implements Function<Object, String> {
     INSTANCE;
 
-    @Override
-    public String apply(Object o) {
+    @Override public String apply(Object o) {
       checkNotNull(o);
       return o.toString();
     }
 
-    @Override
-    public String toString() {
+    @Override public String toString() {
       return "toString";
     }
   }

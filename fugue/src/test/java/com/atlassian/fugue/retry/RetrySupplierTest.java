@@ -24,11 +24,11 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.util.function.Supplier;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-
-import java.util.function.Supplier;
 
 public class RetrySupplierTest {
   private static final int ATTEMPTS = 4;
@@ -51,7 +51,7 @@ public class RetrySupplierTest {
   }
 
   @Test(expected = IllegalArgumentException.class) public void basicSupplierRequiresPositiveTries() {
-      new RetrySupplier<String>(supplier, 0).get();
+    new RetrySupplier<String>(supplier, 0).get();
   }
 
   @Test(expected = RuntimeException.class) public void basicSupplierRetry() {
@@ -85,8 +85,8 @@ public class RetrySupplierTest {
   }
 
   @Test public void supplierEarlyExit() {
-    when(supplier.get()).thenThrow(new RuntimeException("First attempt")).thenReturn(RESULT).thenThrow(new RuntimeException("Third attempt"))
-      .thenThrow(new RuntimeException("Fourth attempt"));
+    when(supplier.get()).thenThrow(new RuntimeException("First attempt")).thenReturn(RESULT)
+      .thenThrow(new RuntimeException("Third attempt")).thenThrow(new RuntimeException("Fourth attempt"));
 
     final String result = new RetrySupplier<String>(supplier, ATTEMPTS).get();
     assertThat(result, equalTo(RESULT));

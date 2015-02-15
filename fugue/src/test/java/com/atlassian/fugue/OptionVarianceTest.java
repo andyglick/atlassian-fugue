@@ -20,13 +20,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
-import com.atlassian.fugue.mango.Function.MangoSupplier;
-import com.atlassian.fugue.mango.Predicates;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 import org.junit.Test;
 
-import java.util.function.Function;
+import com.atlassian.fugue.mango.Predicates;
+import com.atlassian.fugue.mango.Function.MangoSupplier;
 import com.atlassian.fugue.mango.Function.Predicate;
-import java.util.function.Supplier;
 
 public class OptionVarianceTest {
 

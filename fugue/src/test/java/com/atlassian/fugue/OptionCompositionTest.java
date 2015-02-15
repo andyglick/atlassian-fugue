@@ -20,9 +20,9 @@ import static com.atlassian.fugue.UtilityFunctions.toStringFunction;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-import org.junit.Test;
-
 import java.util.function.Function;
+
+import org.junit.Test;
 
 public class OptionCompositionTest {
   @Test public void composeLaw() {
@@ -31,7 +31,8 @@ public class OptionCompositionTest {
         return input + 1;
       }
     };
-    assertThat(some(1).map(plusOne).map(toStringFunction()), is(some(1).map(Functions.compose(toStringFunction(), plusOne))));
+    assertThat(some(1).map(plusOne).map(toStringFunction()),
+      is(some(1).map(Functions.compose(toStringFunction(), plusOne))));
   }
 
   @Test public void composeNull() {

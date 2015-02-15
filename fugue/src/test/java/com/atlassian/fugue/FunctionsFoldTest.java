@@ -20,10 +20,11 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-import com.atlassian.fugue.mango.Function.Function2;
+import java.util.function.Function;
+
 import org.junit.Test;
 
-import java.util.function.Function;
+import com.atlassian.fugue.mango.Function.Function2;
 
 public class FunctionsFoldTest {
   @Test public void f2FoldSum() {
@@ -98,7 +99,7 @@ public class FunctionsFoldTest {
     assertThat(fold(mult, 1, asList(1, 2, 3, 4, 5)), is((Number) 120));
   }
 
-    @Test public void f1FoldVarianceFirstArg() {
+  @Test public void f1FoldVarianceFirstArg() {
     final Function<Pair<Number, Integer>, Integer> mult = new Function<Pair<Number, Integer>, Integer>() {
       @Override public Integer apply(final Pair<Number, Integer> arg) {
         return arg.left().intValue() * arg.right();

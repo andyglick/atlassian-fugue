@@ -17,7 +17,8 @@ public class EitherRightBiasTest {
   }
 
   @Test public void flatMapRight() {
-    assertThat(Either.<Integer, String> right("!foo").flatMap(reverseToEither), is(Either.<Integer, String> right("oof!")));
+    assertThat(Either.<Integer, String> right("!foo").flatMap(reverseToEither),
+      is(Either.<Integer, String> right("oof!")));
   }
 
   @Test public void flatMapLeft() {

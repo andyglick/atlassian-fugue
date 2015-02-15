@@ -21,7 +21,6 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-
 public class PairTest {
   @Test(expected = NullPointerException.class) public void testNullLeft() {
     pair(null, "");

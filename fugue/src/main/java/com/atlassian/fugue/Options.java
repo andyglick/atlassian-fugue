@@ -19,6 +19,7 @@ import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
 
 import java.util.function.Function;
+
 import com.atlassian.fugue.mango.Function.Function2;
 import com.atlassian.fugue.mango.Function.Predicate;
 
@@ -142,7 +143,7 @@ public class Options {
    */
   public static <A, B> Option<B> ap(final Option<A> oa, Option<Function<A, B>> of) {
     return of.fold(Option.<B> noneSupplier(),
-        Functions.compose(Functions.<Option<A>, Option<B>> apply(oa), Options.<A, B> lift()));
+      Functions.compose(Functions.<Option<A>, Option<B>> apply(oa), Options.<A, B> lift()));
   }
 
   /**

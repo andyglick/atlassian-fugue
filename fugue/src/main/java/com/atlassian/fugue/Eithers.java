@@ -16,8 +16,9 @@
 package com.atlassian.fugue;
 
 import java.util.function.Function;
-import com.atlassian.fugue.mango.Function.Predicate;
 import java.util.function.Supplier;
+
+import com.atlassian.fugue.mango.Function.Predicate;
 
 /**
  * Utility functions for Eithers.
@@ -55,8 +56,8 @@ public class Eithers {
    * 
    * @param <L> the LHS type
    * @param <R> the RHS type
-   * @param predicate if predicate is true, a Right will be returned if it is false,
-   * a Left will be returned containing the supplied left value.
+   * @param predicate if predicate is true, a Right will be returned if it is
+   * false, a Left will be returned containing the supplied left value.
    * @param left the LHS value
    * @param right the RHS value
    * @return an either with the appropriately selected value
@@ -136,7 +137,8 @@ public class Eithers {
    * 
    * @param <L> the LHS type
    * @param <R> the RHS type
-   * @return the function returning a defined option for right-hand-sided eithers
+   * @return the function returning a defined option for right-hand-sided
+   * eithers
    */
   public static <L, R> Function<Either<L, R>, Option<R>> rightMapper() {
     return new Function<Either<L, R>, Option<R>>() {
@@ -160,7 +162,7 @@ public class Eithers {
   }
 
   public static <L, R> Supplier<Either<L, R>> toLeft(final L l) {
-    return Suppliers.compose(Eithers.<L, R>toLeft(), Suppliers.<L>ofInstance(l));
+    return Suppliers.compose(Eithers.<L, R> toLeft(), Suppliers.<L> ofInstance(l));
   }
 
   // allows static import
@@ -182,7 +184,7 @@ public class Eithers {
   }
 
   public static <L, R> Supplier<Either<L, R>> toRight(final R r) {
-    return Suppliers.compose(Eithers.<L, R>toRight(), Suppliers.<R>ofInstance(r));
+    return Suppliers.compose(Eithers.<L, R> toRight(), Suppliers.<R> ofInstance(r));
   }
 
   // allows static import

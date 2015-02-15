@@ -18,14 +18,15 @@ package com.atlassian.fugue;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-import org.junit.Test;
-
 import java.util.function.Function;
+
+import org.junit.Test;
 
 public class FunctionMapNullToOptionTest {
 
   @Test public void testLiftingNull() {
-    assertThat(Functions.mapNullToOption(FunctionMapNullToOptionTest.<String, String> nullProducer()).apply("ignored"), is(Option.<String> none()));
+    assertThat(Functions.mapNullToOption(FunctionMapNullToOptionTest.<String, String> nullProducer()).apply("ignored"),
+      is(Option.<String> none()));
   }
 
   @Test public void testLiftingNotNull() {

@@ -19,10 +19,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import java.util.NoSuchElementException;
+import java.util.function.Supplier;
 
 import org.junit.Test;
-
-import java.util.function.Supplier;
 
 public class SuppliersTest {
 

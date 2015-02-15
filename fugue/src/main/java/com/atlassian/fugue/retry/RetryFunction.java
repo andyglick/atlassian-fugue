@@ -17,8 +17,9 @@ package com.atlassian.fugue.retry;
 
 import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
 
-import com.atlassian.fugue.Suppliers;
 import java.util.function.Function;
+
+import com.atlassian.fugue.Suppliers;
 import com.atlassian.fugue.mango.Preconditions;
 
 /**
@@ -89,6 +90,7 @@ public class RetryFunction<F, T> implements Function<F, T> {
    * @return the result of the wrapped Function's get method
    */
   @Override public T apply(F parameter) {
-    return new RetrySupplier<T>(Suppliers.compose(function, Suppliers.ofInstance(parameter)), tries, handler, beforeRetry).get();
+    return new RetrySupplier<T>(Suppliers.compose(function, Suppliers.ofInstance(parameter)), tries, handler,
+      beforeRetry).get();
   }
 }

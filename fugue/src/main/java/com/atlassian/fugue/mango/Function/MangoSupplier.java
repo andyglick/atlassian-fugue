@@ -7,11 +7,10 @@ import java.util.function.Supplier;
  * <p/>
  * Perhaps this was a shim of a shim... I don't think we need it :)
  */
-public abstract class MangoSupplier<A> implements Supplier<A>
-{
-    public A apply(Object v) {
-        return get();
-    }
+public abstract class MangoSupplier<A> implements Supplier<A> {
+  public A apply(Object v) {
+    return get();
+  }
 
-    abstract public A get();
+  abstract public A get();
 }

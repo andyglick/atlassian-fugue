@@ -15,12 +15,12 @@
  */
 package com.atlassian.fugue;
 
-import org.junit.Test;
-
 import static com.atlassian.fugue.Eithers.toLeft;
 import static com.atlassian.fugue.Eithers.toRight;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+
+import org.junit.Test;
 
 public class ToEitherLeftOrRightTest {
   private static final String ORIGINAL_STRING = "abc";
@@ -62,24 +62,26 @@ public class ToEitherLeftOrRightTest {
   // Function and Supplier can be useful.
 
   @Test public void toRightFunctionUsedInFold() {
-    Either<String, Integer> either = divideByTwo(ORIGINAL_INT * 2).fold(toLeft(ORIGINAL_STRING, Integer.class), toRight(String.class, Integer.class));
+    Either<String, Integer> either = divideByTwo(ORIGINAL_INT * 2).fold(toLeft(ORIGINAL_STRING, Integer.class),
+      toRight(String.class, Integer.class));
     assertThat(either.right().get(), is(ORIGINAL_INT));
   }
 
   @Test public void toLeftSupplierUsedInFold() {
-    Either<String, Integer> either = divideByTwo(ORIGINAL_INT).fold(toLeft(ORIGINAL_STRING, Integer.class), toRight(String.class, Integer.class));
+    Either<String, Integer> either = divideByTwo(ORIGINAL_INT).fold(toLeft(ORIGINAL_STRING, Integer.class),
+      toRight(String.class, Integer.class));
     assertThat(either.left().get(), is(ORIGINAL_STRING));
   }
 
   @Test public void toLeftFunctionUsedInFold() {
-    Either<String, Integer> either = divideByTwo(ORIGINAL_INT * 2).fold(toRight(Integer.class, ORIGINAL_STRING), toLeft(Integer.class, String.class))
-      .swap();
+    Either<String, Integer> either = divideByTwo(ORIGINAL_INT * 2).fold(toRight(Integer.class, ORIGINAL_STRING),
+      toLeft(Integer.class, String.class)).swap();
     assertThat(either.right().get(), is(ORIGINAL_INT));
   }
 
   @Test public void toRightSupplierUsedInFold() {
-    Either<String, Integer> either = divideByTwo(ORIGINAL_INT).fold(toRight(Integer.class, ORIGINAL_STRING), toLeft(Integer.class, String.class))
-      .swap();
+    Either<String, Integer> either = divideByTwo(ORIGINAL_INT).fold(toRight(Integer.class, ORIGINAL_STRING),
+      toLeft(Integer.class, String.class)).swap();
     assertThat(either.left().get(), is(ORIGINAL_STRING));
   }
 

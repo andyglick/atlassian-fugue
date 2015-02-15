@@ -23,12 +23,13 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
-import com.atlassian.fugue.mango.Function.MangoSupplier;
-import com.atlassian.fugue.mango.Predicates;
-import org.junit.Test;
-
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import org.junit.Test;
+
+import com.atlassian.fugue.mango.Predicates;
+import com.atlassian.fugue.mango.Function.MangoSupplier;
 
 public class EitherRightProjectionTest {
   private final Either<Integer, String> r = right("heyaa!");

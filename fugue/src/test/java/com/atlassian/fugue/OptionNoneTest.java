@@ -25,12 +25,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.function.Function;
 
-import com.atlassian.fugue.mango.Function.MangoSupplier;
-import com.atlassian.fugue.mango.Predicates;
 import org.junit.Test;
 
-import java.util.function.Function;
+import com.atlassian.fugue.mango.Predicates;
+import com.atlassian.fugue.mango.Function.MangoSupplier;
 
 public class OptionNoneTest {
   private final Option<Integer> none = none();
