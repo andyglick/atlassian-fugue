@@ -64,7 +64,7 @@ public final class Pair<A, B> implements Serializable {
    * @since 1.1
    */
   public static <A> Function<Pair<A, ?>, A> leftValue() {
-    return new LeftAccessor<A>();
+    return new LeftAccessor<>();
   }
 
   /**
@@ -75,7 +75,7 @@ public final class Pair<A, B> implements Serializable {
    * @since 1.1
    */
   public static <B> Function<Pair<?, B>, B> rightValue() {
-    return new RightAccessor<B>();
+    return new RightAccessor<>();
   }
 
   //

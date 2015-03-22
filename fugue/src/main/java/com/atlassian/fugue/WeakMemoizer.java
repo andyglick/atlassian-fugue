@@ -40,11 +40,11 @@ import java.util.function.Function;
  */
 final class WeakMemoizer<A, B> implements Function<A, B> {
   static <A, B> WeakMemoizer<A, B> weakMemoizer(final Function<A, B> delegate) {
-    return new WeakMemoizer<A, B>(delegate);
+    return new WeakMemoizer<>(delegate);
   }
 
   private final ConcurrentMap<A, MappedReference<A, B>> map;
-  private final ReferenceQueue<B> queue = new ReferenceQueue<B>();
+  private final ReferenceQueue<B> queue = new ReferenceQueue<>();
   private final Function<A, B> delegate;
 
   /**
@@ -55,7 +55,7 @@ final class WeakMemoizer<A, B> implements Function<A, B> {
    * negative.
    */
   WeakMemoizer(Function<A, B> delegate) {
-    this.map = new ConcurrentHashMap<A, MappedReference<A, B>>();
+    this.map = new ConcurrentHashMap<>();
     this.delegate = checkNotNull(delegate, "delegate");
   }
 
@@ -77,7 +77,7 @@ final class WeakMemoizer<A, B> implements Function<A, B> {
         }
         map.remove(descriptor, reference);
       }
-      map.putIfAbsent(descriptor, new MappedReference<A, B>(descriptor, delegate.apply(descriptor), queue));
+      map.putIfAbsent(descriptor, new MappedReference<>(descriptor, delegate.apply(descriptor), queue));
     }
   }
 

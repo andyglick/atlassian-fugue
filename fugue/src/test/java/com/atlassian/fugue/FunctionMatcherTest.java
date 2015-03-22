@@ -23,11 +23,7 @@ import org.junit.Test;
 
 public class FunctionMatcherTest {
   Function<Integer, Option<Integer>> toInt(final int check) {
-    return new Function<Integer, Option<Integer>>() {
-      @Override public Option<Integer> apply(Integer input) {
-        return (check == input) ? some(input) : Option.<Integer> none();
-      }
-    };
+    return input -> (check == input) ? some(input) : Option.<Integer> none();
   }
 
   @Test(expected = NullPointerException.class) public void nullSecond() {
