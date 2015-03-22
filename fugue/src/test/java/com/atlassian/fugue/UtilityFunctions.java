@@ -22,8 +22,8 @@ import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
 import java.lang.reflect.Constructor;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
-import com.atlassian.fugue.mango.Function.Predicate;
 
 public class UtilityFunctions {
   public static final Predicate<Integer> isEven = dividableBy(2);

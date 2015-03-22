@@ -21,12 +21,12 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
 import com.atlassian.fugue.mango.Iterators;
-import com.atlassian.fugue.mango.Function.Predicate;
 import com.atlassian.util.concurrent.NotNull;
 
 /**
@@ -248,7 +248,7 @@ public class Functions {
     }
 
     public Option<B> apply(A a) {
-      return (p.apply(a)) ? Option.option(f.apply(a)) : Option.<B> none();
+      return (p.test(a)) ? Option.option(f.apply(a)) : Option.<B> none();
     }
 
     @Override public String toString() {

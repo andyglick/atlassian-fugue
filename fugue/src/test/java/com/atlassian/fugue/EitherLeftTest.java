@@ -93,7 +93,7 @@ public class EitherLeftTest {
   }
 
   @Test public void leftPredicateMatches() {
-    assertThat(Eithers.<Boolean, Integer> isLeft().apply(either), is(true));
+    assertThat(Eithers.<Boolean, Integer> isLeft().test(either), is(true));
   }
 
   @Test(expected = IOException.class) public void throwsException() throws IOException {

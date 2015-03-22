@@ -16,9 +16,9 @@
 package com.atlassian.fugue;
 
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import com.atlassian.fugue.mango.Function.Predicate;
 
 /**
  * Utility functions for Eithers.
@@ -91,11 +91,7 @@ public class Eithers {
    * @return the predicate testing left-hand-sidedness
    */
   public static <L, R> Predicate<Either<L, R>> isLeft() {
-    return new Predicate<Either<L, R>>() {
-      public Boolean apply(Either<L, R> e) {
-        return e.isLeft();
-      }
-    };
+    return Either::isLeft;
   }
 
   /**
@@ -106,11 +102,7 @@ public class Eithers {
    * @return the predicate testing right-hand-sidedness
    */
   public static <L, R> Predicate<Either<L, R>> isRight() {
-    return new Predicate<Either<L, R>>() {
-      public Boolean apply(Either<L, R> e) {
-        return e.isRight();
-      }
-    };
+    return Either::isRight;
   }
 
   /**
@@ -123,11 +115,7 @@ public class Eithers {
    * @return the function returning a defined option for left-hand-sided eithers
    */
   public static <L, R> Function<Either<L, R>, Option<L>> leftMapper() {
-    return new Function<Either<L, R>, Option<L>>() {
-      public Option<L> apply(Either<L, R> either) {
-        return either.left().toOption();
-      }
-    };
+    return either -> either.left().toOption();
   }
 
   /**
@@ -141,19 +129,11 @@ public class Eithers {
    * eithers
    */
   public static <L, R> Function<Either<L, R>, Option<R>> rightMapper() {
-    return new Function<Either<L, R>, Option<R>>() {
-      public Option<R> apply(Either<L, R> either) {
-        return either.right().toOption();
-      }
-    };
+    return either -> either.right().toOption();
   }
 
   public static <L, R> Function<L, Either<L, R>> toLeft() {
-    return new Function<L, Either<L, R>>() {
-      public Either<L, R> apply(final L from) {
-        return Either.left(from);
-      }
-    };
+    return Either::left;
   }
 
   // allows static import
@@ -162,7 +142,7 @@ public class Eithers {
   }
 
   public static <L, R> Supplier<Either<L, R>> toLeft(final L l) {
-    return Suppliers.compose(Eithers.<L, R> toLeft(), Suppliers.<L> ofInstance(l));
+    return Suppliers.compose(Eithers.<L, R> toLeft(), Suppliers.ofInstance(l));
   }
 
   // allows static import
@@ -171,11 +151,7 @@ public class Eithers {
   }
 
   public static <L, R> Function<R, Either<L, R>> toRight() {
-    return new Function<R, Either<L, R>>() {
-      public Either<L, R> apply(final R from) {
-        return Either.right(from);
-      }
-    };
+    return Either::right;
   }
 
   // allows static import
@@ -184,7 +160,7 @@ public class Eithers {
   }
 
   public static <L, R> Supplier<Either<L, R>> toRight(final R r) {
-    return Suppliers.compose(Eithers.<L, R> toRight(), Suppliers.<R> ofInstance(r));
+    return Suppliers.compose(Eithers.<L, R> toRight(), Suppliers.ofInstance(r));
   }
 
   // allows static import

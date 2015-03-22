@@ -101,7 +101,7 @@ public class EitherRightTest {
   }
 
   @Test public void rightPredicateMatches() {
-    assertThat(Eithers.<Boolean, Integer> isRight().apply(either), is(true));
+    assertThat(Eithers.<Boolean, Integer> isRight().test(either), is(true));
   }
 
   // todo [ERROR] /home/anund/src/fugue/fugue/src/test/java/com/atlassian/fugue/EitherRightTest.java:[109,26] unreported exception X; must be caught or declared to be thrown ???
