@@ -22,7 +22,7 @@ import com.atlassian.fugue.mango.Preconditions;
  * be used as the beforeRetry hook. Upon each execution, the current thread
  * sleeps for the time specified at construction.
  * 
- * This class is threadsafe and contains no internal state, hence instances can
+ * This class is thread safe and contains no internal state, hence instances can
  * be reused and the same instance can be used on multiple threads.
  */
 public class BeforeRetryLinearBackoffTask implements Runnable {

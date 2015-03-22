@@ -73,18 +73,16 @@ public class RetryTaskTest {
   }
 
   @Test public void taskEarlyExit() {
-    final AtomicReference<Integer> failcount = new AtomicReference<Integer>(0);
-    Runnable localTask = new Runnable() {
-      public void run() {
-        failcount.set(failcount.get() + 1);
-        switch (failcount.get()) {
-          case 1:
-            throw new RuntimeException("First attempt");
-          case 2:
-            return;
-          default:
-            throw new RuntimeException("Third runthrough (fail)");
-        }
+    final AtomicReference<Integer> failcount = new AtomicReference<>(0);
+    Runnable localTask = () -> {
+      failcount.set(failcount.get() + 1);
+      switch (failcount.get()) {
+        case 1:
+          throw new RuntimeException("First attempt");
+        case 2:
+          return;
+        default:
+          throw new RuntimeException("Third runthrough (fail)");
       }
     };
 

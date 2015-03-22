@@ -109,7 +109,7 @@ public class OptionTest {
   }
 
   @Test public void someNoneEquality() {
-    assertThat(some("").equals(none()), is(false));
+    assertThat(some("").equals(none(String.class)), is(false));
   }
 
   @Test public void someSomeEquality() {
@@ -145,10 +145,6 @@ public class OptionTest {
   }
 
   private Function<Integer, Integer> increment() {
-    return new Function<Integer, Integer>() {
-      public Integer apply(final Integer i) {
-        return i + 1;
-      }
-    };
+    return i -> i + 1;
   }
 }

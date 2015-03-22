@@ -44,21 +44,21 @@ public class RetrySupplierTest {
 
   @Test public void basicSupplier() {
     when(supplier.get()).thenReturn(RESULT);
-    final String result = new RetrySupplier<String>(supplier, ATTEMPTS).get();
+    final String result = new RetrySupplier<>(supplier, ATTEMPTS).get();
 
     verify(supplier).get();
     assertThat(result, equalTo(RESULT));
   }
 
   @Test(expected = IllegalArgumentException.class) public void basicSupplierRequiresPositiveTries() {
-    new RetrySupplier<String>(supplier, 0).get();
+    new RetrySupplier<>(supplier, 0).get();
   }
 
   @Test(expected = RuntimeException.class) public void basicSupplierRetry() {
     when(supplier.get()).thenThrow(runtimeException);
 
     try {
-      new RetrySupplier<String>(supplier, ATTEMPTS).get();
+      new RetrySupplier<>(supplier, ATTEMPTS).get();
     } finally {
       verify(supplier, times(ATTEMPTS)).get();
     }
@@ -66,7 +66,7 @@ public class RetrySupplierTest {
 
   @Test public void supplierWithExceptionHandler() {
     when(supplier.get()).thenReturn(RESULT);
-    final String result = new RetrySupplier<String>(supplier, ATTEMPTS, exceptionHandler).get();
+    final String result = new RetrySupplier<>(supplier, ATTEMPTS, exceptionHandler).get();
 
     verify(supplier).get();
     assertThat(result, equalTo(RESULT));
@@ -77,7 +77,7 @@ public class RetrySupplierTest {
     when(supplier.get()).thenThrow(runtimeException);
 
     try {
-      new RetrySupplier<String>(supplier, ATTEMPTS, exceptionHandler).get();
+      new RetrySupplier<>(supplier, ATTEMPTS, exceptionHandler).get();
     } finally {
       verify(supplier, times(ATTEMPTS)).get();
       verify(exceptionHandler, times(ATTEMPTS)).handle(runtimeException);
@@ -88,7 +88,7 @@ public class RetrySupplierTest {
     when(supplier.get()).thenThrow(new RuntimeException("First attempt")).thenReturn(RESULT)
       .thenThrow(new RuntimeException("Third attempt")).thenThrow(new RuntimeException("Fourth attempt"));
 
-    final String result = new RetrySupplier<String>(supplier, ATTEMPTS).get();
+    final String result = new RetrySupplier<>(supplier, ATTEMPTS).get();
     assertThat(result, equalTo(RESULT));
     verify(supplier, times(2)).get();
     verifyNoMoreInteractions(supplier);

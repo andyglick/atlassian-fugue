@@ -26,21 +26,13 @@ import org.junit.Test;
 
 public class OptionCompositionTest {
   @Test public void composeLaw() {
-    Function<Integer, Integer> plusOne = new Function<Integer, Integer>() {
-      @Override public Integer apply(Integer input) {
-        return input + 1;
-      }
-    };
+    Function<Integer, Integer> plusOne = input -> input + 1;
     assertThat(some(1).map(plusOne).map(toStringFunction()),
       is(some(1).map(Functions.compose(toStringFunction(), plusOne))));
   }
 
   @Test public void composeNull() {
-    Function<Integer, Integer> nasty = new Function<Integer, Integer>() {
-      @Override public Integer apply(Integer input) {
-        return null;
-      }
-    };
+    Function<Integer, Integer> nasty = input -> null;
     Function<Object, String> constant = Functions.constant("foo");
     assertThat(some(1).map(nasty).map(constant), is(some(1).map(Functions.compose(constant, nasty))));
   }

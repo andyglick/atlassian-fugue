@@ -20,7 +20,7 @@ package com.atlassian.fugue;
  */
 class Count<A> implements Effect<A> {
   static <A> int countEach(final Effect.Applicant<A> a) {
-    final Count<A> counter = new Count<A>();
+    final Count<A> counter = new Count<>();
     a.foreach(counter);
     return counter.count();
   }

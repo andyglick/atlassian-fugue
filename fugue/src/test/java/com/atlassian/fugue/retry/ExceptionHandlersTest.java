@@ -46,18 +46,10 @@ public class ExceptionHandlersTest {
   }
 
   @Test public void chainCallOrder() {
-    final StringBuffer sb = new StringBuffer();
+    final StringBuilder sb = new StringBuilder();
 
-    ExceptionHandler first = new ExceptionHandler() {
-      public void handle(RuntimeException e) {
-        sb.append("1");
-      }
-    };
-    ExceptionHandler second = new ExceptionHandler() {
-      public void handle(RuntimeException e) {
-        sb.append("2");
-      }
-    };
+    ExceptionHandler first = e -> sb.append("1");
+    ExceptionHandler second = e -> sb.append("2");
 
     ExceptionHandler handler = ExceptionHandlers.chain(first, second);
 

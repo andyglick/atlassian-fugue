@@ -217,7 +217,7 @@ public class Functions {
 
     @Override public int hashCode() {
       return cls.hashCode();
-    };
+    }
 
     static final long serialVersionUID = 0;
   }
@@ -423,7 +423,7 @@ public class Functions {
    * @since 2.3
    */
   public static <A> Function<A, Option<A>> nullToOption() {
-    return new ToOption<A>();
+    return new ToOption<>();
   }
 
   /**

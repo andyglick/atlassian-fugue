@@ -34,10 +34,6 @@ public class FunctionMapNullToOptionTest {
   }
 
   static <A, B> Function<A, B> nullProducer() {
-    return new Function<A, B>() {
-      @Override public B apply(A a) {
-        return null;
-      }
-    };
+    return a -> null;
   }
 }

@@ -417,7 +417,7 @@ public abstract class Either<L, R> implements Serializable {
      * @return A new either value after mapping.
      */
     public <X> Either<X, R> map(final Function<? super L, X> f) {
-      return isLeft() ? new Left<X, R>(f.apply(get())) : this.<X> toRight();
+      return isLeft() ? new Left<>(f.apply(get())) : this.<X> toRight();
     }
 
     /**
@@ -432,7 +432,7 @@ public abstract class Either<L, R> implements Serializable {
     }
 
     <X> Right<X, R> toRight() {
-      return new Right<X, R>(getRight());
+      return new Right<>(getRight());
     }
 
     /**
@@ -459,7 +459,7 @@ public abstract class Either<L, R> implements Serializable {
      */
     public <X> Option<Either<L, X>> filter(final Predicate<? super L> f) {
       if (isLeft() && f.test(get())) {
-        final Either<L, X> result = new Left<L, X>(get());
+        final Either<L, X> result = new Left<>(get());
         return some(result);
       }
       return none();
@@ -522,7 +522,7 @@ public abstract class Either<L, R> implements Serializable {
      * @return A new either value after mapping.
      */
     public <X> Either<L, X> map(final Function<? super R, X> f) {
-      return isRight() ? new Right<L, X>(f.apply(get())) : this.<X> toLeft();
+      return isRight() ? new Right<>(f.apply(get())) : this.<X> toLeft();
     }
 
     /**
@@ -537,7 +537,7 @@ public abstract class Either<L, R> implements Serializable {
     }
 
     <X> Left<L, X> toLeft() {
-      return new Left<L, X>(left().get());
+      return new Left<>(left().get());
     }
 
     /**
@@ -564,7 +564,7 @@ public abstract class Either<L, R> implements Serializable {
      */
     public <X> Option<Either<X, R>> filter(final Predicate<? super R> f) {
       if (isRight() && f.test(get())) {
-        final Either<X, R> result = new Right<X, R>(get());
+        final Either<X, R> result = new Right<>(get());
         return some(result);
       }
       return none();

@@ -30,11 +30,11 @@ import com.atlassian.fugue.mango.Predicates;
 
 public class OptionVarianceTest {
 
-  class Grand {};
+  class Grand {}
 
-  class Parent extends Grand {};
+  class Parent extends Grand {}
 
-  class Child extends Parent {};
+  class Child extends Parent {}
 
   @Test public void flatMap() {
     Option<Parent> some = some(new Parent());

@@ -27,21 +27,15 @@ import javax.annotation.Nullable;
 import org.junit.Test;
 
 public class FunctionComposeTest {
-  Function<String, Option<Integer>> toInt = new Function<String, Option<Integer>>() {
-    @Override public Option<Integer> apply(@Nullable String input) {
-      try {
-        return Option.some(Integer.parseInt(input));
-      } catch (NumberFormatException e) {
-        return Option.none();
-      }
+  Function<String, Option<Integer>> toInt = input -> {
+    try {
+      return Option.some(Integer.parseInt(input));
+    } catch (NumberFormatException e) {
+      return Option.none();
     }
   };
 
-  Function<Integer, Option<String>> toString = new Function<Integer, Option<String>>() {
-    @Override public Option<String> apply(@Nullable Integer input) {
-      return Option.some(input.toString());
-    }
-  };
+  Function<Integer, Option<String>> toString = input -> Option.some(input.toString());
 
   @Test public void composeNotNull() {
     assertThat(Functions.composeOption(toString, toInt), notNullValue());

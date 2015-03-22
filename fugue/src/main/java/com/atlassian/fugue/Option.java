@@ -52,7 +52,7 @@ import com.atlassian.fugue.mango.Preconditions;
  * however, that this should be rare as functions that return <code>null</code>
  * is a bad idea anyway. <b>Note</b> that if a function returns null to indicate
  * optionality, it can be
- * {@link Functions#lift(Function) lifted}
+ * {@link Options#lift(Function) lifted}
  * into a partial function and then
  * {@link #flatMap(Function) flat mapped}
  * instead.
@@ -126,7 +126,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    * @since 1.1
    */
   static <A> Function<A, Option<A>> toOption() {
-    return new ToOption<A>();
+    return new ToOption<>();
   }
 
   /**
@@ -136,7 +136,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    * @return a {@link Predicate} that returns true only for defined options
    */
   public static <A> Predicate<Option<A>> defined() {
-    return new Defined<A>();
+    return new Defined<>();
   }
 
   /**
@@ -403,7 +403,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
       return true;
     }
 
-    // todo is this broken?
+    // todo is this broken err is never used?
     @Override public A getOrError(final Supplier<String> err) {
       return get();
     }

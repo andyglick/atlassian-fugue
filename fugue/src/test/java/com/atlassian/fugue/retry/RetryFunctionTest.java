@@ -45,7 +45,7 @@ public class RetryFunctionTest {
 
   @Test public void basicFunction() {
     when(function.apply(INPUT)).thenReturn(EXPECTED);
-    final Integer result = new RetryFunction<String, Integer>(function, ATTEMPTS).apply(INPUT);
+    final Integer result = new RetryFunction<>(function, ATTEMPTS).apply(INPUT);
 
     verify(function).apply(INPUT);
     assertThat(result, equalTo(EXPECTED));
@@ -55,7 +55,7 @@ public class RetryFunctionTest {
     when(function.apply(anyString())).thenThrow(runtimeException);
 
     try {
-      new RetryFunction<String, Integer>(function, ATTEMPTS).apply(INPUT);
+      new RetryFunction<>(function, ATTEMPTS).apply(INPUT);
     } finally {
       verify(function, times(ATTEMPTS)).apply(INPUT);
     }
@@ -65,7 +65,7 @@ public class RetryFunctionTest {
     when(function.apply(INPUT)).thenThrow(runtimeException);
 
     try {
-      new RetryFunction<String, Integer>(function, ATTEMPTS, exceptionHandler).apply(INPUT);
+      new RetryFunction<>(function, ATTEMPTS, exceptionHandler).apply(INPUT);
     } finally {
       verify(function, times(ATTEMPTS)).apply(INPUT);
       verify(exceptionHandler, times(ATTEMPTS)).handle(runtimeException);
@@ -76,7 +76,7 @@ public class RetryFunctionTest {
     when(function.apply(INPUT)).thenThrow(new RuntimeException("First attempt")).thenReturn(EXPECTED)
       .thenThrow(new RuntimeException("Third attempt")).thenThrow(new RuntimeException("Fourth attempt"));
 
-    final Integer result = new RetryFunction<String, Integer>(function, ATTEMPTS).apply(INPUT);
+    final Integer result = new RetryFunction<>(function, ATTEMPTS).apply(INPUT);
     assertThat(result, equalTo(EXPECTED));
     verify(function, times(2)).apply(INPUT);
     verifyNoMoreInteractions(function);
