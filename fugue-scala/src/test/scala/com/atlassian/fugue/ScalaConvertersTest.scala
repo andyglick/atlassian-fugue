@@ -15,20 +15,19 @@
  */
 package com.atlassian.fugue
 
-import java.util.Date
 import java.lang.{Boolean => JBool}
-import java.util.function.{Supplier => JSupplier, Function => JFunction, Predicate => JPredicate}
-import com.atlassian.fugue.mango.Function.{Function2 => JFunction2}
+import java.util.Date
+import java.util.function.{BiFunction => JFunction2, Function => JFunction, Predicate => JPredicate, Supplier => JSupplier}
+
+import org.hamcrest.Matchers.is
+import org.junit.Assert.{assertThat, assertTrue}
+import org.junit.Test
 
 import scala.util.control.Exception.catching
 
-import org.junit.Assert.{ assertEquals, assertSame, assertThat, assertTrue }
-import org.junit.Test
-import org.hamcrest.Matchers.is
-
 class ScalaConvertersTest {
 
-  import ScalaConverters._
+  import com.atlassian.fugue.ScalaConverters._
 
   @Test def fromSupplierWithTypeConvertedExplicitly() {
     lazy val converted: () => Int = Suppliers.ofInstance(1.asInstanceOf[Integer]).asScala
@@ -102,17 +101,19 @@ class ScalaConvertersTest {
   }
 
   @Test def JFunction2ToFunction2Implicitly() {
-    val f: (String, Int) => String = new JFunction2[String, Integer, String] {
+    val f: JFunction2[String, Integer, String] = new JFunction2[String, Integer, String] {
       def apply(s: String, i: Integer): String = s * i
-    }.asScala
-    assertThat("abcabc", is(f("abc", 2)))
+    }
+    val g: (String, Int) => String = f.asScala
+    assertThat("abcabc", is(g("abc", 2)))
   }
 
   @Test def JFunction2ToFunction2TypeConvertedExplicitly() {
-    val f: (String, Int) => String = new JFunction2[String, Integer, String] {
+    val f: JFunction2[String, Integer, String] = new JFunction2[String, Integer, String] {
       def apply(s: String, i: Integer): String = s * i
-    }.asScala
-    assertThat("abcabc", is(f("abc", 2)))
+    }
+    val g: (String, Int) => String = f.asScala
+    assertThat("abcabc", is(g("abc", 2)))
   }
 
   @Test def optionToFugueOption() {

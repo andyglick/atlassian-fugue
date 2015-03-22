@@ -19,8 +19,8 @@ import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
 
 import java.io.Serializable;
 import java.util.function.Function;
+import java.util.function.BiFunction;
 
-import com.atlassian.fugue.mango.Function.Function2;
 
 /**
  * Represents a pair of objects.
@@ -42,7 +42,7 @@ public final class Pair<A, B> implements Serializable {
    * @return the Pair containing the passed values
    */
   public static <A, B> Pair<A, B> pair(final A left, final B right) {
-    return new Pair<A, B>(left, right);
+    return new Pair<>(left, right);
   }
 
   /**
@@ -52,12 +52,8 @@ public final class Pair<A, B> implements Serializable {
    * @param <B> the right value type
    * @return a function that constructs Pairs
    */
-  public static <A, B> Function2<A, B, Pair<A, B>> pairs() {
-    return new Function2<A, B, Pair<A, B>>() {
-      public com.atlassian.fugue.Pair<A, B> apply(final A a, final B b) {
-        return pair(a, b);
-      }
-    };
+  public static <A, B> BiFunction<A, B, Pair<A, B>> pairs() {
+    return Pair::pair;
   }
 
   /**

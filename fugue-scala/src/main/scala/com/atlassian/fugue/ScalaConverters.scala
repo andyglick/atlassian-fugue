@@ -16,9 +16,7 @@
 package com.atlassian.fugue
 
 import java.lang.{Boolean => JBool, Byte => JByte, Double => JDouble, Float => JFloat, Long => JLong, Short => JShort}
-import java.util.function.{Function => JFunction, Supplier => JSuppiler, Predicate => JPredicate}
-
-import com.atlassian.fugue.mango.Function.{Function2 => JFunction2}
+import java.util.function.{Function => JFunction, BiFunction => JFunction2, Supplier => JSuppiler, Predicate => JPredicate}
 
 import scala.annotation.implicitNotFound
 import scala.language.implicitConversions
