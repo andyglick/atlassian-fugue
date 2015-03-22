@@ -16,8 +16,9 @@
 package com.atlassian.fugue
 
 import java.lang.{Boolean => JBool, Byte => JByte, Double => JDouble, Float => JFloat, Long => JLong, Short => JShort}
+import java.util.function.{Function => JFunction, Supplier => JSuppiler, Predicate => JPredicate}
 
-import com.atlassian.fugue.mango.Function.{Function => FugueFunction, Function2 => FugueFunction2, Predicate, Supplier}
+import com.atlassian.fugue.mango.Function.{Function2 => JFunction2}
 
 import scala.annotation.implicitNotFound
 import scala.language.implicitConversions
@@ -58,32 +59,32 @@ object ScalaConverters extends LowPriorityConverters {
   implicit val VoidIso = Iso[Void, scala.Unit] { _ => () } { _ => null }
   implicit val UnitIso = Iso[Unit, scala.Unit] { _ => () } { _ => Unit.VALUE }
 
-  implicit def SupplierIso[A, AA](implicit ev: A <~> AA): <~>[Supplier[A], () => AA] =
-    Iso[Supplier[A], () => AA] {
+  implicit def SupplierIso[A, AA](implicit ev: A <~> AA): <~>[JSuppiler[A], () => AA] =
+    Iso[JSuppiler[A], () => AA] {
       a => () => a.get.asScala
     } {
-      a => new Supplier.AbstractSupplier[A] { def get = a().asJava }
+      a => new JSuppiler[A] { def get = a().asJava }
     }
 
-  implicit def FunctionIso[A, AA, B, BB](implicit eva: A <~> AA, evb: B <~> BB): Iso[FugueFunction[A, B], AA => BB] =
-    Iso[FugueFunction[A, B], AA => BB] {
+  implicit def FunctionIso[A, AA, B, BB](implicit eva: A <~> AA, evb: B <~> BB): Iso[JFunction[A, B], AA => BB] =
+    Iso[JFunction[A, B], AA => BB] {
       f => a => f(a.asJava).asScala
     } {
-      f => new FugueFunction[A, B] { def apply(a: A): B = f(a.asScala).asJava }
+      f => new JFunction[A, B] { def apply(a: A): B = f(a.asScala).asJava }
     }
 
-  implicit def Function2Iso[A, AA, B, BB, C, CC](implicit ia: A <~> AA, ib: B <~> BB, ic: C <~> CC): <~>[FugueFunction2[A, B, C], (AA, BB) => CC] =
-    Iso[FugueFunction2[A, B, C], (AA, BB) => CC] {
+  implicit def Function2Iso[A, AA, B, BB, C, CC](implicit ia: A <~> AA, ib: B <~> BB, ic: C <~> CC): <~>[JFunction2[A, B, C], (AA, BB) => CC] =
+    Iso[JFunction2[A, B, C], (AA, BB) => CC] {
       f => { case (a, b) => f(a.asJava, b.asJava).asScala }
     } {
-      f => new FugueFunction2[A, B, C] { def apply(a: A, b: B): C = f(a.asScala, b.asScala).asJava }
+      f => new JFunction2[A, B, C] { def apply(a: A, b: B): C = f(a.asScala, b.asScala).asJava }
     }
 
-  implicit def PredicateIso[A, AA](implicit eva: A <~> AA): <~>[Predicate[A], (AA) => Boolean] =
-    Iso[Predicate[A], AA => Boolean] {
-      f => a => f(a.asJava)
+  implicit def PredicateIso[A, AA](implicit eva: A <~> AA): <~>[JPredicate[A], (AA) => Boolean] =
+    Iso[JPredicate[A], AA => Boolean] {
+      f => a => f.test(a.asJava)
     } {
-      f => new Predicate[A] { def apply(a: A): JBool = f(a.asScala) }
+      f => new JPredicate[A] { def test(a: A): Boolean = f(a.asScala) }
     }
 
   implicit def OptionIso[A, B](implicit i: A <~> B): Iso[Option[A], scala.Option[B]] =
@@ -96,8 +97,8 @@ object ScalaConverters extends LowPriorityConverters {
   implicit def EitherIso[A, AA, B, BB](implicit ia: A <~> AA, ib: B <~> BB): <~>[Either[A, B], scala.Either[AA, BB]] =
     Iso[Either[A, B], scala.Either[AA, BB]] {
       _.fold(
-        new FugueFunction[A, scala.Either[AA, BB]] { def apply(a: A) = Left(a.asScala) },
-        new FugueFunction[B, scala.Either[AA, BB]] { def apply(b: B) = Right(b.asScala) }
+        new JFunction[A, scala.Either[AA, BB]] { def apply(a: A) = Left(a.asScala) },
+        new JFunction[B, scala.Either[AA, BB]] { def apply(b: B) = Right(b.asScala) }
       )
     } {
       _.fold(a => Either.left(a.asJava), b => Either.right(b.asJava))
