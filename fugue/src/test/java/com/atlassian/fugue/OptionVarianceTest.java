@@ -21,13 +21,12 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import org.junit.Test;
 
 import com.atlassian.fugue.mango.Predicates;
-import com.atlassian.fugue.mango.Function.MangoSupplier;
-import com.atlassian.fugue.mango.Function.Predicate;
 
 public class OptionVarianceTest {
 
@@ -39,33 +38,21 @@ public class OptionVarianceTest {
 
   @Test public void flatMap() {
     Option<Parent> some = some(new Parent());
-    Function<Grand, Option<Child>> f = new Function<Grand, Option<Child>>() {
-      @Override public Option<Child> apply(Grand p) {
-        return some(new Child());
-      }
-    };
+    Function<Grand, Option<Child>> f = p -> some(new Child());
     Option<Parent> mapped = some.<Parent> flatMap(f);
     assertThat(mapped.get(), notNullValue());
   }
 
   @Test public void map() {
     Option<Parent> some = some(new Parent());
-    Function<Grand, Child> f = new Function<Grand, Child>() {
-      @Override public Child apply(Grand p) {
-        return new Child();
-      }
-    };
+    Function<Grand, Child> f = p -> new Child();
     Option<Parent> mapped = some.<Parent> map(f);
     assertThat(mapped.get(), notNullValue());
   }
 
   @Test public void orElse() {
     Option<Parent> some = some(new Parent());
-    Supplier<Option<Child>> f = new MangoSupplier<Option<Child>>() {
-      @Override public Option<Child> get() {
-        return some(new Child());
-      }
-    };
+    Supplier<Option<Child>> f =  () -> some(new Child());
     Option<Parent> mapped = some.orElse(f);
     assertThat(mapped.get(), notNullValue());
   }
@@ -79,11 +66,7 @@ public class OptionVarianceTest {
 
   @Test public void getOrElseSupplier() {
     Option<Parent> some = some(new Parent());
-    Supplier<Child> f = new MangoSupplier<Child>() {
-      @Override public Child get() {
-        return new Child();
-      }
-    };
+    Supplier<Child> f = Child::new;
     Parent mapped = some.getOrElse(f);
     assertThat(mapped, notNullValue());
   }
@@ -109,7 +92,7 @@ public class OptionVarianceTest {
 
   @Test public void forEach() {
     Maybe<Child> some = some(new Child());
-    Count<Grand> e = new Count<Grand>();
+    Count<Grand> e = new Count<>();
     some.foreach(e);
     assertThat(e.count(), equalTo(1));
   }

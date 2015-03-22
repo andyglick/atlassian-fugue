@@ -1,6 +1,6 @@
 package com.atlassian.fugue.mango;
 
-import com.atlassian.fugue.mango.Function.Predicate;
+import java.util.function.Predicate;
 
 /**
  * Created by anund on 2/14/15.
@@ -9,20 +9,12 @@ public class Predicates {
   private Predicates() {}
 
   public static <A> Predicate<A> not(final Predicate<A> predicate) {
-    return new Predicate<A>() {
-      @Override public Boolean apply(A a) {
-        return !predicate.apply(a);
-      }
-    };
+    return a -> !predicate.test(a);
   }
 
   public static <A> Predicate<A> equalTo(final A seed) {
     Preconditions.checkNotNull(seed);
-    return new Predicate<A>() {
-      @Override public Boolean apply(A a) {
-        return seed.equals(a);
-      }
-    };
+    return seed::equals;
   }
 
   @SuppressWarnings("unchecked") public static <A> Predicate<A> alwaysTrue() {
@@ -36,7 +28,7 @@ public class Predicates {
   enum AlwaysTrue implements Predicate<Object> {
     INSTANCE;
 
-    public Boolean apply(Object o) {
+    public boolean test(Object o) {
       return Boolean.TRUE;
     }
   }
@@ -44,7 +36,7 @@ public class Predicates {
   enum AlwaysFalse implements Predicate<Object> {
     INSTANCE;
 
-    public Boolean apply(Object o) {
+    public boolean test(Object o) {
       return Boolean.FALSE;
     }
   }

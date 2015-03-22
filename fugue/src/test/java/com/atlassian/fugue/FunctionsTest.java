@@ -101,7 +101,7 @@ public class FunctionsTest {
   // }
 
   @Test public void toFunction2() {
-    assertThat(Functions.toFunction2(leftOfString).apply("abcde", 3), is(Option.some("abc")));
+    assertThat(Functions.toBiFunction(leftOfString).apply("abcde", 3), is(Option.some("abc")));
   }
 
   @Test public void curried() {

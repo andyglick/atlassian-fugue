@@ -23,10 +23,10 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.function.Predicate;
 
 import com.atlassian.fugue.mango.Iterators;
 import com.atlassian.fugue.mango.Preconditions;
-import com.atlassian.fugue.mango.Function.Predicate;
 
 /**
  * A class that encapsulates missing values. An Option may be either
@@ -35,7 +35,7 @@ import com.atlassian.fugue.mango.Function.Predicate;
  * If it is a value it may be tested with the {@link #isDefined()} method, but
  * more often it is useful to either return the value or an alternative if
  * {@link #getOrElse(Object) not set}, or
- * {@link #map(com.atlassian.fugue.mango.Function.Function) map} or
+ * {@link #map(Function) map} or
  * {@link #filter(Predicate) filter}.
  * <p>
  * Mapping a <em>none</em> of type A to type B will simply return a none of type
@@ -52,9 +52,9 @@ import com.atlassian.fugue.mango.Function.Predicate;
  * however, that this should be rare as functions that return <code>null</code>
  * is a bad idea anyway. <b>Note</b> that if a function returns null to indicate
  * optionality, it can be
- * {@link Functions#lift(com.atlassian.fugue.mango.Function.Function) lifted}
+ * {@link Functions#lift(Function) lifted}
  * into a partial function and then
- * {@link #flatMap(com.atlassian.fugue.mango.Function.Function) flat mapped}
+ * {@link #flatMap(Function) flat mapped}
  * instead.
  * <p>
  * Note: while this class is public and abstract it does not expose a
@@ -88,7 +88,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    */
   public static <A> Option<A> some(final A value) {
     Preconditions.checkNotNull(value);
-    return new Some<A>(value);
+    return new Some<>(value);
   }
 
   /**
@@ -120,7 +120,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    * Function for wrapping values in a Some or None.
    * 
    * @param <A> the contained type
-   * @return a {@link com.atlassian.fugue.mango.Function.Function} to wrap
+   * @return a {@link Function} to wrap
    * values
    * 
    * @since 1.1
@@ -217,11 +217,11 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
 
   @Override public final boolean exists(final Predicate<? super A> p) {
     checkNotNull(p);
-    return isDefined() && p.apply(get());
+    return isDefined() && p.test(get());
   }
 
   @Override public boolean forall(final Predicate<? super A> p) {
-    return isEmpty() || p.apply(get());
+    return isEmpty() || p.test(get());
   }
 
   @Override public final boolean isEmpty() {
@@ -247,7 +247,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    */
   public final <B> Option<B> map(final Function<? super A, ? extends B> f) {
     checkNotNull(f);
-    return isEmpty() ? Option.<B> none() : new Some<B>(f.apply(get()));
+    return isEmpty() ? Option.<B> none() : new Some<>(f.apply(get()));
   }
 
   /**
@@ -276,7 +276,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    */
   public final Option<A> filter(final Predicate<? super A> p) {
     checkNotNull(p);
-    return (isEmpty() || p.apply(get())) ? this : Option.<A> none();
+    return (isEmpty() || p.test(get())) ? this : Option.<A> none();
   }
 
   /**
@@ -333,11 +333,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   //
 
   private Function<Object, Boolean> valuesEqual() {
-    return new Function<Object, Boolean>() {
-      public Boolean apply(final Object obj) {
-        return isDefined() && get().equals(obj);
-      }
-    };
+    return obj -> isDefined() && get().equals(obj);
   }
 
   //
@@ -374,10 +370,10 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   private static final Supplier<Integer> NONE_HASH = Suppliers.ofInstance(31);
 
   static final class Defined<A> implements Predicate<Option<A>> {
-    @Override public Boolean apply(final Option<A> option) {
+    @Override public boolean test(final Option<A> option) {
       return option.isDefined();
     }
-  };
+  }
 
   //
   // inner classes
@@ -407,6 +403,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
       return true;
     }
 
+    // todo is this broken?
     @Override public A getOrError(final Supplier<String> err) {
       return get();
     }

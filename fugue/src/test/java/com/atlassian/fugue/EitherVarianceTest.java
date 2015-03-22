@@ -21,10 +21,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
+import java.util.function.Predicate;
 import org.junit.Test;
 
 import com.atlassian.fugue.mango.Predicates;
-import com.atlassian.fugue.mango.Function.Predicate;
 
 public class EitherVarianceTest {
   private final Either<String, Integer> l = left("heyaa!");
@@ -53,7 +53,7 @@ public class EitherVarianceTest {
   }
 
   @Test public void forEach() {
-    Count<Number> e = new Count<Number>();
+    Count<Number> e = new Count<>();
     r.right().foreach(e);
     assertThat(e.count(), equalTo(1));
   }

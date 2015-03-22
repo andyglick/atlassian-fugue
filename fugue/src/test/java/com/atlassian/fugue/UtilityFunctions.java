@@ -20,94 +20,45 @@ import static com.atlassian.fugue.Either.right;
 import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
 
 import java.lang.reflect.Constructor;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import javax.annotation.Nullable;
-
-import com.atlassian.fugue.mango.Function.Function2;
 import com.atlassian.fugue.mango.Function.Predicate;
 
 public class UtilityFunctions {
   public static final Predicate<Integer> isEven = dividableBy(2);
 
-  public static final Function2<Integer, Integer, Integer> sum = new Function2<Integer, Integer, Integer>() {
-    @Override public Integer apply(final Integer a, final Integer b) {
-      return a + b;
-    }
-  };
+  public static final BiFunction<Integer, Integer, Integer> sum = (a, b) -> a + b;
 
-  public static final Function2<Integer, Integer, Integer> subtract = new Function2<Integer, Integer, Integer>() {
-    @Override public Integer apply(final Integer a, final Integer b) {
-      return a - b;
-    }
-  };
+  public static final BiFunction<Integer, Integer, Integer> subtract = (a, b) -> a - b;
 
-  public static final Function2<Integer, Integer, Integer> product = new Function2<Integer, Integer, Integer>() {
-    @Override public Integer apply(final Integer a, final Integer b) {
-      return a * b;
-    }
-  };
+  public static final BiFunction<Integer, Integer, Integer> product = (a, b) -> a * b;
 
-  public static final Predicate<Integer> dividableBy(final int div) {
-    return new Predicate<Integer>() {
-      @Override public Boolean apply(Integer input) {
-        return input % div == 0;
-      }
-    };
+  public static Predicate<Integer> dividableBy(final int div) {
+    return input -> input % div == 0;
   }
 
-  public static Function<Integer, Integer> addOne = new Function<Integer, Integer>() {
-    public Integer apply(final Integer integer) {
-      return integer + 1;
-    }
-  };
+  public static Function<Integer, Integer> addOne = integer -> integer + 1;
 
-  public static Function<Integer, Integer> square = new Function<Integer, Integer>() {
-    @Override public Integer apply(Integer input) {
-      return input * input;
-    }
-  };
+  public static Function<Integer, Integer> square = input -> input * input;
 
-  public static Function<Boolean, String> bool2String = new Function<Boolean, String>() {
-    public String apply(final Boolean b) {
-      return String.valueOf(b);
-    }
-  };
-  public static Function<Integer, String> int2String = new Function<Integer, String>() {
-    public String apply(final Integer i) {
-      return String.valueOf(i);
-    }
-  };
+  public static Function<Boolean, String> bool2String = String::valueOf;
+  public static Function<Integer, String> int2String = String::valueOf;
 
-  public static Function<String, String> reverse = new Function<String, String>() {
-    public String apply(final String from) {
-      return new StringBuilder(from).reverse().toString();
-    }
-  };
+  public static Function<String, String> reverse = from -> new StringBuilder(from).reverse().toString();
 
-  public static Function2<String, Integer, Option<Character>> charAt = new Function2<String, Integer, Option<Character>>() {
-    @Override public Option<Character> apply(String s, Integer i) {
-      return s != null && i != null && i >= 0 && i < s.length() ? Option.some(s.charAt(i)) : Option.<Character> none();
-    }
-  };
+  public static BiFunction<String, Integer, Option<Character>> charAt = (s, i) ->
+      s != null && i != null && i >= 0 && i < s.length() ? Option.some(s.charAt(i)) : Option.<Character> none();
 
-  public static Function<Pair<String, Integer>, Option<String>> leftOfString = new Function<Pair<String, Integer>, Option<String>>() {
-    @Override public Option<String> apply(@Nullable Pair<String, Integer> pair) {
-      return pair != null && pair.left() != null && pair.right() != null && pair.right() >= 0
-        && pair.right() <= pair.left().length() ? Option.some(pair.left().substring(0, pair.right())) : Option
-        .<String> none();
-    }
-  };
+  public static Function<Pair<String, Integer>, Option<String>> leftOfString = pair ->
+      pair != null &&
+      pair.left() != null &&
+      pair.right() != null &&
+      pair.right() >= 0 &&
+      pair.right() <= pair.left().length() ? Option.some(pair.left().substring(0, pair.right())) : Option.<String> none();
 
-  public static Function<String, Function<Integer, Boolean>> hasMinLength = new Function<String, Function<Integer, Boolean>>() {
-    @Override public Function<Integer, Boolean> apply(@Nullable final String text) {
-      return new Function<Integer, Boolean>() {
-        @Override public Boolean apply(@Nullable Integer min) {
-          return (text == null ? "" : text).length() >= (min == null ? 0 : min);
-        }
-      };
-    }
-  };
+  public static Function<String, Function<Integer, Boolean>> hasMinLength =
+      text -> min -> (text == null ? "" : text).length() >= (min == null ? 0 : min);
 
   public static Function<Object, String> toStringFunction() {
     return ToStringFunction.INSTANCE;
@@ -128,15 +79,13 @@ public class UtilityFunctions {
   }
 
   static <A> Function<Class<A>, Either<Exception, A>> defaultCtor() {
-    return new Function<Class<A>, Either<Exception, A>>() {
-      @Override public Either<Exception, A> apply(final Class<A> klass) {
-        try {
-          final Constructor<A> declaredConstructor = klass.getDeclaredConstructor();
-          declaredConstructor.setAccessible(true);
-          return right(declaredConstructor.newInstance());
-        } catch (final Exception e) {
-          return left(e);
-        }
+    return klass -> {
+      try {
+        final Constructor<A> declaredConstructor = klass.getDeclaredConstructor();
+        declaredConstructor.setAccessible(true);
+        return right(declaredConstructor.newInstance());
+      } catch (final Exception e) {
+        return left(e);
       }
     };
   }

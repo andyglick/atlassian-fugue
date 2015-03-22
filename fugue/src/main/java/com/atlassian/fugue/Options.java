@@ -18,10 +18,9 @@ package com.atlassian.fugue;
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
-
-import com.atlassian.fugue.mango.Function.Function2;
-import com.atlassian.fugue.mango.Function.Predicate;
+import java.util.function.Predicate;
 
 /**
  * Utility methods for working with {@link Option options}.
@@ -87,11 +86,7 @@ public class Options {
    */
   public static <A, B> Function<Option<A>, Option<B>> lift(final Function<A, B> f) {
     checkNotNull(f);
-    return new Function<Option<A>, Option<B>>() {
-      @Override public Option<B> apply(Option<A> oa) {
-        return oa.map(f);
-      }
-    };
+    return oa -> oa.map(f);
   }
 
   /**
@@ -105,11 +100,7 @@ public class Options {
    * @since 2.0
    */
   public static <A, B> Function<Function<A, B>, Function<Option<A>, Option<B>>> lift() {
-    return new Function<Function<A, B>, Function<Option<A>, Option<B>>>() {
-      @Override public Function<Option<A>, Option<B>> apply(Function<A, B> f) {
-        return lift(f);
-      }
-    };
+    return Options::lift;
   }
 
   /**
@@ -123,11 +114,7 @@ public class Options {
    */
   public static <A> Predicate<Option<A>> lift(final Predicate<? super A> pred) {
     checkNotNull(pred);
-    return new Predicate<Option<A>>() {
-      @Override public Boolean apply(Option<A> oa) {
-        return oa.exists(pred);
-      }
-    };
+    return oa -> oa.exists(pred);
   }
 
   /**
@@ -158,14 +145,12 @@ public class Options {
    * returns an option of type C
    * @since 2.0
    */
-  public static <A, B, C> Function2<Option<A>, Option<B>, Option<C>> lift2(Function2<A, B, C> f2) {
+  public static <A, B, C> BiFunction<Option<A>, Option<B>, Option<C>> lift2(BiFunction<A, B, C> f2) {
     Function<A, Function<B, C>> curried = Functions.curried(f2);
     final Function<Option<A>, Option<Function<B, C>>> lifted = lift(curried);
-    return new Function2<Option<A>, Option<B>, Option<C>>() {
-      @Override public Option<C> apply(Option<A> oa, Option<B> ob) {
-        Option<Function<B, C>> ofbc = lifted.apply(oa);
-        return Options.ap(ob, ofbc);
-      }
+    return (oa, ob) -> {
+      Option<Function<B, C>> ofbc = lifted.apply(oa);
+      return Options.ap(ob, ofbc);
     };
   }
 
@@ -183,11 +168,7 @@ public class Options {
    * result type C into Option
    * @since 2.0
    */
-  public static <A, B, C> Function<Function2<A, B, C>, Function2<Option<A>, Option<B>, Option<C>>> lift2() {
-    return new Function<Function2<A, B, C>, Function2<Option<A>, Option<B>, Option<C>>>() {
-      @Override public Function2<Option<A>, Option<B>, Option<C>> apply(Function2<A, B, C> f2) {
-        return lift2(f2);
-      }
-    };
+  public static <A, B, C> Function<BiFunction<A, B, C>, BiFunction<Option<A>, Option<B>, Option<C>>> lift2() {
+    return Options::lift2;
   }
 }

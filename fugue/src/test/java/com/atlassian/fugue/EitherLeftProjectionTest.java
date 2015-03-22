@@ -29,21 +29,13 @@ import java.util.function.Supplier;
 import org.junit.Test;
 
 import com.atlassian.fugue.mango.Predicates;
-import com.atlassian.fugue.mango.Function.MangoSupplier;
 
 public class EitherLeftProjectionTest {
   private final Either<String, Integer> l = left("heyaa!");
   private final Either<String, Integer> r = right(12);
-  final Supplier<String> boo = new MangoSupplier<String>() {
-    @Override public String get() {
-      return "boo!";
-    }
-  };
-  Function<String, Either<String, Integer>> reverseToEither = new Function<String, Either<String, Integer>>() {
-    @Override public Either<String, Integer> apply(final String from) {
-      return left(reverse.apply(from));
-    }
-  };
+  final Supplier<String> boo = () -> "boo!";
+
+  Function<String, Either<String, Integer>> reverseToEither = from -> left(reverse.apply(from));
 
   @Test public void isDefined() {
     assertThat(l.left().isDefined(), is(true));
@@ -221,18 +213,10 @@ public class EitherLeftProjectionTest {
   }
 
   @Test public void getOrThrowLeft() throws MyException {
-    assertThat(l.left().getOrThrow(new MangoSupplier<MyException>() {
-      @Override public MyException get() {
-        return new MyException();
-      }
-    }), is("heyaa!"));
+    assertThat(l.left().getOrThrow(MyException::new), is("heyaa!"));
   }
 
   @Test(expected = MyException.class) public void getOrThrowRight() throws MyException {
-    r.left().getOrThrow(new MangoSupplier<MyException>() {
-      @Override public MyException get() {
-        return new MyException();
-      }
-    });
+    r.left().getOrThrow(MyException::new);
   }
 }

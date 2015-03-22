@@ -19,13 +19,13 @@ import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
 
 import java.io.Serializable;
 import java.util.Iterator;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
 import com.atlassian.fugue.mango.Iterators;
-import com.atlassian.fugue.mango.Function.Function2;
 import com.atlassian.fugue.mango.Function.Predicate;
 import com.atlassian.util.concurrent.NotNull;
 
@@ -56,7 +56,7 @@ public class Functions {
    * composition</a>
    */
   public static <A, B, C> Function<A, C> compose(Function<? super B, ? extends C> g, Function<? super A, ? extends B> f) {
-    return new FunctionComposition<A, B, C>(g, f);
+    return new FunctionComposition<>(g, f);
   }
 
   private static class FunctionComposition<A, B, C> implements Function<A, C>, Serializable {
@@ -107,7 +107,7 @@ public class Functions {
    * 
    * @since 1.1
    */
-  public static <F, T> T fold(final Function2<? super T, F, T> f, final T zero, final Iterable<? extends F> elements) {
+  public static <F, T> T fold(final BiFunction<? super T, F, T> f, final T zero, final Iterable<? extends F> elements) {
     T currentValue = zero;
     for (final F element : elements) {
       currentValue = f.apply(currentValue, element);
@@ -134,7 +134,7 @@ public class Functions {
    */
   public static <F, S, T extends S> T fold(final Function<Pair<S, F>, T> f, final T zero,
     final Iterable<? extends F> elements) {
-    return fold(toFunction2(f), zero, elements);
+    return fold(toBiFunction(f), zero, elements);
   }
 
   /**
@@ -197,7 +197,7 @@ public class Functions {
    * @since 1.2
    */
   public static <A, B> Function<A, Option<B>> isInstanceOf(Class<B> cls) {
-    return new InstanceOf<A, B>(cls);
+    return new InstanceOf<>(cls);
   }
 
   static class InstanceOf<A, B> implements Function<A, Option<B>> {
@@ -224,7 +224,7 @@ public class Functions {
 
   /**
    * Create a PartialFunction from a {@link Predicate} and a
-   * {@link com.atlassian.fugue.mango.Function.Function}.
+   * {@link Function}.
    * 
    * @param <A> the input type
    * @param <B> the output type
@@ -235,7 +235,7 @@ public class Functions {
    * @since 1.2
    */
   public static <A, B> Function<A, Option<B>> partial(Predicate<? super A> p, Function<? super A, ? extends B> f) {
-    return new Partial<A, B>(p, f);
+    return new Partial<>(p, f);
   }
 
   static class Partial<A, B> implements Function<A, Option<B>> {
@@ -248,7 +248,7 @@ public class Functions {
     }
 
     public Option<B> apply(A a) {
-      return (p.apply(a)) ? Option.<B> option(f.apply(a)) : Option.<B> none();
+      return (p.apply(a)) ? Option.option(f.apply(a)) : Option.<B> none();
     }
 
     @Override public String toString() {
@@ -278,7 +278,7 @@ public class Functions {
 
   public static <A, B, C> Function<A, Option<C>> composeOption(Function<? super B, ? extends Option<? extends C>> bc,
     Function<? super A, ? extends Option<? extends B>> ab) {
-    return new PartialComposer<A, B, C>(ab, bc);
+    return new PartialComposer<>(ab, bc);
   }
 
   static class PartialComposer<A, B, C> implements Function<A, Option<C>> {
@@ -315,15 +315,15 @@ public class Functions {
    * @return a function that takes two arguments
    * @since 2.0
    */
-  public static <A, B, C> Function2<A, B, C> toFunction2(final Function<Pair<A, B>, C> fpair) {
+  public static <A, B, C> BiFunction<A, B, C> toBiFunction(final Function<Pair<A, B>, C> fpair) {
     checkNotNull(fpair);
-    return new Function2<A, B, C>() {
+    return new BiFunction<A, B, C>() {
       @Override public C apply(A a, B b) {
         return fpair.apply(Pair.pair(a, b));
       }
 
       @Override public String toString() {
-        return "ToFunction2";
+        return "ToBiFunction";
       }
     };
   }
@@ -340,24 +340,20 @@ public class Functions {
    * @return the curried form of the original function
    * @since 2.0
    */
-  public static <A, B, C> Function<A, Function<B, C>> curried(final Function2<A, B, C> f2) {
+  public static <A, B, C> Function<A, Function<B, C>> curried(final BiFunction<A, B, C> f2) {
     checkNotNull(f2);
-    return new CurriedFunction<A, B, C>(f2);
+    return new CurriedFunction<>(f2);
   }
 
   private static class CurriedFunction<A, B, C> implements Function<A, Function<B, C>> {
-    private final Function2<A, B, C> f2;
+    private final BiFunction<A, B, C> f2;
 
-    CurriedFunction(Function2<A, B, C> f2) {
+    CurriedFunction(BiFunction<A, B, C> f2) {
       this.f2 = f2;
     }
 
     @Override public Function<B, C> apply(final A a) {
-      return new Function<B, C>() {
-        @Override public C apply(B b) {
-          return f2.apply(a, b);
-        }
-      };
+      return b -> f2.apply(a, b);
     }
 
     @Override public String toString() {
@@ -382,7 +378,7 @@ public class Functions {
    */
   public static <A, B, C> Function<B, Function<A, C>> flip(final Function<A, Function<B, C>> f2) {
     checkNotNull(f2);
-    return new FlippedFunction<A, B, C>(f2);
+    return new FlippedFunction<>(f2);
   }
 
   private static class FlippedFunction<A, B, C> implements Function<B, Function<A, C>> {
@@ -393,11 +389,7 @@ public class Functions {
     }
 
     @Override public Function<A, C> apply(final B b) {
-      return new Function<A, C>() {
-        @Override public C apply(A a) {
-          return f2.apply(a).apply(b);
-        }
-      };
+      return a -> f2.apply(a).apply(b);
     }
 
     @Override public String toString() {
@@ -435,27 +427,6 @@ public class Functions {
   }
 
   /**
-   * @deprecated this is a poor name, use
-   * {@link #mapNullToOption(com.atlassian.fugue.mango.Function.Function)}
-   * instead
-   * 
-   * @param <A> the input type
-   * @param <B> the output type
-   * @param f the function that may return nulls
-   * @return a function that converts any nulls into Options
-   * @since 1.2
-   */
-  // TODO deprecated in 2.0, remove in >= 1.5
-
-  // /CLOVER:OFF
-
-  @Deprecated public static <A, B> Function<A, Option<B>> lift(Function<? super A, ? extends B> f) {
-    return mapNullToOption(f);
-  }
-
-  // /CLOVER:ON
-
-  /**
    * Takes a Function and memoizes (caches) the result for each input. This
    * memoization is weak, so it shouldn't leak memory on its own, but equally it
    * may expunge entries if no-one else is holding the reference in the
@@ -488,7 +459,7 @@ public class Functions {
    * @return the function
    */
   static <D, R> Function<D, R> fromSupplier(final @NotNull Supplier<R> supplier) {
-    return new FromSupplier<D, R>(supplier);
+    return new FromSupplier<>(supplier);
   }
 
   static class FromSupplier<D, R> implements Function<D, R> {
@@ -512,11 +483,7 @@ public class Functions {
   }
 
   public static <A> Function<A, Iterator<A>> singletonIterator() {
-    return new Function<A, Iterator<A>>() {
-      @Override public Iterator<A> apply(final A a) {
-        return Iterators.singletonIterator(a);
-      }
-    };
+    return Iterators::singletonIterator;
   }
 
   /**
@@ -547,10 +514,6 @@ public class Functions {
   }
 
   static <A, B> Function<A, B> constant(final B constant) {
-    return new Function<A, B>() {
-      public B apply(final A from) {
-        return constant;
-      }
-    };
+    return from -> constant;
   }
 }

@@ -17,9 +17,8 @@ package com.atlassian.fugue;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
-
-import com.atlassian.fugue.mango.Function.Predicate;
 
 /**
  * Implemented by things that may or may not contain a value.

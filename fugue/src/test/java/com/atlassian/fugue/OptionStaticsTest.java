@@ -27,10 +27,11 @@ import static org.junit.Assert.assertThat;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Function;
+import java.util.function.BiFunction;
+import java.util.function.Predicate;
 
+import com.atlassian.fugue.mango.Predicates;
 import org.junit.Test;
-
-import com.atlassian.fugue.mango.Function.Function2;
 
 public class OptionStaticsTest {
   static final Integer NULL = null;
@@ -101,39 +102,40 @@ public class OptionStaticsTest {
   }
 
   @Test public void lift2() {
-    Function2<Option<String>, Option<Integer>, Option<Option<Character>>> liftedCharAt = Options
+    BiFunction<Option<String>, Option<Integer>, Option<Option<Character>>> liftedCharAt = Options
       .lift2(UtilityFunctions.charAt);
-    assertThat(liftedCharAt.apply(some("abc"), Option.some(1)), is(Option.some(Option.some('b'))));
+    Option<Option<Character>> b = Option.some(Option.some('b'));
+    assertThat(liftedCharAt.apply(some("abc"), Option.some(1)), is(b));
   }
 
   @Test public void lift2FirstNone() {
-    Function2<Option<String>, Option<Integer>, Option<Option<Character>>> liftedCharAt = Options
+    BiFunction<Option<String>, Option<Integer>, Option<Option<Character>>> liftedCharAt = Options
       .lift2(UtilityFunctions.charAt);
     assertThat(liftedCharAt.apply(Option.<String> none(), Option.some(1)),
       is(sameInstance(Option.<Option<Character>> none())));
   }
 
   @Test public void lift2SecondNone() {
-    Function2<Option<String>, Option<Integer>, Option<Option<Character>>> liftedCharAt = Options
+    BiFunction<Option<String>, Option<Integer>, Option<Option<Character>>> liftedCharAt = Options
       .lift2(UtilityFunctions.charAt);
     assertThat(liftedCharAt.apply(some("abc"), Option.<Integer> none()),
       is(sameInstance(Option.<Option<Character>> none())));
   }
 
   @Test public void lift2Function() {
-    Function2<Option<String>, Option<Integer>, Option<Option<Character>>> liftedCharAt = liftCharAtFunction();
-    assertThat(liftedCharAt.apply(some("abc"), some(1)), is(some(some('b'))));
+    BiFunction<Option<String>, Option<Integer>, Option<Option<Character>>> liftedCharAt = liftCharAtFunction();
+    Option<Option<Character>> b = some(some('b'));
+    assertThat(liftedCharAt.apply(some("abc"), some(1)), is(b));
   }
 
-  // todo-alex JDK8 compatibility
-  // @Test public void liftPredicate() {
-  // Predicate<Option<Integer>> lifted = Options.lift(Predicates.equalTo(3));
-  // assertThat(lifted.apply(some(3)), is(true));
-  // assertThat(lifted.apply(some(2)), is(false));
-  // assertThat(lifted.apply(Option.<Integer> none()), is(false));
-  // }
+  @Test public void liftPredicate() {
+    Predicate<Option<Integer>> lifted = Options.lift(Predicates.equalTo(3));
+    assertThat(lifted.test(some(3)), is(true));
+    assertThat(lifted.test(some(2)), is(false));
+    assertThat(lifted.test(Option.<Integer>none()), is(false));
+  }
 
-  private Function2<Option<String>, Option<Integer>, Option<Option<Character>>> liftCharAtFunction() {
+  private BiFunction<Option<String>, Option<Integer>, Option<Option<Character>>> liftCharAtFunction() {
     return Options.<String, Integer, Option<Character>> lift2().apply(UtilityFunctions.charAt);
   }
 }
