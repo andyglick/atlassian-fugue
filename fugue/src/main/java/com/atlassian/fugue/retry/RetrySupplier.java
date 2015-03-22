@@ -18,7 +18,6 @@ package com.atlassian.fugue.retry;
 import java.util.function.Supplier;
 
 import com.atlassian.fugue.mango.Preconditions;
-import com.atlassian.fugue.mango.Function.MangoSupplier;
 
 /**
  * A Supplier which wraps the apply method of another Supplier and attempts it
@@ -30,7 +29,7 @@ import com.atlassian.fugue.mango.Function.MangoSupplier;
  * @see RetryFactory for some factory methods
  * @see ExceptionHandlers for some predefined handlers
  */
-public class RetrySupplier<T> extends MangoSupplier<T> {
+public class RetrySupplier<T> implements Supplier<T> {
   private final Supplier<T> supplier;
   private final int tries;
   private final ExceptionHandler handler;

@@ -103,7 +103,7 @@ public class RetryFactory {
    * times when that supplier may fail sporadically
    */
   public static <A> Supplier<A> create(Supplier<A> supplier, int tries, ExceptionHandler handler) {
-    return new RetrySupplier<A>(supplier, tries, handler);
+    return new RetrySupplier<>(supplier, tries, handler);
   }
 
   /**
@@ -120,7 +120,7 @@ public class RetryFactory {
    * times when that supplier may fail sporadically
    */
   public static <A> Supplier<A> create(Supplier<A> supplier, int tries, ExceptionHandler handler, long backoff) {
-    return new RetrySupplier<A>(supplier, tries, handler, new BeforeRetryExponentialBackoffTask(backoff));
+    return new RetrySupplier<>(supplier, tries, handler, new BeforeRetryExponentialBackoffTask(backoff));
   }
 
   /**
@@ -171,6 +171,6 @@ public class RetryFactory {
    * times when that function may fail sporadically
    */
   public static <A, B> Function<A, B> create(Function<A, B> function, int tries, ExceptionHandler handler, long backoff) {
-    return new RetryFunction<A, B>(function, tries, handler, new BeforeRetryExponentialBackoffTask(backoff));
+    return new RetryFunction<>(function, tries, handler, new BeforeRetryExponentialBackoffTask(backoff));
   }
 }

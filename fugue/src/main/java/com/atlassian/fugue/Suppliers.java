@@ -18,7 +18,6 @@ package com.atlassian.fugue;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import com.atlassian.fugue.mango.Function.MangoSupplier;
 
 /**
  * Provide utility functions for the class of functions that supply a return
@@ -35,11 +34,7 @@ public class Suppliers {
    * @return a supplier that always supplies {@code instance}.
    */
   public static <A> Supplier<A> ofInstance(final A a) {
-    return new MangoSupplier<A>() {
-      @Override public A get() {
-        return a;
-      }
-    };
+    return () -> a;
   }
 
   /**
@@ -54,11 +49,7 @@ public class Suppliers {
    * @return a new {@link Supplier} returning B's
    */
   public static <A, B> Supplier<B> compose(final Function<? super A, B> transform, final Supplier<A> first) {
-    return new MangoSupplier<B>() {
-      @Override public B get() {
-        return transform.apply(first.get());
-      }
-    };
+    return () -> transform.apply(first.get());
   }
 
   /**
@@ -103,11 +94,7 @@ public class Suppliers {
    * @since 2.0
    */
   public static <A> Supplier<A> fromOption(final Option<A> option) {
-    return new MangoSupplier<A>() {
-      @Override public A get() {
-        return option.get();
-      }
-    };
+    return option::get;
   }
 
   /**
@@ -119,16 +106,12 @@ public class Suppliers {
    * @param f the function
    * @param a the value
    * @return a {@link Supplier} that always calls
-   * {@link com.atlassian.fugue.mango.Function.Function#apply(Object)}
+   * {@link Function#apply(Object)}
    * 
    * @since 2.2
    */
   public static <A, B> Supplier<B> fromFunction(final Function<? super A, ? extends B> f, final A a) {
-    return new MangoSupplier<B>() {
-      @Override public B get() {
-        return f.apply(a);
-      }
-    };
+    return () -> f.apply(a);
   }
 
   private enum SupplyTrue implements Supplier<Boolean> {

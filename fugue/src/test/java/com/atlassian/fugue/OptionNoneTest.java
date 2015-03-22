@@ -30,7 +30,6 @@ import java.util.function.Function;
 import org.junit.Test;
 
 import com.atlassian.fugue.mango.Predicates;
-import com.atlassian.fugue.mango.Function.MangoSupplier;
 
 public class OptionNoneTest {
   private final Option<Integer> none = none();
@@ -52,12 +51,8 @@ public class OptionNoneTest {
   }
 
   @Test public void map() {
-    final Function<Integer, Integer> function = new Function<Integer, Integer>() {
-      // /CLOVER:OFF
-      @Override public Integer apply(final Integer input) {
-        throw new AssertionError("None.map should not call the function.");
-      }
-      // /CLOVER:ON
+    final Function<Integer, Integer> function = input -> {
+      throw new AssertionError("None.map should not call the function.");
     };
 
     assertThat(none.map(function).isEmpty(), is(true));
@@ -103,12 +98,8 @@ public class OptionNoneTest {
 
   @Test public void superTypesPermittedOnMap() {
     final Option<ArrayList<?>> opt = none();
-    final Option<Set<?>> size = opt.map(new Function<List<?>, Set<?>>() {
-      // /CLOVER:OFF
-      public Set<?> apply(final List<?> list) {
-        throw new AssertionError("This internal method should never get called.");
-      }
-      // /CLOVER:ON
+    final Option<Set<?>> size = opt.map(list -> {
+      throw new AssertionError("This internal method should never get called.");
     });
     assertThat(size.isDefined(), is(false));
   }
@@ -153,7 +144,7 @@ public class OptionNoneTest {
   }
 
   @Test public void notEqualsSome() {
-    assertThat(none.equals(some("")), is(false));
+    assertThat(none.equals(some(5)), is(false));
   }
 
   @Test public void notEqualsNull() {
@@ -165,10 +156,6 @@ public class OptionNoneTest {
   }
 
   @Test(expected = MyException.class) public void getOrThrow() throws MyException {
-    none.getOrThrow(new MangoSupplier<MyException>() {
-      @Override public MyException get() {
-        return new MyException();
-      }
-    });
+    none.getOrThrow(MyException::new);
   }
 }

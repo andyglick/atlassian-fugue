@@ -16,10 +16,9 @@
 package com.atlassian.fugue.retry;
 
 import com.atlassian.fugue.mango.Preconditions;
-import com.atlassian.fugue.mango.Function.MangoSupplier;
 
 /**
- * A Runable which wraps the apply method of another Runnable and attempts it a
+ * A Runnable which wraps the apply method of another Runnable and attempts it a
  * fixed number of times. This class can be used when a task is known to be
  * prone to occasional failure and other workarounds are not known.
  * 
@@ -64,11 +63,9 @@ public class RetryTask implements Runnable {
   public RetryTask(final Runnable task, int tries, ExceptionHandler handler, Runnable beforeRetry) {
     Preconditions.checkNotNull(task, "task");
 
-    retrySupplier = new RetrySupplier<Object>(new MangoSupplier<Object>() {
-      public Object get() {
+    retrySupplier = new RetrySupplier<>(() -> {
         task.run();
         return null;
-      }
     }, tries, handler, beforeRetry);
   }
 

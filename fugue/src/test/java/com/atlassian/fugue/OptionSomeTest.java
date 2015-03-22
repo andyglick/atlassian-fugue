@@ -27,7 +27,6 @@ import java.util.Iterator;
 import org.junit.Test;
 
 import com.atlassian.fugue.mango.Predicates;
-import com.atlassian.fugue.mango.Function.MangoSupplier;
 
 public class OptionSomeTest {
   private static final Integer ORIGINAL_VALUE = 1;
@@ -127,7 +126,7 @@ public class OptionSomeTest {
   }
 
   @Test public void notEqualsNone() {
-    assertThat(some.equals(none()), is(false));
+    assertThat(some.equals(none(Integer.class)), is(false));
   }
 
   @Test public void notEqualsNull() {
@@ -143,10 +142,6 @@ public class OptionSomeTest {
   }
 
   @Test public void getOrThrow() throws MyException {
-    assertThat(some.getOrThrow(new MangoSupplier<MyException>() {
-      @Override public MyException get() {
-        return new MyException();
-      }
-    }), is(ORIGINAL_VALUE));
+    assertThat(some.getOrThrow(MyException::new), is(ORIGINAL_VALUE));
   }
 }
