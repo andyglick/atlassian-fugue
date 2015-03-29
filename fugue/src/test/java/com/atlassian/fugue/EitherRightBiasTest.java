@@ -1,11 +1,11 @@
 package com.atlassian.fugue;
 
+import org.junit.Test;
+
 import static com.atlassian.fugue.EitherRightProjectionTest.reverseToEither;
 import static com.atlassian.fugue.UtilityFunctions.addOne;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-
-import org.junit.Test;
 
 public class EitherRightBiasTest {
   @Test public void mapRight() {

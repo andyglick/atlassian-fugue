@@ -1,14 +1,14 @@
 package com.atlassian.fugue;
 
-import static com.atlassian.fugue.Serializer.toBytes;
-import static com.atlassian.fugue.Serializer.toObject;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.io.NotSerializableException;
 
-import org.junit.Test;
+import static com.atlassian.fugue.Serializer.toBytes;
+import static com.atlassian.fugue.Serializer.toObject;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 public class PairSerializationTest {
   @Test public void serialize() throws IOException {

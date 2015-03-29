@@ -15,15 +15,15 @@
  */
 package com.atlassian.fugue;
 
-import static com.atlassian.fugue.Functions.fold;
-import static java.util.Arrays.asList;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import org.junit.Test;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import org.junit.Test;
+import static com.atlassian.fugue.Functions.fold;
+import static java.util.Arrays.asList;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 
 public class FunctionsFoldTest {

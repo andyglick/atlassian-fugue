@@ -15,6 +15,11 @@
  */
 package com.atlassian.fugue;
 
+import org.junit.Test;
+
+import java.io.IOException;
+import java.util.NoSuchElementException;
+
 import static com.atlassian.fugue.Either.left;
 import static com.atlassian.fugue.Eithers.getOrThrow;
 import static com.atlassian.fugue.UtilityFunctions.bool2String;
@@ -22,11 +27,6 @@ import static com.atlassian.fugue.UtilityFunctions.int2String;
 import static java.lang.String.valueOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-
-import java.io.IOException;
-import java.util.NoSuchElementException;
-
-import org.junit.Test;
 
 public class EitherLeftTest {
   private static final Boolean ORIGINAL_VALUE = true;

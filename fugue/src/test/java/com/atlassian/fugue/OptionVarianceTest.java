@@ -15,18 +15,16 @@
  */
 package com.atlassian.fugue;
 
-import static com.atlassian.fugue.Option.some;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
+import org.junit.Test;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import org.junit.Test;
-
-import com.atlassian.fugue.mango.Predicates;
+import static com.atlassian.fugue.Option.some;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 
 public class OptionVarianceTest {
 

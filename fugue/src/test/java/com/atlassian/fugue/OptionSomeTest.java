@@ -15,18 +15,16 @@
  */
 package com.atlassian.fugue;
 
+import org.junit.Test;
+
+import java.util.Iterator;
+
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.some;
 import static com.atlassian.fugue.Suppliers.ofInstance;
 import static com.atlassian.fugue.UtilityFunctions.addOne;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-
-import java.util.Iterator;
-
-import org.junit.Test;
-
-import com.atlassian.fugue.mango.Predicates;
 
 public class OptionSomeTest {
   private static final Integer ORIGINAL_VALUE = 1;

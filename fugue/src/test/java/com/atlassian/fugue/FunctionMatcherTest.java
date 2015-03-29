@@ -15,11 +15,11 @@
  */
 package com.atlassian.fugue;
 
-import static com.atlassian.fugue.Option.some;
+import org.junit.Test;
 
 import java.util.function.Function;
 
-import org.junit.Test;
+import static com.atlassian.fugue.Option.some;
 
 public class FunctionMatcherTest {
   Function<Integer, Option<Integer>> toInt(final int check) {

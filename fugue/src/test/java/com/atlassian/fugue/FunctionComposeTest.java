@@ -15,16 +15,14 @@
  */
 package com.atlassian.fugue;
 
+import org.junit.Test;
+
+import java.util.function.Function;
+
 import static com.atlassian.fugue.Option.some;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
-
-import java.util.function.Function;
-
-import javax.annotation.Nullable;
-
-import org.junit.Test;
 
 public class FunctionComposeTest {
   Function<String, Option<Integer>> toInt = input -> {

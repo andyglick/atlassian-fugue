@@ -15,11 +15,11 @@
  */
 package com.atlassian.fugue;
 
+import org.junit.Test;
+
 import static com.atlassian.fugue.Pair.pair;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
-
-import org.junit.Test;
 
 public class PairTest {
   @Test(expected = NullPointerException.class) public void testNullLeft() {

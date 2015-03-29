@@ -15,12 +15,12 @@
  */
 package com.atlassian.fugue;
 
+import org.junit.Test;
+
 import static com.atlassian.fugue.Eithers.toLeft;
 import static com.atlassian.fugue.Eithers.toRight;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-
-import org.junit.Test;
 
 public class ToEitherLeftOrRightTest {
   private static final String ORIGINAL_STRING = "abc";

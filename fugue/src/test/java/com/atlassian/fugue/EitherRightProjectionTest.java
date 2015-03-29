@@ -15,6 +15,11 @@
  */
 package com.atlassian.fugue;
 
+import org.junit.Test;
+
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 import static com.atlassian.fugue.Either.left;
 import static com.atlassian.fugue.Either.right;
 import static com.atlassian.fugue.UtilityFunctions.reverse;
@@ -22,13 +27,6 @@ import static com.atlassian.fugue.UtilityFunctions.toStringFunction;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
-
-import java.util.function.Function;
-import java.util.function.Supplier;
-
-import org.junit.Test;
-
-import com.atlassian.fugue.mango.Predicates;
 
 public class EitherRightProjectionTest {
   private final Either<Integer, String> r = right("heyaa!");

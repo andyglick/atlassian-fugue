@@ -1,18 +1,17 @@
 package com.atlassian.fugue;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
+import com.atlassian.fugue.WeakMemoizer.MappedReference;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.util.function.Function;
 
-import org.junit.Ignore;
-import org.junit.Test;
-
-import com.atlassian.fugue.WeakMemoizer.MappedReference;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
 public class WeakMemoizerTest {
 

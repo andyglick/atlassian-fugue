@@ -15,14 +15,14 @@
  */
 package com.atlassian.fugue;
 
+import org.junit.Test;
+
+import java.util.function.Function;
+
 import static com.atlassian.fugue.Option.some;
 import static com.atlassian.fugue.UtilityFunctions.toStringFunction;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-
-import java.util.function.Function;
-
-import org.junit.Test;
 
 public class OptionCompositionTest {
   @Test public void composeLaw() {

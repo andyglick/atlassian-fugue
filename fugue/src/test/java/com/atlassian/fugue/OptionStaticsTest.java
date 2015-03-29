@@ -15,6 +15,13 @@
  */
 package com.atlassian.fugue;
 
+import org.junit.Test;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
 import static com.atlassian.fugue.Eithers.getOrThrow;
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.option;
@@ -24,13 +31,6 @@ import static com.atlassian.fugue.UtilityFunctions.bool2String;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.function.Function;
-import java.util.function.BiFunction;
-import java.util.function.Predicate;
-
-import org.junit.Test;
 
 public class OptionStaticsTest {
   static final Integer NULL = null;

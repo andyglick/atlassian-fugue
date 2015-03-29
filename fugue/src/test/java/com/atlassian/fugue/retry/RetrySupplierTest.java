@@ -15,6 +15,12 @@
  */
 package com.atlassian.fugue.retry;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+
+import java.util.function.Supplier;
+
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.times;
@@ -23,12 +29,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-
-import java.util.function.Supplier;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
 
 public class RetrySupplierTest {
   private static final int ATTEMPTS = 4;

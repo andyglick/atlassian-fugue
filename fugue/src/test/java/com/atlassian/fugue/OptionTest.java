@@ -15,6 +15,11 @@
  */
 package com.atlassian.fugue;
 
+import org.junit.Test;
+
+import java.util.NoSuchElementException;
+import java.util.function.Function;
+
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.some;
 import static com.atlassian.fugue.Suppliers.ofInstance;
@@ -25,11 +30,6 @@ import static org.hamcrest.Matchers.emptyIterable;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
-
-import java.util.NoSuchElementException;
-import java.util.function.Function;
-
-import org.junit.Test;
 
 public class OptionTest {
   @Test public void foldOnNoneReturnsValueFromSupplier() {

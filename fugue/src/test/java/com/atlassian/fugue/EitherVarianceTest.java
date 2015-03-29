@@ -15,14 +15,15 @@
  */
 package com.atlassian.fugue;
 
+import org.junit.Test;
+
+import java.util.function.Predicate;
+
 import static com.atlassian.fugue.Either.left;
 import static com.atlassian.fugue.Either.right;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-
-import java.util.function.Predicate;
-import org.junit.Test;
 
 public class EitherVarianceTest {
   private final Either<String, Integer> l = left("heyaa!");

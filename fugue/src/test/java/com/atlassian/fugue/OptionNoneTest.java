@@ -15,21 +15,18 @@
  */
 package com.atlassian.fugue;
 
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.function.Function;
+
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.some;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.function.Function;
-
-import org.junit.Test;
-
-import com.atlassian.fugue.mango.Predicates;
 
 public class OptionNoneTest {
   private final Option<Integer> none = none();
