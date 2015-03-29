@@ -15,24 +15,25 @@
  */
 package com.atlassian.fugue;
 
-import com.atlassian.fugue.test.FunctionMatch;
-import org.junit.Test;
+import static java.util.Arrays.asList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 
+import java.util.List;
 import java.util.function.Function;
 
-import static com.atlassian.fugue.Option.some;
+import org.junit.Test;
 
-public class FunctionMatcherTest {
-  Function<Integer, Option<Integer>> toInt(final int check) {
-    return input -> (check == input) ? some(input) : Option.<Integer> none();
+import com.google.common.collect.ImmutableList;
+
+public class IterableVarianceTest {
+
+  @Test public void flatMap() {
+    final Iterable<String> result = Iterables.flatMap(asList("123", "ABC"), new Function<CharSequence, List<String>>() {
+      public List<String> apply(final CharSequence from) {
+        return ImmutableList.copyOf(new IterablesTest.CharSplitter(from));
+      }
+    });
+    assertThat(result, contains("1", "2", "3", "A", "B", "C"));
   }
-
-  @Test(expected = NullPointerException.class) public void nullFirst() {
-    FunctionMatch.matches(null, toInt(1));
-  }
-
-  @Test(expected = NullPointerException.class) public void nullSecond() {
-    Functions.compose(toInt(1), null);
-  }
-
 }

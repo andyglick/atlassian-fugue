@@ -143,11 +143,8 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    * @return a {@link Supplier} of None instances
    */
   public static <A> Supplier<Option<A>> noneSupplier() {
-    return ofInstance(Option.<A> none());
+    return ofInstance(Option.<A>none());
   }
-
-  // /CLOVER:ON
-
   //
   // ctors
   //
@@ -194,7 +191,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    * @since 1.1
    */
   public final Option<A> orElse(final Option<? extends A> orElse) {
-    return orElse(Suppliers.ofInstance(orElse));
+    return orElse(ofInstance(orElse));
   }
 
   /**
@@ -226,7 +223,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   }
 
   @Override public final Iterator<A> iterator() {
-    return fold(Suppliers.ofInstance(Functions.<A> emptyIterator()), Functions.<A> singletonIterator());
+    return fold(ofInstance(Functions.<A>emptyIterator()), Functions.<A> singletonIterator());
   }
 
   //
@@ -363,8 +360,8 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
     @Override public void foreach(final Effect<? super Object> effect) {}
   };
 
-  private static final Supplier<String> NONE_STRING = Suppliers.ofInstance("none()");
-  private static final Supplier<Integer> NONE_HASH = Suppliers.ofInstance(31);
+  private static final Supplier<String> NONE_STRING = ofInstance("none()");
+  private static final Supplier<Integer> NONE_HASH = ofInstance(31);
 
   static final class Defined<A> implements Predicate<Option<A>> {
     @Override public boolean test(final Option<A> option) {

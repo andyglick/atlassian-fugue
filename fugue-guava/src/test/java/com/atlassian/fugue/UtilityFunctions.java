@@ -15,24 +15,28 @@
  */
 package com.atlassian.fugue;
 
-import com.atlassian.fugue.test.FunctionMatch;
-import org.junit.Test;
-
+import java.lang.reflect.Constructor;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import static com.atlassian.fugue.Option.some;
+import static com.atlassian.fugue.Either.left;
+import static com.atlassian.fugue.Either.right;
 
-public class FunctionMatcherTest {
-  Function<Integer, Option<Integer>> toInt(final int check) {
-    return input -> (check == input) ? some(input) : Option.<Integer> none();
-  }
 
-  @Test(expected = NullPointerException.class) public void nullFirst() {
-    FunctionMatch.matches(null, toInt(1));
-  }
+public class UtilityFunctions {
 
-  @Test(expected = NullPointerException.class) public void nullSecond() {
-    Functions.compose(toInt(1), null);
+  public static final BiFunction<Integer, Integer, Integer> product = (a, b) -> a * b;
+
+  static <A> Function<Class<A>, Either<Exception, A>> defaultCtor() {
+    return klass -> {
+      try {
+        final Constructor<A> declaredConstructor = klass.getDeclaredConstructor();
+        declaredConstructor.setAccessible(true);
+        return right(declaredConstructor.newInstance());
+      } catch (final Exception e) {
+        return left(e);
+      }
+    };
   }
 
 }

@@ -31,6 +31,7 @@
     <modules>
         <module>fugue</module>
         <module>fugue-scala</module>
+        <module>fugue-guava</module>
     </modules>
 
     <properties>

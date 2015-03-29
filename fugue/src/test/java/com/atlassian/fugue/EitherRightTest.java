@@ -104,8 +104,6 @@ public class EitherRightTest {
     assertThat(Eithers.<Boolean, Integer> isRight().test(either), is(true));
   }
 
-  // todo [ERROR] /home/anund/src/fugue/fugue/src/test/java/com/atlassian/fugue/EitherRightTest.java:[109,26] unreported exception X; must be caught or declared to be thrown ???
-  // changed IOException to Exception
   @Test public void notThrowsException() throws Exception {
     final Either<IOException, String> either = right("boo yaa!");
     assertThat(getOrThrow(either), is("boo yaa!"));

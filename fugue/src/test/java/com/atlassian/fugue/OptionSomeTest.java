@@ -22,7 +22,6 @@ import java.util.Iterator;
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.some;
 import static com.atlassian.fugue.Suppliers.ofInstance;
-import static com.atlassian.fugue.UtilityFunctions.addOne;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -53,10 +52,6 @@ public class OptionSomeTest {
 
   @Test(expected = NullPointerException.class) public void mapForNull() {
     some.map(null);
-  }
-
-  @Test public void map() {
-    assertThat(some.map(addOne).get(), is(2));
   }
 
   @Test(expected = NullPointerException.class) public void filterForNull() {

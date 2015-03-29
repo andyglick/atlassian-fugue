@@ -15,24 +15,17 @@
  */
 package com.atlassian.fugue;
 
-import com.atlassian.fugue.test.FunctionMatch;
+import static org.hamcrest.Matchers.contains;
+import static org.junit.Assert.assertThat;
+
 import org.junit.Test;
 
-import java.util.function.Function;
+import com.google.common.collect.ImmutableList;
 
-import static com.atlassian.fugue.Option.some;
+public class IterablesCollectTest {
 
-public class FunctionMatcherTest {
-  Function<Integer, Option<Integer>> toInt(final int check) {
-    return input -> (check == input) ? some(input) : Option.<Integer> none();
+  @Test public void collectIterableFindsRightType() {
+    Iterable<Integer> collected = Iterables.collect(ImmutableList.of("a", 11), Functions.isInstanceOf(Integer.class));
+    assertThat(collected, contains(11));
   }
-
-  @Test(expected = NullPointerException.class) public void nullFirst() {
-    FunctionMatch.matches(null, toInt(1));
-  }
-
-  @Test(expected = NullPointerException.class) public void nullSecond() {
-    Functions.compose(toInt(1), null);
-  }
-
 }

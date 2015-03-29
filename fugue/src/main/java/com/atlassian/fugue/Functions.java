@@ -15,11 +15,11 @@
  */
 package com.atlassian.fugue;
 
-import com.atlassian.util.concurrent.NotNull;
-
-import javax.annotation.Nullable;
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -67,11 +67,11 @@ public class Functions {
       this.f = requireNonNull(f);
     }
 
-    @Override public C apply(@Nullable A a) {
+    @Override public C apply(A a) {
       return g.apply(f.apply(a));
     }
 
-    @Override public boolean equals(@Nullable Object obj) {
+    @Override public boolean equals(Object obj) {
       if (obj instanceof FunctionComposition) {
         FunctionComposition<?, ?, ?> that = (FunctionComposition<?, ?, ?>) obj;
         return f.equals(that.f) && g.equals(that.g);
@@ -457,7 +457,7 @@ public class Functions {
    * @param supplier called for all inputs
    * @return the function
    */
-  static <D, R> Function<D, R> fromSupplier(final @NotNull Supplier<R> supplier) {
+  static <D, R> Function<D, R> fromSupplier(final Supplier<R> supplier) {
     return new FromSupplier<>(supplier);
   }
 

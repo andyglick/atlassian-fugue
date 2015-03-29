@@ -43,10 +43,6 @@ public class OptionStaticsTest {
     assertThat(option("Winter.").get(), is("Winter."));
   }
 
-  @Test public void identity() {
-    assertThat(none(), is(sameInstance(none())));
-  }
-
   @Test(expected = InvocationTargetException.class) public void nonInstantiable() throws Exception {
     getOrThrow(UtilityFunctions.<Options> defaultCtor().apply(Options.class));
   }

@@ -50,6 +50,7 @@ final class WeakMemoizer<A, B> implements Function<A, B> {
   /**
    * Construct a new {@link WeakMemoizer} instance.
    * 
+   * @param initialCapacity how large the internal map should be initially.
    * @param delegate for creating the initial values.
    * @throws IllegalArgumentException if the initial capacity of elements is
    * negative.

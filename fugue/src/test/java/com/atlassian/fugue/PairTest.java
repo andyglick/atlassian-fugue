@@ -17,8 +17,12 @@ package com.atlassian.fugue;
 
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static com.atlassian.fugue.Pair.pair;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 public class PairTest {
@@ -69,5 +73,21 @@ public class PairTest {
 
   @Test public void equalsSameValue() {
     assertThat(pair(1, 3).equals(pair(1, 3)), equalTo(true));
+  }
+
+  @Test public void leftFunction() {
+    assertEquals(pairs().get(0).left().longValue(), 1);
+    assertEquals(pairs().get(1).left().longValue(), 2);
+    assertEquals(pairs().get(2).left().longValue(), 3);
+  }
+
+  @Test public void rightFunction() {
+    assertEquals(pairs().get(0).right(), "1");
+    assertEquals(pairs().get(1).right(), "2");
+    assertEquals(pairs().get(2).right(), "3");
+  }
+
+  private List<Pair<Integer, String>> pairs() {
+    return Arrays.asList(pair(1, "1"), pair(2, "2"), pair(3, "3"));
   }
 }
