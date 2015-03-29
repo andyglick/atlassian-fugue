@@ -15,8 +15,6 @@
  */
 package com.atlassian.fugue.retry;
 
-import com.atlassian.fugue.mango.Preconditions;
-
 /**
  * A backoff task for use in a retry -function, -supplier, or -task. This should
  * be used as the beforeRetry hook. Upon each execution, the current thread
@@ -32,7 +30,9 @@ public class BeforeRetryLinearBackoffTask implements Runnable {
    * @param backoffMillis the time to wait whenever run is executed
    */
   public BeforeRetryLinearBackoffTask(long backoffMillis) {
-    Preconditions.checkArgument(backoffMillis > 0, "Backoff time must not be negative.");
+    if(backoffMillis <= 0){
+      throw new IllegalArgumentException("Backoff time must not be negative.");
+    }
     this.backoff = backoffMillis;
   }
 

@@ -15,17 +15,16 @@
  */
 package com.atlassian.fugue;
 
-import java.util.function.Predicate;
-
-import static com.atlassian.fugue.Option.none;
-import static com.atlassian.fugue.Option.some;
-import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
-
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
+
+import static com.atlassian.fugue.Option.none;
+import static com.atlassian.fugue.Option.some;
+import static java.util.Objects.requireNonNull;
 
 
 /**
@@ -63,7 +62,7 @@ public abstract class Either<L, R> implements Serializable {
    * @return a Left containing the supplied value
    */
   public static <L, R> Either<L, R> left(final L left) {
-    checkNotNull(left);
+    requireNonNull(left);
     return new Left<>(left);
   }
 
@@ -74,7 +73,7 @@ public abstract class Either<L, R> implements Serializable {
    * @return a Right containing the supplied value
    */
   public static <L, R> Either<L, R> right(final R right) {
-    checkNotNull(right);
+    requireNonNull(right);
     return new Right<>(right);
   }
 
@@ -226,7 +225,7 @@ public abstract class Either<L, R> implements Serializable {
     private final L value;
 
     public Left(final L value) {
-      checkNotNull(value);
+      requireNonNull(value);
       this.value = value;
     }
 
@@ -282,7 +281,7 @@ public abstract class Either<L, R> implements Serializable {
     private final R value;
 
     public Right(final R value) {
-      checkNotNull(value);
+      requireNonNull(value);
       this.value = value;
     }
 

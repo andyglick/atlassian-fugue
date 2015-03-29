@@ -17,7 +17,7 @@ package com.atlassian.fugue;
 
 import static com.atlassian.fugue.Either.left;
 import static com.atlassian.fugue.Either.right;
-import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
+import static java.util.Objects.requireNonNull;
 
 import java.lang.reflect.Constructor;
 import java.util.function.BiFunction;
@@ -69,7 +69,7 @@ public class UtilityFunctions {
     INSTANCE;
 
     @Override public String apply(Object o) {
-      checkNotNull(o);
+      requireNonNull(o);
       return o.toString();
     }
 

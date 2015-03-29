@@ -15,12 +15,11 @@
  */
 package com.atlassian.fugue.retry;
 
-import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
+import com.atlassian.fugue.Suppliers;
 
 import java.util.function.Function;
 
-import com.atlassian.fugue.Suppliers;
-import com.atlassian.fugue.mango.Preconditions;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A Function which wraps the apply method of another Function and attempts it
@@ -74,11 +73,13 @@ public class RetryFunction<F, T> implements Function<F, T> {
    */
   public RetryFunction(Function<F, T> function, int tries, ExceptionHandler handler, Runnable beforeRetry) {
 
-    this.function = checkNotNull(function);
-    this.handler = checkNotNull(handler);
-    Preconditions.checkArgument(tries >= 0, "Tries must not be negative");
+    this.function = requireNonNull(function);
+    this.handler = requireNonNull(handler);
+    if(tries < 0){
+      throw new IllegalArgumentException("Tries must not be negative");
+    }
     this.tries = tries;
-    this.beforeRetry = checkNotNull(beforeRetry);
+    this.beforeRetry = requireNonNull(beforeRetry);
   }
 
   /**

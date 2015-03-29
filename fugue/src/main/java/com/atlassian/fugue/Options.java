@@ -15,12 +15,12 @@
  */
 package com.atlassian.fugue;
 
-import static com.atlassian.fugue.Option.none;
-import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
-
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
+
+import static com.atlassian.fugue.Option.none;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Utility methods for working with {@link Option options}.
@@ -85,7 +85,7 @@ public class Options {
    * @since 2.0
    */
   public static <A, B> Function<Option<A>, Option<B>> lift(final Function<A, B> f) {
-    checkNotNull(f);
+    requireNonNull(f);
     return oa -> oa.map(f);
   }
 
@@ -113,7 +113,7 @@ public class Options {
    * @since 2.2
    */
   public static <A> Predicate<Option<A>> lift(final Predicate<? super A> pred) {
-    checkNotNull(pred);
+    requireNonNull(pred);
     return oa -> oa.exists(pred);
   }
 

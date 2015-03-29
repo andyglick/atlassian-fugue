@@ -17,7 +17,7 @@ package com.atlassian.fugue.retry;
 
 import java.util.function.Supplier;
 
-import com.atlassian.fugue.mango.Preconditions;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A Supplier which wraps the apply method of another Supplier and attempts it
@@ -69,9 +69,11 @@ public class RetrySupplier<T> implements Supplier<T> {
    * @param beforeRetry a task which will run at the end of any
    */
   public RetrySupplier(Supplier<T> supplier, int tries, ExceptionHandler handler, Runnable beforeRetry) {
-    Preconditions.checkNotNull(supplier);
-    Preconditions.checkArgument(tries > 0, "Tries must be strictly positive");
-    Preconditions.checkNotNull(handler);
+    requireNonNull(supplier);
+    if(tries <= 0){
+      throw new IllegalArgumentException("Tries must be strictly positive");
+    }
+    requireNonNull(handler);
 
     this.beforeRetry = beforeRetry;
     this.supplier = supplier;

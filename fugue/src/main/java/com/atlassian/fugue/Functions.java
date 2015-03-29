@@ -15,8 +15,10 @@
  */
 package com.atlassian.fugue;
 
-import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
+import com.atlassian.fugue.mango.Iterators;
+import com.atlassian.util.concurrent.NotNull;
 
+import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.function.BiFunction;
@@ -24,10 +26,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import javax.annotation.Nullable;
-
-import com.atlassian.fugue.mango.Iterators;
-import com.atlassian.util.concurrent.NotNull;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Utility methods for Functions
@@ -64,8 +63,8 @@ public class Functions {
     private final Function<? super A, ? extends B> f;
 
     FunctionComposition(Function<? super B, ? extends C> g, Function<? super A, ? extends B> f) {
-      this.g = checkNotNull(g);
-      this.f = checkNotNull(f);
+      this.g = requireNonNull(g);
+      this.f = requireNonNull(f);
     }
 
     @Override public C apply(@Nullable A a) {
@@ -204,7 +203,7 @@ public class Functions {
     private final Class<B> cls;
 
     InstanceOf(Class<B> cls) {
-      this.cls = checkNotNull(cls);
+      this.cls = requireNonNull(cls);
     }
 
     public Option<B> apply(A a) {
@@ -243,8 +242,8 @@ public class Functions {
     private final Function<? super A, ? extends B> f;
 
     Partial(Predicate<? super A> p, Function<? super A, ? extends B> f) {
-      this.p = checkNotNull(p);
-      this.f = checkNotNull(f);
+      this.p = requireNonNull(p);
+      this.f = requireNonNull(f);
     }
 
     public Option<B> apply(A a) {
@@ -287,8 +286,8 @@ public class Functions {
 
     PartialComposer(Function<? super A, ? extends Option<? extends B>> ab,
       Function<? super B, ? extends Option<? extends C>> bc) {
-      this.ab = checkNotNull(ab);
-      this.bc = checkNotNull(bc);
+      this.ab = requireNonNull(ab);
+      this.bc = requireNonNull(bc);
     }
 
     public Option<C> apply(A a) {
@@ -316,7 +315,7 @@ public class Functions {
    * @since 2.0
    */
   public static <A, B, C> BiFunction<A, B, C> toBiFunction(final Function<Pair<A, B>, C> fpair) {
-    checkNotNull(fpair);
+    requireNonNull(fpair);
     return new BiFunction<A, B, C>() {
       @Override public C apply(A a, B b) {
         return fpair.apply(Pair.pair(a, b));
@@ -341,7 +340,7 @@ public class Functions {
    * @since 2.0
    */
   public static <A, B, C> Function<A, Function<B, C>> curried(final BiFunction<A, B, C> f2) {
-    checkNotNull(f2);
+    requireNonNull(f2);
     return new CurriedFunction<>(f2);
   }
 
@@ -377,7 +376,7 @@ public class Functions {
    * @since 2.0
    */
   public static <A, B, C> Function<B, Function<A, C>> flip(final Function<A, Function<B, C>> f2) {
-    checkNotNull(f2);
+    requireNonNull(f2);
     return new FlippedFunction<>(f2);
   }
 
@@ -466,7 +465,7 @@ public class Functions {
     private final Supplier<R> supplier;
 
     FromSupplier(final Supplier<R> supplier) {
-      this.supplier = checkNotNull(supplier, "supplier");
+      this.supplier = requireNonNull(supplier, "supplier");
     }
 
     public R apply(final D ignore) {

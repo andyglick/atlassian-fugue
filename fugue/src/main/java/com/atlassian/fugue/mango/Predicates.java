@@ -2,6 +2,8 @@ package com.atlassian.fugue.mango;
 
 import java.util.function.Predicate;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Created by anund on 2/14/15.
  */
@@ -13,7 +15,7 @@ public class Predicates {
   }
 
   public static <A> Predicate<A> equalTo(final A seed) {
-    Preconditions.checkNotNull(seed);
+    requireNonNull(seed);
     return seed::equals;
   }
 

@@ -15,10 +15,10 @@
  */
 package com.atlassian.fugue.retry;
 
-import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Provides some standard implementations of various exception actions.
@@ -95,7 +95,7 @@ public class ExceptionHandlers {
     private final ExceptionHandler[] handlers;
 
     public CompositeExceptionHandler(ExceptionHandler... handlers) {
-      checkNotNull(handlers);
+      requireNonNull(handlers);
       this.handlers = handlers;
     }
 

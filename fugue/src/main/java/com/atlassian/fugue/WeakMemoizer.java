@@ -16,14 +16,14 @@
 
 package com.atlassian.fugue;
 
-import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
-
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * {@link WeakMemoizer} caches the result of another function. The result is
@@ -56,7 +56,7 @@ final class WeakMemoizer<A, B> implements Function<A, B> {
    */
   WeakMemoizer(Function<A, B> delegate) {
     this.map = new ConcurrentHashMap<>();
-    this.delegate = checkNotNull(delegate, "delegate");
+    this.delegate = requireNonNull(delegate, "delegate");
   }
 
   /**
@@ -67,7 +67,7 @@ final class WeakMemoizer<A, B> implements Function<A, B> {
    */
   public B apply(final A descriptor) {
     expungeStaleEntries();
-    checkNotNull(descriptor, "descriptor");
+    requireNonNull(descriptor, "descriptor");
     while (true) {
       final MappedReference<A, B> reference = map.get(descriptor);
       if (reference != null) {
@@ -105,8 +105,8 @@ final class WeakMemoizer<A, B> implements Function<A, B> {
     private final K key;
 
     public MappedReference(final K key, final V value, final ReferenceQueue<? super V> q) {
-      super(checkNotNull(value, "value"), q);
-      this.key = checkNotNull(key, "key");
+      super(requireNonNull(value, "value"), q);
+      this.key = requireNonNull(key, "key");
     }
 
     final K getDescriptor() {

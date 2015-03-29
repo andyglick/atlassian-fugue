@@ -15,18 +15,17 @@
  */
 package com.atlassian.fugue;
 
-import static com.atlassian.fugue.Suppliers.ofInstance;
-import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
+import com.atlassian.fugue.mango.Iterators;
 
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
-import com.atlassian.fugue.mango.Iterators;
-import com.atlassian.fugue.mango.Preconditions;
+import static com.atlassian.fugue.Suppliers.ofInstance;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A class that encapsulates missing values. An Option may be either
@@ -87,7 +86,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    * @throws NullPointerException if the parameter is null
    */
   public static <A> Option<A> some(final A value) {
-    Preconditions.checkNotNull(value);
+    requireNonNull(value);
     return new Some<>(value);
   }
 
@@ -216,7 +215,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   }
 
   @Override public final boolean exists(final Predicate<? super A> p) {
-    checkNotNull(p);
+    requireNonNull(p);
     return isDefined() && p.test(get());
   }
 
@@ -246,7 +245,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    * @return new wrapped value
    */
   public final <B> Option<B> map(final Function<? super A, ? extends B> f) {
-    checkNotNull(f);
+    requireNonNull(f);
     return isEmpty() ? Option.<B> none() : new Some<>(f.apply(get()));
   }
 
@@ -260,7 +259,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    * @return value returned from {@code f}
    */
   public final <B> Option<B> flatMap(final Function<? super A, ? extends Option<? extends B>> f) {
-    checkNotNull(f);
+    requireNonNull(f);
     @SuppressWarnings("unchecked")
     Option<B> result = (Option<B>) fold(Option.<B> noneSupplier(), f);
     return result;
@@ -275,7 +274,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    * @return this option, or none
    */
   public final Option<A> filter(final Predicate<? super A> p) {
-    checkNotNull(p);
+    requireNonNull(p);
     return (isEmpty() || p.test(get())) ? this : Option.<A> none();
   }
 

@@ -15,11 +15,11 @@
  */
 package com.atlassian.fugue;
 
-import static com.atlassian.fugue.mango.Preconditions.checkNotNull;
-
 import java.io.Serializable;
-import java.util.function.Function;
 import java.util.function.BiFunction;
+import java.util.function.Function;
+
+import static java.util.Objects.requireNonNull;
 
 
 /**
@@ -90,8 +90,8 @@ public final class Pair<A, B> implements Serializable {
    * @param right value, cannot be null
    */
   public Pair(final A left, final B right) {
-    this.left = checkNotNull(left, "Left parameter must not be null.");
-    this.right = checkNotNull(right, "Right parameter must not be null.");
+    this.left = requireNonNull(left, "Left parameter must not be null.");
+    this.right = requireNonNull(right, "Right parameter must not be null.");
   }
 
   public A left() {

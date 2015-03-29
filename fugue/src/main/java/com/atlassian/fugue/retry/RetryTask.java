@@ -15,7 +15,7 @@
  */
 package com.atlassian.fugue.retry;
 
-import com.atlassian.fugue.mango.Preconditions;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A Runnable which wraps the apply method of another Runnable and attempts it a
@@ -61,7 +61,7 @@ public class RetryTask implements Runnable {
    * @param beforeRetry runs before each retry, must not be null
    */
   public RetryTask(final Runnable task, int tries, ExceptionHandler handler, Runnable beforeRetry) {
-    Preconditions.checkNotNull(task, "task");
+    requireNonNull(task, "task");
 
     retrySupplier = new RetrySupplier<>(() -> {
         task.run();
