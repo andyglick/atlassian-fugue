@@ -15,8 +15,6 @@
  */
 package com.atlassian.fugue;
 
-import com.atlassian.fugue.mango.Iterators;
-
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -228,7 +226,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   }
 
   @Override public final Iterator<A> iterator() {
-    return fold(Suppliers.ofInstance(Iterators.<A> emptyIterator()), Functions.<A> singletonIterator());
+    return fold(Suppliers.ofInstance(Functions.<A> emptyIterator()), Functions.<A> singletonIterator());
   }
 
   //
