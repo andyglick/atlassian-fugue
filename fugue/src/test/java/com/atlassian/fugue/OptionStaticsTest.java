@@ -30,7 +30,6 @@ import java.util.function.Function;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
-import com.atlassian.fugue.mango.Predicates;
 import org.junit.Test;
 
 public class OptionStaticsTest {
@@ -129,7 +128,7 @@ public class OptionStaticsTest {
   }
 
   @Test public void liftPredicate() {
-    Predicate<Option<Integer>> lifted = Options.lift(Predicates.equalTo(3));
+    Predicate<Option<Integer>> lifted = Options.lift(Predicate.isEqual(3));
     assertThat(lifted.test(some(3)), is(true));
     assertThat(lifted.test(some(2)), is(false));
     assertThat(lifted.test(Option.<Integer>none()), is(false));

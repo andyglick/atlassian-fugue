@@ -67,19 +67,19 @@ public class OptionNoneTest {
   }
 
   @Test public void filterTrueReturnsEmpty() {
-    assertThat(none.filter(Predicates.<Integer> alwaysTrue()).isEmpty(), is(true));
+    assertThat(none.filter(x -> true).isEmpty(), is(true));
   }
 
   @Test public void filterFalseReturnsEmpty() {
-    assertThat(none.filter(Predicates.<Integer> alwaysFalse()).isEmpty(), is(true));
+    assertThat(none.filter(x -> false).isEmpty(), is(true));
   }
 
   @Test public void existsTrueReturnsFalse() {
-    assertThat(none.exists(Predicates.<Integer> alwaysTrue()), is(false));
+    assertThat(none.exists(x -> true), is(false));
   }
 
   @Test public void existsFalseReturnsFalse() {
-    assertThat(none.exists(Predicates.<Integer> alwaysFalse()), is(false));
+    assertThat(none.exists(x -> false), is(false));
   }
 
   @Test public void toLeftReturnsRight() {
@@ -92,7 +92,7 @@ public class OptionNoneTest {
 
   @Test public void superTypesPermittedOnFilter() {
     final Option<ArrayList<?>> opt = none();
-    final Option<ArrayList<?>> nopt = opt.filter(Predicates.<List<?>> alwaysTrue());
+    final Option<ArrayList<?>> nopt = opt.filter(x -> true);
     assertThat(nopt, sameInstance(opt));
   }
 
@@ -128,11 +128,11 @@ public class OptionNoneTest {
   }
 
   @Test public void forallTrue() {
-    assertThat(none.forall(Predicates.<Integer> alwaysTrue()), is(true));
+    assertThat(none.forall(x -> true), is(true));
   }
 
   @Test public void forallFalse() {
-    assertThat(none.forall(Predicates.<Integer> alwaysFalse()), is(true));
+    assertThat(none.forall(x -> false), is(true));
   }
 
   @Test public void toStringTest() {

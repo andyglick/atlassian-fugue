@@ -80,14 +80,14 @@ public class OptionVarianceTest {
 
   @Test public void forAll() {
     Option<Parent> some = some(new Parent());
-    Predicate<Grand> p = Predicates.alwaysTrue();
-    assertThat(some.forall(p), equalTo(true));
+    Predicate<Grand> alwaysTrue = x -> true;
+    assertThat(some.forall(alwaysTrue), equalTo(true));
   }
 
   @Test public void exist() {
     Option<Parent> some = some(new Parent());
-    Predicate<Grand> p = Predicates.alwaysTrue();
-    assertThat(some.exists(p), equalTo(true));
+    Predicate<Grand> alwaysTrue = x -> true;
+    assertThat(some.exists(alwaysTrue), equalTo(true));
   }
 
   @Test public void forEach() {

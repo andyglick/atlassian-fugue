@@ -66,19 +66,19 @@ public class OptionSomeTest {
   }
 
   @Test public void positiveFilter() {
-    assertThat(some.filter(Predicates.<Integer> alwaysTrue()).get(), is(ORIGINAL_VALUE));
+    assertThat(some.filter(x -> true).get(), is(ORIGINAL_VALUE));
   }
 
   @Test public void negativeFilter() {
-    assertThat(some.filter(Predicates.<Integer> alwaysFalse()).isDefined(), is(false));
+    assertThat(some.filter(x -> false).isDefined(), is(false));
   }
 
   @Test public void existsTrueReturnsTrue() {
-    assertThat(some.exists(Predicates.<Integer> alwaysTrue()), is(true));
+    assertThat(some.exists(x -> true), is(true));
   }
 
   @Test public void existsFalseReturnsFalse() {
-    assertThat(some.exists(Predicates.<Integer> alwaysFalse()), is(false));
+    assertThat(some.exists(x -> false), is(false));
   }
 
   @Test public void toLeftReturnsLeft() {
@@ -110,11 +110,11 @@ public class OptionSomeTest {
   }
 
   @Test public void forallTrue() {
-    assertThat(some.forall(Predicates.<Integer> alwaysTrue()), is(true));
+    assertThat(some.forall(x -> true), is(true));
   }
 
   @Test public void forallFalse() {
-    assertThat(some.forall(Predicates.<Integer> alwaysFalse()), is(false));
+    assertThat(some.forall(x -> false), is(false));
   }
 
   @Test public void toStringTest() {

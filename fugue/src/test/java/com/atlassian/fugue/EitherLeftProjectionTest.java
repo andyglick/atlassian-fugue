@@ -99,35 +99,35 @@ public class EitherLeftProjectionTest {
   }
 
   @Test public void existsDefinedTrue() {
-    assertThat(l.left().exists(Predicates.<String> alwaysTrue()), is(true));
+    assertThat(l.left().exists(x -> true), is(true));
   }
 
   @Test public void existsDefinedFalse() {
-    assertThat(l.left().exists(Predicates.<String> alwaysFalse()), is(false));
+    assertThat(l.left().exists(x -> false), is(false));
   }
 
   @Test public void existsNotDefinedTrue() {
-    assertThat(r.left().exists(Predicates.<String> alwaysTrue()), is(false));
+    assertThat(r.left().exists(x -> true), is(false));
   }
 
   @Test public void existsNotDefinedFalse() {
-    assertThat(r.left().exists(Predicates.<String> alwaysFalse()), is(false));
+    assertThat(r.left().exists(x -> false), is(false));
   }
 
   @Test public void forallDefinedTrue() {
-    assertThat(l.left().forall(Predicates.<String> alwaysTrue()), is(true));
+    assertThat(l.left().forall(x -> true), is(true));
   }
 
   @Test public void forallDefinedFalse() {
-    assertThat(l.left().forall(Predicates.<String> alwaysFalse()), is(false));
+    assertThat(l.left().forall(x -> false), is(false));
   }
 
   @Test public void forallNotDefinedTrue() {
-    assertThat(r.left().forall(Predicates.<String> alwaysTrue()), is(true));
+    assertThat(r.left().forall(x -> true), is(true));
   }
 
   @Test public void forallNotDefinedFalse() {
-    assertThat(r.left().forall(Predicates.<String> alwaysFalse()), is(true));
+    assertThat(r.left().forall(x -> false), is(true));
   }
 
   @Test public void foreachDefined() {
@@ -173,18 +173,18 @@ public class EitherLeftProjectionTest {
   }
 
   @Test public void filterDefinedTrue() {
-    final Option<Either<String, Object>> filtered = l.left().filter(Predicates.<String> alwaysTrue());
+    final Option<Either<String, Object>> filtered = l.left().filter(x -> true);
     assertThat(filtered.isDefined(), is(true));
     assertThat(filtered.get().left().isDefined(), is(true));
   }
 
   @Test public void filterDefinedFalse() {
-    final Option<Either<String, Object>> filtered = l.left().filter(Predicates.<String> alwaysFalse());
+    final Option<Either<String, Object>> filtered = l.left().filter(x -> false);
     assertThat(filtered.isDefined(), is(false));
   }
 
   @Test public void filterNotDefined() {
-    final Option<Either<String, Object>> filtered = r.left().filter(Predicates.<String> alwaysTrue());
+    final Option<Either<String, Object>> filtered = r.left().filter(x -> true);
     assertThat(filtered.isDefined(), is(false));
   }
 

@@ -24,32 +24,30 @@ import static org.hamcrest.Matchers.is;
 import java.util.function.Predicate;
 import org.junit.Test;
 
-import com.atlassian.fugue.mango.Predicates;
-
 public class EitherVarianceTest {
   private final Either<String, Integer> l = left("heyaa!");
   private final Either<String, Integer> r = right(12);
 
   @Test public void filterLeft() {
-    Option<Either<String, Object>> filtered = l.left().filter(Predicates.<CharSequence> alwaysTrue());
+    Option<Either<String, Object>> filtered = l.left().filter(x -> true);
     assertThat(filtered.isDefined(), is(true));
     assertThat(filtered.get().left().isDefined(), is(true));
   }
 
   @Test public void filterRight() {
-    Option<Either<Object, Integer>> filtered = r.right().filter(Predicates.<Number> alwaysTrue());
+    Option<Either<Object, Integer>> filtered = r.right().filter(x -> true);
     assertThat(filtered.isDefined(), is(true));
     assertThat(filtered.get().right().isDefined(), is(true));
   }
 
   @Test public void forAll() {
-    Predicate<Number> p = Predicates.alwaysTrue();
-    assertThat(r.right().forall(p), equalTo(true));
+    Predicate<Number> alwaysTrue = x -> true;
+    assertThat(r.right().forall(alwaysTrue), equalTo(true));
   }
 
   @Test public void exist() {
-    Predicate<CharSequence> p = Predicates.alwaysTrue();
-    assertThat(l.left().exists(p), equalTo(true));
+    Predicate<CharSequence> alwaysTrue = x -> true;
+    assertThat(l.left().exists(alwaysTrue), equalTo(true));
   }
 
   @Test public void forEach() {
