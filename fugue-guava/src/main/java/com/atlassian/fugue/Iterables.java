@@ -37,8 +37,8 @@ import static com.atlassian.fugue.Option.some;
 import static com.atlassian.fugue.Pair.pair;
 import static com.atlassian.fugue.Suppliers.ofInstance;
 import static com.google.common.collect.Iterables.concat;
-import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Iterables.filter;
+import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Sets.newTreeSet;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableCollection;
@@ -47,15 +47,15 @@ import static java.util.Objects.requireNonNull;
 /**
  * Contains static utility methods that operate on or return objects of type
  * {code}Iterable{code}.
- * 
+ *
  * This class is primarily focused around filling holes in Guava's
  * {@link com.google.common.collect.Iterables} class which have become apparent
  * with the addition of Fugue classes such as Option and Either.
- * 
+ *
  * When making changes to this class, please try to name methods differently to
  * those in {@link com.google.common.collect.Iterables} so that methods from
  * both classes can be statically imported in the same class.
- * 
+ *
  * @since 1.0
  */
 public class Iterables {
@@ -77,11 +77,11 @@ public class Iterables {
    * Returns an empty iterable, that is, an {@code Iterable} with an
    * {@code Iterator} for which {@code hasNext()} always returns {@code false},
    * and the other methods throw appropriate exceptions if called.
-   * 
+   *
    * Intended to be used as a more idiomatic replacement for
    * {@code Collections.emptyList()} in code that otherwise deals only with
    * iterables.
-   * 
+   *
    * @param <T> the type
    * @return an empty iterable
    * @since 1.2
@@ -94,7 +94,7 @@ public class Iterables {
 
   /**
    * Creates an Iterable from the underlying array of elements.
-   * 
+   *
    * @param as the elements to iterate over
    * @return an Iterable across the underlying elements
    * @since 2.3
@@ -108,7 +108,7 @@ public class Iterables {
    * Finds the first item that matches the predicate. Traditionally, this should
    * be named find; in this case it is named findFirst to avoid clashing with
    * static imports from Guava's {@link com.google.common.collect.Iterables}.
-   * 
+   *
    * @param <T> the type
    * @param elements the iterable to search for a matching element
    * @param predicate the predicate to use to determine if an element is
@@ -127,7 +127,7 @@ public class Iterables {
    * Partial application of the predicate argument to
    * {@link #findFirst(Iterable, Predicate)} returning a function that takes an
    * {@link Iterable} as its argument
-   * 
+   *
    * @param <A> the type
    * @param predicate the predicate to use to determine if an element is
    * eligible to be returned
@@ -142,7 +142,7 @@ public class Iterables {
   /**
    * If {@code as} is empty, returns {@code none()}. Otherwise, returns
    * {@code some(get(as, 0))}.
-   * 
+   *
    * @param <A> type of elements in {@code as}
    * @param as elements to get the first value of
    * @return {@code none()} if {@code as} is empty. {@code some(get(as, 0))}
@@ -159,7 +159,7 @@ public class Iterables {
   /**
    * Applies {@code f} to each element of {@code collection}, then concatenates
    * the result.
-   * 
+   *
    * @param <A> type of elements in {@code collection}
    * @param <B> type elements in the new {@code Iterable} {@code f} will
    * transform elements to
@@ -169,7 +169,6 @@ public class Iterables {
    * {@code collection}
    * @since 1.1
    */
-  // TODO investigate java8 type inference failing here
   public static <A, B> Iterable<B> flatMap(final Iterable<A> collection,
     final Function<? super A, ? extends Iterable<? extends B>> f) {
     com.google.common.base.Function<? super A, ? extends Iterable<? extends B>> g = f::apply;
@@ -178,7 +177,7 @@ public class Iterables {
 
   /**
    * Applies each function in {@code fs} to {@code arg}.
-   * 
+   *
    * @param <A> the argument type
    * @param <B> the function output and type of the elements of the final
    * iterable.
@@ -193,7 +192,7 @@ public class Iterables {
 
   /**
    * Predicate that checks if an iterable is empty.
-   * 
+   *
    * @return {@code Predicate} which checks if an {@code Iterable} is empty
    * @since 1.1
    */
@@ -203,12 +202,12 @@ public class Iterables {
 
   /**
    * Filters and maps (aka transforms) the unfiltered iterable.
-   * 
+   *
    * Applies the given partial function to each element of the unfiltered
    * iterable. If the application returns none, the element will be left out;
    * otherwise, the transformed object contained in the Option will be added to
    * the result.
-   * 
+   *
    * @param <A> the input type
    * @param <B> the output type
    * @param from the input iterable
@@ -222,7 +221,7 @@ public class Iterables {
   /**
    * Merge a number of already sorted collections of elements into a single
    * collection of elements, using the elements natural ordering.
-   * 
+   *
    * @param <A> type of the elements
    * @param xss collection of already sorted collections
    * @return {@code xss} merged in a sorted order
@@ -234,7 +233,7 @@ public class Iterables {
 
   /**
    * Filter an {@code Iterable} into a {@code Pair} of {@code Iterable}'s.
-   * 
+   *
    * @param <A> the type
    * @param iterable to be filtered
    * @param predicate to filter each element
@@ -247,7 +246,7 @@ public class Iterables {
 
   /**
    * Takes the first {@code n} {@code xs} and returns them.
-   * 
+   *
    * @param <T> type of {@code xs}
    * @param n number of {@code xs} to take
    * @param xs list of values
@@ -256,18 +255,18 @@ public class Iterables {
    */
   public static <T> Iterable<T> take(final int n, final Iterable<T> xs) {
     if(n < 0){
-     throw new IllegalArgumentException("Cannot take a negative number of elements"); 
+      throw new IllegalArgumentException("Cannot take a negative number of elements");
     }
     if (xs instanceof List<?>) {
       final List<T> list = (List<T>) xs;
       return list.subList(0, n < list.size() ? n : list.size());
     }
-    return new Range<T>(0, n, xs);
+    return new Range<>(0, n, xs);
   }
 
   /**
    * Drop the first {@code n} {@code xs} and return the rest.
-   * 
+   *
    * @param <T> type of {@code xs}
    * @param n number of {@code xs} to drop
    * @param xs list of values
@@ -276,7 +275,7 @@ public class Iterables {
    */
   public static <T> Iterable<T> drop(final int n, final Iterable<T> xs) {
     if(n < 0){
-      throw  new IllegalArgumentException("Cannot drop a negative number of elements");
+      throw new IllegalArgumentException("Cannot drop a negative number of elements");
     }
     if (xs instanceof List<?>) {
       final List<T> list = (List<T>) xs;
@@ -285,13 +284,13 @@ public class Iterables {
       }
       return ((List<T>) xs).subList(n, list.size());
     }
-    return new Range<T>(n, Integer.MAX_VALUE, xs);
+    return new Range<>(n, Integer.MAX_VALUE, xs);
   }
 
   /**
    * Merge a number of already sorted collections of elements into a single
    * collection of elements.
-   * 
+   *
    * @param <A> type of the elements
    * @param xss already sorted collection of collections
    * @param ordering ordering to use when comparing elements
@@ -299,44 +298,44 @@ public class Iterables {
    * @since 1.1
    */
   public static <A> Iterable<A> mergeSorted(final Iterable<? extends Iterable<A>> xss, final Ordering<A> ordering) {
-    return new MergeSortedIterable<A>(xss, ordering);
+    return new MergeSortedIterable<>(xss, ordering);
   }
 
   /**
    * Makes a lazy copy of {@code xs}.
-   * 
+   *
    * @param <A> type of elements in {@code xs}
    * @param xs {@code Iterable} to be memoized
    * @return lazy copy of {@code as}
    * @since 1.1
    */
   public static <A> Iterable<A> memoize(final Iterable<A> xs) {
-    return new Memoizer<A>(xs);
+    return new Memoizer<>(xs);
   }
 
   /**
    * Zips two iterables into a single iterable that produces {@link Pair pairs}.
    * See unzip(Iterable) for the opposite operation
-   * 
+   *
    * @param <A> LHS type
    * @param <B> RHS type
    * @param as left values
    * @param bs right values
    * @return an {@link Iterable iterable} of pairs, only as long as the shortest
    * input iterable.
-   * 
-   * 
+   *
+   *
    * @since 1.2
    */
   public static <A, B> Iterable<Pair<A, B>> zip(final Iterable<A> as, final Iterable<B> bs) {
-    return zipWith(Pair.<A, B> pairs()).apply(as, bs);
+    return zipWith(Pair.<A, B> pairs()::apply).apply(as, bs);
   }
 
   /**
    * Takes a two-arg function that returns a third type and reurn a new function
    * that takes iterables of the two input types and combines them into a new
    * iterable.
-   * 
+   *
    * @param <A> LHS type
    * @param <B> RHS type
    * @param <C> result type
@@ -352,7 +351,7 @@ public class Iterables {
   /**
    * Takes an Iterable, and returns an Iterable of a Pair of the original
    * element and its index starting at zero.
-   * 
+   *
    * @param <A> the type
    * @param as the original iterable
    * @return the decorated iterable that generates pairs.
@@ -365,7 +364,7 @@ public class Iterables {
   /**
    * Unzips an iterable of {@link Pair pairs} into a {@link Pair pair} of
    * iterables.
-   * 
+   *
    * @param <A> LHS type
    * @param <B> RHS type
    * @param pairs the values
@@ -375,14 +374,17 @@ public class Iterables {
    */
   // TODO java8 type inference seems to be losing it's mind on the second parameter
   public static <A, B> Pair<Iterable<A>, Iterable<B>> unzip(Iterable<Pair<A, B>> pairs) {
-    Iterable<B> rights = transform(pairs, Pair::right);
-    return pair(transform(pairs, Pair::left), rights);
+    com.google.common.base.Function<Pair<A, ?>, A> leftFunction = Pair.<A>leftValue()::apply;
+    com.google.common.base.Function<Pair<?, B>, B> rightFunction = Pair.<B>rightValue()::apply;
+    Iterable<A> lefts = transform(pairs, leftFunction);
+    Iterable<B> rights = transform(pairs, rightFunction);
+    return pair(lefts, rights);
   }
 
   /**
    * Creates a sequence of {@link Integer integers} from start up to but not
    * including end.
-   * 
+   *
    * @param start from (inclusive)
    * @param end to (exclusive)
    * @return a sequence of {@link Integer integers}
@@ -395,7 +397,7 @@ public class Iterables {
   /**
    * Creates a sequence of {@link Integer integers} from start up to but not
    * including end with the the supplied step between them.
-   * 
+   *
    * @param start from (inclusive)
    * @param end to (exclusive)
    * @param step size to step – must not be zero, must be positive if end is
@@ -413,7 +415,7 @@ public class Iterables {
   /**
    * Creates a sequence of {@link Integer integers} from start up to and
    * including end.
-   * 
+   *
    * @param start from (inclusive)
    * @param end to (inclusive)
    * @return a sequence of {@link Integer integers}
@@ -426,7 +428,7 @@ public class Iterables {
   /**
    * Creates a sequence of {@link Integer integers} from start up to and
    * including end with the the supplied step between them.
-   * 
+   *
    * @param start from (inclusive)
    * @param end to (inclusive)
    * @param step size to step – must not be zero, must be positive if end is
@@ -438,12 +440,11 @@ public class Iterables {
     if(step == 0){
       throw new IllegalArgumentException("Step must not be zero");
     }
-    if(step > 0){
+    if (step > 0) {
       if(start > end){
         throw new IllegalArgumentException(String.format("Start %s must not be greater than end %s with step %s", start, end, step));
       }
-    }
-    else {
+    } else {
       if(start < end){
         throw new IllegalArgumentException(String.format("Start %s must not be less than end %s with step %s", start, end, step));
       }
@@ -491,7 +492,7 @@ public class Iterables {
     }
 
     public Iterator<A> iterator() {
-      return new Iter<A>(drop, size, delegate.iterator());
+      return new Iter<>(drop, size, delegate.iterator());
     }
 
     static final class Iter<T> extends AbstractIterator<T> {
@@ -539,7 +540,7 @@ public class Iterables {
 
       private Iter(final Iterable<? extends Iterable<A>> xss, final Ordering<A> ordering) {
         this.xss = newTreeSet(peekingIteratorOrdering(ordering));
-        com.google.common.collect.Iterables.addAll(this.xss, transform(filter(xss, com.google.common.collect.Iterables::isEmpty), peekingIterator()::apply));
+        com.google.common.collect.Iterables.addAll(this.xss, transform(filter(xss, isEmpty().negate()::test), peekingIterator()::apply));
       }
 
       @Override protected A computeNext() {
@@ -623,11 +624,11 @@ public class Iterables {
     }
 
     public Iterator<A> iterator() {
-      return new Iter<A>(head);
+      return new Iter<>(head);
     }
 
     private static <A> Node<A> nextNode(final Iterator<A> delegate) {
-      return delegate.hasNext() ? new Lazy<A>(delegate) : new End<A>();
+      return delegate.hasNext() ? new Lazy<>(delegate) : new End<>();
     }
 
     /**
@@ -640,7 +641,7 @@ public class Iterables {
 
       /**
        * Get the next Node.
-       * 
+       *
        * @return a new Node
        * @throws NoSuchElementException if this is terminal
        */
@@ -750,7 +751,7 @@ public class Iterables {
 
   /**
    * Intersperse an element between all the elements in an iterable.
-   * 
+   *
    * @param <A> the type of the elements.
    * @param as the source iterable.
    * @param a the element to intersperse between the source elements.
@@ -763,7 +764,7 @@ public class Iterables {
 
   /**
    * Intersperse an element between all the elements in an iterable.
-   * 
+   *
    * @param <A> the type of the elements.
    * @param as the source iterable.
    * @param a the supplier of elements to intersperse between the source elements.
@@ -771,7 +772,7 @@ public class Iterables {
    * @since 2.3
    */
   public static <A> Iterable<A> intersperse(Iterable<? extends A> as, Supplier<A> a) {
-    return new Intersperse<A>(as, a);
+    return new Intersperse<>(as, a);
   }
 
   static final class Intersperse<A> implements Iterable<A> {
