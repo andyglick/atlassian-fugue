@@ -17,7 +17,7 @@ package com.atlassian.fugue;
 
 import org.junit.Test;
 
-import static com.atlassian.fugue.test.FunctionMatch.matches;
+import static com.atlassian.fugue.Functions.matches;
 import static com.atlassian.fugue.Functions.partial;
 import static com.atlassian.fugue.UtilityFunctions.dividableBy;
 import static com.atlassian.fugue.UtilityFunctions.hasMinLength;

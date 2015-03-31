@@ -15,27 +15,26 @@
  */
 package com.atlassian.fugue;
 
-import static com.atlassian.fugue.Iterables.memoize;
-import static com.google.common.collect.Iterables.filter;
-import static com.google.common.collect.Iterables.get;
-import static com.google.common.collect.Iterables.transform;
+import static com.atlassian.fugue.Iterables.filter;
+import static com.atlassian.fugue.Iterables2.memoize;
+import static com.atlassian.fugue.Iterables.transform;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.junit.Test;
 
-import com.google.common.collect.ImmutableList;
-
 @SuppressWarnings("unused") public class IterablesMemoizeTest {
   @Test public void assertThatFunctionTransformingSingletonIterableIsOnlyCalledOnce() {
     final CountingFunction<Integer, String> toString = counting(Object::toString);
-    final Iterable<String> memoized = memoize(transform(ImmutableList.of(1), toString::apply));
+    final Iterable<String> memoized = memoize(transform(Arrays.asList(1), toString::apply));
 
     // iterate over it a few times
     for (final String ignore : memoized) {}
@@ -46,7 +45,7 @@ import com.google.common.collect.ImmutableList;
 
   @Test public void assertThatFunctionTransformingMultiElementIterableIsOnlyCalledOncePerElement() {
     final CountingFunction<Integer, String> toString = counting(Object::toString);
-    final Iterable<String> memoized = memoize(transform(ImmutableList.of(1, 2, 3, 4), toString::apply));
+    final Iterable<String> memoized = memoize(transform(Arrays.asList(1, 2, 3, 4), toString::apply));
 
     // iterate over it a few times
     for (final String ignore : memoized) {}
@@ -57,19 +56,19 @@ import com.google.common.collect.ImmutableList;
 
   @Test public void assertThatMemoizedTransformedIterableHasSameElementsAsOriginalIterable() {
     CountingFunction<Integer, String> counting = counting(Object::toString);
-    assertThat(memoize(transform(ImmutableList.of(1, 2, 3, 4), counting::apply)), contains("1", "2", "3", "4"));
+    assertThat(memoize(transform(Arrays.asList(1, 2, 3, 4), counting::apply)), contains("1", "2", "3", "4"));
   }
 
   @Test public void assertThatMemoizedTransformedIterableHasSameElementsAsOriginalIterableOnSecondIteration() {
     CountingFunction<Integer, String> counting = counting(Object::toString);
-    final Iterable<String> memoized = memoize(transform(ImmutableList.of(1, 2, 3, 4), counting::apply));
+    final Iterable<String> memoized = memoize(transform(Arrays.asList(1, 2, 3, 4), counting::apply));
     for (final String ignore : memoized) {}
     assertThat(memoized, contains("1", "2", "3", "4"));
   }
 
   @Test public void assertThatPredicateUsedWhenFilteringIterableIsOnlyCalledOncePerElement() {
     final CountingPredicate<Integer> even = counting(even());
-    Iterable<Integer> filtered = filter(ImmutableList.of(1, 2, 3, 4), even::test);
+    Iterable<Integer> filtered = filter(Arrays.asList(1, 2, 3, 4), even::test);
     final Iterable<Integer> memoized = memoize(filtered);
 
     // iterate over it a few times
@@ -81,13 +80,13 @@ import com.google.common.collect.ImmutableList;
 
   @Test public void assertThatMemoizedFilteredIterableHasSameElementsAsOriginalIterableMinusFilteredElements() {
     final CountingPredicate<Integer> even = counting(even());
-    Iterable<Integer> filtered = filter(ImmutableList.of(1, 2, 3, 4), even::test);
+    Iterable<Integer> filtered = filter(Arrays.asList(1, 2, 3, 4), even::test);
     assertThat(memoize(filtered), contains(2, 4));
   }
 
   @Test public void assertThatMemoizedFilteredIterableHasSameElementsAsOriginalIterableMinusFitleredElementsOnSecondIteration() {
     final CountingPredicate<Integer> even = counting(even());
-    Iterable<Integer> filtered = filter(ImmutableList.of(1, 2, 3, 4), even::test);
+    Iterable<Integer> filtered = filter(Arrays.asList(1, 2, 3, 4), even::test);
     final Iterable<Integer> memoized = memoize(filtered);
 
     for (final Integer ignore : memoized) {}
@@ -96,14 +95,18 @@ import com.google.common.collect.ImmutableList;
   }
 
   @Test public void assertThatIteratingHalfWayThroughMemoizedIterableAndThenIteratingCompletelyHasSameElementsOriginalIterable() {
-    final Iterable<String> memoized = memoize(transform(ImmutableList.of(1, 2, 3, 4), Object::toString));
-    get(memoized, 1);
+    final Iterable<String> memoized = memoize(transform(Arrays.asList(1, 2, 3, 4), Object::toString));
+    Iterator<String> memIt = memoized.iterator();
+    memIt.next();
+    memIt.next();
     assertThat(memoized, contains("1", "2", "3", "4"));
   }
 
   @Test public void assertToString() {
-    final Iterable<String> memoized = memoize(transform(ImmutableList.of(1, 2, 3, 4), Object::toString));
-    get(memoized, 1);
+    final Iterable<String> memoized = memoize(transform(Arrays.asList(1, 2, 3, 4), Object::toString));
+    Iterator<String> memIt = memoized.iterator();
+    memIt.next();
+    memIt.next();
     assertThat(memoized.toString(), is("[1, 2, 3, 4]"));
   }
 

@@ -32,7 +32,7 @@ public class IterablesDropTest {
   }
 
   @Test public void dropOneFromNonList() {
-    assertThat(drop(1, asIterable(1, 2, 3, 4)), contains(2, 3, 4));
+    assertThat(drop(1, IterablesTakeTest.asIterable(1, 2, 3, 4)), contains(2, 3, 4));
   }
 
   @Test public void dropNoneFromList() {
@@ -40,7 +40,7 @@ public class IterablesDropTest {
   }
 
   @Test public void dropNoneFromNonList() {
-    assertThat(drop(0, asIterable(1, 2, 3, 4)), contains(1, 2, 3, 4));
+    assertThat(drop(0, IterablesTakeTest.asIterable(1, 2, 3, 4)), contains(1, 2, 3, 4));
   }
 
   @Test public void dropAllFromList() {
@@ -48,7 +48,7 @@ public class IterablesDropTest {
   }
 
   @Test public void dropAllFromNonList() {
-    assertThat(drop(4, asIterable(1, 2, 3, 4)), Matchers.<Integer> emptyIterable());
+    assertThat(drop(4, IterablesTakeTest.asIterable(1, 2, 3, 4)), Matchers.<Integer> emptyIterable());
   }
 
   @Test public void dropMoreFromList() {
@@ -56,11 +56,11 @@ public class IterablesDropTest {
   }
 
   @Test public void dropMoreFromNonList() {
-    assertThat(drop(12, asIterable(1, 2, 3, 4)), Matchers.<Integer> emptyIterable());
+    assertThat(drop(12, IterablesTakeTest.asIterable(1, 2, 3, 4)), Matchers.<Integer> emptyIterable());
   }
 
   @Test public void dropOneToString() {
-    assertThat(drop(1, asIterable(1, 2, 3, 4)).toString(), is("[2, 3, 4]"));
+    assertThat(drop(1, IterablesTakeTest.asIterable(1, 2, 3, 4)).toString(), is("[2, 3, 4]"));
   }
 
   @Test(expected = NullPointerException.class) public void dropNull() {

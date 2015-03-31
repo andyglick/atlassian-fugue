@@ -2,7 +2,7 @@ package com.atlassian.fugue;
 
 import static com.atlassian.fugue.Pair.pair;
 import static com.atlassian.fugue.Iterables.unzip;
-import static com.atlassian.fugue.Iterables.zip;
+import static com.atlassian.fugue.Pair.zip;
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertThat;
 

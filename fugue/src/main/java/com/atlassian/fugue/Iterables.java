@@ -16,17 +16,13 @@
 package com.atlassian.fugue;
 
 import com.atlassian.util.concurrent.LazyReference;
-import com.google.common.collect.AbstractIterator;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterators;
-import com.google.common.collect.Ordering;
-import com.google.common.collect.PeekingIterator;
-import com.google.common.collect.UnmodifiableIterator;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.TreeSet;
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -36,10 +32,6 @@ import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.some;
 import static com.atlassian.fugue.Pair.pair;
 import static com.atlassian.fugue.Suppliers.ofInstance;
-import static com.google.common.collect.Iterables.concat;
-import static com.google.common.collect.Iterables.filter;
-import static com.google.common.collect.Iterables.transform;
-import static com.google.common.collect.Sets.newTreeSet;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
@@ -48,13 +40,13 @@ import static java.util.Objects.requireNonNull;
  * Contains static utility methods that operate on or return objects of type
  * {code}Iterable{code}.
  *
- * This class is primarily focused around filling holes in Guava's
- * {@link com.google.common.collect.Iterables} class which have become apparent
- * with the addition of Fugue classes such as Option and Either.
+ * This class is primarily focused around filling holes in Guava's Iterables
+ * class which have become apparent with the addition of Fugue classes such as
+ * Option and Either.
  *
  * When making changes to this class, please try to name methods differently to
- * those in {@link com.google.common.collect.Iterables} so that methods from
- * both classes can be statically imported in the same class.
+ * those in Iterables so that methods from both classes can be statically
+ * imported in the same class.
  *
  * @since 1.0
  */
@@ -65,7 +57,7 @@ public class Iterables {
 
   static final Iterable<?> EMPTY = new Iterable<Object>() {
     @Override public Iterator<Object> iterator() {
-      return Iterators.emptyIterator();
+      return Functions.emptyIterator();
     }
 
     @Override public String toString() {
@@ -107,7 +99,7 @@ public class Iterables {
   /**
    * Finds the first item that matches the predicate. Traditionally, this should
    * be named find; in this case it is named findFirst to avoid clashing with
-   * static imports from Guava's {@link com.google.common.collect.Iterables}.
+   * static imports from Guava's com.google.common.collect.Iterables.
    *
    * @param <T> the type
    * @param elements the iterable to search for a matching element
@@ -117,7 +109,7 @@ public class Iterables {
    * @since 1.0
    */
   public static <T> Option<T> findFirst(final Iterable<? extends T> elements, final Predicate<? super T> predicate) {
-    for (final T t : filter(elements, predicate::test)) {
+    for (final T t : Iterables.filter(elements, predicate::test)) {
       return some(t);
     }
     return none();
@@ -171,8 +163,8 @@ public class Iterables {
    */
   public static <A, B> Iterable<B> flatMap(final Iterable<A> collection,
     final Function<? super A, ? extends Iterable<? extends B>> f) {
-    com.google.common.base.Function<? super A, ? extends Iterable<? extends B>> g = f::apply;
-    return concat(transform(collection, g));
+    Function<? super A, ? extends Iterable<? extends B>> g = f::apply;
+    return flatten(Iterables.transform(collection, f));
   }
 
   /**
@@ -187,17 +179,17 @@ public class Iterables {
    * @since 1.1
    */
   public static <A, B> Iterable<B> revMap(final Iterable<? extends Function<A, B>> fs, final A arg) {
-    return transform(fs, Functions.<A, B> apply(arg)::apply);
+    return Iterables.transform(fs, Functions.<A, B>apply(arg)::apply);
   }
 
   /**
-   * Predicate that checks if an iterable is empty.
+   * Predicate that checks if an iterable iconcats empty.
    *
    * @return {@code Predicate} which checks if an {@code Iterable} is empty
    * @since 1.1
    */
   public static Predicate<Iterable<?>> isEmpty() {
-    return com.google.common.collect.Iterables::isEmpty;
+    return Iterables::isEmpty;
   }
 
   /**
@@ -219,19 +211,6 @@ public class Iterables {
   }
 
   /**
-   * Merge a number of already sorted collections of elements into a single
-   * collection of elements, using the elements natural ordering.
-   *
-   * @param <A> type of the elements
-   * @param xss collection of already sorted collections
-   * @return {@code xss} merged in a sorted order
-   * @since 1.1
-   */
-  public static <A extends Comparable<A>> Iterable<A> mergeSorted(final Iterable<? extends Iterable<A>> xss) {
-    return mergeSorted(xss, Ordering.<A> natural());
-  }
-
-  /**
    * Filter an {@code Iterable} into a {@code Pair} of {@code Iterable}'s.
    *
    * @param <A> the type
@@ -241,7 +220,7 @@ public class Iterables {
    * not.
    */
   public static <A> Pair<Iterable<A>, Iterable<A>> partition(Iterable<A> iterable, Predicate<? super A> predicate) {
-    return pair(filter(iterable, predicate::test), filter(iterable, predicate.negate()::test));
+    return pair(Iterables.filter(iterable, predicate::test), Iterables.filter(iterable, predicate.negate()::test));
   }
 
   /**
@@ -280,37 +259,11 @@ public class Iterables {
     if (xs instanceof List<?>) {
       final List<T> list = (List<T>) xs;
       if (n > (list.size() - 1)) {
-        return ImmutableList.of();
+        return Collections.nCopies(0,(T)null);
       }
       return ((List<T>) xs).subList(n, list.size());
     }
     return new Range<>(n, Integer.MAX_VALUE, xs);
-  }
-
-  /**
-   * Merge a number of already sorted collections of elements into a single
-   * collection of elements.
-   *
-   * @param <A> type of the elements
-   * @param xss already sorted collection of collections
-   * @param ordering ordering to use when comparing elements
-   * @return {@code xss} merged in a sorted order
-   * @since 1.1
-   */
-  public static <A> Iterable<A> mergeSorted(final Iterable<? extends Iterable<A>> xss, final Ordering<A> ordering) {
-    return new MergeSortedIterable<>(xss, ordering);
-  }
-
-  /**
-   * Makes a lazy copy of {@code xs}.
-   *
-   * @param <A> type of elements in {@code xs}
-   * @param xs {@code Iterable} to be memoized
-   * @return lazy copy of {@code as}
-   * @since 1.1
-   */
-  public static <A> Iterable<A> memoize(final Iterable<A> xs) {
-    return new Memoizer<>(xs);
   }
 
   /**
@@ -374,10 +327,10 @@ public class Iterables {
    */
   // TODO java8 type inference seems to be losing it's mind on the second parameter
   public static <A, B> Pair<Iterable<A>, Iterable<B>> unzip(Iterable<Pair<A, B>> pairs) {
-    com.google.common.base.Function<Pair<A, ?>, A> leftFunction = Pair.<A>leftValue()::apply;
-    com.google.common.base.Function<Pair<?, B>, B> rightFunction = Pair.<B>rightValue()::apply;
-    Iterable<A> lefts = transform(pairs, leftFunction);
-    Iterable<B> rights = transform(pairs, rightFunction);
+    Function<Pair<A, ?>, A> leftFunction = Pair.<A>leftValue()::apply;
+    Function<Pair<?, B>, B> rightFunction = Pair.<B>rightValue()::apply;
+    Iterable<A> lefts = Iterables.transform(pairs, leftFunction);
+    Iterable<B> rights = Iterables.transform(pairs, rightFunction);
     return pair(lefts, rights);
   }
 
@@ -453,11 +406,13 @@ public class Iterables {
     return () -> new UnmodifiableIterator<Integer>() {
       private int i = start;
 
-      @Override public boolean hasNext() {
+      @Override
+      public boolean hasNext() {
         return step > 0 ? i <= end : i >= end;
       }
 
-      @Override public Integer next() {
+      @Override
+      public Integer next() {
         try {
           return i;
         } finally {
@@ -473,7 +428,17 @@ public class Iterables {
 
   static abstract class IterableToString<A> implements Iterable<A> {
     @Override public final String toString() {
-      return com.google.common.collect.Iterables.toString(this);
+      Iterator<A> it = this.iterator();
+      StringBuilder buffer = new StringBuilder().append("[");
+      while (it.hasNext())
+      {
+        buffer.append(Objects.requireNonNull(it.next()).toString());
+        if(it.hasNext()){
+          buffer.append(", ");
+        }
+      }
+      buffer.append("]");
+      return buffer.toString();
     }
   }
 
@@ -520,70 +485,6 @@ public class Iterables {
   }
 
   /**
-   * Merges two sorted Iterables into one, sorted iterable.
-   */
-  static final class MergeSortedIterable<A> extends IterableToString<A> {
-    private final Iterable<? extends Iterable<A>> xss;
-    private final Ordering<A> ordering;
-
-    MergeSortedIterable(final Iterable<? extends Iterable<A>> xss, final Ordering<A> ordering) {
-      this.xss = requireNonNull(xss, "xss");
-      this.ordering = requireNonNull(ordering, "ordering");
-    }
-
-    public Iterator<A> iterator() {
-      return new Iter<>(xss, ordering);
-    }
-
-    private static final class Iter<A> extends AbstractIterator<A> {
-      private final TreeSet<PeekingIterator<A>> xss;
-
-      private Iter(final Iterable<? extends Iterable<A>> xss, final Ordering<A> ordering) {
-        this.xss = newTreeSet(peekingIteratorOrdering(ordering));
-        com.google.common.collect.Iterables.addAll(this.xss, transform(filter(xss, isEmpty().negate()::test), peekingIterator()::apply));
-      }
-
-      @Override protected A computeNext() {
-        final Option<PeekingIterator<A>> currFirstOption = first(xss);
-        if (!currFirstOption.isDefined()) {
-          return endOfData();
-        }
-        final PeekingIterator<A> currFirst = currFirstOption.get();
-
-        // We remove the iterator from the set first, before we mutate it,
-        // otherwise we wouldn't be able to
-        // properly find it to remove it. Mutation sucks.
-        xss.remove(currFirst);
-
-        final A next = currFirst.next();
-        if (currFirst.hasNext()) {
-          xss.add(currFirst);
-        }
-        return next;
-      }
-
-      private Function<? super Iterable<A>, ? extends PeekingIterator<A>> peekingIterator() {
-        return new Function<Iterable<A>, PeekingIterator<A>>() {
-          public PeekingIterator<A> apply(final Iterable<A> i) {
-            return Iterators.peekingIterator(i.iterator());
-          }
-        };
-      }
-
-      private Ordering<? super PeekingIterator<A>> peekingIteratorOrdering(final Ordering<A> ordering) {
-        return new Ordering<PeekingIterator<A>>() {
-          public int compare(final PeekingIterator<A> lhs, final PeekingIterator<A> rhs) {
-            if (lhs == rhs) {
-              return 0;
-            }
-            return ordering.compare(lhs.peek(), rhs.peek());
-          }
-        };
-      }
-    }
-  }
-
-  /**
    * CollectingIterable, filters and transforms in one.
    */
   static class CollectingIterable<A, B> extends IterableToString<B> {
@@ -613,105 +514,6 @@ public class Iterables {
     }
   }
 
-  /**
-   * Memoizing iterable, maintains a lazily computed linked list of nodes.
-   */
-  static final class Memoizer<A> extends IterableToString<A> {
-    private final Node<A> head;
-
-    Memoizer(final Iterable<A> delegate) {
-      head = nextNode(delegate.iterator());
-    }
-
-    public Iterator<A> iterator() {
-      return new Iter<>(head);
-    }
-
-    private static <A> Node<A> nextNode(final Iterator<A> delegate) {
-      return delegate.hasNext() ? new Lazy<>(delegate) : new End<>();
-    }
-
-    /**
-     * Linked list node.
-     */
-    interface Node<A> {
-      boolean isEnd();
-
-      A value();
-
-      /**
-       * Get the next Node.
-       *
-       * @return a new Node
-       * @throws NoSuchElementException if this is terminal
-       */
-      Node<A> next() throws NoSuchElementException;
-    }
-
-    /**
-     * Lazily computes the next node. Has a value so is not an end.
-     */
-    static class Lazy<A> extends LazyReference<Node<A>> implements Node<A> {
-      private final Iterator<A> delegate;
-      private final A value;
-
-      Lazy(final Iterator<A> delegate) {
-        this.delegate = delegate;
-        this.value = delegate.next();
-      }
-
-      @Override protected Node<A> create() throws Exception {
-        return nextNode(delegate);
-      }
-
-      public Node<A> next() throws NoSuchElementException {
-        return get();
-      }
-
-      public boolean isEnd() {
-        return false;
-      }
-
-      public A value() {
-        return value;
-      }
-    }
-
-    static class End<A> implements Node<A> {
-      public boolean isEnd() {
-        return true;
-      }
-
-      // /CLOVER:OFF
-      public Node<A> next() {
-        throw new NoSuchElementException();
-      }
-
-      public A value() {
-        throw new NoSuchElementException();
-      }
-      // /CLOVER:ON
-    }
-
-    static class Iter<A> extends AbstractIterator<A> {
-      Node<A> node;
-
-      Iter(final Node<A> node) {
-        this.node = node;
-      }
-
-      @Override protected A computeNext() {
-        if (node.isEnd()) {
-          return endOfData();
-        }
-        try {
-          return node.value();
-        } finally {
-          node = node.next();
-        }
-      }
-    }
-  }
 
   /**
    * Iterable that combines two iterables using a combiner function.
@@ -804,6 +606,117 @@ public class Iterables {
   }
 
   static <A> int size(Iterable<A> as) {
-    return com.google.common.collect.Iterables.size(as);
+    if( as instanceof Collection){
+      return ((Collection) as).size();
+    }
+    else {
+      Iterator<A> iterator = as.iterator();
+      int count = 0;
+      while(iterator.hasNext()){
+        iterator.next();
+        count++;
+      }
+      return count;
+    }
+  }
+
+  public static <A,B> Iterable<B> transform(Iterable<A> as, Function<? super A, ? extends B> f){
+    return new Transform<>(as, f);
+  }
+
+  static final class Transform<A, B> implements Iterable<B>{
+    private final Iterable<? extends A> as;
+    private final Function<? super A, ? extends B> f;
+
+    Transform(Iterable<? extends A> as, Function<? super A, ? extends B> f)
+    {
+      this.as = as;
+      this.f = f;
+    }
+
+    @Override public Iterator<B> iterator() {
+      return new AbstractIterator<B>() {
+        private final Iterator<? extends A> it = as.iterator();
+
+        @Override protected B computeNext() {
+          if (!it.hasNext()) {
+            return endOfData();
+          }
+          return f.apply(it.next());
+        }
+      };
+    }
+  }
+
+  public static <A> Iterable<A> filter(Iterable<A> as, Predicate<? super A> p){
+    return new Filter<>(as, p);
+  }
+
+  static final class Filter<A> implements Iterable<A>{
+    private final Iterable<? extends A> as;
+    private final Predicate<? super A> p;
+
+    Filter(Iterable<? extends A> as, Predicate<? super A> p)
+    {
+      this.as = as;
+      this.p = p;
+    }
+
+    @Override public Iterator<A> iterator() {
+      return new AbstractIterator<A>() {
+        private final Iterator<? extends A> it = as.iterator();
+
+        @Override protected A computeNext() {
+          if (!it.hasNext()) {
+            return endOfData();
+          }
+          while(it.hasNext()){
+            A a = it.next();
+            if(p.test(a)){
+              return a;
+            }
+          }
+          return endOfData();
+        }
+      };
+    }
+  }
+
+
+  public static <A> Iterable<A> flatten(Iterable<? extends Iterable<? extends A>> ias){
+    return new Flatten<>(ias);
+  }
+
+  static final class Flatten<A> implements Iterable<A>{
+    private final Iterable<? extends Iterable<? extends A>> ias;
+
+    public Flatten(Iterable<? extends Iterable<? extends A>> ias){
+      this.ias = ias;
+    }
+
+    @Override public Iterator<A> iterator() {
+      return new AbstractIterator<A>() {
+        private final Iterator<? extends Iterable<? extends A>> i = ias.iterator();
+        private Iterator<? extends A> currentIterator = Functions.emptyIterator();
+
+        @Override protected A computeNext() {
+          boolean currentHasNext;
+          while(!(currentHasNext = Objects.requireNonNull(currentIterator).hasNext()) && i.hasNext()){
+            currentIterator = i.next().iterator();
+          }
+          if(!currentHasNext){
+            return endOfData();
+          }
+          return currentIterator.next();
+        }
+      };
+    }
+  }
+
+  static boolean isEmpty(Iterable<?> fs){
+    if (fs instanceof Collection) {
+      return ((Collection<?>) fs).isEmpty();
+    }
+    return !fs.iterator().hasNext();
   }
 }

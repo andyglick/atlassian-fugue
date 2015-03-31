@@ -15,17 +15,16 @@
  */
 package com.atlassian.fugue;
 
+import org.hamcrest.Matcher;
+import org.junit.Test;
+
 import static com.atlassian.fugue.Iterables.zip;
 import static com.atlassian.fugue.Iterables.zipWith;
 import static com.atlassian.fugue.Iterables.zipWithIndex;
 import static com.atlassian.fugue.Pair.pair;
-import static com.atlassian.fugue.UtilityFunctions.product;
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertThat;
-
-import org.hamcrest.Matcher;
-import org.junit.Test;
 
 public class IterablesZipTest {
   @SuppressWarnings("unchecked") @Test public void zipFromLists() {

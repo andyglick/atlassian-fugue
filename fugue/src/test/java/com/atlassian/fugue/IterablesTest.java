@@ -15,13 +15,10 @@
  */
 package com.atlassian.fugue;
 
-import com.google.common.base.Predicates;
-import com.google.common.collect.AbstractIterator;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Range;
 import org.junit.Test;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -36,7 +33,6 @@ import static com.atlassian.fugue.Iterables.rangeTo;
 import static com.atlassian.fugue.Iterables.rangeUntil;
 import static com.atlassian.fugue.Option.some;
 import static com.atlassian.fugue.Pair.pair;
-import static com.google.common.collect.ImmutableList.of;
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
@@ -68,24 +64,24 @@ public class IterablesTest {
   }
 
   @Test public void findFirstEmpty() {
-    assertThat(findFirst(ImmutableList.<Integer> of(), grepOne), is(Option.<Integer> none()));
+    assertThat(findFirst(Arrays.<Integer> asList(), grepOne), is(Option.<Integer> none()));
   }
 
   @Test public void findFirstAbsent() {
-    assertThat(findFirst(of(2), grepOne), is(none));
+    assertThat(findFirst(asList(2), grepOne), is(none));
   }
 
   @Test public void findFirstSingle() {
-    assertThat(findFirst(of(1), grepOne), is(some(1)));
+    assertThat(findFirst(asList(1), grepOne), is(some(1)));
   }
 
   @Test public void findFirstWhenNotFirstElement() {
-    assertThat(findFirst(of(2, 1), grepOne), is(some(1)));
+    assertThat(findFirst(asList(2, 1), grepOne), is(some(1)));
   }
 
   @Test public void findFirstMultipleMatches() {
     final Pair<Integer, Integer> expected = pair(1, 1);
-    final List<Pair<Integer, Integer>> ts = of(expected, pair(2, 2), pair(1, 3), pair(2, 4));
+    final List<Pair<Integer, Integer>> ts = asList(expected, pair(2, 2), pair(1, 3), pair(2, 4));
 
     final Option<Pair<Integer, Integer>> found = findFirst(ts, input -> input.left().equals(1));
 
@@ -153,7 +149,7 @@ public class IterablesTest {
   }
 
   @Test public void partitionSimple() {
-    Pair<Iterable<Integer>, Iterable<Integer>> part = partition(asList(1, 2, 3, 4), Range.greaterThan(2)::contains);
+    Pair<Iterable<Integer>, Iterable<Integer>> part = partition(asList(1, 2, 3, 4), i -> i > 2);
     assertThat(part.left(), contains(3, 4));
     assertThat(part.right(), contains(1, 2));
   }
@@ -168,11 +164,11 @@ public class IterablesTest {
   }
 
   @Test public void findFirstFunctionWorks() {
-    assertThat(findFirst(Predicates.equalTo(3)::apply).apply(asList(1, 2, 3)), is(some(3)));
+    assertThat(findFirst(Predicate.isEqual(3)).apply(asList(1, 2, 3)), is(some(3)));
   }
 
   @Test public void findFirstFunctionFails() {
-    assertThat(findFirst(Predicates.equalTo(3)::apply).apply(asList(1, 2, 4)), is(Option.<Integer> none()));
+    assertThat(findFirst(Predicate.isEqual(3)).apply(asList(1, 2, 4)), is(Option.<Integer> none()));
   }
 
   @Test(expected = InvocationTargetException.class) public void nonInstantiable() throws Exception {
@@ -180,7 +176,7 @@ public class IterablesTest {
   }
 
   @Test public void revMap() {
-    Iterable<Function<Integer, Integer>> fs = ImmutableList.of(
+    Iterable<Function<Integer, Integer>> fs = asList(
         from -> from + 1, from -> from + 2, from -> from * from);
     assertThat(Iterables.revMap(fs, 3), contains(4, 5, 9));
   }

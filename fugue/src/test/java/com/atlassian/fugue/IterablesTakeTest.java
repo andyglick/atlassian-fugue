@@ -16,7 +16,7 @@
 package com.atlassian.fugue;
 
 import static com.atlassian.fugue.Iterables.take;
-import static com.google.common.collect.Iterables.transform;
+import static com.atlassian.fugue.Iterables.transform;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.hamcrest.Matchers.contains;

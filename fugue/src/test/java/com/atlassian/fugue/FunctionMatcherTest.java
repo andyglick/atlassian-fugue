@@ -15,11 +15,12 @@
  */
 package com.atlassian.fugue;
 
-import com.atlassian.fugue.test.FunctionMatch;
 import org.junit.Test;
 
 import java.util.function.Function;
 
+import static com.atlassian.fugue.Functions.compose;
+import static com.atlassian.fugue.Functions.matches;
 import static com.atlassian.fugue.Option.some;
 
 public class FunctionMatcherTest {
@@ -28,11 +29,11 @@ public class FunctionMatcherTest {
   }
 
   @Test(expected = NullPointerException.class) public void nullFirst() {
-    FunctionMatch.matches(null, toInt(1));
+    matches(null, toInt(1));
   }
 
   @Test(expected = NullPointerException.class) public void nullSecond() {
-    Functions.compose(toInt(1), null);
+    compose(toInt(1), null);
   }
 
 }

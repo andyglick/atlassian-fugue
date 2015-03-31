@@ -22,7 +22,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-import static com.atlassian.fugue.Iterables.mergeSorted;
+import static com.atlassian.fugue.Iterables2.mergeSorted;
 import static com.google.common.collect.ImmutableList.of;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;

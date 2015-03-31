@@ -15,17 +15,32 @@
  */
 package com.atlassian.fugue;
 
+import static com.atlassian.fugue.Iterables.intersperse;
+import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import com.google.common.collect.ImmutableList;
+import java.util.function.Supplier;
 
-public class IterablesCollectTest {
+public class IterablesIntersperseTest {
 
-  @Test public void collectIterableFindsRightType() {
-    Iterable<Integer> collected = Iterables.collect(ImmutableList.of("a", 11), Functions.isInstanceOf(Integer.class));
-    assertThat(collected, contains(11));
+  @Test public void interspersed() {
+    assertThat(intersperse(asList("a", "b", "c"), "-"), contains("a", "-", "b", "-", "c"));
+  }
+  
+  @Test public void interspersedSupplier() {
+    Supplier<Integer> count = new Supplier<Integer>() {
+      int count = 0;
+      @Override public Integer get() {
+        try {
+        return count;
+        } finally {
+          count += 1;
+        }
+      }
+    };
+    assertThat(intersperse(asList(100, 200, 300), count), contains(100, 0, 200, 1, 300));
   }
 }

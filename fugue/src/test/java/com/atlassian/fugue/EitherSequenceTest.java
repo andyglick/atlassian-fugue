@@ -17,21 +17,20 @@ package com.atlassian.fugue;
 
 import static com.atlassian.fugue.Either.left;
 import static com.atlassian.fugue.Either.right;
-import static com.atlassian.fugue.Eithers2.sequenceLeft;
-import static com.atlassian.fugue.Eithers2.sequenceRight;
+import static com.atlassian.fugue.Eithers.sequenceLeft;
+import static com.atlassian.fugue.Eithers.sequenceRight;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 
-import com.google.common.collect.ImmutableList;
-
 @SuppressWarnings("unchecked") public class EitherSequenceTest {
   @Test public void sequenceRights() {
-    final ImmutableList<Either<Object, Integer>> eithers = ImmutableList.of(right(1), right(2), right(3));
+    final List<Either<Object, Integer>> eithers = Arrays.asList(right(1), right(2), right(3));
     assertThat(sequenceRight(eithers).right().get(), contains(1, 2, 3));
   }
 
@@ -42,7 +41,7 @@ import com.google.common.collect.ImmutableList;
   }
 
   @Test public void sequenceLefts() {
-    final ImmutableList<Either<Integer, Object>> eithers = ImmutableList.of(left(1), left(2), left(3));
+    final List<Either<Integer, Object>> eithers = Arrays.asList(left(1), left(2), left(3));
     assertThat(sequenceLeft(eithers).left().get(), contains(1, 2, 3));
   }
 

@@ -19,6 +19,8 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static com.atlassian.fugue.Iterables.filter;
+import static com.atlassian.fugue.Iterables.transform;
 import static com.atlassian.fugue.Option.none;
 import static java.util.Objects.requireNonNull;
 
@@ -170,5 +172,28 @@ public class Options {
    */
   public static <A, B, C> Function<BiFunction<A, B, C>, BiFunction<Option<A>, Option<B>, Option<C>>> lift2() {
     return Options::lift2;
+  }
+
+  /**
+   * Filter out undefined options.
+   *
+   * @param <A> the contained type
+   * @param options many options that may or may not be defined
+   * @return the filtered options
+   */
+  public static <A> Iterable<Option<A>> filterNone(final Iterable<Option<A>> options) {
+    return filter(options, Maybe::isDefined);
+  }
+
+  /**
+   * Flattens an {@link Iterable} of {@link Option options} into an iterable of
+   * the things, filtering out any nones.
+   *
+   * @param <A> the contained type
+   * @param options the iterable of options
+   * @return an {@link Iterable} of the contained type
+   */
+  public static <A> Iterable<A> flatten(final Iterable<Option<A>> options) {
+    return transform(filterNone(options), Maybe::get);
   }
 }

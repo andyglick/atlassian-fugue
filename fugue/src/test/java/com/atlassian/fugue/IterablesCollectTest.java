@@ -15,25 +15,17 @@
  */
 package com.atlassian.fugue;
 
-import static java.util.Arrays.asList;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
-
-import java.util.List;
-import java.util.function.Function;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import com.google.common.collect.ImmutableList;
+import java.util.Arrays;
 
-public class IterableVarianceTest {
+public class IterablesCollectTest {
 
-  @Test public void flatMap() {
-    final Iterable<String> result = Iterables.flatMap(asList("123", "ABC"), new Function<CharSequence, List<String>>() {
-      public List<String> apply(final CharSequence from) {
-        return ImmutableList.copyOf(new IterablesTest.CharSplitter(from));
-      }
-    });
-    assertThat(result, contains("1", "2", "3", "A", "B", "C"));
+  @Test public void collectIterableFindsRightType() {
+    Iterable<Integer> collected = Iterables.collect(Arrays.asList("a", 11), Functions.isInstanceOf(Integer.class));
+    assertThat(collected, contains(11));
   }
 }

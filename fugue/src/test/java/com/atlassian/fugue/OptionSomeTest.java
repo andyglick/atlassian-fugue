@@ -17,12 +17,20 @@ package com.atlassian.fugue;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Function;
 
 import static com.atlassian.fugue.Option.none;
+import static com.atlassian.fugue.Option.option;
 import static com.atlassian.fugue.Option.some;
 import static com.atlassian.fugue.Suppliers.ofInstance;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 
 public class OptionSomeTest {
@@ -136,5 +144,30 @@ public class OptionSomeTest {
 
   @Test public void getOrThrow() throws MyException {
     assertThat(some.getOrThrow(MyException::new), is(ORIGINAL_VALUE));
+  }
+
+  @Test
+  public void map() {
+    assertThat(some.map(i -> i + 1).get(), is(2));
+  }
+
+  @Test public void superTypesPermittedOnFilter() {
+    final ArrayList<Integer> list = new ArrayList<>(2);
+    Collections.addAll(list, 1, 2);
+    final Option<ArrayList<Integer>> option = option(list);
+    final Option<ArrayList<Integer>> nopt = option.filter(x -> true);
+    assertThat(nopt, sameInstance(option));
+  }
+
+  @Test public void superTypesPermittedOnMap() {
+    ArrayList<Integer> list = new ArrayList<>(2);
+    Collections.addAll(list, 1, 2);
+    final Option<ArrayList<Integer>> option = option(list);
+    final Option<Set<Number>> set = option.map(new Function<List<Integer>, Set<Number>>() {
+      public Set<Number> apply(final List<Integer> list) {
+        return new HashSet<>(list);
+      }
+    });
+    assertThat(set.get().size(), is(option.get().size()));
   }
 }
