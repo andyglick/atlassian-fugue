@@ -28,7 +28,6 @@ import java.util.function.Predicate;
 
 import static com.atlassian.fugue.Eithers.getOrThrow;
 import static com.atlassian.fugue.Iterables.filter;
-import static com.atlassian.fugue.Iterables.isEmpty;
 import static com.atlassian.fugue.Iterables.size;
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.option;
@@ -101,7 +100,7 @@ public class OptionStaticsTest {
   }
 
   @Test public void filterFindsNone() {
-    assertThat(isEmpty(filterNone(fourNones())), is(true));
+    assertThat(Iterables.isEmpty().test(filterNone(fourNones())), is(true));
   }
 
   private List<Option<Integer>> twoOptions() {

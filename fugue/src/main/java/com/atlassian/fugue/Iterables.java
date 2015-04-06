@@ -15,14 +15,13 @@
  */
 package com.atlassian.fugue;
 
-import com.atlassian.util.concurrent.LazyReference;
-
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.TreeSet;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -183,13 +182,18 @@ public class Iterables {
   }
 
   /**
-   * Predicate that checks if an iterable iconcats empty.
+   * Predicate that checks if an iterable is empty.
    *
    * @return {@code Predicate} which checks if an {@code Iterable} is empty
    * @since 1.1
    */
   public static Predicate<Iterable<?>> isEmpty() {
-    return Iterables::isEmpty;
+    return it -> {
+      if (it instanceof Collection) {
+        return ((Collection<?>) it).isEmpty();
+      }
+      return !it.iterator().hasNext();
+    };
   }
 
   /**
@@ -560,7 +564,7 @@ public class Iterables {
    * @return a new Iterable that intersperses the element between the source.
    * @since 2.3
    */
-  public static <A> Iterable<A> intersperse(Iterable<? extends A> as, A a) {
+  public static <A> Iterable<A> intersperse(final Iterable<? extends A> as, A a) {
     return intersperse(as, ofInstance(a));
   }
 
@@ -573,7 +577,7 @@ public class Iterables {
    * @return a new Iterable that intersperses the element between the source.
    * @since 2.3
    */
-  public static <A> Iterable<A> intersperse(Iterable<? extends A> as, Supplier<A> a) {
+  public static <A> Iterable<A> intersperse(final Iterable<? extends A> as, Supplier<A> a) {
     return new Intersperse<>(as, a);
   }
 
@@ -620,7 +624,7 @@ public class Iterables {
     }
   }
 
-  public static <A,B> Iterable<B> transform(Iterable<A> as, Function<? super A, ? extends B> f){
+  public static <A,B> Iterable<B> transform(final Iterable<A> as, final Function<? super A, ? extends B> f){
     return new Transform<>(as, f);
   }
 
@@ -648,7 +652,7 @@ public class Iterables {
     }
   }
 
-  public static <A> Iterable<A> filter(Iterable<A> as, Predicate<? super A> p){
+  public static <A> Iterable<A> filter(final Iterable<A> as, final Predicate<? super A> p){
     return new Filter<>(as, p);
   }
 
@@ -713,10 +717,107 @@ public class Iterables {
     }
   }
 
-  static boolean isEmpty(Iterable<?> fs){
-    if (fs instanceof Collection) {
-      return ((Collection<?>) fs).isEmpty();
+  /**
+   * Merge a number of already sorted collections of elements into a single
+   * collection of elements, using the elements natural ordering.
+   *
+   * @param <A> type of the elements
+   * @param xss collection of already sorted collections
+   * @return {@code xss} merged in a sorted order
+   * @since 1.1
+   */
+  public static <A extends Comparable<A>> Iterable<A> mergeSorted(final Iterable<? extends Iterable<A>> xss) {
+    return mergeSorted(xss, Comparator.<A> naturalOrder());
+  }
+
+  /**
+   * Merge a number of already sorted collections of elements into a single
+   * collection of elements.
+   *
+   * @param <A> type of the elements
+   * @param xss already sorted collection of collections
+   * @param ordering ordering to use when comparing elements
+   * @return {@code xss} merged in a sorted order
+   * @since 1.1
+   */
+  public static <A> Iterable<A> mergeSorted(final Iterable<? extends Iterable<A>> xss, final Comparator<A> ordering) {
+    return new MergeSortedIterable<>(xss, ordering);
+  }
+
+  public static <T> boolean addAll(
+      Collection<T> addTo, Iterable<? extends T> elementsToAdd) {
+    if (elementsToAdd instanceof Collection) {
+      @SuppressWarnings("unchecked")
+      Collection<? extends T> c = (Collection<? extends T>) elementsToAdd;
+      return addTo.addAll(c);
     }
-    return !fs.iterator().hasNext();
+    return Iterators.addAll(addTo, requireNonNull(elementsToAdd).iterator());
+  }
+
+  //
+  // inner classes
+  //
+
+  /**
+   * Merges two sorted Iterables into one, sorted iterable.
+   */
+  static final class MergeSortedIterable<A> extends IterableToString<A> {
+    private final Iterable<? extends Iterable<A>> xss;
+    private final Comparator<A> comparator;
+
+    MergeSortedIterable(final Iterable<? extends Iterable<A>> xss, final Comparator<A> comparator) {
+      this.xss = requireNonNull(xss, "xss");
+      this.comparator = requireNonNull(comparator, "comparator");
+    }
+
+    public Iterator<A> iterator() {
+      return new Iter<>(xss, comparator);
+    }
+
+    private static final class Iter<A> extends AbstractIterator<A> {
+      private final TreeSet<PeekingIterator<A>> xss;
+
+      private Iter(final Iterable<? extends Iterable<A>> xss, final Comparator<A> c) {
+        Comparator<? super PeekingIterator<A>> comparator = peekingIteratorComparator(c);
+        Objects.requireNonNull(comparator);
+        this.xss = new TreeSet<>(comparator);
+        addAll(this.xss, transform(filter(xss, Iterables.isEmpty().negate()), peekingIterator()));
+      }
+
+
+      @Override protected A computeNext() {
+        final Option<PeekingIterator<A>> currFirstOption = first(xss);
+        if (!currFirstOption.isDefined()) {
+          return endOfData();
+        }
+        final PeekingIterator<A> currFirst = currFirstOption.get();
+
+        // We remove the iterator from the set first, before we mutate it,
+        // otherwise we wouldn't be able to
+        // properly find it to remove it. Mutation sucks.
+        xss.remove(currFirst);
+
+        final A next = currFirst.next();
+        if (currFirst.hasNext()) {
+          xss.add(currFirst);
+        }
+        return next;
+      }
+
+      private Function<? super Iterable<A>, ? extends PeekingIterator<A>> peekingIterator() {
+        return i -> Iterators.peekingIterator(i.iterator());
+      }
+
+      private Comparator<? super PeekingIterator<A>> peekingIteratorComparator(final Comparator<A> comparator) {
+        return new Comparator<PeekingIterator<A>>() {
+          public int compare(final PeekingIterator<A> lhs, final PeekingIterator<A> rhs) {
+            if (lhs == rhs) {
+              return 0;
+            }
+            return comparator.compare(lhs.peek(), rhs.peek());
+          }
+        };
+      }
+    }
   }
 }

@@ -28,6 +28,7 @@ import static java.util.Objects.requireNonNull;
  * 
  * @since 1.2
  */
+@Deprecated
 public final class Throwables {
   /**
    * Propagates {@code throwable} as-is if it is an instance of
@@ -62,6 +63,7 @@ public final class Throwables {
    * @return nothing will ever be returned; this return type is only for your
    * convenience, as illustrated in the example above
    */
+  @Deprecated
   public static <R extends RuntimeException> R propagate(Throwable throwable, Function<Throwable, R> function) {
     propagateIfPossible(requireNonNull(throwable));
     throw function.apply(throwable);
@@ -109,7 +111,7 @@ public final class Throwables {
    * @see #propagate(Throwable, Function)
    */
   public static <R extends RuntimeException> R propagate(Throwable throwable, Class<R> runtimeType) {
-    return propagate(throwable, new ExceptionFunction<R>(requireNonNull(runtimeType)));
+    return propagate(throwable, new ExceptionFunction<>(requireNonNull(runtimeType)));
   }
 
   private final static class ExceptionFunction<E extends Exception> implements Function<Throwable, E> {

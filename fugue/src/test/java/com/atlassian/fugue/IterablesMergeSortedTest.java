@@ -15,15 +15,14 @@
  */
 package com.atlassian.fugue;
 
-import com.google.common.collect.ImmutableList;
 import org.hamcrest.Matcher;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 
-import static com.atlassian.fugue.Iterables2.mergeSorted;
-import static com.google.common.collect.ImmutableList.of;
+import static com.atlassian.fugue.Iterables.mergeSorted;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.emptyIterableOf;
@@ -32,35 +31,35 @@ import static org.hamcrest.Matchers.is;
 public class IterablesMergeSortedTest {
   @Test public void mergingEmptyIterablesGivesAnEmptyIterable() {
     Matcher<Iterable<String>> iterableMatcher = emptyIterableOf(String.class);
-    assertThat(mergeSorted(of(new ArrayList<String>(), new LinkedList<String>())), is(iterableMatcher));
+    assertThat(mergeSorted(Arrays.asList(new ArrayList<String>(), new LinkedList<String>())), is(iterableMatcher));
   }
 
   @Test public void mergingNonEmptyAndEmptyIterablesGivesTheMergedIterable() {
-    assertThat(mergeSorted(of(of("a"), ImmutableList.<String> of())), contains("a"));
+    assertThat(mergeSorted(Arrays.asList(Arrays.asList("a"), Arrays.<String>asList())), contains("a"));
   }
 
   @Test public void mergingEmptyAndNonEmptyIterablesGivesTheMergedIterable() {
-    assertThat(mergeSorted(of(ImmutableList.<String> of(), of("a"))), contains("a"));
+    assertThat(mergeSorted(Arrays.asList(Arrays.<String>asList(), Arrays.asList("a"))), contains("a"));
   }
 
   @Test public void mergingNonEmptyIterablesInOrderGivesMergedIterable() {
-    assertThat(mergeSorted(of(of("a"), of("b"))), contains("a", "b"));
+    assertThat(mergeSorted(Arrays.asList(Arrays.asList("a"), Arrays.asList("b"))), contains("a", "b"));
   }
 
   @Test public void mergingNonEmptyIterablesOutOfOrderGivesMergedIterable() {
-    assertThat(mergeSorted(of(of("b"), of("a"))), contains("a", "b"));
+    assertThat(mergeSorted(Arrays.asList(Arrays.asList("b"), Arrays.asList("a"))), contains("a", "b"));
   }
 
   @Test public void mergingNonEmptyIterablesOutOfOrderGivesMergedIterableInOrder() {
-    assertThat(mergeSorted(of(of("b", "d"), of("a", "c", "e"))), contains("a", "b", "c", "d", "e"));
+    assertThat(mergeSorted(Arrays.asList(Arrays.asList("b", "d"), Arrays.asList("a", "c", "e"))), contains("a", "b", "c", "d", "e"));
   }
 
   @Test public void mergingManyNonEmptyIterablesOutOfOrderGivesMergedIterableInOrder() {
-    assertThat(mergeSorted(of(of("b", "d"), of("f", "x"), of("c", "e"), of("g", "h"), of("a", "z"))),
+    assertThat(mergeSorted(Arrays.asList(Arrays.asList("b", "d"), Arrays.asList("f", "x"), Arrays.asList("c", "e"), Arrays.asList("g", "h"), Arrays.asList("a", "z"))),
       contains("a", "b", "c", "d", "e", "f", "g", "h", "x", "z"));
   }
 
   @Test public void mergedToString() {
-    assertThat(mergeSorted(of(of("b", "d"), of("a", "c", "e"))).toString(), is("[a, b, c, d, e]"));
+    assertThat(mergeSorted(Arrays.asList(Arrays.asList("b", "d"), Arrays.asList("a", "c", "e"))).toString(), is("[a, b, c, d, e]"));
   }
 }
