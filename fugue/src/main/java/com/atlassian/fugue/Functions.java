@@ -455,6 +455,8 @@ public class Functions {
    * @param <R> the result type
    * @param supplier called for all inputs
    * @return the function
+   * 
+   * @since 2.2
    */
   static <D, R> Function<D, R> fromSupplier(final Supplier<R> supplier) {
     return new FromSupplier<>(supplier);
