@@ -397,7 +397,6 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
       return true;
     }
 
-    // todo is this broken err is never used?
     @Override public A getOrError(final Supplier<String> err) {
       return get();
     }

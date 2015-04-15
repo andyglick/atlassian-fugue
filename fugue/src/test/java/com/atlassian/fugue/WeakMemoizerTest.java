@@ -15,24 +15,21 @@ import static org.junit.Assert.assertSame;
 
 public class WeakMemoizerTest {
 
-  static Function<Integer, String> lock() {
-    return Functions.fromSupplier(() -> "test");
+  static Function<Integer, String> supplier() {
+    return Functions.fromSupplier(() -> new String("test"));
   }
 
   @Test public void callingTwiceReturnsSame() throws Exception {
-    final WeakMemoizer<Integer, String> memoizer = WeakMemoizer.weakMemoizer(lock());
+    final WeakMemoizer<Integer, String> memoizer = WeakMemoizer.weakMemoizer(supplier());
     assertSame(memoizer.apply(1), memoizer.apply(1));
   }
 
-  // TODO test fails due to the refrences being the same
-  // todo-alex JDK8 compatibility
-  @Ignore @Test public void callingDifferentMemoizersReturnsDifferent() throws Exception {
-    assertNotSame(WeakMemoizer.weakMemoizer(lock()).apply(1), WeakMemoizer.weakMemoizer(lock()).apply(1));
+  @Test public void callingDifferentMemoizersReturnsDifferent() throws Exception {
+    assertNotSame(WeakMemoizer.weakMemoizer(supplier()).apply(1), WeakMemoizer.weakMemoizer(supplier()).apply(1));
   }
 
   @Test public void lockReferenceNotNull() throws Exception {
-    final MappedReference<String, String> ref = new MappedReference<>("test", "value",
-      new ReferenceQueue<>());
+    final MappedReference<String, String> ref = new MappedReference<>("test", "value", new ReferenceQueue<>());
     assertNotNull(ref.getDescriptor());
     assertNotNull(ref.get());
   }
@@ -46,7 +43,7 @@ public class WeakMemoizerTest {
   }
 
   @Test public void many() throws Exception {
-    final WeakMemoizer<Integer, String> memoizer = WeakMemoizer.weakMemoizer(lock());
+    final WeakMemoizer<Integer, String> memoizer = WeakMemoizer.weakMemoizer(supplier());
 
     final int size = 10000;
     for (int i = 0; i < 10; i++) {
@@ -57,10 +54,8 @@ public class WeakMemoizerTest {
     }
   }
 
-  // TODO test fails to lose reference
-  // todo-alex JDK8 compatibility
-  @Ignore @Test public void losesReference() throws Exception {
-    final WeakMemoizer<Integer, String> memoizer = WeakMemoizer.weakMemoizer(lock());
+  @Test public void losesReference() throws Exception {
+    final WeakMemoizer<Integer, String> memoizer = WeakMemoizer.weakMemoizer(supplier());
 
     final WeakReference<String> one = new WeakReference<>(memoizer.apply(1));
     for (int i = 0; i < 10; i++) {

@@ -29,7 +29,9 @@ import java.util.function.Supplier;
 
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.some;
+import static com.atlassian.fugue.Pair.leftValue;
 import static com.atlassian.fugue.Pair.pair;
+import static com.atlassian.fugue.Pair.rightValue;
 import static com.atlassian.fugue.Suppliers.ofInstance;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableCollection;
@@ -90,8 +92,7 @@ public class Iterables {
    * @return an Iterable across the underlying elements
    * @since 2.3
    */
-  @SafeVarargs
-  public static <A> Iterable<A> iterable(A... as) {
+  @SafeVarargs public static <A> Iterable<A> iterable(A... as) {
     return unmodifiableCollection(asList(as));
   }
 
@@ -162,7 +163,6 @@ public class Iterables {
    */
   public static <A, B> Iterable<B> flatMap(final Iterable<A> collection,
     final Function<? super A, ? extends Iterable<? extends B>> f) {
-    Function<? super A, ? extends Iterable<? extends B>> g = f::apply;
     return flatten(Iterables.transform(collection, f));
   }
 
@@ -178,7 +178,7 @@ public class Iterables {
    * @since 1.1
    */
   public static <A, B> Iterable<B> revMap(final Iterable<? extends Function<A, B>> fs, final A arg) {
-    return Iterables.transform(fs, Functions.<A, B>apply(arg)::apply);
+    return Iterables.transform(fs, Functions.<A, B> apply(arg)::apply);
   }
 
   /**
@@ -237,7 +237,7 @@ public class Iterables {
    * @since 1.1
    */
   public static <T> Iterable<T> take(final int n, final Iterable<T> xs) {
-    if(n < 0){
+    if (n < 0) {
       throw new IllegalArgumentException("Cannot take a negative number of elements");
     }
     if (xs instanceof List<?>) {
@@ -257,13 +257,13 @@ public class Iterables {
    * @since 1.1
    */
   public static <T> Iterable<T> drop(final int n, final Iterable<T> xs) {
-    if(n < 0){
+    if (n < 0) {
       throw new IllegalArgumentException("Cannot drop a negative number of elements");
     }
     if (xs instanceof List<?>) {
       final List<T> list = (List<T>) xs;
       if (n > (list.size() - 1)) {
-        return Collections.nCopies(0,(T)null);
+        return Collections.nCopies(0, (T) null);
       }
       return ((List<T>) xs).subList(n, list.size());
     }
@@ -329,13 +329,8 @@ public class Iterables {
    * as the input iterable.
    * @since 2.2
    */
-  // TODO java8 type inference seems to be losing it's mind on the second parameter
   public static <A, B> Pair<Iterable<A>, Iterable<B>> unzip(Iterable<Pair<A, B>> pairs) {
-    Function<Pair<A, ?>, A> leftFunction = Pair.<A>leftValue()::apply;
-    Function<Pair<?, B>, B> rightFunction = Pair.<B>rightValue()::apply;
-    Iterable<A> lefts = Iterables.transform(pairs, leftFunction);
-    Iterable<B> rights = Iterables.transform(pairs, rightFunction);
-    return pair(lefts, rights);
+    return pair(transform(pairs, leftValue()), transform(pairs, rightValue()));
   }
 
   /**
@@ -363,7 +358,7 @@ public class Iterables {
    * @since 1.2
    */
   public static Iterable<Integer> rangeUntil(final int start, final int end, final int step) {
-    if(step == 0){
+    if (step == 0) {
       throw new IllegalArgumentException("Step must not be zero");
     }
     return rangeTo(start, end - (Math.abs(step) / step), step);
@@ -394,29 +389,29 @@ public class Iterables {
    * @since 1.2
    */
   public static Iterable<Integer> rangeTo(final int start, final int end, final int step) {
-    if(step == 0){
+    if (step == 0) {
       throw new IllegalArgumentException("Step must not be zero");
     }
     if (step > 0) {
-      if(start > end){
-        throw new IllegalArgumentException(String.format("Start %s must not be greater than end %s with step %s", start, end, step));
+      if (start > end) {
+        throw new IllegalArgumentException(String.format("Start %s must not be greater than end %s with step %s",
+          start, end, step));
       }
     } else {
-      if(start < end){
-        throw new IllegalArgumentException(String.format("Start %s must not be less than end %s with step %s", start, end, step));
+      if (start < end) {
+        throw new IllegalArgumentException(String.format("Start %s must not be less than end %s with step %s", start,
+          end, step));
       }
     }
 
     return () -> new UnmodifiableIterator<Integer>() {
       private int i = start;
 
-      @Override
-      public boolean hasNext() {
+      @Override public boolean hasNext() {
         return step > 0 ? i <= end : i >= end;
       }
 
-      @Override
-      public Integer next() {
+      @Override public Integer next() {
         try {
           return i;
         } finally {
@@ -434,10 +429,9 @@ public class Iterables {
     @Override public final String toString() {
       Iterator<A> it = this.iterator();
       StringBuilder buffer = new StringBuilder().append("[");
-      while (it.hasNext())
-      {
+      while (it.hasNext()) {
         buffer.append(Objects.requireNonNull(it.next()).toString());
-        if(it.hasNext()){
+        if (it.hasNext()) {
           buffer.append(", ");
         }
       }
@@ -518,7 +512,6 @@ public class Iterables {
     }
   }
 
-
   /**
    * Iterable that combines two iterables using a combiner function.
    */
@@ -573,7 +566,8 @@ public class Iterables {
    *
    * @param <A> the type of the elements.
    * @param as the source iterable.
-   * @param a the supplier of elements to intersperse between the source elements.
+   * @param a the supplier of elements to intersperse between the source
+   * elements.
    * @return a new Iterable that intersperses the element between the source.
    * @since 2.3
    */
@@ -610,13 +604,12 @@ public class Iterables {
   }
 
   static <A> int size(Iterable<A> as) {
-    if( as instanceof Collection){
-      return ((Collection) as).size();
-    }
-    else {
+    if (as instanceof Collection) {
+      return ((Collection<?>) as).size();
+    } else {
       Iterator<A> iterator = as.iterator();
       int count = 0;
-      while(iterator.hasNext()){
+      while (iterator.hasNext()) {
         iterator.next();
         count++;
       }
@@ -624,16 +617,15 @@ public class Iterables {
     }
   }
 
-  public static <A,B> Iterable<B> transform(final Iterable<A> as, final Function<? super A, ? extends B> f){
+  public static <A, B> Iterable<B> transform(final Iterable<A> as, final Function<? super A, ? extends B> f) {
     return new Transform<>(as, f);
   }
 
-  static final class Transform<A, B> implements Iterable<B>{
+  static final class Transform<A, B> implements Iterable<B> {
     private final Iterable<? extends A> as;
     private final Function<? super A, ? extends B> f;
 
-    Transform(Iterable<? extends A> as, Function<? super A, ? extends B> f)
-    {
+    Transform(Iterable<? extends A> as, Function<? super A, ? extends B> f) {
       this.as = as;
       this.f = f;
     }
@@ -652,16 +644,15 @@ public class Iterables {
     }
   }
 
-  public static <A> Iterable<A> filter(final Iterable<A> as, final Predicate<? super A> p){
+  public static <A> Iterable<A> filter(final Iterable<A> as, final Predicate<? super A> p) {
     return new Filter<>(as, p);
   }
 
-  static final class Filter<A> implements Iterable<A>{
+  static final class Filter<A> implements Iterable<A> {
     private final Iterable<? extends A> as;
     private final Predicate<? super A> p;
 
-    Filter(Iterable<? extends A> as, Predicate<? super A> p)
-    {
+    Filter(Iterable<? extends A> as, Predicate<? super A> p) {
       this.as = as;
       this.p = p;
     }
@@ -674,9 +665,9 @@ public class Iterables {
           if (!it.hasNext()) {
             return endOfData();
           }
-          while(it.hasNext()){
+          while (it.hasNext()) {
             A a = it.next();
-            if(p.test(a)){
+            if (p.test(a)) {
               return a;
             }
           }
@@ -686,15 +677,14 @@ public class Iterables {
     }
   }
 
-
-  public static <A> Iterable<A> flatten(Iterable<? extends Iterable<? extends A>> ias){
+  public static <A> Iterable<A> flatten(Iterable<? extends Iterable<? extends A>> ias) {
     return new Flatten<>(ias);
   }
 
-  static final class Flatten<A> implements Iterable<A>{
+  static final class Flatten<A> implements Iterable<A> {
     private final Iterable<? extends Iterable<? extends A>> ias;
 
-    public Flatten(Iterable<? extends Iterable<? extends A>> ias){
+    public Flatten(Iterable<? extends Iterable<? extends A>> ias) {
       this.ias = ias;
     }
 
@@ -705,10 +695,10 @@ public class Iterables {
 
         @Override protected A computeNext() {
           boolean currentHasNext;
-          while(!(currentHasNext = Objects.requireNonNull(currentIterator).hasNext()) && i.hasNext()){
+          while (!(currentHasNext = Objects.requireNonNull(currentIterator).hasNext()) && i.hasNext()) {
             currentIterator = i.next().iterator();
           }
-          if(!currentHasNext){
+          if (!currentHasNext) {
             return endOfData();
           }
           return currentIterator.next();
@@ -744,10 +734,8 @@ public class Iterables {
     return new MergeSortedIterable<>(xss, ordering);
   }
 
-  public static <T> boolean addAll(
-      Collection<T> addTo, Iterable<? extends T> elementsToAdd) {
+  public static <T> boolean addAll(Collection<T> addTo, Iterable<? extends T> elementsToAdd) {
     if (elementsToAdd instanceof Collection) {
-      @SuppressWarnings("unchecked")
       Collection<? extends T> c = (Collection<? extends T>) elementsToAdd;
       return addTo.addAll(c);
     }
@@ -783,7 +771,6 @@ public class Iterables {
         this.xss = new TreeSet<>(comparator);
         addAll(this.xss, transform(filter(xss, Iterables.isEmpty().negate()), peekingIterator()));
       }
-
 
       @Override protected A computeNext() {
         final Option<PeekingIterator<A>> currFirstOption = first(xss);
