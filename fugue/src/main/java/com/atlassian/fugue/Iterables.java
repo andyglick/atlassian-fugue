@@ -27,6 +27,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static com.atlassian.fugue.Iterators.peekingIterator;
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.some;
 import static com.atlassian.fugue.Pair.leftValue;
@@ -103,13 +104,13 @@ public class Iterables {
    *
    * @param <T> the type
    * @param elements the iterable to search for a matching element
-   * @param predicate the predicate to use to determine if an element is
+   * @param p the predicate to use to determine if an element is
    * eligible to be returned
    * @return the first item in elements that matches predicate
    * @since 1.0
    */
-  public static <T> Option<T> findFirst(final Iterable<? extends T> elements, final Predicate<? super T> predicate) {
-    for (final T t : Iterables.filter(elements, predicate::test)) {
+  public static <T> Option<T> findFirst(final Iterable<? extends T> elements, final Predicate<? super T> p) {
+    for (final T t : Iterables.filter(elements, p)) {
       return some(t);
     }
     return none();
@@ -178,7 +179,7 @@ public class Iterables {
    * @since 1.1
    */
   public static <A, B> Iterable<B> revMap(final Iterable<? extends Function<A, B>> fs, final A arg) {
-    return Iterables.transform(fs, Functions.<A, B> apply(arg)::apply);
+    return Iterables.transform(fs, Functions.<A, B> apply(arg));
   }
 
   /**
@@ -219,12 +220,12 @@ public class Iterables {
    *
    * @param <A> the type
    * @param iterable to be filtered
-   * @param predicate to filter each element
+   * @param pred to filter each element
    * @return a pair where the left matches the predicate, and the right does
    * not.
    */
-  public static <A> Pair<Iterable<A>, Iterable<A>> partition(Iterable<A> iterable, Predicate<? super A> predicate) {
-    return pair(Iterables.filter(iterable, predicate::test), Iterables.filter(iterable, predicate.negate()::test));
+  public static <A> Pair<Iterable<A>, Iterable<A>> partition(Iterable<A> iterable, Predicate<? super A> p) {
+    return pair(filter(iterable, p), filter(iterable, p.negate()));
   }
 
   /**
@@ -285,7 +286,7 @@ public class Iterables {
    * @since 1.2
    */
   public static <A, B> Iterable<Pair<A, B>> zip(final Iterable<A> as, final Iterable<B> bs) {
-    return zipWith(Pair.<A, B> pairs()::apply).apply(as, bs);
+    return zipWith(Pair.<A, B> pairs()).apply(as, bs);
   }
 
   /**
@@ -420,10 +421,6 @@ public class Iterables {
       }
     };
   }
-
-  //
-  // inner classes
-  //
 
   static abstract class IterableToString<A> implements Iterable<A> {
     @Override public final String toString() {
@@ -742,12 +739,8 @@ public class Iterables {
     return Iterators.addAll(addTo, requireNonNull(elementsToAdd).iterator());
   }
 
-  //
-  // inner classes
-  //
-
   /**
-   * Merges two sorted Iterables into one, sorted iterable.
+   * Merges multiple sorted Iterables into one, sorted iterable.
    */
   static final class MergeSortedIterable<A> extends IterableToString<A> {
     private final Iterable<? extends Iterable<A>> xss;
@@ -766,10 +759,8 @@ public class Iterables {
       private final TreeSet<PeekingIterator<A>> xss;
 
       private Iter(final Iterable<? extends Iterable<A>> xss, final Comparator<A> c) {
-        Comparator<? super PeekingIterator<A>> comparator = peekingIteratorComparator(c);
-        Objects.requireNonNull(comparator);
-        this.xss = new TreeSet<>(comparator);
-        addAll(this.xss, transform(filter(xss, Iterables.isEmpty().negate()), peekingIterator()));
+        this.xss = new TreeSet<>(peekingIteratorComparator(c));
+        addAll(this.xss, transform(filter(xss, isEmpty().negate()), i -> peekingIterator(i.iterator())));
       }
 
       @Override protected A computeNext() {
@@ -791,19 +782,8 @@ public class Iterables {
         return next;
       }
 
-      private Function<? super Iterable<A>, ? extends PeekingIterator<A>> peekingIterator() {
-        return i -> Iterators.peekingIterator(i.iterator());
-      }
-
       private Comparator<? super PeekingIterator<A>> peekingIteratorComparator(final Comparator<A> comparator) {
-        return new Comparator<PeekingIterator<A>>() {
-          public int compare(final PeekingIterator<A> lhs, final PeekingIterator<A> rhs) {
-            if (lhs == rhs) {
-              return 0;
-            }
-            return comparator.compare(lhs.peek(), rhs.peek());
-          }
-        };
+        return (lhs, rhs) -> (lhs == rhs) ? 0 : comparator.compare(lhs.peek(), rhs.peek());
       }
     }
   }

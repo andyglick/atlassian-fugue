@@ -43,13 +43,13 @@ class Iterators {
   /**
    * Implementation of PeekingIterator that avoids peeking unless necessary.
    */
-  private static class PeekingImpl<E> implements PeekingIterator<E> {
+  private static class PeekingImpl<A> implements PeekingIterator<A> {
 
-    private final java.util.Iterator<? extends E> iterator;
+    private final java.util.Iterator<? extends A> iterator;
     private boolean hasPeeked;
-    private E peekedElement;
+    private A peekedElement;
 
-    public PeekingImpl(java.util.Iterator<? extends E> iterator) {
+    public PeekingImpl(java.util.Iterator<? extends A> iterator) {
       this.iterator = requireNonNull(iterator);
     }
 
@@ -59,11 +59,11 @@ class Iterators {
     }
 
     @Override
-    public E next() {
+    public A next() {
       if (!hasPeeked) {
         return iterator.next();
       }
-      E result = peekedElement;
+      A result = peekedElement;
       hasPeeked = false;
       peekedElement = null;
       return result;
@@ -78,7 +78,7 @@ class Iterators {
     }
 
     @Override
-    public E peek() {
+    public A peek() {
       if (!hasPeeked) {
         peekedElement = iterator.next();
         hasPeeked = true;
