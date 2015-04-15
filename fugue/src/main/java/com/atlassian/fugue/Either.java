@@ -26,7 +26,6 @@ import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.some;
 import static java.util.Objects.requireNonNull;
 
-
 /**
  * A class that acts as a container for a value of one of two types. An Either
  * will be either {@link Either.Left Left} or {@link Either.Right Right}.

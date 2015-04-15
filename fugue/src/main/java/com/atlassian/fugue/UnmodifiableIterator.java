@@ -23,9 +23,7 @@ import java.util.Iterator;
 abstract class UnmodifiableIterator<E> implements Iterator<E> {
   protected UnmodifiableIterator() {}
 
-  @Deprecated
-  @Override
-  public final void remove() {
+  @Deprecated @Override public final void remove() {
     throw new UnsupportedOperationException();
   }
 }

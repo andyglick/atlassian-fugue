@@ -86,8 +86,7 @@ public class IterablesTakeTest {
     ints.next();
   }
 
-  @SafeVarargs
-  static <A> Iterable<A> asIterable(final A... as) {
+  @SafeVarargs static <A> Iterable<A> asIterable(final A... as) {
     return transform(asList(as), Functions.<A> identity()::apply);
   }
 }

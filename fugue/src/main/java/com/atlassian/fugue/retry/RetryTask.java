@@ -64,8 +64,8 @@ public class RetryTask implements Runnable {
     requireNonNull(task, "task");
 
     retrySupplier = new RetrySupplier<>(() -> {
-        task.run();
-        return null;
+      task.run();
+      return null;
     }, tries, handler, beforeRetry);
   }
 

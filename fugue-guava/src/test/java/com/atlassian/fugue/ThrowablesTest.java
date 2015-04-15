@@ -26,7 +26,6 @@ import java.util.function.Function;
 
 import static org.mockito.Mockito.verifyZeroInteractions;
 
-
 @RunWith(MockitoJUnitRunner.class) public final class ThrowablesTest {
   @Mock private Function<Throwable, RuntimeException> function;
 
@@ -44,7 +43,7 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 
   @Test public void testPropagateWithFunctionForNonRuntimeException() throws Exception {
     final RuntimeException runtime = new RuntimeException();
-    Mockito.when(function.apply(Mockito.<Throwable>any())).thenReturn(runtime);
+    Mockito.when(function.apply(Mockito.<Throwable> any())).thenReturn(runtime);
 
     final Throwable original = new Exception();
     try {

@@ -30,7 +30,7 @@ public class BeforeRetryLinearBackoffTask implements Runnable {
    * @param backoffMillis the time to wait whenever run is executed
    */
   public BeforeRetryLinearBackoffTask(long backoffMillis) {
-    if(backoffMillis <= 0){
+    if (backoffMillis <= 0) {
       throw new IllegalArgumentException("Backoff time must not be negative.");
     }
     this.backoff = backoffMillis;

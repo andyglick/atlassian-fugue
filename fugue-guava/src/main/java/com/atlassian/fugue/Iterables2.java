@@ -8,7 +8,6 @@ import java.util.NoSuchElementException;
 //TODO name this something different?
 public class Iterables2 {
 
-
   //
   // inner classes
   //

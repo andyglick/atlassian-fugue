@@ -21,7 +21,6 @@ import java.util.function.Function;
 
 import static java.util.Objects.requireNonNull;
 
-
 /**
  * Represents a pair of objects.
  * 

@@ -18,7 +18,6 @@ package com.atlassian.fugue;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-
 /**
  * Provide utility functions for the class of functions that supply a return
  * value when invoked.
@@ -105,8 +104,7 @@ public class Suppliers {
    * @param <B> the result type
    * @param f the function
    * @param a the value
-   * @return a {@link Supplier} that always calls
-   * {@link Function#apply(Object)}
+   * @return a {@link Supplier} that always calls {@link Function#apply(Object)}
    * 
    * @since 2.2
    */

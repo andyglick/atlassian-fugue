@@ -18,4 +18,4 @@ package com.atlassian.fugue;
 
 import java.util.Iterator;
 
-interface PeekingIterator<A> extends Peek<A>, Iterator<A>{}
+interface PeekingIterator<A> extends Peek<A>, Iterator<A> {}

@@ -146,8 +146,7 @@ public class OptionSomeTest {
     assertThat(some.getOrThrow(MyException::new), is(ORIGINAL_VALUE));
   }
 
-  @Test
-  public void map() {
+  @Test public void map() {
     assertThat(some.map(i -> i + 1).get(), is(2));
   }
 

@@ -31,8 +31,7 @@ import static java.util.Objects.requireNonNull;
  * <p>
  * If it is a value it may be tested with the {@link #isDefined()} method, but
  * more often it is useful to either return the value or an alternative if
- * {@link #getOrElse(Object) not set}, or
- * {@link #map(Function) map} or
+ * {@link #getOrElse(Object) not set}, or {@link #map(Function) map} or
  * {@link #filter(Predicate) filter}.
  * <p>
  * Mapping a <em>none</em> of type A to type B will simply return a none of type
@@ -48,11 +47,8 @@ import static java.util.Objects.requireNonNull;
  * href=http://en.wikipedia.org/wiki/Functor>Functor composition law</a>. Note
  * however, that this should be rare as functions that return <code>null</code>
  * is a bad idea anyway. <b>Note</b> that if a function returns null to indicate
- * optionality, it can be
- * {@link Options#lift(Function) lifted}
- * into a partial function and then
- * {@link #flatMap(Function) flat mapped}
- * instead.
+ * optionality, it can be {@link Options#lift(Function) lifted} into a partial
+ * function and then {@link #flatMap(Function) flat mapped} instead.
  * <p>
  * Note: while this class is public and abstract it does not expose a
  * constructor as only the concrete internal subclasses are designed to be used.
@@ -117,8 +113,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    * Function for wrapping values in a Some or None.
    * 
    * @param <A> the contained type
-   * @return a {@link Function} to wrap
-   * values
+   * @return a {@link Function} to wrap values
    * 
    * @since 1.1
    */
@@ -143,8 +138,9 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    * @return a {@link Supplier} of None instances
    */
   public static <A> Supplier<Option<A>> noneSupplier() {
-    return ofInstance(Option.<A>none());
+    return ofInstance(Option.<A> none());
   }
+
   //
   // ctors
   //
@@ -223,7 +219,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   }
 
   @Override public final Iterator<A> iterator() {
-    return fold(ofInstance(Functions.<A>emptyIterator()), Functions.<A> singletonIterator());
+    return fold(ofInstance(Functions.<A> emptyIterator()), Functions.<A> singletonIterator());
   }
 
   //

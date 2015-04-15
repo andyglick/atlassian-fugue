@@ -70,7 +70,7 @@ public class RetrySupplier<T> implements Supplier<T> {
    */
   public RetrySupplier(Supplier<T> supplier, int tries, ExceptionHandler handler, Runnable beforeRetry) {
     requireNonNull(supplier);
-    if(tries <= 0){
+    if (tries <= 0) {
       throw new IllegalArgumentException("Tries must be strictly positive");
     }
     requireNonNull(handler);

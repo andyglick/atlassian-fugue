@@ -57,9 +57,7 @@ public class OptionStaticsTest {
     getOrThrow(UtilityFunctions.<Options> defaultCtor().apply(Options.class));
   }
 
-
-  @Test
-  public void identity() {
+  @Test public void identity() {
     assertThat(none(), is(sameInstance(none())));
   }
 
@@ -87,8 +85,6 @@ public class OptionStaticsTest {
     assertThat(it.next().get(), is(4));
     assertThat(it.hasNext(), is(false));
   }
-
-
 
   @Test public void flattenFindsTwo() {
     final Iterable<Integer> flattened = flatten(twoOptions());
@@ -191,11 +187,10 @@ public class OptionStaticsTest {
     Predicate<Option<Integer>> lifted = Options.lift(Predicate.isEqual(3));
     assertThat(lifted.test(some(3)), is(true));
     assertThat(lifted.test(some(2)), is(false));
-    assertThat(lifted.test(Option.<Integer>none()), is(false));
+    assertThat(lifted.test(Option.<Integer> none()), is(false));
   }
 
-  @Test
-  public void filterNones() {
+  @Test public void filterNones() {
     final List<Option<Integer>> list = Arrays.asList(some(1), none(Integer.class), some(2));
     MatcherAssert.assertThat(size(filterNone(list)), is(equalTo(2)));
   }
@@ -205,7 +200,7 @@ public class OptionStaticsTest {
   }
 
   @Test public void noneNotDefined() {
-    //throw new RuntimeException();
+    // throw new RuntimeException();
     MatcherAssert.assertThat(filter(Arrays.asList(none(int.class)), Maybe::isDefined).iterator().hasNext(), is(false));
   }
 

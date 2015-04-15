@@ -104,8 +104,8 @@ public class Iterables {
    *
    * @param <T> the type
    * @param elements the iterable to search for a matching element
-   * @param p the predicate to use to determine if an element is
-   * eligible to be returned
+   * @param p the predicate to use to determine if an element is eligible to be
+   * returned
    * @return the first item in elements that matches predicate
    * @since 1.0
    */

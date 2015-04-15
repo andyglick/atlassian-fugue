@@ -13,13 +13,13 @@ import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
-
 public class PairsTest {
   @Test public void zipped() {
     final Iterable<Integer> ints = Arrays.asList(1, 2, 3);
     final Iterable<String> strings = Arrays.asList("1", "2", "3", "4");
     @SuppressWarnings("unchecked")
-    final Matcher<Iterable<? extends Pair<Integer, String>>> contains = contains(pair(1, "1"), pair(2, "2"), pair(3, "3"));
+    final Matcher<Iterable<? extends Pair<Integer, String>>> contains = contains(pair(1, "1"), pair(2, "2"),
+      pair(3, "3"));
     assertThat(zip(ints, strings), contains);
   }
 

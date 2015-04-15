@@ -27,9 +27,7 @@ class Iterators {
     return wasModified;
   }
 
-
-  static <T> PeekingIterator<T> peekingIterator(
-      java.util.Iterator<? extends T> iterator) {
+  static <T> PeekingIterator<T> peekingIterator(java.util.Iterator<? extends T> iterator) {
     if (iterator instanceof PeekingImpl) {
       // Safe to cast <? extends T> to <T> because PeekingImpl only uses T
       // covariantly (and cannot be subclassed to add non-covariant uses).
@@ -53,13 +51,11 @@ class Iterators {
       this.iterator = requireNonNull(iterator);
     }
 
-    @Override
-    public boolean hasNext() {
+    @Override public boolean hasNext() {
       return hasPeeked || iterator.hasNext();
     }
 
-    @Override
-    public A next() {
+    @Override public A next() {
       if (!hasPeeked) {
         return iterator.next();
       }
@@ -69,16 +65,14 @@ class Iterators {
       return result;
     }
 
-    @Override
-    public void remove() {
-      if(hasPeeked){
+    @Override public void remove() {
+      if (hasPeeked) {
         throw new IllegalStateException("Can't remove after you've peeked at next");
       }
       iterator.remove();
     }
 
-    @Override
-    public A peek() {
+    @Override public A peek() {
       if (!hasPeeked) {
         peekedElement = iterator.next();
         hasPeeked = true;

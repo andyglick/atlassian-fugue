@@ -32,7 +32,7 @@ public class BeforeRetryExponentialBackoffTask implements Runnable {
    * parameter must be above zero.
    */
   public BeforeRetryExponentialBackoffTask(long backoffMillis) {
-    if(backoffMillis <= 0){
+    if (backoffMillis <= 0) {
       throw new IllegalArgumentException("Backoff time must not be negative.");
     }
     this.backoff = backoffMillis;

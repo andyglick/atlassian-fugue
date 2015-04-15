@@ -210,11 +210,13 @@ public class EitherLeftProjectionTest {
     private static final long serialVersionUID = -1056362494708225175L;
   }
 
-//  @Test public void getOrThrowLeft() throws MyException {
-//    //TODO compilation error! assertThat(l.left().getOrThrow(MyException::new), is("heyaa!"));
-//  }
-//
-//  @Test(expected = MyException.class) public void getOrThrowRight() throws MyException {
-//  //TODO compilation error! r.left().getOrThrow(MyException::new);
-//  }
+  // @Test public void getOrThrowLeft() throws MyException {
+  // //TODO compilation error! assertThat(l.left().getOrThrow(MyException::new),
+  // is("heyaa!"));
+  // }
+  //
+  // @Test(expected = MyException.class) public void getOrThrowRight() throws
+  // MyException {
+  // //TODO compilation error! r.left().getOrThrow(MyException::new);
+  // }
 }

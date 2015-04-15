@@ -176,8 +176,7 @@ public class IterablesTest {
   }
 
   @Test public void revMap() {
-    Iterable<Function<Integer, Integer>> fs = asList(
-        from -> from + 1, from -> from + 2, from -> from * from);
+    Iterable<Function<Integer, Integer>> fs = asList(from -> from + 1, from -> from + 2, from -> from * from);
     assertThat(Iterables.revMap(fs, 3), contains(4, 5, 9));
   }
 

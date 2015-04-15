@@ -50,7 +50,7 @@ public class OptionVarianceTest {
 
   @Test public void orElse() {
     Option<Parent> some = some(new Parent());
-    Supplier<Option<Child>> f =  () -> some(new Child());
+    Supplier<Option<Child>> f = () -> some(new Child());
     Option<Parent> mapped = some.orElse(f);
     assertThat(mapped.get(), notNullValue());
   }

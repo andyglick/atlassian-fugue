@@ -29,13 +29,14 @@ public class IterablesIntersperseTest {
   @Test public void interspersed() {
     assertThat(intersperse(asList("a", "b", "c"), "-"), contains("a", "-", "b", "-", "c"));
   }
-  
+
   @Test public void interspersedSupplier() {
     Supplier<Integer> count = new Supplier<Integer>() {
       int count = 0;
+
       @Override public Integer get() {
         try {
-        return count;
+          return count;
         } finally {
           count += 1;
         }

@@ -25,7 +25,6 @@ import java.util.function.Function;
 
 import org.junit.Test;
 
-
 public class IterableVarianceTest {
 
   @Test public void flatMap() {
@@ -40,7 +39,7 @@ public class IterableVarianceTest {
   // replaces ImmutableList.copyOf
   private List<String> copyOf(IterablesTest.CharSplitter strings) {
     List<String> copy = new ArrayList<>();
-    for( String s : strings){
+    for (String s : strings) {
       copy.add(s);
     }
     return copy;

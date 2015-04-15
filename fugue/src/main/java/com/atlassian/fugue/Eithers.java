@@ -229,7 +229,6 @@ public class Eithers {
     return Options.flatten(transform(it, Eithers.<L, R> rightMapper()::apply));
   }
 
-
   /**
    * Collect the right values if there are only rights, otherwise return the
    * first left encountered.
@@ -251,8 +250,8 @@ public class Eithers {
   }
 
   /**
-   * Collect the left values if there are only lefts, otherwise return the
-   * first right encountered.
+   * Collect the left values if there are only lefts, otherwise return the first
+   * right encountered.
    *
    * @param <L> the LHS type
    * @param <R> the RHS type
@@ -271,12 +270,14 @@ public class Eithers {
   }
 
   // TODO rethink if this is the right pattern to get collection working
-  static <A> Iterable<A> collect(Iterator<A> it) { return new Collect<>(it); }
+  static <A> Iterable<A> collect(Iterator<A> it) {
+    return new Collect<>(it);
+  }
 
-  static final class Collect<A> implements Iterable<A>{
+  static final class Collect<A> implements Iterable<A> {
     private final Iterator<? extends A> as;
 
-    public Collect(Iterator<? extends A> as){
+    public Collect(Iterator<? extends A> as) {
       this.as = as;
     }
 
@@ -284,7 +285,7 @@ public class Eithers {
       return new AbstractIterator<A>() {
 
         @Override protected A computeNext() {
-          if(!as.hasNext()){
+          if (!as.hasNext()) {
             return endOfData();
           }
           return as.next();

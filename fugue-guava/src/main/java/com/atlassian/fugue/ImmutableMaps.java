@@ -71,7 +71,7 @@ public class ImmutableMaps {
    * 
    * @param <K> the key type
    * @param <V> the value type
-   * @param from the iterable we use as the source 
+   * @param from the iterable we use as the source
    * @return the transformed map
    */
   public static <K, V> ImmutableMap<K, V> toMap(Iterable<Map.Entry<K, V>> from) {
@@ -102,16 +102,15 @@ public class ImmutableMaps {
    * @param <T> the input type
    * @param <K> the key type
    * @param <V> the value type
-   * @param from the iterable we use as the source 
+   * @param from the iterable we use as the source
    * @param keyTransformer transform keys
    * @param valueTransformer transform values
    * @return the transformed map
    */
   public static <T, K, V> ImmutableMap<K, V> toMap(Iterable<T> from, final Function<? super T, ? extends K> keyTransformer,
     final Function<? super T, ? extends V> valueTransformer) {
-    return toMap(com.google.common.collect.Iterables.transform(from, entry ->
-        Maps.immutableEntry(keyTransformer.apply(entry), valueTransformer.apply(entry))
-    ));
+    return toMap(com.google.common.collect.Iterables.transform(from,
+      entry -> Maps.immutableEntry(keyTransformer.apply(entry), valueTransformer.apply(entry))));
   }
 
   /**
@@ -124,7 +123,7 @@ public class ImmutableMaps {
    * 
    * @param <K> the key type
    * @param <V> the value type
-   * @param from the iterable we use as the source 
+   * @param from the iterable we use as the source
    * @param keyTransformer transform keys
    * @return the transformed map
    */
@@ -142,7 +141,7 @@ public class ImmutableMaps {
    * 
    * @param <K> the key type
    * @param <V> the value type
-   * @param from the iterable we use as the source 
+   * @param from the iterable we use as the source
    * @param valueTransformer transform values
    * @return the transformed map
    */
@@ -159,10 +158,10 @@ public class ImmutableMaps {
    * {@link IllegalArgumentException} will be thrown.
    * 
    * @param <K1> the input key type
-   * @param <K2> the output key type 
+   * @param <K2> the output key type
    * @param <V1> the input value type
    * @param <V2> the output value type
-   * @param from the map we use as the source 
+   * @param from the map we use as the source
    * @param function transform keys and values
    * @return the transformed map
    */
@@ -178,19 +177,18 @@ public class ImmutableMaps {
    * key for multiple entries, {@link IllegalArgumentException} will be thrown.
    * 
    * @param <K1> the input key type
-   * @param <K2> the output key type 
+   * @param <K2> the output key type
    * @param <V1> the input value type
    * @param <V2> the output value type
-   * @param from the map we use as the source 
+   * @param from the map we use as the source
    * @param keyTransformer transform keys
    * @param valueTransformer transform values
    * @return the transformed map
    */
   public static <K1, K2, V1, V2> ImmutableMap<K2, V2> transform(Map<K1, V1> from, final Function<? super K1, ? extends K2> keyTransformer,
     final Function<? super V1, ? extends V2> valueTransformer) {
-    return toMap(com.google.common.collect.Iterables.transform(from.entrySet(), entry ->
-      Maps.immutableEntry(keyTransformer.apply(entry.getKey()), valueTransformer.apply(entry.getValue()))
-    ));
+    return toMap(com.google.common.collect.Iterables.transform(from.entrySet(),
+      entry -> Maps.immutableEntry(keyTransformer.apply(entry.getKey()), valueTransformer.apply(entry.getValue()))));
   }
 
   /**
@@ -202,9 +200,9 @@ public class ImmutableMaps {
    * keys, {@link IllegalArgumentException} will be thrown.
    * 
    * @param <K1> the input key type
-   * @param <K2> the output key type 
+   * @param <K2> the output key type
    * @param <V> the value type
-   * @param from the map we use as the source 
+   * @param from the map we use as the source
    * @param keyTransformer transform keys
    * @return the transformed map
    */
@@ -222,7 +220,7 @@ public class ImmutableMaps {
    * @param <K> the key type
    * @param <V1> the input value type
    * @param <V2> the output value type
-   * @param from the iterable we use as the source 
+   * @param from the iterable we use as the source
    * @param valueTransformer transform values
    * @return the transformed map
    */
@@ -238,10 +236,10 @@ public class ImmutableMaps {
    * transformed entry contained in the Option will be added to the result map.
    * 
    * @param <K1> the input key type
-   * @param <K2> the output key type 
+   * @param <K2> the output key type
    * @param <V1> the input value type
    * @param <V2> the output value type
-   * @param from the iterable we use as the source 
+   * @param from the iterable we use as the source
    * @param partial transform and select entries
    * @return the transformed map
    */
@@ -259,10 +257,10 @@ public class ImmutableMaps {
    * added to the result map.
    * 
    * @param <K1> the input key type
-   * @param <K2> the output key type 
+   * @param <K2> the output key type
    * @param <V1> the input value type
    * @param <V2> the output value type
-   * @param from the iterable we use as the source 
+   * @param from the iterable we use as the source
    * @param keyPartial transform and collect keys
    * @param valuePartial transform and collect values
    * @return the transformed map
@@ -273,7 +271,7 @@ public class ImmutableMaps {
       @Override public Option<Map.Entry<K2, V2>> apply(Map.Entry<K1, V1> input) {
         Option<K2> ok = keyPartial.apply(input.getKey());
         Option<V2> ov = valuePartial.apply(input.getValue());
-        return Options.lift2(ImmutableMaps.<K2, V2>mapEntry()).apply(ok, ov);
+        return Options.lift2(ImmutableMaps.<K2, V2> mapEntry()).apply(ok, ov);
       }
     });
   }
@@ -287,9 +285,9 @@ public class ImmutableMaps {
    * original value will be added to the result map.
    * 
    * @param <K1> the input key type
-   * @param <K2> the output key type 
+   * @param <K2> the output key type
    * @param <V> the value type
-   * @param from the iterable we use as the source 
+   * @param from the iterable we use as the source
    * @param keyPartial transform and collect keys
    * @return the transformed map
    */
@@ -308,7 +306,7 @@ public class ImmutableMaps {
    * @param <K> the key type
    * @param <V1> the input value type
    * @param <V2> the output value type
-   * @param from the iterable we use as the source 
+   * @param from the iterable we use as the source
    * @param valuePartial transform and collect values
    * @return the transformed map
    */

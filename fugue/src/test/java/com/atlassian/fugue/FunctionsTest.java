@@ -56,41 +56,44 @@ public class FunctionsTest {
   }
 
   @Test public void matches2None() {
-    assertThat(matches(partial(dividableBy(3), square), partial(dividableBy(2), square)).apply(1), is(Option.<Integer> none()));
+    assertThat(matches(partial(dividableBy(3), square), partial(dividableBy(2), square)).apply(1),
+      is(Option.<Integer> none()));
   }
 
   @Test public void matches3Some() {
-    assertThat(matches(partial(dividableBy(4), square), partial(dividableBy(3), square), partial(dividableBy(2), square)).apply(2),
-      is(Option.some(4)));
+    assertThat(
+      matches(partial(dividableBy(4), square), partial(dividableBy(3), square), partial(dividableBy(2), square)).apply(
+        2), is(Option.some(4)));
   }
 
   @Test public void matches3None() {
-    assertThat(matches(partial(dividableBy(4), square), partial(dividableBy(3), square), partial(dividableBy(2), square)).apply(1),
-      is(Option.<Integer> none()));
+    assertThat(
+      matches(partial(dividableBy(4), square), partial(dividableBy(3), square), partial(dividableBy(2), square)).apply(
+        1), is(Option.<Integer> none()));
   }
 
   @Test public void matches4Some() {
     assertThat(
-      matches(partial(dividableBy(5), square), partial(dividableBy(4), square), partial(dividableBy(3), square), partial(dividableBy(2), square))
-        .apply(2), is(Option.some(4)));
+      matches(partial(dividableBy(5), square), partial(dividableBy(4), square), partial(dividableBy(3), square),
+        partial(dividableBy(2), square)).apply(2), is(Option.some(4)));
   }
 
   @Test public void matches4None() {
     assertThat(
-      matches(partial(dividableBy(5), square), partial(dividableBy(4), square), partial(dividableBy(3), square), partial(dividableBy(2), square))
-        .apply(1), is(Option.<Integer> none()));
+      matches(partial(dividableBy(5), square), partial(dividableBy(4), square), partial(dividableBy(3), square),
+        partial(dividableBy(2), square)).apply(1), is(Option.<Integer> none()));
   }
 
   @SuppressWarnings("unchecked") @Test public void matches5Some() {
     assertThat(
-      matches(partial(dividableBy(6), square), partial(dividableBy(5), square), partial(dividableBy(4), square), partial(dividableBy(3), square),
-        partial(dividableBy(2), square)).apply(2), is(Option.some(4)));
+      matches(partial(dividableBy(6), square), partial(dividableBy(5), square), partial(dividableBy(4), square),
+        partial(dividableBy(3), square), partial(dividableBy(2), square)).apply(2), is(Option.some(4)));
   }
 
   @SuppressWarnings("unchecked") @Test public void matches5None() {
     assertThat(
-      matches(partial(dividableBy(6), square), partial(dividableBy(5), square), partial(dividableBy(4), square), partial(dividableBy(3), square),
-        partial(dividableBy(2), square)).apply(1), is(Option.<Integer> none()));
+      matches(partial(dividableBy(6), square), partial(dividableBy(5), square), partial(dividableBy(4), square),
+        partial(dividableBy(3), square), partial(dividableBy(2), square)).apply(1), is(Option.<Integer> none()));
   }
 
   @Test public void toFunction2() {

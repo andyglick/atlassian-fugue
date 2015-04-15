@@ -25,7 +25,6 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-
 public class FunctionsFoldTest {
   @Test public void f2FoldSum() {
     final BiFunction<Integer, Integer, Integer> add = (arg1, arg2) -> arg1 + arg2;

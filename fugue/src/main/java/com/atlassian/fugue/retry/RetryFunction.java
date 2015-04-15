@@ -75,7 +75,7 @@ public class RetryFunction<F, T> implements Function<F, T> {
 
     this.function = requireNonNull(function);
     this.handler = requireNonNull(handler);
-    if(tries < 0){
+    if (tries < 0) {
       throw new IllegalArgumentException("Tries must not be negative");
     }
     this.tries = tries;

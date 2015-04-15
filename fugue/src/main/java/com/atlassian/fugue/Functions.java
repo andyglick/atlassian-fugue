@@ -221,8 +221,7 @@ public class Functions {
   }
 
   /**
-   * Create a PartialFunction from a {@link Predicate} and a
-   * {@link Function}.
+   * Create a PartialFunction from a {@link Predicate} and a {@link Function}.
    * 
    * @param <A> the input type
    * @param <B> the output type
@@ -517,7 +516,6 @@ public class Functions {
     return from -> constant;
   }
 
-
   public static <A> Iterator<A> singletonIterator(final A a) {
     return new Iterator<A>() {
       boolean done = false;
@@ -574,7 +572,7 @@ public class Functions {
    * @since 1.2
    */
   public static <A, B> Function<A, Option<B>> matches(Function<? super A, ? extends Option<? extends B>> f1,
-                                                      Function<? super A, ? extends Option<? extends B>> f2) {
+    Function<? super A, ? extends Option<? extends B>> f2) {
     @SuppressWarnings("unchecked")
     Matcher<A, B> result = matcher(f1, f2);
     return result;
@@ -594,7 +592,7 @@ public class Functions {
    * @since 1.2
    */
   public static <A, B> Function<A, Option<B>> matches(Function<? super A, ? extends Option<? extends B>> f1,
-                                                      Function<? super A, ? extends Option<? extends B>> f2, Function<? super A, ? extends Option<? extends B>> f3) {
+    Function<? super A, ? extends Option<? extends B>> f2, Function<? super A, ? extends Option<? extends B>> f3) {
     @SuppressWarnings("unchecked")
     Matcher<A, B> result = matcher(f1, f2, f3);
     return result;
@@ -615,10 +613,9 @@ public class Functions {
    * @since 1.2
    */
   public static <A, B> Function<A, Option<B>> matches(Function<? super A, ? extends Option<? extends B>> f1,
-                                                      Function<? super A, ? extends Option<? extends B>> f2, Function<? super A, ? extends Option<? extends B>> f3,
-                                                      Function<? super A, ? extends Option<? extends B>> f4) {
-    return new Matcher<>(Arrays.<Function<? super A, ? extends Option<? extends B>>> asList(f1,
-        f2, f3, f4));
+    Function<? super A, ? extends Option<? extends B>> f2, Function<? super A, ? extends Option<? extends B>> f3,
+    Function<? super A, ? extends Option<? extends B>> f4) {
+    return new Matcher<>(Arrays.<Function<? super A, ? extends Option<? extends B>>> asList(f1, f2, f3, f4));
   }
 
   /**
@@ -638,29 +635,31 @@ public class Functions {
    * @since 1.2
    */
   // TODO there has to be a better way to do this with Arrays or some such
-  @SafeVarargs
-  public static <A, B> Function<A, Option<B>> matches(Function<? super A, ? extends Option<? extends B>> f1,
-                                                      Function<? super A, ? extends Option<? extends B>> f2, Function<? super A, ? extends Option<? extends B>> f3,
-                                                      Function<? super A, ? extends Option<? extends B>> f4, Function<? super A, ? extends Option<? extends B>> f5,
-                                                      Function<? super A, ? extends Option<? extends B>>... fs) {
+  @SafeVarargs public static <A, B> Function<A, Option<B>> matches(
+    Function<? super A, ? extends Option<? extends B>> f1, Function<? super A, ? extends Option<? extends B>> f2,
+    Function<? super A, ? extends Option<? extends B>> f3, Function<? super A, ? extends Option<? extends B>> f4,
+    Function<? super A, ? extends Option<? extends B>> f5, Function<? super A, ? extends Option<? extends B>>... fs) {
 
     @SuppressWarnings("unchecked")
     Function<? super A, ? extends Option<? extends B>>[] matchingFunctions = new Function[5 + fs.length];
-    matchingFunctions[0] = f1; matchingFunctions[1] = f2; matchingFunctions[2] = f3; matchingFunctions[3] = f4; matchingFunctions[4] = f5;
+    matchingFunctions[0] = f1;
+    matchingFunctions[1] = f2;
+    matchingFunctions[2] = f3;
+    matchingFunctions[3] = f4;
+    matchingFunctions[4] = f5;
     System.arraycopy(fs, 0, matchingFunctions, 5, fs.length);
 
     return new Matcher<>(Arrays.asList(matchingFunctions));
   }
 
   /* utility copy function */
-  @SafeVarargs
-  private static <A, B> Matcher<A, B> matcher(Function<? super A, ? extends Option<? extends B>>... fs) {
+  @SafeVarargs private static <A, B> Matcher<A, B> matcher(Function<? super A, ? extends Option<? extends B>>... fs) {
     @SuppressWarnings("unchecked")
     Function<? super A, ? extends Option<? extends B>>[] dest = new Function[fs.length];
 
     System.arraycopy(fs, 0, dest, 0, fs.length);
-    for(Function<? super A, ? extends Option<? extends B>> f : fs){
-      if( f == null){
+    for (Function<? super A, ? extends Option<? extends B>> f : fs) {
+      if (f == null) {
         throw new NullPointerException("function value was null");
       }
     }
@@ -674,7 +673,7 @@ public class Functions {
     Matcher(Iterable<Function<? super A, ? extends Option<? extends B>>> fs) {
       this.fs = requireNonNull(fs);
 
-      if(isEmpty().test(fs)){
+      if (isEmpty().test(fs)) {
         throw new IllegalArgumentException("Condition must be true but returned false instead");
       }
     }
