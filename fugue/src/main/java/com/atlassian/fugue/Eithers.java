@@ -278,7 +278,6 @@ public class Eithers {
   static <A> Iterable<A> collect(ArrayList<A> list) {
     return new Collect<>(list);
   }
-  //TODO or just cast the array list?
   static final class Collect<A> implements Iterable<A> {
     private final ArrayList<? extends A> as;
 
