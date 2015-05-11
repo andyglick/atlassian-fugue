@@ -39,7 +39,7 @@
                             com.atlassian.fugue.*;version="${project.version}"
                         </Export-Package>
                         <Import-Package>
-                            com.atlassian.util.concurrent;version="${atlassian-util-concurrent.version}"
+                            com.atlassian.util.concurrent;version="${atlassian-util-concurrent.version}",
                             org.slf4j;version="${slf4j-api.version}"
                         </Import-Package>
                     </instructions>
@@ -65,7 +65,6 @@
                 at runtime -->
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.atlassian.util.concurrent</groupId>
