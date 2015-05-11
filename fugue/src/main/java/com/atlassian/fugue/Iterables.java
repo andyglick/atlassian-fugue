@@ -614,6 +614,16 @@ public class Iterables {
     }
   }
 
+  /**
+   * Transform and iterable by applying a function to each of it's values
+   *
+   * @param as the source iterable
+   * @param f function to apply to all the elements of as
+   * @param <A> original iterable type
+   * @param <B> output iterable type
+   * @return
+   * @since 3.0
+   */
   public static <A, B> Iterable<B> transform(final Iterable<A> as, final Function<? super A, ? extends B> f) {
     return new Transform<>(as, f);
   }
