@@ -634,7 +634,6 @@ public class Functions {
    * one in sequence.
    * @since 1.2
    */
-  // TODO there has to be a better way to do this with Arrays or some such
   @SafeVarargs public static <A, B> Function<A, Option<B>> matches(
     Function<? super A, ? extends Option<? extends B>> f1, Function<? super A, ? extends Option<? extends B>> f2,
     Function<? super A, ? extends Option<? extends B>> f3, Function<? super A, ? extends Option<? extends B>> f4,
