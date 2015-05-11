@@ -226,7 +226,7 @@ public class Eithers {
    * @return the right values contained in the contents of it
    */
   public static <L, R> Iterable<R> filterRight(Iterable<Either<L, R>> it) {
-    return Options.flatten(transform(it, Eithers.<L, R> rightMapper()::apply));
+    return Options.flatten(transform(it, Eithers.<L, R> rightMapper()));
   }
 
   /**
