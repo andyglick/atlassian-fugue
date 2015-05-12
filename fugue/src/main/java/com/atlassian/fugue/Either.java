@@ -472,11 +472,7 @@ public abstract class Either<L, R> implements Serializable {
      * @return The result of function application within either.
      */
     public <X> Either<X, R> apply(final Either<Function<L, X>, R> either) {
-      return either.left().flatMap(new Function<Function<L, X>, Either<X, R>>() {
-        public Either<X, R> apply(final Function<L, X> f) {
-          return map(f);
-        }
-      });
+      return either.left().flatMap(LeftProjection.this::map);
     }
 
     /**
@@ -577,11 +573,7 @@ public abstract class Either<L, R> implements Serializable {
      * @return The result of function application within either.
      */
     public <X> Either<L, X> apply(final Either<L, Function<R, X>> either) {
-      return either.right().flatMap(new Function<Function<R, X>, Either<L, X>>() {
-        public Either<L, X> apply(final Function<R, X> f) {
-          return map(f);
-        }
-      });
+      return either.right().flatMap(this::map);
     }
 
     /**

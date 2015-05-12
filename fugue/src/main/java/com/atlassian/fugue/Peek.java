@@ -16,6 +16,11 @@
 
 package com.atlassian.fugue;
 
+/**
+ * Marker interface for use in constructing iterators
+ *
+ * @since 4.0
+ */
 interface Peek<A> {
   /**
    * Look at but do not modify the "next" thing.

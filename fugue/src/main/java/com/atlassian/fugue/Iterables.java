@@ -622,7 +622,7 @@ public class Iterables {
    * @param <A> original iterable type
    * @param <B> output iterable type
    * @return new iterable containing the transformed values produced by f#apply
-   * @since 3.0
+   * @since 4.0
    */
   public static <A, B> Iterable<B> transform(final Iterable<A> as, final Function<? super A, ? extends B> f) {
     return new Transform<>(as, f);
@@ -657,6 +657,8 @@ public class Iterables {
    * @param p predicate to filter by
    * @param <A> element type
    * @return new iterable containing only those elements for which p#test returns true
+   *
+   * @since 4.0
    */
   public static <A> Iterable<A> filter(final Iterable<A> as, final Predicate<? super A> p) {
     return new Filter<>(as, p);
@@ -696,6 +698,8 @@ public class Iterables {
    * @param ias one or more iterable to merge into the final iterable result
    * @param <A> element type
    * @return single level iterable with all the elements of the original iterables
+   *
+   * @since 4.0
    */
   public static <A> Iterable<A> flatten(Iterable<? extends Iterable<? extends A>> ias) {
     return new Flatten<>(ias);
@@ -760,6 +764,8 @@ public class Iterables {
    * @param elementsToAdd source of addtional elements
    * @param <A> element type
    * @return true if the collectionToModify was changed
+   *
+   * @since 4.0
    */
   public static <A> boolean addAll(Collection<A> collectionToModify, Iterable<? extends A> elementsToAdd) {
     if (elementsToAdd instanceof Collection) {

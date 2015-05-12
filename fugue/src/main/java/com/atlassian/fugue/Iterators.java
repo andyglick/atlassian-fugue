@@ -5,6 +5,11 @@ import java.util.Iterator;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Utility class for constructing iterables
+ *
+ * @since 4.0
+ */
 class Iterators {
 
   static <T> boolean addAll(Collection<T> addTo, Iterator<? extends T> iterator) {
