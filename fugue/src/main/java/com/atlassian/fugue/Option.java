@@ -219,7 +219,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   }
 
   @Override public final Iterator<A> iterator() {
-    return fold(ofInstance(Functions.<A> emptyIterator()), Functions.<A> singletonIterator());
+    return fold(ofInstance(Iterators.<A> emptyIterator()), Iterators::<A> singletonIterator);
   }
 
   //

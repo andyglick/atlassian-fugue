@@ -59,7 +59,7 @@ public class Iterables {
 
   static final Iterable<?> EMPTY = new Iterable<Object>() {
     @Override public Iterator<Object> iterator() {
-      return Functions.emptyIterator();
+      return Iterators.emptyIterator();
     }
 
     @Override public String toString() {
@@ -600,6 +600,14 @@ public class Iterables {
     }
   }
 
+  /**
+   * Return the size of an iterable
+   * @param as iterable to compute the size of
+   * @param <A> element type
+   * @return number of elements in the iterable
+   *
+   * @since 3.0
+   */
   static <A> int size(Iterable<A> as) {
     if (as instanceof Collection) {
       return ((Collection<?>) as).size();
@@ -657,6 +665,8 @@ public class Iterables {
    * @param p predicate to filter by
    * @param <A> element type
    * @return new iterable containing only those elements for which p#test returns true
+   *
+   * @since 3.0
    */
   public static <A> Iterable<A> filter(final Iterable<A> as, final Predicate<? super A> p) {
     return new Filter<>(as, p);
@@ -696,6 +706,8 @@ public class Iterables {
    * @param ias one or more iterable to merge into the final iterable result
    * @param <A> element type
    * @return single level iterable with all the elements of the original iterables
+   *
+   * @since 3.0
    */
   public static <A> Iterable<A> flatten(Iterable<? extends Iterable<? extends A>> ias) {
     return new Flatten<>(ias);
@@ -711,7 +723,7 @@ public class Iterables {
     @Override public Iterator<A> iterator() {
       return new AbstractIterator<A>() {
         private final Iterator<? extends Iterable<? extends A>> i = ias.iterator();
-        private Iterator<? extends A> currentIterator = Functions.emptyIterator();
+        private Iterator<? extends A> currentIterator = Iterators.emptyIterator();
 
         @Override protected A computeNext() {
           boolean currentHasNext;
@@ -760,6 +772,8 @@ public class Iterables {
    * @param elementsToAdd source of addtional elements
    * @param <A> element type
    * @return true if the collectionToModify was changed
+   *
+   * @since 3.0
    */
   public static <A> boolean addAll(Collection<A> collectionToModify, Iterable<? extends A> elementsToAdd) {
     if (elementsToAdd instanceof Collection) {
