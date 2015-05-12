@@ -21,7 +21,7 @@ import java.util.Iterator;
 /**
  * Iterator that can examine next without removing it
  *
- * @since 4.0
+ * @since 3.0
  * @param <A> element type
  */
 interface PeekingIterator<A> extends Peek<A>, Iterator<A> {}

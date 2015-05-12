@@ -24,7 +24,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Utility class for constructing iterables
  *
- * @since 4.0
+ * @since 3.0
  */
 class Iterators {
 
@@ -35,7 +35,7 @@ class Iterators {
    * @param <A> element type
    * @return true if any of the elements from iterator were not also in collectionToModify
    *
-   * @since 4.0
+   * @since 3.0
    */
   static <A> boolean addAll(Collection<A> collectionToModify, Iterator<? extends A> iterator) {
     requireNonNull(collectionToModify);
@@ -53,7 +53,7 @@ class Iterators {
    * @param <A> element type
    * @return iterator that can return the next element without removing it from the iterator
    *
-   * @since 4.0
+   * @since 3.0
    */
   static <A> PeekingIterator<A> peekingIterator(java.util.Iterator<? extends A> iterator) {
     if (iterator instanceof PeekingImpl) {
@@ -115,7 +115,7 @@ class Iterators {
    * @param <A> element type
    * @return iterator returning only a
    *
-   * @since 4.0
+   * @since 3.0
    */
   static <A> Iterator<A> singletonIterator(final A a) {
     return new Iterator<A>() {
@@ -145,7 +145,7 @@ class Iterators {
    * @param <A> element type
    * @return empty iterator
    *
-   * @since 4.0
+   * @since 3.0
    */
   @SuppressWarnings("unchecked") public static <A> Iterator<A> emptyIterator() {
     return (Iterator<A>) EmptyIterator.INSTANCE;

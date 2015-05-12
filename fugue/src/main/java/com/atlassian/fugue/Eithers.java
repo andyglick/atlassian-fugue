@@ -275,7 +275,7 @@ public class Eithers {
    * @param <A> contents of the array list
    * @return iterable over the array list
    *
-   * @since 4.0
+   * @since 3.0
    */
   static <A> Iterable<A> collect(ArrayList<A> list) {
     return new Collect<>(list);

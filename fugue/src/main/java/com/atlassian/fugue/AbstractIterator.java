@@ -49,7 +49,7 @@ import java.util.NoSuchElementException;
  * 
  * <p>
  * This class is a re-implentation of the Guava AbstractIterator class.
- * @since 4.0
+ * @since 3.0
  */
 abstract class AbstractIterator<A> extends UnmodifiableIterator<A> {
   private State state = State.NotReady;
