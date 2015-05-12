@@ -220,7 +220,7 @@ public class Iterables {
    *
    * @param <A> the type
    * @param iterable to be filtered
-   * @param pred to filter each element
+   * @param p to filter each element
    * @return a pair where the left matches the predicate, and the right does
    * not.
    */
@@ -614,6 +614,16 @@ public class Iterables {
     }
   }
 
+  /**
+   * Transform and iterable by applying a function to each of it's values
+   *
+   * @param as the source iterable
+   * @param f function to apply to all the elements of as
+   * @param <A> original iterable type
+   * @param <B> output iterable type
+   * @return new iterable containing the transformed values produced by f#apply
+   * @since 3.0
+   */
   public static <A, B> Iterable<B> transform(final Iterable<A> as, final Function<? super A, ? extends B> f) {
     return new Transform<>(as, f);
   }
@@ -641,6 +651,13 @@ public class Iterables {
     }
   }
 
+  /**
+   * Remove elements from the input iterable for which the predicate returns false
+   * @param as original iterable
+   * @param p predicate to filter by
+   * @param <A> element type
+   * @return new iterable containing only those elements for which p#test returns true
+   */
   public static <A> Iterable<A> filter(final Iterable<A> as, final Predicate<? super A> p) {
     return new Filter<>(as, p);
   }
@@ -674,6 +691,12 @@ public class Iterables {
     }
   }
 
+  /**
+   * Merge Iterable<Iterable<A>> down to Iterable<A>
+   * @param ias one or more iterable to merge into the final iterable result
+   * @param <A> element type
+   * @return single level iterable with all the elements of the original iterables
+   */
   public static <A> Iterable<A> flatten(Iterable<? extends Iterable<? extends A>> ias) {
     return new Flatten<>(ias);
   }
@@ -731,12 +754,20 @@ public class Iterables {
     return new MergeSortedIterable<>(xss, ordering);
   }
 
-  public static <T> boolean addAll(Collection<T> addTo, Iterable<? extends T> elementsToAdd) {
+  /**
+   * Add all the elements of the iterable to the collection
+   * @param collectionToModify collection to add elements to
+   * @param elementsToAdd source of addtional elements
+   * @param <A> element type
+   * @return true if the collectionToModify was changed
+   */
+  public static <A> boolean addAll(Collection<A> collectionToModify, Iterable<? extends A> elementsToAdd) {
     if (elementsToAdd instanceof Collection) {
-      Collection<? extends T> c = (Collection<? extends T>) elementsToAdd;
-      return addTo.addAll(c);
+      @SuppressWarnings("unchecked")
+      Collection<? extends A> c = (Collection<? extends A>) elementsToAdd;
+      return collectionToModify.addAll(c);
     }
-    return Iterators.addAll(addTo, requireNonNull(elementsToAdd).iterator());
+    return Iterators.addAll(collectionToModify, requireNonNull(elementsToAdd).iterator());
   }
 
   /**

@@ -226,7 +226,7 @@ public class Eithers {
    * @return the right values contained in the contents of it
    */
   public static <L, R> Iterable<R> filterRight(Iterable<Either<L, R>> it) {
-    return Options.flatten(transform(it, Eithers.<L, R> rightMapper()::apply));
+    return Options.flatten(transform(it, Eithers.<L, R> rightMapper()));
   }
 
   /**
@@ -246,7 +246,7 @@ public class Eithers {
       }
       rs.add(e.right().get());
     }
-    return Either.right(collect(rs.iterator()));
+    return Either.right(collect(rs));
   }
 
   /**
@@ -266,29 +266,36 @@ public class Eithers {
       }
       ls.add(e.left().get());
     }
-    return Either.left(collect(ls.iterator()));
+    return Either.left(collect(ls));
   }
 
-  // TODO rethink if this is the right pattern to get collection working
-  static <A> Iterable<A> collect(Iterator<A> it) {
-    return new Collect<>(it);
+  /**
+   * Prevent tampering with the underlying array list by wrapping list in a new iterable.
+   * @param list array list to wrap
+   * @param <A> contents of the array list
+   * @return iterable over the array list
+   */
+  static <A> Iterable<A> collect(ArrayList<A> list) {
+    return new Collect<>(list);
   }
-
   static final class Collect<A> implements Iterable<A> {
-    private final Iterator<? extends A> as;
+    private final ArrayList<? extends A> as;
 
-    public Collect(Iterator<? extends A> as) {
+    public Collect(ArrayList<? extends A> as) {
       this.as = as;
     }
 
     @Override public Iterator<A> iterator() {
       return new AbstractIterator<A>() {
+        private int position = 0;
 
         @Override protected A computeNext() {
-          if (!as.hasNext()) {
+          if (position >= as.size()) {
             return endOfData();
           }
-          return as.next();
+          A result = as.get(position);
+          position++;
+          return result;
         }
       };
     }

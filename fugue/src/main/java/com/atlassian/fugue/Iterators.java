@@ -1,20 +1,10 @@
 package com.atlassian.fugue;
 
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Iterator;
-import java.util.Objects;
-import java.util.TreeSet;
-import java.util.function.Function;
 
-import static com.atlassian.fugue.Iterables.filter;
-import static com.atlassian.fugue.Iterables.first;
-import static com.atlassian.fugue.Iterables.transform;
 import static java.util.Objects.requireNonNull;
 
-/**
- * Created by anund on 4/6/15.
- */
 class Iterators {
 
   static <T> boolean addAll(Collection<T> addTo, Iterator<? extends T> iterator) {
