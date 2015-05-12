@@ -59,7 +59,7 @@ public class Iterables {
 
   static final Iterable<?> EMPTY = new Iterable<Object>() {
     @Override public Iterator<Object> iterator() {
-      return Functions.emptyIterator();
+      return Iterators.emptyIterator();
     }
 
     @Override public String toString() {
@@ -715,7 +715,7 @@ public class Iterables {
     @Override public Iterator<A> iterator() {
       return new AbstractIterator<A>() {
         private final Iterator<? extends Iterable<? extends A>> i = ias.iterator();
-        private Iterator<? extends A> currentIterator = Functions.emptyIterator();
+        private Iterator<? extends A> currentIterator = Iterators.emptyIterator();
 
         @Override protected A computeNext() {
           boolean currentHasNext;
