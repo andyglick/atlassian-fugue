@@ -38,7 +38,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
-        <clover.version>3.1.0</clover.version>
+        <clover.Version>4.0.4</clover.Version>
         <slf4j-api.version>1.6.0</slf4j-api.version>
         <atlassian-util-concurrent.version>2.4.1</atlassian-util-concurrent.version>
         <mockito-core.version>1.8.4</mockito-core.version>
