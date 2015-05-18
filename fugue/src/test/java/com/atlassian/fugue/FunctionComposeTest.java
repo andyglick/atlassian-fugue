@@ -17,12 +17,7 @@ package com.atlassian.fugue;
 
 import org.junit.Test;
 
-import java.util.function.DoubleToIntFunction;
-import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
-import java.util.function.IntFunction;
-import java.util.function.IntToDoubleFunction;
-import java.util.function.ToDoubleFunction;
 
 import static com.atlassian.fugue.Functions.compose;
 import static com.atlassian.fugue.Option.some;
