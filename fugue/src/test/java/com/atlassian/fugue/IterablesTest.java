@@ -28,12 +28,14 @@ import java.util.function.Predicate;
 import static com.atlassian.fugue.Eithers.getOrThrow;
 import static com.atlassian.fugue.Iterables.emptyIterable;
 import static com.atlassian.fugue.Iterables.findFirst;
+import static com.atlassian.fugue.Iterables.flatten;
 import static com.atlassian.fugue.Iterables.partition;
 import static com.atlassian.fugue.Iterables.rangeTo;
 import static com.atlassian.fugue.Iterables.rangeUntil;
 import static com.atlassian.fugue.Option.some;
 import static com.atlassian.fugue.Pair.pair;
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
@@ -155,11 +157,7 @@ public class IterablesTest {
   }
 
   @Test public void flatMapConcatenates() {
-    final Iterable<String> result = Iterables.flatMap(asList("123", "ABC"), new Function<String, Iterable<String>>() {
-      public Iterable<String> apply(final String from) {
-        return new CharSplitter(from);
-      }
-    });
+    final Iterable<String> result = Iterables.flatMap(asList("123", "ABC"), CharSplitter::new);
     assertThat(result, contains("1", "2", "3", "A", "B", "C"));
   }
 
@@ -178,6 +176,11 @@ public class IterablesTest {
   @Test public void revMap() {
     Iterable<Function<Integer, Integer>> fs = asList(from -> from + 1, from -> from + 2, from -> from * from);
     assertThat(Iterables.revMap(fs, 3), contains(4, 5, 9));
+  }
+
+  @Test public void flattenCollapses() {
+    Iterable<Iterable<Integer>> iterables = asList(singletonList(1), singletonList(2));
+    assertThat(flatten(iterables), contains(1,2));
   }
 
   /**

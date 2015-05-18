@@ -17,12 +17,19 @@ package com.atlassian.fugue;
 
 import org.junit.Test;
 
+import java.util.function.DoubleToIntFunction;
+import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
+import java.util.function.IntFunction;
+import java.util.function.IntToDoubleFunction;
+import java.util.function.ToDoubleFunction;
 
+import static com.atlassian.fugue.Functions.compose;
 import static com.atlassian.fugue.Option.some;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class FunctionComposeTest {
   Function<String, Option<Integer>> toInt = input -> {
@@ -40,11 +47,11 @@ public class FunctionComposeTest {
   }
 
   @Test(expected = NullPointerException.class) public void nullFirst() {
-    Functions.compose(null, toInt);
+    compose(null, toInt);
   }
 
   @Test(expected = NullPointerException.class) public void nullSecond() {
-    Functions.compose(toInt, null);
+    compose(toInt, null);
   }
 
   @Test public void someForInt() {
@@ -53,5 +60,11 @@ public class FunctionComposeTest {
 
   @Test public void noneForNonParsable() {
     assertThat(Functions.composeOption(toString, toInt).apply("twelve"), is(Option.<String> none()));
+  }
+
+  @Test public void referenceEqualityOfComposition() {
+    Function<Integer, Integer> intFunc = (a) -> a + 1;
+    Function<Integer, Double> intDouble = (a) -> a + 1.0;
+    assertTrue(compose(intDouble, intFunc).equals(compose(intDouble, intFunc)));
   }
 }

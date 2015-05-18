@@ -81,4 +81,8 @@ public class RetryFunctionTest {
     verify(function, times(2)).apply(INPUT);
     verifyNoMoreInteractions(function);
   }
+
+  @Test(expected=IllegalArgumentException.class) public void cannotSupplyNegativeRetries(){
+    new RetryFunction<>(function, -1);
+  }
 }

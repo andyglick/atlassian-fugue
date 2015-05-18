@@ -95,7 +95,7 @@ class Iterators {
 
     @Override public void remove() {
       if (hasPeeked) {
-        throw new IllegalStateException("Can't remove after you've peeked at next");
+        throw new IllegalStateException("Cannot remove an element after peeking");
       }
       iterator.remove();
     }
