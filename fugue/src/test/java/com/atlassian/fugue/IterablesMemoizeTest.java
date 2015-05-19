@@ -16,7 +16,7 @@
 package com.atlassian.fugue;
 
 import static com.atlassian.fugue.Iterables.filter;
-import static com.atlassian.fugue.Iterables2.memoize;
+import static com.atlassian.fugue.Iterables.memoize;
 import static com.atlassian.fugue.Iterables.transform;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
