@@ -51,16 +51,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-nop</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <!-- findbugs is only useful for compile/analysis, not needed 
                 at runtime -->
             <groupId>com.google.code.findbugs</groupId>

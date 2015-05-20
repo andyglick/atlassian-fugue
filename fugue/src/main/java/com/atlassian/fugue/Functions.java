@@ -444,7 +444,7 @@ public class Functions {
    * @since 2.2
    */
   public static <A, B> Function<A, B> weakMemoize(Function<A, B> f) {
-    return WeakMemoizer.weakMemoizer(f);
+    return com.atlassian.util.concurrent.Functions.weakMemoize(f);
   }
 
   /**
