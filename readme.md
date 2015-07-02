@@ -56,7 +56,7 @@ rely on API that is only available in later versions (at the time of writing a m
 From 2.2 there is a fugue-scala module that adds some helper methods in Scala to convert common 
 Fugue and Guava classes into their Scala equivalents and vice-versa. For instance, to convert a 
 scala function `f` to a Guava `Function<A, B>` there is syntax `.asJava` available and to go the 
-other way you can use `.asJava`.
+other way you can use `.asScala`.
 
 To enable this syntax you need to add the following to your scope:
 
