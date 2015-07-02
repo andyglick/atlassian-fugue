@@ -15,6 +15,8 @@
  */
 package com.atlassian.fugue;
 
+import java.util.function.Consumer;
+
 /**
  * A thing that performs a side-effect.
  * 
@@ -22,7 +24,7 @@ package com.atlassian.fugue;
  * 
  * @since 1.0
  */
-public interface Effect<A> {
+public interface Effect<A> extends Consumer<A> {
   /**
    * Perform the side-effect.
    * 
@@ -30,6 +32,15 @@ public interface Effect<A> {
    */
   void apply(A a);
 
+  /**
+   * Adapt to the Java 8 interface.
+   * 
+   * @param a the input to use for performing the effect.
+   */
+  default void accept(A a) {
+    apply(a);
+  }
+  
   /**
    * A thing upon which side-effects may be applied.
    * 
