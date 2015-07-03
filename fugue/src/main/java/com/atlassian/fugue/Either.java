@@ -221,6 +221,47 @@ public abstract class Either<L, R> implements Serializable {
   }
 
   /**
+   * Get the value if it is right or null if not.
+   * <p>
+   * Although the use of null is discouraged, code written to use these must
+   * often interface with code that expects and returns nulls.
+   *
+   * @return the contained value or null
+   * @since 2.3
+   */
+  public final R getOrNull() {
+    return right().getOrNull();
+  }
+
+  /**
+   * Get the contained value or throws an error with the supplied message if left.
+   * <p>
+   * Used when absolutely sure this is a right.
+   *
+   * @param msg the message for the error.
+   * @return the contained value.
+   * @since 2.3
+   */
+  public final R getOrError(Supplier<String> msg) {
+    return right().getOrError(msg);
+  }
+
+  /**
+   * Get the contained value or throws the supplied throwable if left
+   * <p>
+   * Used when absolutely sure this is a right.
+   *
+   * @param <X> the type of the {@link Throwable} that could be thrown.
+   * @param ifUndefined the supplier of the throwable.
+   * @throws X the throwable the supplier creates if there is no value.
+   * @return the contained value.
+   * @since 2.3
+   */
+  public final <X extends Throwable> R getOrThrow(Supplier<X> ifUndefined) throws X {
+    return right().getOrThrow(ifUndefined);
+  }
+
+  /**
    * Map the given function across the right hand side value if it is one.
    * 
    * @param <X> the RHS type
@@ -266,6 +307,7 @@ public abstract class Either<L, R> implements Serializable {
    * @param p The predicate function to test on the contained value.
    * @return <code>true</code> if no value or returns the result of the
    * application of the given function to the value.
+   * @since 2.3
    */
   public final boolean forall(final Predicate<? super R> p) {
     return right().forall(p);
@@ -275,6 +317,7 @@ public abstract class Either<L, R> implements Serializable {
    * Perform the given side-effect for the contained element if it is a right
    *
    * @param effect the input to use for performing the effect on contained value.
+   * @since 2.3
    */
   public final void foreach(final Effect<? super R> effect) {
     right().foreach(effect);
@@ -289,6 +332,7 @@ public abstract class Either<L, R> implements Serializable {
    * @return <code>None</code> if this is a left or if the given
    * predicate <code>p</ code> does not hold for the right contained value, otherwise, returns
    * a right in <code>Some</code>.
+   * @since 2.3
    */
   public Option<Either<L, R>> filter(final Predicate<? super R> p) {
     return right().filter(p);
