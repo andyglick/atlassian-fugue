@@ -223,4 +223,42 @@ public class EitherRightBiasTest
         assertThat(l.filter(Predicates.equalTo(12)), Matchers.is(Option.<Either<String, Integer>>none()));
     }
 
+    @Test
+    public void orElseRightInstance()
+    {
+        assertThat(r.orElse(Either.<String, Integer>right(44)), is(r));
+    }
+
+    @Test
+    public void orElseLeftInstance()
+    {
+        assertThat(l.orElse(Either.<String, Integer>right(44)), is(Either.<String, Integer>right(44)));
+        assertThat(l.orElse(Either.<String, Integer>left("left")), is(Either.<String, Integer>left("left")));
+    }
+
+    @Test
+    public void orElseRightSupplier()
+    {
+        assertThat(r.orElse(Suppliers.ofInstance(Either.<String, Integer>right(44))), is(r));
+    }
+
+    @Test
+    public void orElseLeftSupplier()
+    {
+        assertThat(l.orElse(Suppliers.ofInstance(Either.<String, Integer>right(44))), is(Either.<String, Integer>right(44)));
+        assertThat(l.orElse(Suppliers.ofInstance(Either.<String, Integer>left("left"))), is(Either.<String, Integer>left("left")));
+    }
+
+    @Test
+    public void valueOrRight()
+    {
+        assertThat(r.valueOr(Functions.<String, Integer>constant(99)), is(12));
+    }
+
+    @Test
+    public void valueOrLeft()
+    {
+        assertThat(l.valueOr(Functions.<String, Integer>constant(99)), is(99));
+    }
+
 }

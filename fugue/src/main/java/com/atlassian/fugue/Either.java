@@ -324,6 +324,49 @@ public abstract class Either<L, R> implements Serializable {
   }
 
   /**
+   * /**
+   * If this is a right, return the same right. Otherwise, return {@code orElse}.
+   *
+   * @param orElse either to return if this is left
+   * @return this or {@code orElse}
+   * @since 2.3
+   */
+  public final Either<L, R> orElse(final Either<L, R> orElse) {
+    return this.orElse(Suppliers.ofInstance(orElse));
+  }
+
+  /**
+   * If this is a right, return the same right. Otherwise, return value supplied
+   * by {@code orElse}.
+   *
+   * @param orElse either to return if this is left
+   * @return this or {@code orElse}
+   * @since 2.3
+   */
+  public final <X extends L, Y extends R> Either<X, Y> orElse(final Supplier<? extends Either<X, Y>> orElse) {
+    if (right().isDefined()) {
+        return new Right(right().get());
+    }
+
+    return orElse.get();
+  }
+
+  /**
+   * If this is a right return the contained value, else return the result of running
+   * function on left
+   *
+   * @param or Function to run if this is a left
+   * @return contained value of R or result of {@code or}
+   */
+  public final R valueOr(final Function<L, ? extends R> or) {
+    if (right().isDefined()) {
+        return right().get();
+    }
+
+    return or.apply(left().get());
+  }
+
+  /**
    * Returns <code>None</code> if this is a left or if the given predicate
    * <code>p</code> does not hold for the contained value, otherwise, returns
    * a right in <code>Some</code>.
