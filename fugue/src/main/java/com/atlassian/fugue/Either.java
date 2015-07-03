@@ -197,8 +197,7 @@ public abstract class Either<L, R> implements Serializable {
   // right-bias
 
   /**
-   * Get the value if it is a right or call the supplier and
-   * return its value if not.
+   * Get the value if it is a right or call the supplier and return its value if not.
    *
    * @param supplier called if this is a left
    * @return the wrapped value or the value from the {@code Supplier}
@@ -222,9 +221,8 @@ public abstract class Either<L, R> implements Serializable {
 
   /**
    * Get the value if it is right or null if not.
-   * <p>
-   * Although the use of null is discouraged, code written to use these must
-   * often interface with code that expects and returns nulls.
+   * <p/>
+   * Although the use of null is discouraged, code written to use these must often interface with code that expects and returns nulls.
    *
    * @return the contained value or null
    * @since 2.3
@@ -235,7 +233,7 @@ public abstract class Either<L, R> implements Serializable {
 
   /**
    * Get the contained value or throws an error with the supplied message if left.
-   * <p>
+   * <p/>
    * Used when absolutely sure this is a right.
    *
    * @param msg the message for the error.
@@ -248,13 +246,13 @@ public abstract class Either<L, R> implements Serializable {
 
   /**
    * Get the contained value or throws the supplied throwable if left
-   * <p>
+   * <p/>
    * Used when absolutely sure this is a right.
    *
    * @param <X> the type of the {@link Throwable} that could be thrown.
    * @param ifUndefined the supplier of the throwable.
-   * @throws X the throwable the supplier creates if there is no value.
    * @return the contained value.
+   * @throws X the throwable the supplier creates if there is no value.
    * @since 2.3
    */
   public final <X extends Throwable> R getOrThrow(Supplier<X> ifUndefined) throws X {
@@ -288,12 +286,10 @@ public abstract class Either<L, R> implements Serializable {
   }
 
   /**
-   * Return `true` if this is a right value <strong>and</strong>
-   * applying the predicate to the contained value returns true.
+   * Return `true` if this is a right value <strong>and</strong> applying the predicate to the contained value returns true.
    *
    * @param p the predicate to test.
-   * @return {@code true} if right and the predicate returns true for the
-   * right value, {@code false} otherwise.
+   * @return {@code true} if right and the predicate returns true for the right value, {@code false} otherwise.
    * @since 2.3
    */
   public final boolean exists(final Predicate<? super R> p) {
@@ -301,12 +297,10 @@ public abstract class Either<L, R> implements Serializable {
   }
 
   /**
-   * Returns <code>true</code> if it is a left or the result of the
-   * application of the given predicate on the contained value.
+   * Returns <code>true</code> if it is a left or the result of the application of the given predicate on the contained value.
    *
    * @param p The predicate function to test on the contained value.
-   * @return <code>true</code> if no value or returns the result of the
-   * application of the given function to the value.
+   * @return <code>true</code> if no value or returns the result of the application of the given function to the value.
    * @since 2.3
    */
   public final boolean forall(final Predicate<? super R> p) {
@@ -324,8 +318,7 @@ public abstract class Either<L, R> implements Serializable {
   }
 
   /**
-   * /**
-   * If this is a right, return the same right. Otherwise, return {@code orElse}.
+   * /** If this is a right, return the same right. Otherwise, return {@code orElse}.
    *
    * @param orElse either to return if this is left
    * @return this or {@code orElse}
@@ -336,8 +329,7 @@ public abstract class Either<L, R> implements Serializable {
   }
 
   /**
-   * If this is a right, return the same right. Otherwise, return value supplied
-   * by {@code orElse}.
+   * If this is a right, return the same right. Otherwise, return value supplied by {@code orElse}.
    *
    * @param orElse either to return if this is left
    * @return this or {@code orElse}
@@ -345,15 +337,14 @@ public abstract class Either<L, R> implements Serializable {
    */
   public final <X extends L, Y extends R> Either<X, Y> orElse(final Supplier<? extends Either<X, Y>> orElse) {
     if (right().isDefined()) {
-        return new Right(right().get());
+      return new Right(right().get());
     }
 
     return orElse.get();
   }
 
   /**
-   * If this is a right return the contained value, else return the result of running
-   * function on left
+   * If this is a right return the contained value, else return the result of running function on left
    *
    * @param or Function to run if this is a left
    * @return contained value of R or result of {@code or}
@@ -361,21 +352,19 @@ public abstract class Either<L, R> implements Serializable {
    */
   public final R valueOr(final Function<L, ? extends R> or) {
     if (right().isDefined()) {
-        return right().get();
+      return right().get();
     }
 
     return or.apply(left().get());
   }
 
   /**
-   * Returns <code>None</code> if this is a left or if the given predicate
-   * <code>p</code> does not hold for the contained value, otherwise, returns
-   * a right in <code>Some</code>.
+   * Returns <code>None</code> if this is a left or if the given predicate <code>p</code> does not hold for the contained value, otherwise, returns a
+   * right in <code>Some</code>.
    *
    * @param p The predicate function to test on the right contained value.
-   * @return <code>None</code> if this is a left or if the given
-   * predicate <code>p</ code> does not hold for the right contained value, otherwise, returns
-   * a right in <code>Some</code>.
+   * @return <code>None</code> if this is a left or if the given predicate <code>p</ code> does not hold for the right contained value, otherwise,
+   * returns a right in <code>Some</code>.
    * @since 2.3
    */
   public Option<Either<L, R>> filter(final Predicate<? super R> p) {
