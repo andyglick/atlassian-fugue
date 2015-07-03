@@ -357,6 +357,7 @@ public abstract class Either<L, R> implements Serializable {
    *
    * @param or Function to run if this is a left
    * @return contained value of R or result of {@code or}
+   * @since 2.3
    */
   public final R valueOr(final Function<L, ? extends R> or) {
     if (right().isDefined()) {
