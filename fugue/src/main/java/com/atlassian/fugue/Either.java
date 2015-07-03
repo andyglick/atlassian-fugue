@@ -15,17 +15,17 @@
  */
 package com.atlassian.fugue;
 
-import static com.atlassian.fugue.Option.none;
-import static com.atlassian.fugue.Option.some;
-import static com.google.common.base.Preconditions.checkNotNull;
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.base.Supplier;
 
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.base.Supplier;
+import static com.atlassian.fugue.Option.none;
+import static com.atlassian.fugue.Option.some;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A class that acts as a container for a value of one of two types. An Either
@@ -197,6 +197,30 @@ public abstract class Either<L, R> implements Serializable {
   // right-bias
 
   /**
+   * Get the value if it is a right or call the supplier and
+   * return its value if not.
+   *
+   * @param supplier called if this is a left
+   * @return the wrapped value or the value from the {@code Supplier}
+   * @since 2.3
+   */
+  public final R getOrElse(final Supplier<? extends R> supplier) {
+    return right().getOrElse(supplier);
+  }
+
+  /**
+   * Get the value if it is a right, otherwise returns {@code other}.
+   *
+   * @param <X> the destination type
+   * @param other value to return if this is a left
+   * @return wrapped value if this is a right, otherwise returns {@code other}
+   * @since 2.3
+   */
+  public final <X extends R> R getOrElse(final X other) {
+    return right().getOrElse(other);
+  }
+
+  /**
    * Map the given function across the right hand side value if it is one.
    * 
    * @param <X> the RHS type
@@ -211,7 +235,7 @@ public abstract class Either<L, R> implements Serializable {
 
   /**
    * Binds the given function across the right hand side value if it is one.
-   * 
+   *
    * @param <X> the RHS type
    * @param f the function to bind.
    * @return A new either value after binding with the function applied if this
@@ -220,6 +244,54 @@ public abstract class Either<L, R> implements Serializable {
    */
   public final <X> Either<L, X> flatMap(final Function<? super R, Either<L, X>> f) {
     return right().flatMap(f);
+  }
+
+  /**
+   * Return `true` if this is a right value <strong>and</strong>
+   * applying the predicate to the contained value returns true.
+   *
+   * @param p the predicate to test.
+   * @return {@code true} if right and the predicate returns true for the
+   * right value, {@code false} otherwise.
+   * @since 2.3
+   */
+  public final boolean exists(final Predicate<? super R> p) {
+    return right().exists(p);
+  }
+
+  /**
+   * Returns <code>true</code> if it is a left or the result of the
+   * application of the given predicate on the contained value.
+   *
+   * @param p The predicate function to test on the contained value.
+   * @return <code>true</code> if no value or returns the result of the
+   * application of the given function to the value.
+   */
+  public final boolean forall(final Predicate<? super R> p) {
+    return right().forall(p);
+  }
+
+  /**
+   * Perform the given side-effect for the contained element if it is a right
+   *
+   * @param effect the input to use for performing the effect on contained value.
+   */
+  public final void foreach(final Effect<? super R> effect) {
+    right().foreach(effect);
+  }
+
+  /**
+   * Returns <code>None</code> if this is a left or if the given predicate
+   * <code>p</code> does not hold for the contained value, otherwise, returns
+   * a right in <code>Some</code>.
+   *
+   * @param p The predicate function to test on the right contained value.
+   * @return <code>None</code> if this is a left or if the given
+   * predicate <code>p</ code> does not hold for the right contained value, otherwise, returns
+   * a right in <code>Some</code>.
+   */
+  public Option<Either<L, R>> filter(final Predicate<? super R> p) {
+    return right().filter(p);
   }
 
   /**
@@ -534,13 +606,13 @@ public abstract class Either<L, R> implements Serializable {
     /**
      * Returns <code>None</code> if this projection has no value or if the given
      * predicate <code>p</code> does not hold for the value, otherwise, returns
-     * a right in <code>Some</code>.
+     * a left in <code>Some</code>.
      * 
      * @param <X> the RHS type
      * @param f The predicate function to test on this projection's value.
      * @return <code>None</code> if this projection has no value or if the given
      * predicate <code>p</code> does not hold for the value, otherwise, returns
-     * a right in <code>Some</code>.
+     * a left in <code>Some</code>.
      */
     public <X> Option<Either<L, X>> filter(final Predicate<? super L> f) {
       if (isLeft() && f.apply(get())) {
@@ -639,13 +711,13 @@ public abstract class Either<L, R> implements Serializable {
     /**
      * Returns <code>None</code> if this projection has no value or if the given
      * predicate <code>p</code> does not hold for the value, otherwise, returns
-     * a left in <code>Some</code>.
+     * a right in <code>Some</code>.
      * 
      * @param <X> the LHS type
      * @param f The predicate function to test on this projection's value.
      * @return <code>None</code> if this projection has no value or if the given
      * predicate <code>p</code> does not hold for the value, otherwise, returns
-     * a left in <code>Some</code>.
+     * a right in <code>Some</code>.
      */
     public <X> Option<Either<X, R>> filter(final Predicate<? super R> f) {
       if (isRight() && f.apply(get())) {
