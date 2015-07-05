@@ -324,7 +324,7 @@ public abstract class Either<L, R> implements Serializable {
    * @return this or {@code orElse}
    * @since 2.3
    */
-  public final Either<L, R> orElse(final Either<L, R> orElse) {
+  public final Either<L, R> orElse(final Either<? extends L, ? extends R> orElse) {
     return this.orElse(Suppliers.ofInstance(orElse));
   }
 
@@ -335,12 +335,13 @@ public abstract class Either<L, R> implements Serializable {
    * @return this or {@code orElse}
    * @since 2.3
    */
-  public final <X extends L, Y extends R> Either<X, Y> orElse(final Supplier<? extends Either<X, Y>> orElse) {
+  @SuppressWarnings("unchecked")
+  public final Either<L, R> orElse(final Supplier<? extends Either<? extends L, ? extends R>> orElse) {
     if (right().isDefined()) {
       return new Right(right().get());
     }
 
-    return orElse.get();
+    return (Either<L, R>) orElse.get();
   }
 
   /**

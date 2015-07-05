@@ -209,6 +209,16 @@ public class EitherRightBiasTest {
   }
 
   @Test
+  public void orElseChild() {
+    class Parent {}
+    class Child extends Parent {}
+
+    Parent p = new Parent();
+    Parent pp = Either.right(p).orElse(Suppliers.ofInstance(Either.<Integer, Child>right(new Child()))).getOrNull();
+    assertThat(pp, is(p));
+  }
+
+  @Test
   public void valueOrRight() {
     assertThat(r.valueOr(Functions.<String, Integer>constant(99)), is(12));
   }
