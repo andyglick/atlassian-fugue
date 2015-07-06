@@ -7,6 +7,7 @@ import static com.atlassian.fugue.UtilityFunctions.addOne;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -76,12 +77,25 @@ public class EitherRightBiasTest {
     l.getOrError(Suppliers.ofInstance("Error message"));
   }
 
+  @Test public void getOrErrorLeftMessage() {
+    try {
+      l.getOrError(Suppliers.ofInstance("Error message"));
+    } catch (Error e) {
+      assertThat(e.getMessage(), is("Error message"));
+      return;
+    }
+
+    fail("No error thrown");
+  }
+
   @Test public void getOrThrowRight() {
     assertThat(r.getOrThrow(Suppliers.ofInstance(new RuntimeException("Run Error"))), is(12));
   }
 
-  @Test(expected = RuntimeException.class) public void getOrThrowLeft() {
-    l.getOrThrow(Suppliers.ofInstance(new RuntimeException("Run Error")));
+  private class CustomException extends RuntimeException { }
+
+  @Test(expected = CustomException.class) public void getOrThrowLeft() {
+    l.getOrThrow(Suppliers.ofInstance(new CustomException()));
   }
 
   @Test public void existsRight() {
