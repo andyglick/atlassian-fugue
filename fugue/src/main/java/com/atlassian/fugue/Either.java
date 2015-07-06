@@ -15,17 +15,17 @@
  */
 package com.atlassian.fugue;
 
-import static com.atlassian.fugue.Option.none;
-import static com.atlassian.fugue.Option.some;
-import static com.google.common.base.Preconditions.checkNotNull;
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.base.Supplier;
 
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.base.Supplier;
+import static com.atlassian.fugue.Option.none;
+import static com.atlassian.fugue.Option.some;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A class that acts as a container for a value of one of two types. An Either
@@ -45,6 +45,11 @@ import com.google.common.base.Supplier;
  * Either is immutable, but does not force immutability on contained objects; if
  * the contained objects are mutable then equals and hashcode methods should not
  * be relied on.
+ * <p>
+ * Since 2.2, there have been some right-biased methods added. With 2.3 the available
+ * right-biased methods has increased. The purpose of these is that you can do something
+ * like {@code either.map(...)} directly, which is identical to calling
+ * {@code either.right().map(...)}.
  * 
  * @since 1.0
  */
@@ -197,6 +202,72 @@ public abstract class Either<L, R> implements Serializable {
   // right-bias
 
   /**
+   * Get the value if it is a right or call the supplier and return its value if
+   * not.
+   *
+   * @param supplier called if this is a left
+   * @return the wrapped value or the value from the {@code Supplier}
+   * @since 2.3
+   */
+  public final R getOrElse(final Supplier<? extends R> supplier) {
+    return right().getOrElse(supplier);
+  }
+
+  /**
+   * Get the value if it is a right, otherwise returns {@code other}.
+   *
+   * @param <X> the destination type
+   * @param other value to return if this is a left
+   * @return wrapped value if this is a right, otherwise returns {@code other}
+   * @since 2.3
+   */
+  public final <X extends R> R getOrElse(final X other) {
+    return right().getOrElse(other);
+  }
+
+  /**
+   * Get the value if it is right or null if not.
+   * <p/>
+   * Although the use of null is discouraged, code written to use these must
+   * often interface with code that expects and returns nulls.
+   *
+   * @return the contained value or null
+   * @since 2.3
+   */
+  public final R getOrNull() {
+    return right().getOrNull();
+  }
+
+  /**
+   * Get the contained value or throws an error with the supplied message if
+   * left.
+   * <p/>
+   * Used when absolutely sure this is a right.
+   *
+   * @param msg the message for the error.
+   * @return the contained value.
+   * @since 2.3
+   */
+  public final R getOrError(Supplier<String> msg) {
+    return right().getOrError(msg);
+  }
+
+  /**
+   * Get the contained value or throws the supplied throwable if left
+   * <p/>
+   * Used when absolutely sure this is a right.
+   *
+   * @param <X> the type of the {@link Throwable} that could be thrown.
+   * @param ifUndefined the supplier of the throwable.
+   * @return the contained value.
+   * @throws X the throwable the supplier creates if there is no value.
+   * @since 2.3
+   */
+  public final <X extends Throwable> R getOrThrow(Supplier<X> ifUndefined) throws X {
+    return right().getOrThrow(ifUndefined);
+  }
+
+  /**
    * Map the given function across the right hand side value if it is one.
    * 
    * @param <X> the RHS type
@@ -211,7 +282,7 @@ public abstract class Either<L, R> implements Serializable {
 
   /**
    * Binds the given function across the right hand side value if it is one.
-   * 
+   *
    * @param <X> the RHS type
    * @param f the function to bind.
    * @return A new either value after binding with the function applied if this
@@ -220,6 +291,104 @@ public abstract class Either<L, R> implements Serializable {
    */
   public final <X> Either<L, X> flatMap(final Function<? super R, Either<L, X>> f) {
     return right().flatMap(f);
+  }
+
+  /**
+   * Return `true` if this is a right value <strong>and</strong> applying the
+   * predicate to the contained value returns true.
+   *
+   * @param p the predicate to test.
+   * @return {@code true} if right and the predicate returns true for the right
+   * value, {@code false} otherwise.
+   * @since 2.3
+   */
+  public final boolean exists(final Predicate<? super R> p) {
+    return right().exists(p);
+  }
+
+  /**
+   * Returns <code>true</code> if it is a left or the result of the application
+   * of the given predicate on the contained value.
+   *
+   * @param p The predicate function to test on the contained value.
+   * @return <code>true</code> if no value or returns the result of the
+   * application of the given function to the value.
+   * @since 2.3
+   */
+  public final boolean forall(final Predicate<? super R> p) {
+    return right().forall(p);
+  }
+
+  /**
+   * Perform the given side-effect for the contained element if it is a right
+   *
+   * @param effect the input to use for performing the effect on contained
+   * value.
+   * @since 2.3
+   */
+  public final void foreach(final Effect<? super R> effect) {
+    right().foreach(effect);
+  }
+
+  /**
+   * /** If this is a right, return the same right. Otherwise, return
+   * {@code orElse}.
+   *
+   * @param orElse either to return if this is left
+   * @return this or {@code orElse}
+   * @since 2.3
+   */
+  public final Either<L, R> orElse(final Either<? extends L, ? extends R> orElse) {
+    return this.orElse(Suppliers.ofInstance(orElse));
+  }
+
+  /**
+   * If this is a right, return the same right. Otherwise, return value supplied
+   * by {@code orElse}.
+   *
+   * @param orElse either to return if this is left
+   * @return this or {@code orElse}
+   * @since 2.3
+   */
+  public final Either<L, R> orElse(final Supplier<? extends Either<? extends L, ? extends R>> orElse) {
+    if (right().isDefined()) {
+      return new Right<L, R>(right().get());
+    }
+
+    @SuppressWarnings("unchecked")
+    Either<L, R> result = (Either<L, R>) orElse.get();
+    return result;
+  }
+
+  /**
+   * If this is a right return the contained value, else return the result of
+   * running function on left
+   *
+   * @param or Function to run if this is a left
+   * @return contained value of R or result of {@code or}
+   * @since 2.3
+   */
+  public final R valueOr(final Function<L, ? extends R> or) {
+    if (right().isDefined()) {
+      return right().get();
+    }
+
+    return or.apply(left().get());
+  }
+
+  /**
+   * Returns <code>None</code> if this is a left or if the given predicate
+   * <code>p</code> does not hold for the contained value, otherwise, returns a
+   * right in <code>Some</code>.
+   *
+   * @param p The predicate function to test on the right contained value.
+   * @return <code>None</code> if this is a left or if the given predicate
+   * <code>p</ code> does not hold for the right contained value, otherwise,
+   * returns a right in <code>Some</code>.
+   * @since 2.3
+   */
+  public Option<Either<L, R>> filter(final Predicate<? super R> p) {
+    return right().filter(p);
   }
 
   /**
@@ -287,7 +456,8 @@ public abstract class Either<L, R> implements Serializable {
    * applied.
    * @since 2.2
    */
-  public abstract <LL, RR> Either<LL, RR> bimap(final Function<? super L, ? extends LL> ifLeft, final Function<? super R, ? extends RR> ifRight);
+  public abstract <LL, RR> Either<LL, RR> bimap(final Function<? super L, ? extends LL> ifLeft,
+    final Function<? super R, ? extends RR> ifRight);
 
   //
   // internal only, should not be accessed from outside this class
@@ -337,7 +507,8 @@ public abstract class Either<L, R> implements Serializable {
       return ifLeft.apply(value);
     }
 
-    @Override public <LL, RR> Either<LL, RR> bimap(Function<? super L, ? extends LL> ifLeft, Function<? super R, ? extends RR> ifRight) {
+    @Override public <LL, RR> Either<LL, RR> bimap(Function<? super L, ? extends LL> ifLeft,
+      Function<? super R, ? extends RR> ifRight) {
       @SuppressWarnings("unchecked")
       final Either<LL, RR> map = (Either<LL, RR>) left().map(ifLeft);
       return map;
@@ -392,7 +563,8 @@ public abstract class Either<L, R> implements Serializable {
       return ifRight.apply(value);
     }
 
-    @Override public <LL, RR> Either<LL, RR> bimap(Function<? super L, ? extends LL> ifLeft, Function<? super R, ? extends RR> ifRight) {
+    @Override public <LL, RR> Either<LL, RR> bimap(Function<? super L, ? extends LL> ifLeft,
+      Function<? super R, ? extends RR> ifRight) {
       @SuppressWarnings("unchecked")
       final Either<LL, RR> map = (Either<LL, RR>) right().map(ifRight);
       return map;
@@ -534,13 +706,13 @@ public abstract class Either<L, R> implements Serializable {
     /**
      * Returns <code>None</code> if this projection has no value or if the given
      * predicate <code>p</code> does not hold for the value, otherwise, returns
-     * a right in <code>Some</code>.
+     * a left in <code>Some</code>.
      * 
      * @param <X> the RHS type
      * @param f The predicate function to test on this projection's value.
      * @return <code>None</code> if this projection has no value or if the given
      * predicate <code>p</code> does not hold for the value, otherwise, returns
-     * a right in <code>Some</code>.
+     * a left in <code>Some</code>.
      */
     public <X> Option<Either<L, X>> filter(final Predicate<? super L> f) {
       if (isLeft() && f.apply(get())) {
@@ -639,13 +811,13 @@ public abstract class Either<L, R> implements Serializable {
     /**
      * Returns <code>None</code> if this projection has no value or if the given
      * predicate <code>p</code> does not hold for the value, otherwise, returns
-     * a left in <code>Some</code>.
+     * a right in <code>Some</code>.
      * 
      * @param <X> the LHS type
      * @param f The predicate function to test on this projection's value.
      * @return <code>None</code> if this projection has no value or if the given
      * predicate <code>p</code> does not hold for the value, otherwise, returns
-     * a left in <code>Some</code>.
+     * a right in <code>Some</code>.
      */
     public <X> Option<Either<X, R>> filter(final Predicate<? super R> f) {
       if (isRight() && f.apply(get())) {
