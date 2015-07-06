@@ -16,14 +16,12 @@
 
 package com.atlassian.fugue;
 
+import java.util.Iterator;
+
 /**
- * Marker interface for use in constructing iterators
+ * Iterator that can examine next without removing it
  *
  * @since 3.0
+ * @param <A> element type
  */
-interface Peek<A> {
-  /**
-   * Look at but do not modify the "next" thing.
-   */
-  A peek();
-}
+public interface PeekingIterator<A> extends Peek<A>, Iterator<A> {}

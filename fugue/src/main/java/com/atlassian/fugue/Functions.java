@@ -17,14 +17,11 @@ package com.atlassian.fugue;
 
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static com.atlassian.fugue.Iterables.isEmpty;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -444,7 +441,7 @@ public class Functions {
    * @since 2.2
    */
   public static <A, B> Function<A, B> weakMemoize(Function<A, B> f) {
-    return com.atlassian.util.concurrent.Functions.weakMemoize(f);
+    return WeakMemoizer.weakMemoizer(f);
   }
 
   /**
@@ -625,7 +622,7 @@ public class Functions {
     Matcher(Iterable<Function<? super A, ? extends Option<? extends B>>> fs) {
       this.fs = requireNonNull(fs);
 
-      if (isEmpty().test(fs)) {
+      if (!fs.iterator().hasNext()) {
         throw new IllegalArgumentException("Condition must be true but returned false instead");
       }
     }

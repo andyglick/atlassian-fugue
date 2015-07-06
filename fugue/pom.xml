@@ -50,17 +50,6 @@
     </build>
 
     <dependencies>
-        <dependency>
-            <!-- findbugs is only useful for compile/analysis, not needed 
-                at runtime -->
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.atlassian.util.concurrent</groupId>
-            <artifactId>atlassian-util-concurrent</artifactId>
-            <scope>provided</scope>
-        </dependency>
 
         <!-- Test deps -->
         <dependency>

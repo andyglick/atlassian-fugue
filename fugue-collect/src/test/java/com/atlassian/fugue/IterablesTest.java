@@ -66,7 +66,7 @@ public class IterablesTest {
   }
 
   @Test public void findFirstEmpty() {
-    assertThat(findFirst(Arrays.<Integer> asList(), grepOne), is(Option.<Integer> none()));
+    assertThat(findFirst(Arrays.<Integer> asList(), grepOne), is(Option.<Integer>none()));
   }
 
   @Test public void findFirstAbsent() {
@@ -74,16 +74,16 @@ public class IterablesTest {
   }
 
   @Test public void findFirstSingle() {
-    assertThat(findFirst(asList(1), grepOne), is(some(1)));
+    assertThat(findFirst(asList(1), grepOne), is(Option.some(1)));
   }
 
   @Test public void findFirstWhenNotFirstElement() {
-    assertThat(findFirst(asList(2, 1), grepOne), is(some(1)));
+    assertThat(findFirst(asList(2, 1), grepOne), is(Option.some(1)));
   }
 
   @Test public void findFirstMultipleMatches() {
-    final Pair<Integer, Integer> expected = pair(1, 1);
-    final List<Pair<Integer, Integer>> ts = asList(expected, pair(2, 2), pair(1, 3), pair(2, 4));
+    final Pair<Integer, Integer> expected = Pair.pair(1, 1);
+    final List<Pair<Integer, Integer>> ts = Arrays.asList(expected, Pair.pair(2, 2), Pair.pair(1, 3), Pair.pair(2, 4));
 
     final Option<Pair<Integer, Integer>> found = findFirst(ts, input -> input.left().equals(1));
 
@@ -162,15 +162,15 @@ public class IterablesTest {
   }
 
   @Test public void findFirstFunctionWorks() {
-    assertThat(findFirst(Predicate.isEqual(3)).apply(asList(1, 2, 3)), is(some(3)));
+    assertThat(findFirst(Predicate.isEqual(3)).apply(asList(1, 2, 3)), is(Option.some(3)));
   }
 
   @Test public void findFirstFunctionFails() {
-    assertThat(findFirst(Predicate.isEqual(3)).apply(asList(1, 2, 4)), is(Option.<Integer> none()));
+    assertThat(findFirst(Predicate.isEqual(3)).apply(asList(1, 2, 4)), is(Option.<Integer>none()));
   }
 
   @Test(expected = InvocationTargetException.class) public void nonInstantiable() throws Exception {
-    getOrThrow(UtilityFunctions.<Iterables> defaultCtor().apply(Iterables.class));
+    Eithers.getOrThrow(UtilityFunctions.<Iterables>defaultCtor().apply(Iterables.class));
   }
 
   @Test public void revMap() {
@@ -180,7 +180,7 @@ public class IterablesTest {
 
   @Test public void flattenCollapses() {
     Iterable<Iterable<Integer>> iterables = asList(singletonList(1), singletonList(2));
-    assertThat(flatten(iterables), contains(1,2));
+    assertThat(flatten(iterables), contains(1, 2));
   }
 
   /**

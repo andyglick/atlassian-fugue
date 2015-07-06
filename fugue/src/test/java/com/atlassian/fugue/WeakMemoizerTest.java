@@ -5,6 +5,8 @@ import org.junit.Test;
 import java.lang.ref.WeakReference;
 import java.util.function.Function;
 
+import static com.atlassian.fugue.Functions.weakMemoize;
+import static com.atlassian.fugue.WeakMemoizer.weakMemoizer;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
@@ -17,16 +19,16 @@ public class WeakMemoizerTest {
   }
 
   @Test public void callingTwiceReturnsSame() throws Exception {
-    final Function<Integer, String> memoizer = com.atlassian.util.concurrent.Functions.weakMemoize(supplier());
+    final Function<Integer, String> memoizer = weakMemoize(supplier());
     assertSame(memoizer.apply(1), memoizer.apply(1));
   }
 
   @Test public void callingDifferentMemoizersReturnsDifferent() throws Exception {
-    assertNotSame(com.atlassian.util.concurrent.Functions.weakMemoize(supplier()).apply(1), com.atlassian.util.concurrent.Functions.weakMemoize(supplier()).apply(1));
+    assertNotSame(weakMemoizer(supplier()).apply(1), weakMemoize(supplier()).apply(1));
   }
 
   @Test public void many() throws Exception {
-    final Function<Integer, String> memoizer = com.atlassian.util.concurrent.Functions.weakMemoize(supplier());
+    final Function<Integer, String> memoizer = weakMemoize(supplier());
 
     final int size = 10000;
     for (int i = 0; i < 10; i++) {
@@ -38,7 +40,7 @@ public class WeakMemoizerTest {
   }
 
   @Test public void losesReference() throws Exception {
-    final Function<Integer, String> memoizer = com.atlassian.util.concurrent.Functions.weakMemoize(supplier());
+    final Function<Integer, String> memoizer = weakMemoize(supplier());
 
     final WeakReference<String> one = new WeakReference<>(memoizer.apply(1));
     for (int i = 0; i < 10; i++) {

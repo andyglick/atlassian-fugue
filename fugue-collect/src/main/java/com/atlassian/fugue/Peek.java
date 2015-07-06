@@ -13,17 +13,17 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
+
 package com.atlassian.fugue;
 
-import java.util.Iterator;
-
 /**
- * Iterator where {@link #remove} is unsupported.
+ * Marker interface for use in constructing iterators
+ *
+ * @since 3.0
  */
-abstract class UnmodifiableIterator<E> implements Iterator<E> {
-  protected UnmodifiableIterator() {}
-
-  @Deprecated @Override public final void remove() {
-    throw new UnsupportedOperationException();
-  }
+public interface Peek<A> {
+  /**
+   * Look at but do not modify the "next" thing.
+   */
+  A peek();
 }

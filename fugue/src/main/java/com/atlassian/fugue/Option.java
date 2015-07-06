@@ -219,7 +219,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   }
 
   @Override public final Iterator<A> iterator() {
-    return fold(ofInstance(Iterators.<A> emptyIterator()), Iterators::<A> singletonIterator);
+    return fold(ofInstance(Option.<A> emptyIterator()), Option::<A> singletonIterator);
   }
 
   //
@@ -368,6 +368,65 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   //
   // inner classes
   //
+
+  /**
+   * Iterator that returns a single element
+   * @param a element to return
+   * @param <A> element type
+   * @return iterator returning only a
+   *
+   * @since 3.0
+   */
+  static <A> Iterator<A> singletonIterator(final A a) {
+    return new Iterator<A>() {
+      boolean done = false;
+
+      @Override public boolean hasNext() {
+        return !done;
+      }
+
+      @Override public A next() {
+        if (done) {
+          throw new UnsupportedOperationException("Attempted to call next on empty iterator");
+        } else {
+          done = true;
+          return a;
+        }
+      }
+
+      @Override public void remove() {
+        throw new UnsupportedOperationException("Cannot call remove on this iterator");
+      }
+    };
+  }
+
+  /**
+   * Iterator with no values inside
+   * @param <A> element type
+   * @return empty iterator
+   *
+   * @since 3.0
+   */
+  @SuppressWarnings("unchecked") public static <A> Iterator<A> emptyIterator() {
+    return (Iterator<A>) EmptyIterator.INSTANCE;
+  }
+
+  private enum EmptyIterator implements Iterator<Object> {
+    INSTANCE;
+
+    @Override public boolean hasNext() {
+      return false;
+    }
+
+    @Override public Object next() {
+      throw new NoSuchElementException("Attempted to call next on empty iterator");
+    }
+
+    @Override public void remove() {
+      throw new UnsupportedOperationException("Cannot call remove on this iterator");
+    }
+  }
+
 
   /**
    * The big one, the actual implementation class.

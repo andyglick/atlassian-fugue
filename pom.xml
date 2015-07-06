@@ -30,6 +30,7 @@
 
     <modules>
         <module>fugue</module>
+        <module>fugue-collect</module>
         <module>fugue-scala</module>
         <module>fugue-guava</module>
     </modules>
@@ -40,7 +41,6 @@
         <maven.compiler.target>8</maven.compiler.target>
         <clover.Version>4.0.4</clover.Version>
         <slf4j-api.version>1.6.0</slf4j-api.version>
-        <atlassian-util-concurrent.version>4.0.0</atlassian-util-concurrent.version>
         <mockito-core.version>1.8.4</mockito-core.version>
         <junit.version>4.11</junit.version>
         <hamcrest.version>1.3</hamcrest.version>
@@ -86,21 +86,9 @@
                 <version>${slf4j-api.version}</version>
             </dependency>
             <dependency>
-                <!-- findbugs is only useful for compile/analysis, not needed
-                    at runtime -->
-                <groupId>com.google.code.findbugs</groupId>
-                <artifactId>jsr305</artifactId>
-                <version>${jsr305.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>com.google.code.findbugs</groupId>
                 <artifactId>annotations</artifactId>
                 <version>3.0.0</version>
-            </dependency>
-            <dependency>
-                <groupId>com.atlassian.util.concurrent</groupId>
-                <artifactId>atlassian-util-concurrent</artifactId>
-                <version>${atlassian-util-concurrent.version}</version>
             </dependency>
 
             <!-- Test deps -->

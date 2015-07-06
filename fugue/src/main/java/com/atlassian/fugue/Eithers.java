@@ -16,14 +16,12 @@
 package com.atlassian.fugue;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Objects;
+import java.util.Collections;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static com.atlassian.fugue.Iterables.transform;
+import static com.atlassian.fugue.DeprecatedCode.transform;
 
 /**
  * Utility functions for Eithers.
@@ -211,9 +209,13 @@ public class Eithers {
    * @param <R> the RHS type
    * @param it iterable of eithers to filter and transform from
    * @return the left values contained in the contents of it
+   *
+   * @deprecated since 3.0, functions taking Iterables have moved to fugue-collect
+   * See EithersCollect#filterLeft
    */
+  @Deprecated
   public static <L, R> Iterable<L> filterLeft(Iterable<Either<L, R>> it) {
-    return Iterables.collect(it, Eithers.<L, R> leftMapper());
+    return DeprecatedCode.collect(it, Eithers.<L, R>leftMapper());
   }
 
   /**
@@ -224,7 +226,11 @@ public class Eithers {
    * @param <R> the RHS type
    * @param it iterable of eithers to filter and transform from
    * @return the right values contained in the contents of it
+   *
+   * @deprecated since 3.0, functions taking Iterables have moved to fugue-collect
+   * See EithersCollect#filterRight
    */
+  @Deprecated
   public static <L, R> Iterable<R> filterRight(Iterable<Either<L, R>> it) {
     return Options.flatten(transform(it, Eithers.<L, R> rightMapper()));
   }
@@ -237,7 +243,11 @@ public class Eithers {
    * @param <R> the RHS type
    * @param eithers an Iterable of either values
    * @return either the iterable of right values, or the first left encountered.
+   *
+   * @deprecated since 3.0, functions taking Iterables have moved to fugue-collect
+   * See EithersCollect#sequenceRight
    */
+  @Deprecated
   public static <L, R> Either<L, Iterable<R>> sequenceRight(final Iterable<Either<L, R>> eithers) {
     ArrayList<R> rs = new ArrayList<>();
     for (final Either<L, R> e : eithers) {
@@ -246,7 +256,7 @@ public class Eithers {
       }
       rs.add(e.right().get());
     }
-    return Either.right(collect(rs));
+    return Either.right(Collections.unmodifiableList(rs));
   }
 
   /**
@@ -257,7 +267,11 @@ public class Eithers {
    * @param <R> the RHS type
    * @param eithers an Iterable of either values
    * @return either the iterable of left values, or the first right encountered.
+   *
+   * @deprecated since 3.0, functions taking Iterables have moved to fugue-collect
+   * See EithersCollect#sequenceRight
    */
+  @Deprecated
   public static <L, R> Either<Iterable<L>, R> sequenceLeft(final Iterable<Either<L, R>> eithers) {
     ArrayList<L> ls = new ArrayList<>();
     for (final Either<L, R> e : eithers) {
@@ -266,40 +280,6 @@ public class Eithers {
       }
       ls.add(e.left().get());
     }
-    return Either.left(collect(ls));
-  }
-
-  /**
-   * Prevent tampering with the underlying array list by wrapping list in a new iterable.
-   * @param list array list to wrap
-   * @param <A> contents of the array list
-   * @return iterable over the array list
-   *
-   * @since 3.0
-   */
-  static <A> Iterable<A> collect(ArrayList<A> list) {
-    return new Collect<>(list);
-  }
-  static final class Collect<A> implements Iterable<A> {
-    private final ArrayList<? extends A> as;
-
-    public Collect(ArrayList<? extends A> as) {
-      this.as = as;
-    }
-
-    @Override public Iterator<A> iterator() {
-      return new AbstractIterator<A>() {
-        private int position = 0;
-
-        @Override protected A computeNext() {
-          if (position >= as.size()) {
-            return endOfData();
-          }
-          A result = as.get(position);
-          position++;
-          return result;
-        }
-      };
-    }
+    return Either.left(Collections.unmodifiableList(ls));
   }
 }

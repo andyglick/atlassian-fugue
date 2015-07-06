@@ -13,9 +13,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package com.atlassian.fugue;
 
-import com.atlassian.util.concurrent.LazyReference;
+package com.atlassian.fugue;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -53,7 +52,7 @@ import static java.util.Objects.requireNonNull;
  * those in Iterables so that methods from both classes can be statically
  * imported in the same class.
  *
- * @since 1.0
+ * @since 3.0
  */
 public class Iterables {
   private Iterables() {
@@ -113,7 +112,7 @@ public class Iterables {
    * @since 1.0
    */
   public static <T> Option<T> findFirst(final Iterable<? extends T> elements, final Predicate<? super T> p) {
-    for (final T t : Iterables.filter(elements, p)) {
+    for (final T t : filter(elements, p)) {
       return some(t);
     }
     return none();
@@ -167,7 +166,7 @@ public class Iterables {
    */
   public static <A, B> Iterable<B> flatMap(final Iterable<A> collection,
     final Function<? super A, ? extends Iterable<? extends B>> f) {
-    return flatten(Iterables.transform(collection, f));
+    return flatten(transform(collection, f));
   }
 
   /**
@@ -182,7 +181,7 @@ public class Iterables {
    * @since 1.1
    */
   public static <A, B> Iterable<B> revMap(final Iterable<? extends Function<A, B>> fs, final A arg) {
-    return Iterables.transform(fs, Functions.<A, B> apply(arg));
+    return transform(fs, Functions.<A, B> apply(arg));
   }
 
   /**
@@ -213,6 +212,7 @@ public class Iterables {
    * @param from the input iterable
    * @param partial the collecting function
    * @return the collected iterable
+   * @since 2.2
    */
   public static <A, B> Iterable<B> collect(Iterable<? extends A> from, Function<? super A, Option<B>> partial) {
     return new CollectingIterable<>(from, partial);
@@ -226,6 +226,7 @@ public class Iterables {
    * @param p to filter each element
    * @return a pair where the left matches the predicate, and the right does
    * not.
+   * @since 1.2
    */
   public static <A> Pair<Iterable<A>, Iterable<A>> partition(Iterable<A> iterable, Predicate<? super A> p) {
     return pair(filter(iterable, p), filter(iterable, p.negate()));
@@ -331,7 +332,7 @@ public class Iterables {
    * @param pairs the values
    * @return a {@link Pair pair} of {@link Iterable iterable} of the same length
    * as the input iterable.
-   * @since 2.2
+   * @since 1.2
    */
   public static <A, B> Pair<Iterable<A>, Iterable<B>> unzip(Iterable<Pair<A, B>> pairs) {
     return pair(transform(pairs, leftValue()), transform(pairs, rightValue()));
@@ -928,7 +929,7 @@ public class Iterables {
       // /CLOVER:ON
     }
 
-    static class Iter<A> extends com.atlassian.fugue.AbstractIterator<A> {
+    static class Iter<A> extends AbstractIterator<A> {
       Node<A> node;
 
       Iter(final Node<A> node) {

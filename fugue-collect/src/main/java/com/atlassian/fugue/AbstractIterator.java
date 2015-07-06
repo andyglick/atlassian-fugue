@@ -21,14 +21,14 @@ import java.util.NoSuchElementException;
 /**
  * A template implementation of the {@code Iterator} interface, so clients can
  * more easily implement Iterator for some patterns of iteration.
- *
- * <p>
+ *q
+ * <P>
  * An example is an iterator that skips over null elements in a backing
  * iterator. This could be implemented as:
- * 
+ *
  * <pre>
  * {@code
- * 
+ *
  *   public static Iterator<String> filterNulls(final Iterator<String> in) {
  *     return new AbstractIterator<String>() {
  *       protected String computeNext() {
@@ -44,14 +44,14 @@ import java.util.NoSuchElementException;
  *   }}
  * </pre>
  *
- * <p>
+ * <P>
  * This class supports iterators that include null elements.
- * 
- * <p>
+ *
+ * <P>
  * This class is a re-implentation of the Guava AbstractIterator class.
  * @since 3.0
  */
-abstract class AbstractIterator<A> extends UnmodifiableIterator<A> {
+public abstract class AbstractIterator<A> extends UnmodifiableIterator<A> {
   private State state = State.NotReady;
 
   /** Constructor for use by subclasses. */
@@ -65,7 +65,7 @@ abstract class AbstractIterator<A> extends UnmodifiableIterator<A> {
 
   /**
    * The next element.
-   * <p>
+   * <P>
    * <b>Note:</b> the implementation must call {@link #endOfData()} when there
    * are no elements left in the iteration. Failure to do so could result in an
    * infinite loop.

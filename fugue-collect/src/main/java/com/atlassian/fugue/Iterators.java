@@ -13,6 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
+
 package com.atlassian.fugue;
 
 import java.util.Collection;
@@ -30,7 +31,7 @@ class Iterators {
 
   /**
    * Adds all the elements of the iterator to the collectionToModify
-   * @param collectionToModify collection to add eleement to
+   * @param collectionToModify collection to add element to
    * @param iterator source of elements to add
    * @param <A> element type
    * @return true if any of the elements from iterator were not also in collectionToModify

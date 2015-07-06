@@ -31,39 +31,39 @@ import org.junit.Test;
 
 public class IterablesTakeTest {
   @Test public void takeOneFromList() {
-    assertThat(take(3, asList(1, 2, 3, 4)), contains(1, 2, 3));
+    assertThat(take(3, asList(1, 2, 3, 4)), Matchers.contains(1, 2, 3));
   }
 
   @Test public void takeOneFromNonList() {
-    assertThat(take(3, asIterable(1, 2, 3, 4)), contains(1, 2, 3));
+    assertThat(take(3, asIterable(1, 2, 3, 4)), Matchers.contains(1, 2, 3));
   }
 
   @Test public void takeNoneFromList() {
-    assertThat(take(0, asList(1, 2, 3, 4)), Matchers.<Integer> emptyIterable());
+    assertThat(take(0, asList(1, 2, 3, 4)), Matchers.<Integer>emptyIterable());
   }
 
   @Test public void takeNoneFromNonList() {
-    assertThat(take(0, asIterable(1, 2, 3, 4)), Matchers.<Integer> emptyIterable());
+    assertThat(take(0, asIterable(1, 2, 3, 4)), Matchers.<Integer>emptyIterable());
   }
 
   @Test public void takeAllFromList() {
-    assertThat(take(4, asList(1, 2, 3, 4)), contains(1, 2, 3, 4));
+    assertThat(take(4, asList(1, 2, 3, 4)), Matchers.contains(1, 2, 3, 4));
   }
 
   @Test public void takeAllFromNonList() {
-    assertThat(take(4, asIterable(1, 2, 3, 4)), contains(1, 2, 3, 4));
+    assertThat(take(4, asIterable(1, 2, 3, 4)), Matchers.contains(1, 2, 3, 4));
   }
 
   @Test public void takeMoreFromList() {
-    assertThat(take(12, asList(1, 2, 3, 4)), contains(1, 2, 3, 4));
+    assertThat(take(12, asList(1, 2, 3, 4)), Matchers.contains(1, 2, 3, 4));
   }
 
   @Test public void takeMoreFromNonList() {
-    assertThat(take(12, asIterable(1, 2, 3, 4)), contains(1, 2, 3, 4));
+    assertThat(take(12, asIterable(1, 2, 3, 4)), Matchers.contains(1, 2, 3, 4));
   }
 
   @Test public void takeThreeToString() {
-    assertThat(take(3, asIterable(1, 2, 3, 4)).toString(), is("[1, 2, 3]"));
+    assertThat(take(3, asIterable(1, 2, 3, 4)).toString(), Matchers.is("[1, 2, 3]"));
   }
 
   @Test(expected = NullPointerException.class) public void takeNull() {
