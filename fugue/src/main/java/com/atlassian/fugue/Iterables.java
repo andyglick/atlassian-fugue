@@ -95,7 +95,8 @@ public class Iterables {
 
   /**
    * Creates an Iterable from the underlying array of elements.
-   * 
+   *
+   * @param <A> The type of the elements
    * @param as the elements to iterate over
    * @return an Iterable across the underlying elements
    * @since 2.3

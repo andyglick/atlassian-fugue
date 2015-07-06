@@ -227,7 +227,7 @@ public abstract class Either<L, R> implements Serializable {
 
   /**
    * Get the value if it is right or null if not.
-   * <p/>
+   * <p>
    * Although the use of null is discouraged, code written to use these must
    * often interface with code that expects and returns nulls.
    *
@@ -241,7 +241,7 @@ public abstract class Either<L, R> implements Serializable {
   /**
    * Get the contained value or throws an error with the supplied message if
    * left.
-   * <p/>
+   * <p>
    * Used when absolutely sure this is a right.
    *
    * @param msg the message for the error.
@@ -254,7 +254,7 @@ public abstract class Either<L, R> implements Serializable {
 
   /**
    * Get the contained value or throws the supplied throwable if left
-   * <p/>
+   * <p>
    * Used when absolutely sure this is a right.
    *
    * @param <X> the type of the {@link Throwable} that could be thrown.
@@ -383,7 +383,7 @@ public abstract class Either<L, R> implements Serializable {
    *
    * @param p The predicate function to test on the right contained value.
    * @return <code>None</code> if this is a left or if the given predicate
-   * <code>p</ code> does not hold for the right contained value, otherwise,
+   * <code>p</code> does not hold for the right contained value, otherwise,
    * returns a right in <code>Some</code>.
    * @since 2.3
    */
