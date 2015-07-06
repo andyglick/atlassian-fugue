@@ -92,7 +92,9 @@ public class EitherRightBiasTest {
     assertThat(r.getOrThrow(Suppliers.ofInstance(new RuntimeException("Run Error"))), is(12));
   }
 
-  private class CustomException extends RuntimeException { }
+  private class CustomException extends RuntimeException {
+    private static final long serialVersionUID = -633224822465345980L;
+  }
 
   @Test(expected = CustomException.class) public void getOrThrowLeft() {
     l.getOrThrow(Suppliers.ofInstance(new CustomException()));
