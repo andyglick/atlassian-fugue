@@ -47,6 +47,9 @@ public class Functions {
    * {@code g: B->C}, composition is defined as the function h such that
    * {@code h(a) == g(f(a))} for each {@code a}.
    *
+   * @param <A> The start type
+   * @param <B> The intermediate type
+   * @param <C> The finished type
    * @param g the second function to apply
    * @param f the first function to apply
    * @return the composition of {@code f} and {@code g}
