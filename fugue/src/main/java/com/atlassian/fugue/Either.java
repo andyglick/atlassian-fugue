@@ -197,7 +197,8 @@ public abstract class Either<L, R> implements Serializable {
   // right-bias
 
   /**
-   * Get the value if it is a right or call the supplier and return its value if not.
+   * Get the value if it is a right or call the supplier and return its value if
+   * not.
    *
    * @param supplier called if this is a left
    * @return the wrapped value or the value from the {@code Supplier}
@@ -222,7 +223,8 @@ public abstract class Either<L, R> implements Serializable {
   /**
    * Get the value if it is right or null if not.
    * <p/>
-   * Although the use of null is discouraged, code written to use these must often interface with code that expects and returns nulls.
+   * Although the use of null is discouraged, code written to use these must
+   * often interface with code that expects and returns nulls.
    *
    * @return the contained value or null
    * @since 2.3
@@ -232,7 +234,8 @@ public abstract class Either<L, R> implements Serializable {
   }
 
   /**
-   * Get the contained value or throws an error with the supplied message if left.
+   * Get the contained value or throws an error with the supplied message if
+   * left.
    * <p/>
    * Used when absolutely sure this is a right.
    *
@@ -286,10 +289,12 @@ public abstract class Either<L, R> implements Serializable {
   }
 
   /**
-   * Return `true` if this is a right value <strong>and</strong> applying the predicate to the contained value returns true.
+   * Return `true` if this is a right value <strong>and</strong> applying the
+   * predicate to the contained value returns true.
    *
    * @param p the predicate to test.
-   * @return {@code true} if right and the predicate returns true for the right value, {@code false} otherwise.
+   * @return {@code true} if right and the predicate returns true for the right
+   * value, {@code false} otherwise.
    * @since 2.3
    */
   public final boolean exists(final Predicate<? super R> p) {
@@ -297,10 +302,12 @@ public abstract class Either<L, R> implements Serializable {
   }
 
   /**
-   * Returns <code>true</code> if it is a left or the result of the application of the given predicate on the contained value.
+   * Returns <code>true</code> if it is a left or the result of the application
+   * of the given predicate on the contained value.
    *
    * @param p The predicate function to test on the contained value.
-   * @return <code>true</code> if no value or returns the result of the application of the given function to the value.
+   * @return <code>true</code> if no value or returns the result of the
+   * application of the given function to the value.
    * @since 2.3
    */
   public final boolean forall(final Predicate<? super R> p) {
@@ -310,7 +317,8 @@ public abstract class Either<L, R> implements Serializable {
   /**
    * Perform the given side-effect for the contained element if it is a right
    *
-   * @param effect the input to use for performing the effect on contained value.
+   * @param effect the input to use for performing the effect on contained
+   * value.
    * @since 2.3
    */
   public final void foreach(final Effect<? super R> effect) {
@@ -318,7 +326,8 @@ public abstract class Either<L, R> implements Serializable {
   }
 
   /**
-   * /** If this is a right, return the same right. Otherwise, return {@code orElse}.
+   * /** If this is a right, return the same right. Otherwise, return
+   * {@code orElse}.
    *
    * @param orElse either to return if this is left
    * @return this or {@code orElse}
@@ -329,23 +338,26 @@ public abstract class Either<L, R> implements Serializable {
   }
 
   /**
-   * If this is a right, return the same right. Otherwise, return value supplied by {@code orElse}.
+   * If this is a right, return the same right. Otherwise, return value supplied
+   * by {@code orElse}.
    *
    * @param orElse either to return if this is left
    * @return this or {@code orElse}
    * @since 2.3
    */
-  @SuppressWarnings("unchecked")
   public final Either<L, R> orElse(final Supplier<? extends Either<? extends L, ? extends R>> orElse) {
     if (right().isDefined()) {
-      return new Right(right().get());
+      return new Right<L, R>(right().get());
     }
 
-    return (Either<L, R>) orElse.get();
+    @SuppressWarnings("unchecked")
+    Either<L, R> result = (Either<L, R>) orElse.get();
+    return result;
   }
 
   /**
-   * If this is a right return the contained value, else return the result of running function on left
+   * If this is a right return the contained value, else return the result of
+   * running function on left
    *
    * @param or Function to run if this is a left
    * @return contained value of R or result of {@code or}
@@ -360,11 +372,13 @@ public abstract class Either<L, R> implements Serializable {
   }
 
   /**
-   * Returns <code>None</code> if this is a left or if the given predicate <code>p</code> does not hold for the contained value, otherwise, returns a
+   * Returns <code>None</code> if this is a left or if the given predicate
+   * <code>p</code> does not hold for the contained value, otherwise, returns a
    * right in <code>Some</code>.
    *
    * @param p The predicate function to test on the right contained value.
-   * @return <code>None</code> if this is a left or if the given predicate <code>p</ code> does not hold for the right contained value, otherwise,
+   * @return <code>None</code> if this is a left or if the given predicate
+   * <code>p</ code> does not hold for the right contained value, otherwise,
    * returns a right in <code>Some</code>.
    * @since 2.3
    */
@@ -437,7 +451,8 @@ public abstract class Either<L, R> implements Serializable {
    * applied.
    * @since 2.2
    */
-  public abstract <LL, RR> Either<LL, RR> bimap(final Function<? super L, ? extends LL> ifLeft, final Function<? super R, ? extends RR> ifRight);
+  public abstract <LL, RR> Either<LL, RR> bimap(final Function<? super L, ? extends LL> ifLeft,
+    final Function<? super R, ? extends RR> ifRight);
 
   //
   // internal only, should not be accessed from outside this class
@@ -487,7 +502,8 @@ public abstract class Either<L, R> implements Serializable {
       return ifLeft.apply(value);
     }
 
-    @Override public <LL, RR> Either<LL, RR> bimap(Function<? super L, ? extends LL> ifLeft, Function<? super R, ? extends RR> ifRight) {
+    @Override public <LL, RR> Either<LL, RR> bimap(Function<? super L, ? extends LL> ifLeft,
+      Function<? super R, ? extends RR> ifRight) {
       @SuppressWarnings("unchecked")
       final Either<LL, RR> map = (Either<LL, RR>) left().map(ifLeft);
       return map;
@@ -542,7 +558,8 @@ public abstract class Either<L, R> implements Serializable {
       return ifRight.apply(value);
     }
 
-    @Override public <LL, RR> Either<LL, RR> bimap(Function<? super L, ? extends LL> ifLeft, Function<? super R, ? extends RR> ifRight) {
+    @Override public <LL, RR> Either<LL, RR> bimap(Function<? super L, ? extends LL> ifLeft,
+      Function<? super R, ? extends RR> ifRight) {
       @SuppressWarnings("unchecked")
       final Either<LL, RR> map = (Either<LL, RR>) right().map(ifRight);
       return map;
