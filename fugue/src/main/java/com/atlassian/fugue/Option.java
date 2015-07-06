@@ -117,7 +117,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    * 
    * @since 1.1
    */
-  static <A> Function<A, Option<A>> toOption() {
+  public static <A> Function<A, Option<A>> toOption() {
     return new ToOption<>();
   }
 

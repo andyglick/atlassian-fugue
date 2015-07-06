@@ -16,7 +16,7 @@ import static java.util.Objects.requireNonNull;
  * been moved to fugue-collect.
  * @since 3.0
  */
-public class DeprecatedCode {
+class DeprecatedCode {
 
   /**
    * Iterator where {@link #remove} is unsupported.
