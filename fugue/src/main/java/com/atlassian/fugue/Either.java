@@ -45,6 +45,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Either is immutable, but does not force immutability on contained objects; if
  * the contained objects are mutable then equals and hashcode methods should not
  * be relied on.
+ * <p>
+ * Since 2.2, there have been some right-biased methods added. With 2.3 the available
+ * right-biased methods has increased. The purpose of these is that you can do something
+ * like {@code either.map(...)} directly, which is identical to calling
+ * {@code either.right().map(...)}.
  * 
  * @since 1.0
  */
