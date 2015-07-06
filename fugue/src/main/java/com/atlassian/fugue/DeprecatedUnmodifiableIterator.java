@@ -21,7 +21,7 @@ import java.util.Iterator;
 /**
  * Iterator where {@link #remove} is unsupported.
  */
-public abstract class DeprecatedUnmodifiableIterator<E> implements Iterator<E> {
+abstract class DeprecatedUnmodifiableIterator<E> implements Iterator<E> {
   protected DeprecatedUnmodifiableIterator() {}
 
   @Deprecated @Override public final void remove() {

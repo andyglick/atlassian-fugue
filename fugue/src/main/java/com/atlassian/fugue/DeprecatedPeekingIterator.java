@@ -24,4 +24,4 @@ import java.util.Iterator;
  * @since 3.0
  * @param <A> element type
  */
-public interface DeprecatedPeekingIterator<A> extends DeprecatedPeek<A>, Iterator<A> {}
+interface DeprecatedPeekingIterator<A> extends DeprecatedPeek<A>, Iterator<A> {}

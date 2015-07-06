@@ -21,7 +21,7 @@ package com.atlassian.fugue;
  *
  * @since 3.0
  */
-public interface DeprecatedPeek<A> {
+interface DeprecatedPeek<A> {
   /**
    * Look at but do not modify the "next" thing.
    */
