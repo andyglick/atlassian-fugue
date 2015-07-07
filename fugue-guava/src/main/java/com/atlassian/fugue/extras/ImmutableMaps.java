@@ -23,7 +23,7 @@ import java.util.function.Function;
 import com.atlassian.fugue.Functions;
 import com.atlassian.fugue.Option;
 import com.atlassian.fugue.Options;
-import com.atlassian.fugue.collect.Iterables;
+import com.atlassian.fugue.Iterables;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 

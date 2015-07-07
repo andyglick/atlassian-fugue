@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package com.atlassian.fugue.collect;
+package com.atlassian.fugue;
 
 import org.hamcrest.Matcher;
 import org.junit.Test;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 
-import static com.atlassian.fugue.collect.Iterables.mergeSorted;
+import static com.atlassian.fugue.Iterables.mergeSorted;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.emptyIterableOf;

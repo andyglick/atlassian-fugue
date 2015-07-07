@@ -27,8 +27,9 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.atlassian.fugue.Eithers.getOrThrow;
-import static com.atlassian.fugue.DeprecatedCode.filter;
-import static com.atlassian.fugue.DeprecatedCode.size;
+import static com.atlassian.fugue.Iterables.filter;
+import static com.atlassian.fugue.Iterables.isEmpty;
+import static com.atlassian.fugue.Iterables.size;
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.option;
 import static com.atlassian.fugue.Option.some;
@@ -192,7 +193,7 @@ public class OptionStaticsTest {
   }
 
   @Test public void filterFindsNone() {
-    assertThat(DeprecatedCode.isEmpty().test(filterNone(fourNones())), is(true));
+    assertThat(isEmpty().test(filterNone(fourNones())), is(true));
   }
 
 

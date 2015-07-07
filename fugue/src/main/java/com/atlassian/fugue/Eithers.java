@@ -21,7 +21,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static com.atlassian.fugue.DeprecatedCode.transform;
+import static com.atlassian.fugue.Iterables.collect;
+import static com.atlassian.fugue.Iterables.transform;
 
 /**
  * Utility functions for Eithers.
@@ -209,13 +210,9 @@ public class Eithers {
    * @param <R> the RHS type
    * @param it iterable of eithers to filter and transform from
    * @return the left values contained in the contents of it
-   *
-   * @deprecated since 3.0, functions taking Iterables have moved to fugue-collect
-   * See EithersCollect#filterLeft
    */
-  @Deprecated
   public static <L, R> Iterable<L> filterLeft(Iterable<Either<L, R>> it) {
-    return DeprecatedCode.collect(it, Eithers.<L, R>leftMapper());
+    return collect(it, Eithers.<L, R>leftMapper());
   }
 
   /**
@@ -226,11 +223,7 @@ public class Eithers {
    * @param <R> the RHS type
    * @param it iterable of eithers to filter and transform from
    * @return the right values contained in the contents of it
-   *
-   * @deprecated since 3.0, functions taking Iterables have moved to fugue-collect
-   * See EithersCollect#filterRight
    */
-  @Deprecated
   public static <L, R> Iterable<R> filterRight(Iterable<Either<L, R>> it) {
     return Options.flatten(transform(it, Eithers.<L, R> rightMapper()));
   }
@@ -243,11 +236,7 @@ public class Eithers {
    * @param <R> the RHS type
    * @param eithers an Iterable of either values
    * @return either the iterable of right values, or the first left encountered.
-   *
-   * @deprecated since 3.0, functions taking Iterables have moved to fugue-collect
-   * See EithersCollect#sequenceRight
    */
-  @Deprecated
   public static <L, R> Either<L, Iterable<R>> sequenceRight(final Iterable<Either<L, R>> eithers) {
     ArrayList<R> rs = new ArrayList<>();
     for (final Either<L, R> e : eithers) {
@@ -267,11 +256,7 @@ public class Eithers {
    * @param <R> the RHS type
    * @param eithers an Iterable of either values
    * @return either the iterable of left values, or the first right encountered.
-   *
-   * @deprecated since 3.0, functions taking Iterables have moved to fugue-collect
-   * See EithersCollect#sequenceRight
    */
-  @Deprecated
   public static <L, R> Either<Iterable<L>, R> sequenceLeft(final Iterable<Either<L, R>> eithers) {
     ArrayList<L> ls = new ArrayList<>();
     for (final Either<L, R> e : eithers) {

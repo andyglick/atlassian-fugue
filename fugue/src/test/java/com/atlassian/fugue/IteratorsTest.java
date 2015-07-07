@@ -1,15 +1,14 @@
-package com.atlassian.fugue.collect;
+package com.atlassian.fugue;
 
-import com.atlassian.fugue.collect.PeekingIterator;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import static com.atlassian.fugue.collect.Iterators.emptyIterator;
-import static com.atlassian.fugue.collect.Iterators.peekingIterator;
-import static com.atlassian.fugue.collect.Iterators.singletonIterator;
+import static com.atlassian.fugue.Iterators.emptyIterator;
+import static com.atlassian.fugue.Iterators.peekingIterator;
+import static com.atlassian.fugue.Iterators.singletonIterator;
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -17,7 +16,7 @@ import static org.hamcrest.Matchers.is;
 public class IteratorsTest {
 
   @Test(expected=IllegalStateException.class) public void removeAfterPeeking() throws Exception {
-    PeekingIterator<Integer> integerPeekingIterator = peekingIterator(asList(1, 2).iterator());
+    Iterators.Peeking<Integer> integerPeekingIterator = peekingIterator(asList(1, 2).iterator());
     assertThat(integerPeekingIterator.peek(), is(1));
     integerPeekingIterator.remove();
   }
@@ -26,7 +25,7 @@ public class IteratorsTest {
     List<Integer> testList = new ArrayList<>();
     testList.add(1);
     testList.add(2);
-    PeekingIterator<Integer> integerPeekingIterator = peekingIterator(testList.listIterator());
+    Iterators.Peeking<Integer> integerPeekingIterator = peekingIterator(testList.listIterator());
     integerPeekingIterator.next();
     integerPeekingIterator.remove();
     assertThat(integerPeekingIterator.peek(), is(2));

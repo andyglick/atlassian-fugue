@@ -13,15 +13,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package com.atlassian.fugue.collect;
+package com.atlassian.fugue;
 
-import static com.atlassian.fugue.collect.Iterables.filter;
-import static com.atlassian.fugue.collect.Iterables.memoize;
-import static com.atlassian.fugue.collect.Iterables.transform;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -29,7 +23,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import org.junit.Test;
+import static com.atlassian.fugue.Iterables.filter;
+import static com.atlassian.fugue.Iterables.memoize;
+import static com.atlassian.fugue.Iterables.transform;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 
 @SuppressWarnings("unused") public class IterablesMemoizeTest {
   @Test public void assertThatFunctionTransformingSingletonIterableIsOnlyCalledOnce() {

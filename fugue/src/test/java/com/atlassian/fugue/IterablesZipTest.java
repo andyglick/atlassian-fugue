@@ -13,16 +13,15 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package com.atlassian.fugue.collect;
+package com.atlassian.fugue;
 
-import com.atlassian.fugue.Pair;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
-import static com.atlassian.fugue.collect.Iterables.zip;
-import static com.atlassian.fugue.collect.Iterables.zipWith;
-import static com.atlassian.fugue.collect.Iterables.zipWithIndex;
+import static com.atlassian.fugue.Iterables.zip;
+import static com.atlassian.fugue.Iterables.zipWith;
+import static com.atlassian.fugue.Iterables.zipWithIndex;
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertThat;

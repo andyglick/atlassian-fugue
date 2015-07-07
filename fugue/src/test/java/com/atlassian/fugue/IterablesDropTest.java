@@ -13,17 +13,17 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package com.atlassian.fugue.collect;
+package com.atlassian.fugue;
 
-import static com.atlassian.fugue.collect.Iterables.drop;
+import org.hamcrest.Matchers;
+import org.junit.Test;
+
+import static com.atlassian.fugue.Iterables.drop;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-
-import org.hamcrest.Matchers;
-import org.junit.Test;
 
 public class IterablesDropTest {
   @Test public void dropOneFromList() {

@@ -13,11 +13,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package com.atlassian.fugue.collect;
+package com.atlassian.fugue;
 
-import com.atlassian.fugue.Eithers;
-import com.atlassian.fugue.Option;
-import com.atlassian.fugue.Pair;
 import org.junit.Test;
 
 import java.lang.reflect.InvocationTargetException;
@@ -28,12 +25,12 @@ import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.atlassian.fugue.collect.Iterables.emptyIterable;
-import static com.atlassian.fugue.collect.Iterables.findFirst;
-import static com.atlassian.fugue.collect.Iterables.flatten;
-import static com.atlassian.fugue.collect.Iterables.partition;
-import static com.atlassian.fugue.collect.Iterables.rangeTo;
-import static com.atlassian.fugue.collect.Iterables.rangeUntil;
+import static com.atlassian.fugue.Iterables.emptyIterable;
+import static com.atlassian.fugue.Iterables.findFirst;
+import static com.atlassian.fugue.Iterables.flatten;
+import static com.atlassian.fugue.Iterables.partition;
+import static com.atlassian.fugue.Iterables.rangeTo;
+import static com.atlassian.fugue.Iterables.rangeUntil;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -194,7 +191,7 @@ public class IterablesTest {
     }
 
     @Override public Iterator<String> iterator() {
-      return new AbstractIterator<String>() {
+      return new Iterators.Abstract<String>() {
         int index = 0;
 
         @Override protected String computeNext() {

@@ -26,8 +26,6 @@ import static com.atlassian.fugue.Eithers.filterRight;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-// All tests here are for deprecated code moved to fugue-collect
-
 public class FilterRightTest {
   @Test public void leftOnlyFiltersRightToEmpty() {
     final List<Either<Integer, String>> it = Arrays.asList(Either.<Integer, String> left(1),

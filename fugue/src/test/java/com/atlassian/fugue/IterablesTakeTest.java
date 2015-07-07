@@ -13,22 +13,19 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package com.atlassian.fugue.collect;
+package com.atlassian.fugue;
 
-import static com.atlassian.fugue.collect.Iterables.take;
-import static com.atlassian.fugue.collect.Iterables.transform;
-import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import org.hamcrest.Matchers;
+import org.junit.Test;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import com.atlassian.fugue.Functions;
-import org.hamcrest.Matchers;
-import org.junit.Test;
+import static com.atlassian.fugue.Iterables.take;
+import static com.atlassian.fugue.Iterables.transform;
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static org.junit.Assert.assertThat;
 
 public class IterablesTakeTest {
   @Test public void takeOneFromList() {

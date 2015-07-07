@@ -11,8 +11,6 @@ import static com.atlassian.fugue.Pair.zip;
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertThat;
 
-// All tests here are for deprecated code moved to fugue-collect
-
 public class PairsTest {
   @Test public void zipped() {
     final Iterable<Integer> ints = Arrays.asList(1, 2, 3);

@@ -30,7 +30,6 @@
 
     <modules>
         <module>fugue</module>
-        <module>fugue-collect</module>
         <module>fugue-scala</module>
         <module>fugue-guava</module>
     </modules>

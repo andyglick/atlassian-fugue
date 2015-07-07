@@ -1,8 +1,5 @@
-package com.atlassian.fugue.collect;
+package com.atlassian.fugue;
 
-import com.atlassian.fugue.Maybe;
-import com.atlassian.fugue.Option;
-import com.atlassian.fugue.collect.Iterables;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 
@@ -10,14 +7,14 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import static com.atlassian.fugue.collect.OptionsCollect.filterNone;
-import static com.atlassian.fugue.collect.OptionsCollect.find;
-import static com.atlassian.fugue.collect.OptionsCollect.flatten;
-import static com.atlassian.fugue.collect.Iterables.filter;
-import static com.atlassian.fugue.collect.Iterables.size;
+import static com.atlassian.fugue.Iterables.filter;
+import static com.atlassian.fugue.Iterables.size;
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.option;
 import static com.atlassian.fugue.Option.some;
+import static com.atlassian.fugue.Options.filterNone;
+import static com.atlassian.fugue.Options.find;
+import static com.atlassian.fugue.Options.flatten;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;

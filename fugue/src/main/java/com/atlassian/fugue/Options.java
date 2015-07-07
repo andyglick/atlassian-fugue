@@ -19,8 +19,8 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.atlassian.fugue.DeprecatedCode.filter;
-import static com.atlassian.fugue.DeprecatedCode.transform;
+import static com.atlassian.fugue.Iterables.filter;
+import static com.atlassian.fugue.Iterables.transform;
 import static com.atlassian.fugue.Option.none;
 import static java.util.Objects.requireNonNull;
 
@@ -42,7 +42,6 @@ public class Options {
    * @param options an Iterable of options to search through
    * @return the first defined option, or none if there aren't any
    */
-  @Deprecated
   public static <A> Option<A> find(final Iterable<Option<A>> options) {
     for (final Option<A> option : options) {
       if (option.isDefined()) {
@@ -181,10 +180,7 @@ public class Options {
    * @param <A> the contained type
    * @param options many options that may or may not be defined
    * @return the filtered options
-   * @deprecated since 3.0 Moved to fugue-collect
-   * see OptionsCollect#filterNone
    */
-  @Deprecated
   public static <A> Iterable<Option<A>> filterNone(final Iterable<Option<A>> options) {
     return filter(options, Maybe::isDefined);
   }
@@ -196,10 +192,7 @@ public class Options {
    * @param <A> the contained type
    * @param options the iterable of options
    * @return an {@link Iterable} of the contained type
-   * @deprecated since 3.0 Moved to fugue-collect
-   * see OptionsCollect#flatten
    */
-  @Deprecated
   public static <A> Iterable<A> flatten(final Iterable<Option<A>> options) {
     return transform(filterNone(options), Maybe::get);
   }

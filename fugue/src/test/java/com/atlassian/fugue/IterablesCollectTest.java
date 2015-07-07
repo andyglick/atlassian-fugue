@@ -1,5 +1,5 @@
 /*
-   Copyright 2015 Atlassian
+   Copyright 2011 Atlassian
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -13,17 +13,19 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-
 package com.atlassian.fugue;
 
-/**
- * Marker interface for use in constructing iterators
- *
- * @since 3.0
- */
-interface DeprecatedPeek<A> {
-  /**
-   * Look at but do not modify the "next" thing.
-   */
-  A peek();
+import org.junit.Test;
+
+import java.util.Arrays;
+
+import static org.hamcrest.Matchers.contains;
+import static org.junit.Assert.assertThat;
+
+public class IterablesCollectTest {
+
+  @Test public void collectIterableFindsRightType() {
+    Iterable<Integer> collected = Iterables.collect(Arrays.asList("a", 11), Functions.isInstanceOf(Integer.class));
+    assertThat(collected, contains(11));
+  }
 }

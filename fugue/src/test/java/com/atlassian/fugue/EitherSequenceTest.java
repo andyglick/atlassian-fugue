@@ -28,8 +28,6 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-// All tests here are for deprecated code moved to fugue-collect
-
 @SuppressWarnings("unchecked") public class EitherSequenceTest {
   @Test public void sequenceRights() {
     final List<Either<Object, Integer>> eithers = Arrays.asList(right(1), right(2), right(3));
