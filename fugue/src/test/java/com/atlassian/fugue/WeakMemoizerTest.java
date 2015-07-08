@@ -5,8 +5,8 @@ import org.junit.Test;
 import java.lang.ref.WeakReference;
 import java.util.function.Function;
 
+import static com.atlassian.fugue.Functions.WeakMemoizer.weakMemoizer;
 import static com.atlassian.fugue.Functions.weakMemoize;
-import static com.atlassian.fugue.WeakMemoizer.weakMemoizer;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
