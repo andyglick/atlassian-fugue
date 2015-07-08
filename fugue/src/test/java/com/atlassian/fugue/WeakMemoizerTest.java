@@ -2,6 +2,7 @@ package com.atlassian.fugue;
 
 import org.junit.Test;
 
+import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.util.function.Function;
 
@@ -24,6 +25,27 @@ public class WeakMemoizerTest {
   }
 
   @Test public void callingDifferentMemoizersReturnsDifferent() throws Exception {
+    assertNotSame(Functions.WeakMemoizer.weakMemoizer(supplier()).apply(1), Functions.WeakMemoizer.weakMemoizer(supplier()).apply(1));
+  }
+
+
+
+  @Test public void lockReferenceNotNull() throws Exception {
+    final Functions.WeakMemoizer.MappedReference<String, String> ref = new Functions.WeakMemoizer.MappedReference<>("test", "value", new ReferenceQueue<>());
+    assertNotNull(ref.getDescriptor());
+    assertNotNull(ref.get());
+  }
+
+
+
+  @Test(expected = NullPointerException.class) public void referenceNullDescriptor() throws Exception {
+    new Functions.WeakMemoizer.MappedReference<String, String>(null, "value", new ReferenceQueue<>());
+  }
+
+
+
+  @Test(expected = NullPointerException.class) public void referenceNullValue() throws Exception {
+    new Functions.WeakMemoizer.MappedReference<String, String>("ref", null, new ReferenceQueue<>());
     assertNotSame(weakMemoizer(supplier()).apply(1), weakMemoize(supplier()).apply(1));
   }
 

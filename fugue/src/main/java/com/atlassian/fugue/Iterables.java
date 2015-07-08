@@ -60,7 +60,7 @@ import static java.util.Objects.requireNonNull;
  * those in Iterables so that methods from both classes can be statically
  * imported in the same class.
  *
- * @since 3.0
+ * @since 1.0
  */
 public class Iterables {
   private Iterables() {
