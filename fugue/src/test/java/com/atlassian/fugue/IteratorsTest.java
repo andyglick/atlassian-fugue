@@ -15,8 +15,8 @@ import static org.hamcrest.Matchers.is;
 
 public class IteratorsTest {
 
-  @Test(expected=IllegalStateException.class) public void removeAfterPeeking() throws Exception {
-    PeekingIterator<Integer> integerPeekingIterator = peekingIterator(asList(1, 2).iterator());
+  @Test(expected = IllegalStateException.class) public void removeAfterPeeking() throws Exception {
+    Iterators.Peeking<Integer> integerPeekingIterator = peekingIterator(asList(1, 2).iterator());
     assertThat(integerPeekingIterator.peek(), is(1));
     integerPeekingIterator.remove();
   }
@@ -25,7 +25,7 @@ public class IteratorsTest {
     List<Integer> testList = new ArrayList<>();
     testList.add(1);
     testList.add(2);
-    PeekingIterator<Integer> integerPeekingIterator = peekingIterator(testList.listIterator());
+    Iterators.Peeking<Integer> integerPeekingIterator = peekingIterator(testList.listIterator());
     integerPeekingIterator.next();
     integerPeekingIterator.remove();
     assertThat(integerPeekingIterator.peek(), is(2));

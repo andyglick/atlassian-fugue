@@ -24,12 +24,22 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>com.atlassian.fugue</groupId>
             <artifactId>fugue</artifactId>
             <scope>provided</scope>
             <version>${project.version}</version>
         </dependency>
-
 
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -38,12 +48,6 @@
             <scope>provided</scope>
         </dependency>
 
-
-        <dependency>
-            <groupId>com.atlassian.util.concurrent</groupId>
-            <artifactId>atlassian-util-concurrent</artifactId>
-            <scope>provided</scope>
-        </dependency>
 
         <!-- Test deps -->
         <dependency>

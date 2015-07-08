@@ -13,13 +13,17 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package com.atlassian.fugue;
+package com.atlassian.fugue.extras;
 
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import com.atlassian.fugue.Functions;
+import com.atlassian.fugue.Option;
+import com.atlassian.fugue.Options;
+import com.atlassian.fugue.Iterables;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
@@ -243,7 +247,7 @@ public class ImmutableMaps {
    * @param partial transform and select entries
    * @return the transformed map
    */
-  public static <K1, K2, V1, V2> ImmutableMap<K2, V2> collect(Map<K1, V1> from, Function<Map.Entry<K1, V1>, Option<Map.Entry<K2, V2>>> partial) {
+  public static <K1, K2, V1, V2> ImmutableMap<K2, V2> collect(Map<K1, V1> from, Function<Map.Entry<K1, V1>, Option<Entry<K2, V2>>> partial) {
     return toMap(Iterables.collect(from.entrySet(), partial));
   }
 
@@ -271,7 +275,7 @@ public class ImmutableMaps {
       @Override public Option<Map.Entry<K2, V2>> apply(Map.Entry<K1, V1> input) {
         Option<K2> ok = keyPartial.apply(input.getKey());
         Option<V2> ov = valuePartial.apply(input.getValue());
-        return Options.lift2(ImmutableMaps.<K2, V2> mapEntry()).apply(ok, ov);
+        return Options.lift2(ImmutableMaps.<K2, V2>mapEntry()).apply(ok, ov);
       }
     });
   }

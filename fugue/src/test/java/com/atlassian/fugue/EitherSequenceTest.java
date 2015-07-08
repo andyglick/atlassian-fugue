@@ -15,6 +15,11 @@
  */
 package com.atlassian.fugue;
 
+import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.List;
+
 import static com.atlassian.fugue.Either.left;
 import static com.atlassian.fugue.Either.right;
 import static com.atlassian.fugue.Eithers.sequenceLeft;
@@ -22,11 +27,6 @@ import static com.atlassian.fugue.Eithers.sequenceRight;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.Test;
 
 @SuppressWarnings("unchecked") public class EitherSequenceTest {
   @Test public void sequenceRights() {

@@ -13,6 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
+
 package com.atlassian.fugue;
 
 import java.util.Collection;
@@ -30,7 +31,7 @@ class Iterators {
 
   /**
    * Adds all the elements of the iterator to the collectionToModify
-   * @param collectionToModify collection to add eleement to
+   * @param collectionToModify collection to add element to
    * @param iterator source of elements to add
    * @param <A> element type
    * @return true if any of the elements from iterator were not also in collectionToModify
@@ -55,7 +56,7 @@ class Iterators {
    *
    * @since 3.0
    */
-  static <A> PeekingIterator<A> peekingIterator(java.util.Iterator<? extends A> iterator) {
+  static <A> Iterators.Peeking<A> peekingIterator(java.util.Iterator<? extends A> iterator) {
     if (iterator instanceof PeekingImpl) {
       // Safe to cast <? extends T> to <T> because PeekingImpl only uses T
       // covariantly (and cannot be subclassed to add non-covariant uses).
@@ -67,9 +68,9 @@ class Iterators {
   }
 
   /**
-   * Implementation of PeekingIterator that avoids peeking unless necessary.
+   * Implementation of Iterators.Peeking that avoids peeking unless necessary.
    */
-  private static class PeekingImpl<A> implements PeekingIterator<A> {
+  private static class PeekingImpl<A> implements Iterators.Peeking<A> {
 
     private final java.util.Iterator<? extends A> iterator;
     private boolean hasPeeked;
@@ -166,4 +167,146 @@ class Iterators {
       throw new UnsupportedOperationException("Cannot call remove on this iterator");
     }
   }
+
+
+  //
+  // Implementation classes
+  //
+
+  /**
+   * Marker interface for use in constructing iterators
+   *
+   * @since 3.0
+   */
+  interface Peek<A> {
+    /**
+     * Look at but do not modify the "next" thing.
+     */
+    A peek();
+  }
+
+  /**
+   * Iterator that can examine next without removing it
+   *
+   * @since 3.0
+   * @param <A> element type
+   */
+  interface Peeking<A> extends Peek<A>, Iterator<A> {}
+
+  /**
+   * A template implementation of the {@code Iterator} interface, so clients can
+   * more easily implement Iterator for some patterns of iteration.
+   *q
+   * <P>
+   * An example is an iterator that skips over null elements in a backing
+   * iterator. This could be implemented as:
+   *
+   * <pre>
+   * {@code
+   *
+   *   public static Iterator<String> filterNulls(final Iterator<String> in) {
+   *     return new AbstractIterator<String>() {
+   *       protected String computeNext() {
+   *         while (in.hasNext()) {
+   *           String s = in.next();
+   *           if (s != null) {
+   *             return s;
+   *           }
+   *         }
+   *         return endOfData();
+   *       }
+   *     };
+   *   }}
+   * </pre>
+   *
+   * <P>
+   * This class supports iterators that include null elements.
+   *
+   * <P>
+   * This class is a re-implentation of the Guava AbstractIterator class.
+   * @since 3.0
+   */
+  static abstract class Abstract<A> extends Unmodifiable<A> {
+    private State state = State.NotReady;
+
+    /** Constructor for use by subclasses. */
+    protected Abstract() {}
+
+    private enum State {
+      Ready, NotReady, Complete, Failed
+    }
+
+    private A next;
+
+    /**
+     * The next element.
+     * <P>
+     * <b>Note:</b> the implementation must call {@link #endOfData()} when there
+     * are no elements left in the iteration. Failure to do so could result in an
+     * infinite loop.
+     */
+    protected abstract A computeNext();
+
+    /**
+     * Implementations of {@link #computeNext} <b>must</b> invoke this method when
+     * there are no elements left in the iteration.
+     *
+     * @return {@code null}; a convenience so your {@code computeNext}
+     * implementation can use the simple statement {@code return endOfData();}
+     */
+    protected final A endOfData() {
+      state = State.Complete;
+      return null;
+    }
+
+    @Override public final boolean hasNext() {
+      switch (state) {
+        case Failed:
+          throw new IllegalStateException("Failed iterator");
+        case Ready:
+          return true;
+        case Complete:
+          return false;
+        default:
+          return tryToComputeNext();
+      }
+    }
+
+    private boolean tryToComputeNext() {
+      try {
+        next = computeNext();
+        if (state != State.Complete) {
+          state = State.Ready;
+          return true;
+        }
+        return false;
+      } catch (RuntimeException | Error e) {
+        state = State.Failed;
+        throw e;
+      }
+    }
+
+    @Override public final A next() {
+      if (!hasNext())
+        throw new NoSuchElementException();
+      try {
+        return next;
+      } finally {
+        next = null;
+        state = State.NotReady;
+      }
+    }
+  }
+
+  /**
+   * Iterator where {@link #remove} is unsupported.
+   */
+  static abstract class Unmodifiable<E> implements Iterator<E> {
+    protected Unmodifiable() {}
+
+    @Deprecated @Override public final void remove() {
+      throw new UnsupportedOperationException();
+    }
+  }
+
 }

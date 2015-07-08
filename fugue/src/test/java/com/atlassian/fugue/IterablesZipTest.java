@@ -16,6 +16,7 @@
 package com.atlassian.fugue;
 
 import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import static com.atlassian.fugue.Iterables.zip;
@@ -33,12 +34,12 @@ public class IterablesZipTest {
 
   @SuppressWarnings("unchecked") @Test public void zipFromLongerFirstList() {
     assertThat(zip(asList(4, 2, 3, 1, 12), asList(1, 2, 3, 4)),
-      contains(pair(4, 1), pair(2, 2), pair(3, 3), pair(1, 4)));
+        contains(pair(4, 1), pair(2, 2), pair(3, 3), pair(1, 4)));
   }
 
   @SuppressWarnings("unchecked") @Test public void zipFromLongerLastList() {
     assertThat(zip(asList(4, 3, 2, 1), asList(6, 2, 5, 4, 5, 6)),
-      contains(pair(4, 6), pair(3, 2), pair(2, 5), pair(1, 4)));
+        contains(pair(4, 6), pair(3, 2), pair(2, 5), pair(1, 4)));
   }
 
   @Test public void zipWithFrom() {
@@ -48,7 +49,7 @@ public class IterablesZipTest {
   @Test public void testZipWithIndex() {
     @SuppressWarnings("unchecked")
     Matcher<Iterable<? extends Pair<String, Integer>>> containsPairs = contains(pair("a", 0), pair("b", 1),
-      pair("c", 2));
+        pair("c", 2));
     assertThat(zipWithIndex(asList("a", "b", "c")), containsPairs);
   }
 }

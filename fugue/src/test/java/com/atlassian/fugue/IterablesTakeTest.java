@@ -15,19 +15,18 @@
  */
 package com.atlassian.fugue;
 
+import org.hamcrest.Matchers;
+import org.junit.Test;
+
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import static com.atlassian.fugue.Iterables.take;
 import static com.atlassian.fugue.Iterables.transform;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
-import org.hamcrest.Matchers;
-import org.junit.Test;
 
 public class IterablesTakeTest {
   @Test public void takeOneFromList() {
@@ -39,11 +38,11 @@ public class IterablesTakeTest {
   }
 
   @Test public void takeNoneFromList() {
-    assertThat(take(0, asList(1, 2, 3, 4)), Matchers.<Integer> emptyIterable());
+    assertThat(take(0, asList(1, 2, 3, 4)), Matchers.<Integer>emptyIterable());
   }
 
   @Test public void takeNoneFromNonList() {
-    assertThat(take(0, asIterable(1, 2, 3, 4)), Matchers.<Integer> emptyIterable());
+    assertThat(take(0, asIterable(1, 2, 3, 4)), Matchers.<Integer>emptyIterable());
   }
 
   @Test public void takeAllFromList() {
@@ -63,7 +62,7 @@ public class IterablesTakeTest {
   }
 
   @Test public void takeThreeToString() {
-    assertThat(take(3, asIterable(1, 2, 3, 4)).toString(), is("[1, 2, 3]"));
+    assertThat(take(3, asIterable(1, 2, 3, 4)).toString(), Matchers.is("[1, 2, 3]"));
   }
 
   @Test(expected = NullPointerException.class) public void takeNull() {

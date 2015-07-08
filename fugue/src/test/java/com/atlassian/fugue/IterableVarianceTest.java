@@ -15,15 +15,15 @@
  */
 package com.atlassian.fugue;
 
-import static java.util.Arrays.asList;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import org.junit.Test;
+import static java.util.Arrays.asList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 
 public class IterableVarianceTest {
 

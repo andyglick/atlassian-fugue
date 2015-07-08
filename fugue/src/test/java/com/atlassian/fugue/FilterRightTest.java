@@ -15,16 +15,16 @@
  */
 package com.atlassian.fugue;
 
-import static com.atlassian.fugue.Eithers.filterRight;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.junit.Test;
+import static com.atlassian.fugue.Eithers.filterRight;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class FilterRightTest {
   @Test public void leftOnlyFiltersRightToEmpty() {

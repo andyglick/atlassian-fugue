@@ -117,8 +117,8 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    * 
    * @since 1.1
    */
-  static <A> Function<A, Option<A>> toOption() {
-    return new ToOption<>();
+  public static <A> Function<A, Option<A>> toOption() {
+    return Option::option;
   }
 
   /**
@@ -431,12 +431,6 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
       // Some IDEs reckon this doesn't compile. They are wrong. It compiles and
       // is correct.
       return (Function<A, Integer>) SomeHashCode.INSTANCE;
-    }
-  }
-
-  static class ToOption<A> implements Function<A, Option<A>> {
-    @Override public Option<A> apply(final A a) {
-      return option(a);
     }
   }
 }

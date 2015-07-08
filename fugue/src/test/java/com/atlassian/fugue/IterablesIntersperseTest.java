@@ -15,14 +15,14 @@
  */
 package com.atlassian.fugue;
 
+import org.junit.Test;
+
+import java.util.function.Supplier;
+
 import static com.atlassian.fugue.Iterables.intersperse;
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertThat;
-
-import org.junit.Test;
-
-import java.util.function.Supplier;
 
 public class IterablesIntersperseTest {
 

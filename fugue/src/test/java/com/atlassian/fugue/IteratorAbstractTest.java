@@ -8,11 +8,10 @@ import java.util.function.Supplier;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-public class AbstractIteratorTest {
+public class IteratorAbstractTest {
 
   public <A> Iterator<A> newIterator(Supplier<A> s) {
-    return new AbstractIterator<A>() {
-
+    return new Iterators.Abstract<A>() {
       @Override
       protected A computeNext() {
         return s.get();
@@ -20,43 +19,45 @@ public class AbstractIteratorTest {
     };
   }
 
-  @Test(expected=IllegalStateException.class)
-  public void testComputeNextThrows(){
-    Iterator<Object> objectIterator = newIterator(() -> { throw new RuntimeException(); });
-    try{
+  @Test(expected = IllegalStateException.class)
+  public void testComputeNextThrows() {
+    Iterator<Object> objectIterator = newIterator(() -> {
+      throw new RuntimeException();
+    });
+    try {
       objectIterator.next();
-    } catch (RuntimeException ignored) {}
-
+    } catch (RuntimeException ignored) {
+    }
     objectIterator.next();
   }
 
   @Test
   public void testEndOfData() {
-    Iterator<String> stopingIterator = new AbstractIterator<String>() {
+    Iterator<String> stopingIterator = new Iterators.Abstract<String>() {
       boolean secondTime = false;
+
       @Override
       protected String computeNext() {
-        if(!secondTime){
+        if (!secondTime) {
           secondTime = true;
           return "first";
         }
         return endOfData();
       }
     };
-
     assertThat(stopingIterator.hasNext(), is(true));
     assertThat(stopingIterator.next(), is("first"));
     assertThat(stopingIterator.hasNext(), is(false));
   }
 
   @Test
-  public void testHasNext(){
+  public void testHasNext() {
     Iterator<Integer> integerIterator = newIterator(() -> 1);
     assertThat(integerIterator.hasNext(), is(true));
   }
 
   @Test
-  public void testNext(){
+  public void testNext() {
     Iterator<Integer> integerIterator = newIterator(() -> 1);
     assertThat(integerIterator.next(), is(1));
   }

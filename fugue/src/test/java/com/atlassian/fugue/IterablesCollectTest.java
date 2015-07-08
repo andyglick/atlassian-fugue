@@ -15,12 +15,12 @@
  */
 package com.atlassian.fugue;
 
-import static org.hamcrest.Matchers.contains;
-import static org.junit.Assert.assertThat;
-
 import org.junit.Test;
 
 import java.util.Arrays;
+
+import static org.hamcrest.Matchers.contains;
+import static org.junit.Assert.assertThat;
 
 public class IterablesCollectTest {
 

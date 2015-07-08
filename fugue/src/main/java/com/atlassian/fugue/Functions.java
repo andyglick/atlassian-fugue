@@ -16,15 +16,17 @@
 package com.atlassian.fugue;
 
 import java.io.Serializable;
+import java.lang.ref.ReferenceQueue;
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static com.atlassian.fugue.Iterables.isEmpty;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -628,7 +630,7 @@ public class Functions {
     Matcher(Iterable<Function<? super A, ? extends Option<? extends B>>> fs) {
       this.fs = requireNonNull(fs);
 
-      if (isEmpty().test(fs)) {
+      if (!fs.iterator().hasNext()) {
         throw new IllegalArgumentException("Condition must be true but returned false instead");
       }
     }
@@ -649,6 +651,99 @@ public class Functions {
 
     @Override public int hashCode() {
       return fs.hashCode();
+    }
+  }
+
+  /**
+   * Class supports the implementation of {@link Functions#weakMemoize(Function)}
+   * and is not intended for general use.
+   *
+   * {@link WeakMemoizer} caches the result of another function. The result is
+   * {@link WeakReference weakly referenced} internally. This is useful if the
+   * result is expensive to compute or the identity of the result is particularly
+   * important.
+   * <p>
+   * If the results from this function are further cached then they will tend to
+   * stay in this cache for longer.
+   *
+   * @param <A> comparable descriptor, the usual rules for any {@link HashMap} key
+   * apply.
+   * @param <B> the value
+   */
+  static final class WeakMemoizer<A, B> implements Function<A, B> {
+    static <A, B> WeakMemoizer<A, B> weakMemoizer(final Function<A, B> delegate) {
+      return new WeakMemoizer<>(delegate);
+    }
+
+    private final ConcurrentMap<A, MappedReference<A, B>> map;
+    private final ReferenceQueue<B> queue = new ReferenceQueue<B>();
+    private final Function<A, B> delegate;
+
+    /**
+     * Construct a new {@link WeakMemoizer} instance.
+     *
+     * @param delegate for creating the initial values.
+     * @throws IllegalArgumentException if the initial capacity of elements is
+     * negative.
+     */
+    WeakMemoizer(Function<A, B> delegate) {
+      this.map = new ConcurrentHashMap<>();
+      this.delegate = requireNonNull(delegate, "delegate");
+    }
+
+    /**
+     * Get a result for the supplied Descriptor.
+     *q
+     * @param descriptor must not be null
+     * @return descriptor lock
+     */
+    public B apply(final A descriptor) {
+      expungeStaleEntries();
+      requireNonNull(descriptor, "descriptor");
+      while (true) {
+        final MappedReference<A, B> reference = map.get(descriptor);
+        if (reference != null) {
+          final B value = reference.get();
+          if (value != null) {
+            return value;
+          }
+          map.remove(descriptor, reference);
+        }
+        map.putIfAbsent(descriptor, new MappedReference<>(descriptor, delegate.apply(descriptor), queue));
+      }
+    }
+
+    // expunge entries whose value reference has been collected
+    @SuppressWarnings("unchecked") private void expungeStaleEntries() {
+      MappedReference<A, B> ref;
+      // /CLOVER:OFF
+      while ((ref = (MappedReference<A, B>) queue.poll()) != null) {
+        final A key = ref.getDescriptor();
+        if (key == null) {
+          // DO NOT REMOVE! In theory this should not be necessary as it
+          // should not be able to be null - but we have seen it happen!
+          continue;
+        }
+        map.remove(key, ref);
+      }
+      // /CLOVER:ON
+    }
+
+    /**
+     * A weak reference that maintains a reference to the key so that it can be
+     * removed from the map when the value is garbage collected.
+     */
+    static final class MappedReference<K, V> extends WeakReference<V> {
+      private final K key;
+
+      public MappedReference(final K key, final V value, final ReferenceQueue<? super V> q) {
+        super(requireNonNull(value, "value"), q);
+        this.key = requireNonNull(key, "key");
+      }
+
+      final K getDescriptor() {
+        return key;
+      }
     }
   }
 }

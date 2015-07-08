@@ -15,10 +15,6 @@
  */
 package com.atlassian.fugue;
 
-import com.atlassian.fugue.Either;
-import com.atlassian.fugue.Option;
-import com.atlassian.fugue.Pair;
-
 import java.lang.reflect.Constructor;
 import java.util.function.BiFunction;
 import java.util.function.Function;

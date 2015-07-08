@@ -15,16 +15,15 @@
  */
 package com.atlassian.fugue;
 
+import org.hamcrest.Matchers;
+import org.junit.Test;
+
 import static com.atlassian.fugue.Iterables.drop;
-import static com.atlassian.fugue.IterablesTakeTest.asIterable;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-
-import org.hamcrest.Matchers;
-import org.junit.Test;
 
 public class IterablesDropTest {
   @Test public void dropOneFromList() {
