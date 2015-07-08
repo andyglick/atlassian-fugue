@@ -20,6 +20,7 @@ import org.junit.Test;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -33,9 +34,11 @@ import static com.atlassian.fugue.Iterables.size;
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.option;
 import static com.atlassian.fugue.Option.some;
+import static com.atlassian.fugue.Options.ap;
 import static com.atlassian.fugue.Options.filterNone;
 import static com.atlassian.fugue.Options.find;
 import static com.atlassian.fugue.Options.flatten;
+import static com.atlassian.fugue.Options.lift;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
@@ -82,11 +85,11 @@ public class OptionStaticsTest {
   }
 
   @Test public void liftToString() {
-    assertThat(Options.lift(UtilityFunctions.bool2String).apply(some(true)), is(some(String.valueOf(true))));
+    assertThat(lift(UtilityFunctions.bool2String).apply(some(true)), is(some(String.valueOf(true))));
   }
 
   @Test public void liftNone() {
-    assertThat(Options.lift(UtilityFunctions.bool2String).apply(Option.<Boolean>none()), is(sameInstance(Option.<String>none())));
+    assertThat(lift(UtilityFunctions.bool2String).apply(Option.<Boolean>none()), is(sameInstance(Option.<String>none())));
   }
 
   @Test public void liftFunction() {
@@ -102,18 +105,18 @@ public class OptionStaticsTest {
     return Options.<Boolean, String> lift().apply(UtilityFunctions.bool2String);
   }
 
-  @Test public void ap() {
-    assertThat(Options.ap(Option.some(false), Option.some(UtilityFunctions.bool2String)),
+  @Test public void apTest() {
+    assertThat(ap(Option.some(false), Option.some(UtilityFunctions.bool2String)),
       is(Option.some(String.valueOf(false))));
   }
 
   @Test public void apNone() {
-    assertThat(Options.ap(Option.<Boolean> none(), Option.some(UtilityFunctions.bool2String)),
+    assertThat(ap(Option.<Boolean>none(), Option.some(UtilityFunctions.bool2String)),
       is(sameInstance(Option.<String> none())));
   }
 
   @Test public void apNoneFunction() {
-    assertThat(Options.ap(Option.<Boolean>none(), Option.<Function<Boolean, Integer>>none()),
+    assertThat(ap(Option.<Boolean>none(), Option.<Function<Boolean, Integer>>none()),
       is(sameInstance(Option.<Integer>none())));
   }
 
@@ -145,7 +148,7 @@ public class OptionStaticsTest {
   }
 
   @Test public void liftPredicate() {
-    Predicate<Option<Integer>> lifted = Options.lift(Predicate.isEqual(3));
+    Predicate<Option<Integer>> lifted = lift(Predicate.isEqual(3));
     assertThat(lifted.test(some(3)), is(true));
     assertThat(lifted.test(some(2)), is(false));
     assertThat(lifted.test(Option.<Integer>none()), is(false));
@@ -161,7 +164,7 @@ public class OptionStaticsTest {
   }
 
   @Test public void findFindsOneSingleton() {
-    assertThat(find(Arrays.asList(option(3))).get(), is(3));
+    assertThat(find(Collections.singletonList(option(3))).get(), is(3));
   }
 
   @Test public void findFindsNone() {
@@ -169,7 +172,7 @@ public class OptionStaticsTest {
   }
 
   @Test public void findFindsNoneSingleton() {
-    assertThat(find(Arrays.asList(option(NULL))).isDefined(), is(false));
+    assertThat(find(Collections.singletonList(option(NULL))).isDefined(), is(false));
   }
 
   @Test public void filterFindsTwo() {
@@ -201,11 +204,11 @@ public class OptionStaticsTest {
   }
 
   @Test public void someDefined() {
-    MatcherAssert.assertThat(filter(Arrays.asList(some(3)), Maybe::isDefined).iterator().hasNext(), is(true));
+    MatcherAssert.assertThat(filter(Collections.singletonList(some(3)), Maybe::isDefined).iterator().hasNext(), is(true));
   }
 
   @Test public void noneNotDefined() {
     // throw new RuntimeException();
-    MatcherAssert.assertThat(filter(Arrays.asList(none(int.class)), Maybe::isDefined).iterator().hasNext(), is(false));
+    MatcherAssert.assertThat(filter(Collections.singletonList(none(int.class)), Maybe::isDefined).iterator().hasNext(), is(false));
   }
 }

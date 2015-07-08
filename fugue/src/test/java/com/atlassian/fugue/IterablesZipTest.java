@@ -22,23 +22,24 @@ import org.junit.Test;
 import static com.atlassian.fugue.Iterables.zip;
 import static com.atlassian.fugue.Iterables.zipWith;
 import static com.atlassian.fugue.Iterables.zipWithIndex;
+import static com.atlassian.fugue.Pair.pair;
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertThat;
 
 public class IterablesZipTest {
   @SuppressWarnings("unchecked") @Test public void zipFromLists() {
-    assertThat(zip(asList(4, 3, 2, 1), asList(1, 2, 3, 4)), Matchers.contains(Pair.pair(4, 1), Pair.pair(3, 2), Pair.pair(2, 3), Pair.pair(1, 4)));
+    assertThat(zip(asList(4, 3, 2, 1), asList(1, 2, 3, 4)), contains(pair(4, 1), pair(3, 2), pair(2, 3), pair(1, 4)));
   }
 
   @SuppressWarnings("unchecked") @Test public void zipFromLongerFirstList() {
     assertThat(zip(asList(4, 2, 3, 1, 12), asList(1, 2, 3, 4)),
-        contains(Pair.pair(4, 1), Pair.pair(2, 2), Pair.pair(3, 3), Pair.pair(1, 4)));
+        contains(pair(4, 1), pair(2, 2), pair(3, 3), pair(1, 4)));
   }
 
   @SuppressWarnings("unchecked") @Test public void zipFromLongerLastList() {
     assertThat(zip(asList(4, 3, 2, 1), asList(6, 2, 5, 4, 5, 6)),
-        contains(Pair.pair(4, 6), Pair.pair(3, 2), Pair.pair(2, 5), Pair.pair(1, 4)));
+        contains(pair(4, 6), pair(3, 2), pair(2, 5), pair(1, 4)));
   }
 
   @Test public void zipWithFrom() {
@@ -47,8 +48,8 @@ public class IterablesZipTest {
 
   @Test public void testZipWithIndex() {
     @SuppressWarnings("unchecked")
-    Matcher<Iterable<? extends Pair<String, Integer>>> containsPairs = contains(Pair.pair("a", 0), Pair.pair("b", 1),
-        Pair.pair("c", 2));
+    Matcher<Iterable<? extends Pair<String, Integer>>> containsPairs = contains(pair("a", 0), pair("b", 1),
+        pair("c", 2));
     assertThat(zipWithIndex(asList("a", "b", "c")), containsPairs);
   }
 }
