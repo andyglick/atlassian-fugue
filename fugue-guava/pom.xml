@@ -42,14 +42,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.atlassian.fugue</groupId>
-            <artifactId>fugue-collect</artifactId>
-            <scope>provided</scope>
-            <version>${project.version}</version>
-        </dependency>
-
-
-        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>${guava.osgi.version}</version>

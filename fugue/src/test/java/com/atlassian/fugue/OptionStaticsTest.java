@@ -156,8 +156,6 @@ public class OptionStaticsTest {
     return Options.<String, Integer, Option<Character>> lift2().apply(UtilityFunctions.charAt);
   }
 
-  // Tests here are for deprecated code moved to fugue-collect
-
   @Test public void findFindsFirst() {
     assertThat(find(twoOptions()).get(), is(2));
   }
