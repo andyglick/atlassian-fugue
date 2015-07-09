@@ -84,13 +84,13 @@ public class FunctionsTest {
         partial(dividableBy(2), square)).apply(1), is(Option.<Integer> none()));
   }
 
-  @SuppressWarnings("unchecked") @Test public void matches5Some() {
+  @Test public void matches5Some() {
     assertThat(
       matches(partial(dividableBy(6), square), partial(dividableBy(5), square), partial(dividableBy(4), square),
         partial(dividableBy(3), square), partial(dividableBy(2), square)).apply(2), is(Option.some(4)));
   }
 
-  @SuppressWarnings("unchecked") @Test public void matches5None() {
+  @Test public void matches5None() {
     assertThat(
       matches(partial(dividableBy(6), square), partial(dividableBy(5), square), partial(dividableBy(4), square),
         partial(dividableBy(3), square), partial(dividableBy(2), square)).apply(1), is(Option.<Integer> none()));

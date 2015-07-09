@@ -790,9 +790,7 @@ public class Iterables {
    */
   public static <A> boolean addAll(Collection<A> collectionToModify, Iterable<? extends A> elementsToAdd) {
     if (elementsToAdd instanceof Collection) {
-      @SuppressWarnings("unchecked")
-      Collection<? extends A> c = (Collection<? extends A>) elementsToAdd;
-      return collectionToModify.addAll(c);
+      return collectionToModify.addAll((Collection<? extends A>) elementsToAdd);
     }
     return Iterators.addAll(collectionToModify, requireNonNull(elementsToAdd).iterator());
   }
