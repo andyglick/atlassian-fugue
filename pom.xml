@@ -17,7 +17,7 @@
     <groupId>com.atlassian.fugue</groupId>
     <artifactId>fugue-parent</artifactId>
     <packaging>pom</packaging>
-    <version>3.0.0-m001-SNAPSHOT</version>
+    <version>3.0.0-m002-SNAPSHOT</version>
     <name>Functional Guava Extensions Library</name>
 
     <licenses>
