@@ -20,6 +20,7 @@ import org.junit.Test;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 
+import static com.atlassian.fugue.Option.defined;
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.some;
 import static com.atlassian.fugue.Suppliers.ofInstance;
@@ -134,6 +135,14 @@ public class OptionTest {
 
   @Test public void noneOrElseSupplierReturnsOrElse() {
     assertThat(none(int.class).orElse(ofInstance(some(2))), is(equalTo(some(2))));
+  }
+
+  @Test public void definedOnSome() {
+    assertThat(defined().test(some("a")), is(true));
+  }
+
+  @Test public void definedOnNone() {
+    assertThat(defined().test(none()), is(false));
   }
 
   //
