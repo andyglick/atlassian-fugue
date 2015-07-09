@@ -36,6 +36,7 @@ public interface Effect<A> extends Consumer<A> {
    * Adapt to the Java 8 interface.
    * 
    * @param a the input to use for performing the effect.
+   * @since 3.0
    */
   default void accept(A a) {
     apply(a);
