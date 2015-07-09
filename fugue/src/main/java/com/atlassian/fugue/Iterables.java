@@ -190,7 +190,7 @@ public class Iterables {
    * @since 1.1
    */
   public static <A, B> Iterable<B> revMap(final Iterable<? extends Function<A, B>> fs, final A arg) {
-    return transform(fs, Functions.<A, B> apply(arg));
+    return transform(fs, Functions.<A, B>apply(arg));
   }
 
   /**
@@ -715,7 +715,7 @@ public class Iterables {
   }
 
   /**
-   * Merge Iterable<Iterable<A>> down to Iterable<A>
+   * Merge {@literal Iterable<Iterable<A>>} down to {@literal Iterable<A>}
    * @param ias one or more iterable to merge into the final iterable result
    * @param <A> element type
    * @return single level iterable with all the elements of the original iterables
