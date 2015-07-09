@@ -288,7 +288,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   }
 
   @Override public final int hashCode() {
-    return fold(NONE_HASH, SomeHashCode.instance());
+    return fold(NONE_HASH, SOME_HASH);
   }
 
   @Override public final boolean equals(final Object obj) {
@@ -303,7 +303,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   }
 
   @Override public final String toString() {
-    return fold(NONE_STRING, SomeString.instance());
+    return fold(NONE_STRING, SOME_STRING);
   }
 
   //
@@ -388,31 +388,6 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
     }
   }
 
-  enum SomeString implements Function<Object, String> {
-    INSTANCE;
-
-    public String apply(final Object obj) {
-      return String.format("some(%s)", obj);
-    }
-
-    @SuppressWarnings("unchecked") static <A> Function<A, String> instance() {
-      // Some IDEs reckon this doesn't compile. They are wrong. It compiles and
-      // is correct.
-      return (Function<A, String>) SomeString.INSTANCE;
-    }
-  }
-
-  enum SomeHashCode implements Function<Object, Integer> {
-    INSTANCE;
-
-    public Integer apply(final Object a) {
-      return a.hashCode();
-    }
-
-    @SuppressWarnings("unchecked") static <A> Function<A, Integer> instance() {
-      // Some IDEs reckon this doesn't compile. They are wrong. It compiles and
-      // is correct.
-      return (Function<A, Integer>) SomeHashCode.INSTANCE;
-    }
-  }
+  private static final Function<Object, String> SOME_STRING = obj -> String.format("some(%s)", obj);
+  private static final Function<Object, Integer> SOME_HASH = Object::hashCode;
 }
