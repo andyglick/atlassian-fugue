@@ -57,7 +57,7 @@ public class Suppliers {
    * @return a supplier that always supplies {@code true}.
    */
   public static Supplier<Boolean> alwaysTrue() {
-    return SupplyTrue.INSTANCE;
+    return () -> true;
   }
 
   /**
@@ -66,7 +66,7 @@ public class Suppliers {
    * @return a supplier that always supplies {@code false}.
    */
   public static Supplier<Boolean> alwaysFalse() {
-    return SupplyFalse.INSTANCE;
+    return () -> false;
   }
 
   /**
@@ -76,9 +76,7 @@ public class Suppliers {
    * @return a supplier that always supplies {@code null}.
    */
   public static <A> Supplier<A> alwaysNull() {
-    @SuppressWarnings("unchecked")
-    final Supplier<A> result = (Supplier<A>) Nulls.NULL;
-    return result;
+    return () -> null;
   }
 
   /**
@@ -110,41 +108,5 @@ public class Suppliers {
    */
   public static <A, B> Supplier<B> fromFunction(final Function<? super A, ? extends B> f, final A a) {
     return () -> f.apply(a);
-  }
-
-  private enum SupplyTrue implements Supplier<Boolean> {
-    INSTANCE;
-
-    public Boolean apply(Object o) {
-      return get();
-    }
-
-    public Boolean get() {
-      return true;
-    }
-  }
-
-  private enum SupplyFalse implements Supplier<Boolean> {
-    INSTANCE;
-
-    public Boolean apply(Object o) {
-      return get();
-    }
-
-    public Boolean get() {
-      return false;
-    }
-  }
-
-  enum Nulls implements Supplier<Object> {
-    NULL;
-
-    public Object apply(Object o) {
-      return get();
-    }
-
-    public Object get() {
-      return null;
-    }
   }
 }

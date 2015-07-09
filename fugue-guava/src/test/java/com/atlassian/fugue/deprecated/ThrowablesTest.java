@@ -29,7 +29,7 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 @RunWith(MockitoJUnitRunner.class) public final class ThrowablesTest {
   @Mock private Function<Throwable, RuntimeException> function;
 
-  @Test public void testPropagateWithFunctionForRuntimeException() throws Exception {
+  @SuppressWarnings("deprecation") @Test public void testPropagateWithFunctionForRuntimeException() throws Exception {
     final Exception original = new RuntimeException();
     try {
       Throwables.propagate(original, function);
@@ -41,7 +41,7 @@ import static org.mockito.Mockito.verifyZeroInteractions;
     verifyZeroInteractions(function);
   }
 
-  @Test public void testPropagateWithFunctionForNonRuntimeException() throws Exception {
+  @SuppressWarnings("deprecation") @Test public void testPropagateWithFunctionForNonRuntimeException() throws Exception {
     final RuntimeException runtime = new RuntimeException();
     Mockito.when(function.apply(Mockito.<Throwable> any())).thenReturn(runtime);
 
@@ -56,7 +56,7 @@ import static org.mockito.Mockito.verifyZeroInteractions;
     Mockito.verify(function).apply(original);
   }
 
-  @Test public void testPropagateWithTypeForRuntimeException() throws Exception {
+  @SuppressWarnings("deprecation") @Test public void testPropagateWithTypeForRuntimeException() throws Exception {
     final Exception original = new RuntimeException();
     try {
       Throwables.propagate(original, MyRuntimeException.class);
@@ -66,7 +66,7 @@ import static org.mockito.Mockito.verifyZeroInteractions;
     }
   }
 
-  @Test public void testPropagateWithTypeForNonRuntimeException() throws Exception {
+  @SuppressWarnings("deprecation") @Test public void testPropagateWithTypeForNonRuntimeException() throws Exception {
     final Exception original = new Exception();
     try {
       Throwables.propagate(original, MyRuntimeException.class);

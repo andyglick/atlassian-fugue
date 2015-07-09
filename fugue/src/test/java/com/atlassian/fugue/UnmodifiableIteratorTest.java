@@ -4,8 +4,7 @@ import org.junit.Test;
 
 public class UnmodifiableIteratorTest {
 
-  @SuppressWarnings("deprecated")
-  @Test(expected=UnsupportedOperationException.class) public void testRemove() {
+  @SuppressWarnings("deprecation") @Test(expected=UnsupportedOperationException.class) public void testRemove() {
     Iterators.Unmodifiable<Integer> unmodifiableIterator = new Iterators.Unmodifiable<Integer>() {
       @Override
       public boolean hasNext() {

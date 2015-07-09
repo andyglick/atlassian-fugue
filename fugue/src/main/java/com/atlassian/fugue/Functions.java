@@ -531,9 +531,7 @@ public class Functions {
    */
   public static <A, B> Function<A, Option<B>> matches(Function<? super A, ? extends Option<? extends B>> f1,
     Function<? super A, ? extends Option<? extends B>> f2) {
-    @SuppressWarnings("unchecked")
-    Matcher<A, B> result = matcher(f1, f2);
-    return result;
+    return matcher(f1, f2);
   }
 
   /**
@@ -551,9 +549,7 @@ public class Functions {
    */
   public static <A, B> Function<A, Option<B>> matches(Function<? super A, ? extends Option<? extends B>> f1,
     Function<? super A, ? extends Option<? extends B>> f2, Function<? super A, ? extends Option<? extends B>> f3) {
-    @SuppressWarnings("unchecked")
-    Matcher<A, B> result = matcher(f1, f2, f3);
-    return result;
+    return matcher(f1, f2, f3);
   }
 
   /**

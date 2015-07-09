@@ -15,22 +15,23 @@
  */
 package com.atlassian.fugue.extras;
 
-import com.atlassian.fugue.Functions;
-import com.atlassian.fugue.Option;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
-import org.junit.Test;
+import static com.google.common.collect.Maps.immutableEntry;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
 
-import javax.annotation.Nullable;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import static com.google.common.collect.Maps.immutableEntry;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
+import javax.annotation.Nullable;
+
+import org.junit.Test;
+
+import com.atlassian.fugue.Functions;
+import com.atlassian.fugue.Option;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 
 public class ImmutableMapsTest {
 
@@ -523,21 +524,15 @@ public class ImmutableMapsTest {
   }
 
   static <A> Iterable<A> list(A a) {
-    @SuppressWarnings("unchecked")
-    List<A> result = Arrays.asList(a);
-    return result;
+    return Arrays.asList(a);
   }
 
   static <A> Iterable<A> list(A a1, A a2) {
-    @SuppressWarnings("unchecked")
-    List<A> result = Arrays.asList(a1, a2);
-    return result;
+    return Arrays.asList(a1, a2);
   }
 
   static <A> Iterable<A> list(A a1, A a2, A a3) {
-    @SuppressWarnings("unchecked")
-    List<A> result = Arrays.asList(a1, a2, a3);
-    return result;
+    return Arrays.asList(a1, a2, a3);
   }
 
   static class GrandParent {
