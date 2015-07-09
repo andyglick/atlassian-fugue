@@ -51,17 +51,7 @@ public class ImmutableMaps {
    * entry
    */
   public static <K, V> BiFunction<K, V, Entry<K, V>> mapEntry() {
-    @SuppressWarnings("unchecked")
-    MapEntryFunction<K, V> result = (MapEntryFunction<K, V>) MapEntryFunction.INSTANCE;
-    return result;
-  }
-
-  private static class MapEntryFunction<K, V> implements BiFunction<K, V, Map.Entry<K, V>> {
-    static final MapEntryFunction<Object, Object> INSTANCE = new MapEntryFunction<Object, Object>();
-
-    @Override public Map.Entry<K, V> apply(K k, V v) {
-      return Maps.immutableEntry(k, v);
-    }
+    return Maps::immutableEntry;
   }
 
   /**
@@ -271,12 +261,10 @@ public class ImmutableMaps {
    */
   public static <K1, K2, V1, V2> ImmutableMap<K2, V2> collect(Map<K1, V1> from, final Function<? super K1, Option<K2>> keyPartial,
     final Function<? super V1, Option<V2>> valuePartial) {
-    return collect(from, new Function<Map.Entry<K1, V1>, Option<Map.Entry<K2, V2>>>() {
-      @Override public Option<Map.Entry<K2, V2>> apply(Map.Entry<K1, V1> input) {
-        Option<K2> ok = keyPartial.apply(input.getKey());
-        Option<V2> ov = valuePartial.apply(input.getValue());
-        return Options.lift2(ImmutableMaps.<K2, V2>mapEntry()).apply(ok, ov);
-      }
+    return collect(from, input -> {
+      Option<K2> ok = keyPartial.apply(input.getKey());
+      Option<V2> ov = valuePartial.apply(input.getValue());
+      return Options.lift2(ImmutableMaps.<K2, V2>mapEntry()).apply(ok, ov);
     });
   }
 
