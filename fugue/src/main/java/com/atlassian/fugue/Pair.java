@@ -63,7 +63,7 @@ public final class Pair<A, B> implements Serializable {
    * @since 1.1
    */
   public static <A> Function<Pair<A, ?>, A> leftValue() {
-    return new LeftAccessor<>();
+    return Pair::left;
   }
 
   /**
@@ -74,7 +74,7 @@ public final class Pair<A, B> implements Serializable {
    * @since 1.1
    */
   public static <B> Function<Pair<?, B>, B> rightValue() {
-    return new RightAccessor<>();
+    return Pair::right;
   }
 
   /**
@@ -139,21 +139,5 @@ public final class Pair<A, B> implements Serializable {
     final int lh = left.hashCode();
     final int rh = right.hashCode();
     return (((lh >> HALF_WORD) ^ lh) << HALF_WORD) | (((rh << HALF_WORD) ^ rh) >> HALF_WORD);
-  }
-
-  //
-  // inner classes
-  //
-
-  static class LeftAccessor<A> implements Function<Pair<A, ?>, A> {
-    @Override public A apply(final Pair<A, ?> from) {
-      return from.left();
-    }
-  }
-
-  static class RightAccessor<B> implements Function<Pair<?, B>, B> {
-    @Override public B apply(final Pair<?, B> from) {
-      return from.right();
-    }
   }
 }

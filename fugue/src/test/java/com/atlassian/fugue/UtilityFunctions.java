@@ -57,21 +57,7 @@ public class UtilityFunctions {
     .length() >= (min == null ? 0 : min);
 
   public static Function<Object, String> toStringFunction() {
-    return ToStringFunction.INSTANCE;
-  }
-
-  // enum singleton pattern
-  private enum ToStringFunction implements Function<Object, String> {
-    INSTANCE;
-
-    @Override public String apply(Object o) {
-      requireNonNull(o);
-      return o.toString();
-    }
-
-    @Override public String toString() {
-      return "toString";
-    }
+    return Object::toString;
   }
 
   static <A> Function<Class<A>, Either<Exception, A>> defaultCtor() {
