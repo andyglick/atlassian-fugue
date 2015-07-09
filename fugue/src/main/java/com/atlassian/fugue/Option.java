@@ -128,7 +128,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    * @return a {@link Predicate} that returns true only for defined options
    */
   public static <A> Predicate<Option<A>> defined() {
-    return new Defined<>();
+    return Maybe::isDefined;
   }
 
   /**
@@ -358,12 +358,6 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
 
   private static final Supplier<String> NONE_STRING = ofInstance("none()");
   private static final Supplier<Integer> NONE_HASH = ofInstance(31);
-
-  static final class Defined<A> implements Predicate<Option<A>> {
-    @Override public boolean test(final Option<A> option) {
-      return option.isDefined();
-    }
-  }
 
   //
   // inner classes

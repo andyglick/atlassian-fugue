@@ -52,16 +52,6 @@ public class Options {
   }
 
   /**
-   * Function for accessing the contents of defined options, errors if the
-   * option is not defined.
-   */
-  static class SomeAccessor<A> implements Function<Option<A>, A> {
-    @Override public A apply(final Option<A> from) {
-      return from.get();
-    }
-  }
-
-  /**
    * Upcasts an {@link Option option} of type A to an option of its super type
    * AA.
    * 
