@@ -289,7 +289,7 @@ public abstract class Either<L, R> implements Serializable {
    * is a Right.
    * @since 2.2
    */
-  public final <X> Either<L, X> flatMap(final Function<? super R, Either<L, X>> f) {
+  public final <X> Either<? super L, X> flatMap(final Function<? super R, ? extends Either<? super L, X>> f) {
     return right().flatMap(f);
   }
 
@@ -684,8 +684,12 @@ public abstract class Either<L, R> implements Serializable {
      * @param f The function to bind across this projection.
      * @return A new either value after binding.
      */
-    public <X> Either<X, R> flatMap(final Function<? super L, Either<X, R>> f) {
-      return isLeft() ? f.apply(get()) : this.<X> toRight();
+    public <X> Either<X, ? super R> flatMap(final Function<? super L, ? extends Either<X, ? super R>> f) {
+      if (isLeft()) {
+        return f.apply(get());
+      } else {
+        return this.toRight();
+      }
     }
 
     <X> Right<X, R> toRight() {
@@ -699,8 +703,8 @@ public abstract class Either<L, R> implements Serializable {
      * @param e The value to bind with.
      * @return An either after binding through this projection.
      */
-    public <X> Either<X, R> sequence(final Either<X, R> e) {
-      return flatMap(Functions.<L, Either<X, R>> constant(e));
+    public <X> Either<X, ? super R> sequence(final Either<X, ? super R> e) {
+      return flatMap(Functions.<L, Either<X, ? super R>> constant(e));
     }
 
     /**
@@ -730,8 +734,8 @@ public abstract class Either<L, R> implements Serializable {
      * value.
      * @return The result of function application within either.
      */
-    public <X> Either<X, R> apply(final Either<Function<L, X>, R> either) {
-      return either.left().flatMap(new Function<Function<L, X>, Either<X, R>>() {
+    public <X> Either<X, ? super R> apply(final Either<Function<L, X>, R> either) {
+      return either.left().flatMap(new Function<Function<L, X>, Either<X, ? super R>>() {
         public Either<X, R> apply(final Function<L, X> f) {
           return map(f);
         }
@@ -789,8 +793,12 @@ public abstract class Either<L, R> implements Serializable {
      * @param f The function to bind across this projection.
      * @return A new either value after binding.
      */
-    public <X> Either<L, X> flatMap(final Function<? super R, Either<L, X>> f) {
-      return isRight() ? f.apply(get()) : this.<X> toLeft();
+    public <X> Either<? super L, X> flatMap(final Function<? super R, ? extends Either<? super L, X>> f) {
+      if (isRight()) {
+        return f.apply(get());
+      } else {
+        return this.toLeft();
+      }
     }
 
     <X> Left<L, X> toLeft() {
@@ -804,8 +812,8 @@ public abstract class Either<L, R> implements Serializable {
      * @param e The value to bind with.
      * @return An either after binding through this projection.
      */
-    public <X> Either<L, X> sequence(final Either<L, X> e) {
-      return flatMap(Functions.<R, Either<L, X>> constant(e));
+    public <X> Either<? super L, X> sequence(final Either<? super L, X> e) {
+      return flatMap(Functions.<R, Either<? super L, X>> constant(e));
     }
 
     /**
@@ -835,8 +843,8 @@ public abstract class Either<L, R> implements Serializable {
      * value.
      * @return The result of function application within either.
      */
-    public <X> Either<L, X> apply(final Either<L, Function<R, X>> either) {
-      return either.right().flatMap(new Function<Function<R, X>, Either<L, X>>() {
+    public <X> Either<? super L, X> apply(final Either<L, Function<R, X>> either) {
+      return either.right().flatMap(new Function<Function<R, X>, Either<? super L, X>>() {
         public Either<L, X> apply(final Function<R, X> f) {
           return map(f);
         }

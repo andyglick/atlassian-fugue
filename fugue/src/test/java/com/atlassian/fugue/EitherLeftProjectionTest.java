@@ -21,6 +21,7 @@ import static com.atlassian.fugue.UtilityFunctions.reverse;
 import static com.atlassian.fugue.UtilityFunctions.toStringFunction;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
@@ -165,7 +166,7 @@ public class EitherLeftProjectionTest {
   }
 
   @Test public void flatMapNotDefined() {
-    assertThat(r.left().flatMap(reverseToEither).right().get(), is(12));
+    assertEquals(12, r.left().flatMap(reverseToEither).right().get());
   }
 
   @Test public void sequenceDefined() {
@@ -175,7 +176,7 @@ public class EitherLeftProjectionTest {
 
   @Test public void sequenceNotDefined() {
     final Either<String, Integer> e = left("bar");
-    assertThat(r.left().sequence(e).right().get(), is(12));
+    assertEquals(12, r.left().sequence(e).right().get());
   }
 
   @Test public void filterDefinedTrue() {
@@ -201,17 +202,20 @@ public class EitherLeftProjectionTest {
 
   @Test public void applyDefinedRight() {
     final Either<Function<String, String>, Integer> func = right(36);
-    assertThat(l.left().apply(func).right().get(), is(36));
+
+    assertEquals(36, l.left().apply(func).right().get());
   }
 
   @Test public void applyNotDefinedLeft() {
     final Either<Function<String, String>, Integer> func = left(reverse);
-    assertThat(r.left().apply(func).right().get(), is(12));
+
+    assertEquals(12, r.left().apply(func).right().get());
   }
 
   @Test public void applyNotDefinedRight() {
     final Either<Function<String, String>, Integer> func = right(36);
-    assertThat(r.left().apply(func).right().get(), is(36));
+
+    assertEquals(36, r.left().apply(func).right().get());
   }
 
   static class MyException extends Exception {
