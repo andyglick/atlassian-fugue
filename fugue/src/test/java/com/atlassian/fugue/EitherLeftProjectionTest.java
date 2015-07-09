@@ -21,14 +21,16 @@ import static com.atlassian.fugue.UtilityFunctions.reverse;
 import static com.atlassian.fugue.UtilityFunctions.toStringFunction;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
 import com.google.common.base.Supplier;
+
+import javax.annotation.Nullable;
 
 public class EitherLeftProjectionTest {
   private final Either<String, Integer> l = left("heyaa!");
@@ -39,6 +41,11 @@ public class EitherLeftProjectionTest {
     }
   };
   Function<String, Either<String, Integer>> reverseToEither = new Function<String, Either<String, Integer>>() {
+    @Override public Either<String, Integer> apply(final String from) {
+      return left(reverse.apply(from));
+    }
+  };
+  Function<String, Either<String, ? extends Integer>> reverseToEither2 = new Function<String, Either<String, ? extends Integer>>() {
     @Override public Either<String, Integer> apply(final String from) {
       return left(reverse.apply(from));
     }
@@ -106,11 +113,11 @@ public class EitherLeftProjectionTest {
   }
 
   @Test public void existsDefinedTrue() {
-    assertThat(l.left().exists(Predicates.<String> alwaysTrue()), is(true));
+    assertThat(l.left().exists(Predicates.<String>alwaysTrue()), is(true));
   }
 
   @Test public void existsDefinedFalse() {
-    assertThat(l.left().exists(Predicates.<String> alwaysFalse()), is(false));
+    assertThat(l.left().exists(Predicates.<String>alwaysFalse()), is(false));
   }
 
   @Test public void existsNotDefinedTrue() {
@@ -122,11 +129,11 @@ public class EitherLeftProjectionTest {
   }
 
   @Test public void forallDefinedTrue() {
-    assertThat(l.left().forall(Predicates.<String> alwaysTrue()), is(true));
+    assertThat(l.left().forall(Predicates.<String>alwaysTrue()), is(true));
   }
 
   @Test public void forallDefinedFalse() {
-    assertThat(l.left().forall(Predicates.<String> alwaysFalse()), is(false));
+    assertThat(l.left().forall(Predicates.<String>alwaysFalse()), is(false));
   }
 
   @Test public void forallNotDefinedTrue() {
@@ -166,7 +173,15 @@ public class EitherLeftProjectionTest {
   }
 
   @Test public void flatMapNotDefined() {
-    assertEquals(12, r.left().flatMap(reverseToEither).right().get());
+    assertThat(r.left().flatMap(reverseToEither).right().get(), is(12));
+  }
+
+  @Test public void flatMap2Defined() {
+    assertThat(l.left().flatMap2(reverseToEither2).left().get(), is("!aayeh"));
+  }
+
+  @Test public void flatMap2NotDefined() {
+    assertThat(r.left().flatMap2(reverseToEither2).right().get(), is(12));
   }
 
   @Test public void sequenceDefined() {
@@ -176,7 +191,7 @@ public class EitherLeftProjectionTest {
 
   @Test public void sequenceNotDefined() {
     final Either<String, Integer> e = left("bar");
-    assertEquals(12, r.left().sequence(e).right().get());
+    assertThat(r.left().sequence(e).right().get(), is(12));
   }
 
   @Test public void filterDefinedTrue() {
@@ -203,19 +218,19 @@ public class EitherLeftProjectionTest {
   @Test public void applyDefinedRight() {
     final Either<Function<String, String>, Integer> func = right(36);
 
-    assertEquals(36, l.left().apply(func).right().get());
+    assertThat(l.left().apply(func).right().get(), is(36));
   }
 
   @Test public void applyNotDefinedLeft() {
     final Either<Function<String, String>, Integer> func = left(reverse);
 
-    assertEquals(12, r.left().apply(func).right().get());
+    assertThat(r.left().apply(func).right().get(), is(12));
   }
 
   @Test public void applyNotDefinedRight() {
     final Either<Function<String, String>, Integer> func = right(36);
 
-    assertEquals(36, r.left().apply(func).right().get());
+    assertThat(r.left().apply(func).right().get(), is(36));
   }
 
   static class MyException extends Exception {

@@ -3,19 +3,22 @@ package com.atlassian.fugue;
 import static com.atlassian.fugue.Either.left;
 import static com.atlassian.fugue.Either.right;
 import static com.atlassian.fugue.EitherRightProjectionTest.reverseToEither;
+import static com.atlassian.fugue.EitherRightProjectionTest.reverseToEither2;
 import static com.atlassian.fugue.UtilityFunctions.addOne;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.google.common.base.Function;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import com.google.common.base.Predicates;
+
+import javax.annotation.Nullable;
 
 public class EitherRightBiasTest {
   private final Either<String, Integer> l = left("heyaa!");
@@ -26,15 +29,23 @@ public class EitherRightBiasTest {
   }
 
   @Test public void mapLeft() {
-    assertThat(Either.<String, Integer> left("foo").map(addOne), is(Either.<String, Integer> left("foo")));
+    assertThat(Either.<String, Integer>left("foo").map(addOne), is(Either.<String, Integer>left("foo")));
   }
 
   @Test public void flatMapRight() {
-    assertEquals(Either.<Integer, String>right("oof!"), Either.<Integer, String>right("!foo").flatMap(reverseToEither));
+    assertThat(Either.<Integer, String>right("!foo").flatMap(reverseToEither), is(Either.<Integer, String>right("oof!")));
   }
 
   @Test public void flatMapLeft() {
-    assertEquals(Either.<Integer, String> left(5), Either.<Integer, String> left(5).flatMap(reverseToEither));
+    assertThat(Either.<Integer, String>left(5).flatMap(reverseToEither), is(Either.<Integer, String>left(5)));
+  }
+
+  @Test public void flatMap2Right() {
+    assertThat(Either.<Integer, String>right("!foo").flatMap2(reverseToEither2), Matchers.<Either<? extends Integer, String>>is(Either.<Integer, String>right("oof!")));
+  }
+
+  @Test public void flatMap2Left() {
+    assertThat(Either.<Integer, String>left(5).flatMap2(reverseToEither2), Matchers.<Either<? extends Integer, String>>is(Either.<Integer, String>left(5)));
   }
 
   @Test public void leftMapRight() {

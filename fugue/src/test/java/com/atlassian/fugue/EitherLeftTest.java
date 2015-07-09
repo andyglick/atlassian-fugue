@@ -26,7 +26,11 @@ import static org.junit.Assert.assertThat;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 
+import com.google.common.base.Function;
+import org.hamcrest.Matchers;
 import org.junit.Test;
+
+import javax.annotation.Nullable;
 
 public class EitherLeftTest {
   private static final Boolean ORIGINAL_VALUE = true;
@@ -112,5 +116,26 @@ public class EitherLeftTest {
     Either<Integer, String> e = Either.right("a");
     Either<Number, String> result = Eithers.<Number, Integer, String> upcastLeft(e);
     assertThat(result.getRight(), is("a"));
+  }
+
+  @Test public void flatMap2LeftSuperTypes() {
+    class ErrorType {}
+    class AnotherErrorType extends ErrorType{}
+
+    final AnotherErrorType anotherErrorType = new AnotherErrorType();
+    final Either<AnotherErrorType, Long> l = Either.left(anotherErrorType);
+
+    final Either<? extends ErrorType, Long> longEither = Either.<ErrorType, Integer>right(1)
+      .flatMap2(new Function<Integer, Either<? extends ErrorType, Long>>() {
+        @Nullable
+        @Override
+        public Either<? extends ErrorType, Long> apply(final Integer input) {
+          return l;
+        }
+      });
+
+    final ErrorType errorType = longEither.left().get();
+
+    assertThat(errorType, Matchers.<ErrorType>is(anotherErrorType));
   }
 }

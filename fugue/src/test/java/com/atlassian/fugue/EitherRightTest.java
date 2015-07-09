@@ -26,7 +26,10 @@ import static org.junit.Assert.assertThat;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 
+import com.google.common.base.Function;
 import org.junit.Test;
+
+import javax.annotation.Nullable;
 
 public class EitherRightTest {
   private static final Integer ORIGINAL_VALUE = 1;
@@ -120,5 +123,23 @@ public class EitherRightTest {
     Either<String, Integer> e = Either.left("a");
     Either<String, Number> result = Eithers.<String, Number, Integer> upcastRight(e);
     assertThat(result.left().get(), is("a"));
+  }
+
+  @Test public void flatMap2RightSuperTypes() {
+    class ErrorType {}
+    class AnotherErrorType extends ErrorType{}
+
+    final Either<AnotherErrorType, Long> r = Either.right(99l);
+
+    final Either<? extends ErrorType, Long> longEither = Either.<ErrorType, Integer>right(1)
+      .flatMap2(new Function<Integer, Either<? extends ErrorType, Long>>() {
+        @Nullable
+        @Override
+        public Either<? extends ErrorType, Long> apply(final Integer input) {
+          return r;
+        }
+      });
+
+    assertThat(longEither.getOrNull(), is(99l));
   }
 }
