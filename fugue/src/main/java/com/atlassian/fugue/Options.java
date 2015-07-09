@@ -186,4 +186,27 @@ public class Options {
   public static <A> Iterable<A> flatten(final Iterable<Option<A>> options) {
     return transform(filterNone(options), Maybe::get);
   }
+
+
+  /**
+   * Function for wrapping values in a Some or None.
+   *
+   * @param <A> the contained type
+   * @return a {@link Function} to wrap values
+   * @since 3.0
+   */
+  public static <A> Function<A, Option<A>> toOption() {
+    return Option::option;
+  }
+
+  /**
+   * Turn a null producing function into one that returns an option instead.
+   *
+   * @param nullProducing the function that may return null
+   * @return a function that turns nulls into None, and wraps non-null values in Some.
+   * @since 3.0
+   */
+  public static <A, B> Function<A, Option<B>> nullSafe(Function<A, B> nullProducing) {
+    return nullProducing.andThen(toOption());
+  }
 }

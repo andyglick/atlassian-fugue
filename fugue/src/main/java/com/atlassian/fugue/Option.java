@@ -110,18 +110,6 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   }
 
   /**
-   * Function for wrapping values in a Some or None.
-   * 
-   * @param <A> the contained type
-   * @return a {@link Function} to wrap values
-   * 
-   * @since 1.1
-   */
-  public static <A> Function<A, Option<A>> toOption() {
-    return Option::option;
-  }
-
-  /**
    * Predicate for filtering defined options only.
    * 
    * @param <A> the contained type
@@ -201,7 +189,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   public final Option<A> orElse(final Supplier<? extends Option<? extends A>> orElse) {
     @SuppressWarnings("unchecked")
     // safe covariant cast
-    Option<A> result = (Option<A>) fold(orElse, Option.<A> toOption());
+    Option<A> result = (Option<A>) fold(orElse, Options.toOption());
     return result;
   }
 

@@ -284,7 +284,7 @@ public class ImmutableMaps {
    * @return the transformed map
    */
   public static <K1, K2, V> ImmutableMap<K2, V> collectByKey(Map<K1, V> from, final Function<? super K1, Option<K2>> keyPartial) {
-    return collect(from, keyPartial, Option.<V> toOption());
+    return collect(from, keyPartial, Options.toOption());
   }
 
   /**
@@ -303,6 +303,6 @@ public class ImmutableMaps {
    * @return the transformed map
    */
   public static <K, V1, V2> ImmutableMap<K, V2> collectByValue(Map<K, V1> from, final Function<? super V1, Option<V2>> valuePartial) {
-    return collect(from, Option.<K> toOption(), valuePartial);
+    return collect(from, Options.toOption(), valuePartial);
   }
 }
