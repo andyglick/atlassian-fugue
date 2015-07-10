@@ -105,11 +105,11 @@ public class EitherLeftProjectionTest {
   }
 
   @Test public void existsDefinedTrue() {
-    assertThat(l.left().exists(Predicates.<String> alwaysTrue()), is(true));
+    assertThat(l.left().exists(Predicates.<String>alwaysTrue()), is(true));
   }
 
   @Test public void existsDefinedFalse() {
-    assertThat(l.left().exists(Predicates.<String> alwaysFalse()), is(false));
+    assertThat(l.left().exists(Predicates.<String>alwaysFalse()), is(false));
   }
 
   @Test public void existsNotDefinedTrue() {
@@ -121,11 +121,11 @@ public class EitherLeftProjectionTest {
   }
 
   @Test public void forallDefinedTrue() {
-    assertThat(l.left().forall(Predicates.<String> alwaysTrue()), is(true));
+    assertThat(l.left().forall(Predicates.<String>alwaysTrue()), is(true));
   }
 
   @Test public void forallDefinedFalse() {
-    assertThat(l.left().forall(Predicates.<String> alwaysFalse()), is(false));
+    assertThat(l.left().forall(Predicates.<String>alwaysFalse()), is(false));
   }
 
   @Test public void forallNotDefinedTrue() {
@@ -201,16 +201,19 @@ public class EitherLeftProjectionTest {
 
   @Test public void applyDefinedRight() {
     final Either<Function<String, String>, Integer> func = right(36);
+
     assertThat(l.left().apply(func).right().get(), is(36));
   }
 
   @Test public void applyNotDefinedLeft() {
     final Either<Function<String, String>, Integer> func = left(reverse);
+
     assertThat(r.left().apply(func).right().get(), is(12));
   }
 
   @Test public void applyNotDefinedRight() {
     final Either<Function<String, String>, Integer> func = right(36);
+
     assertThat(r.left().apply(func).right().get(), is(36));
   }
 

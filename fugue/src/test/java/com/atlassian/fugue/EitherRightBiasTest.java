@@ -11,10 +11,13 @@ import static org.junit.Assert.fail;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.google.common.base.Function;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import com.google.common.base.Predicates;
+
+import javax.annotation.Nullable;
 
 public class EitherRightBiasTest {
   private final Either<String, Integer> l = left("heyaa!");
@@ -25,24 +28,23 @@ public class EitherRightBiasTest {
   }
 
   @Test public void mapLeft() {
-    assertThat(Either.<String, Integer> left("foo").map(addOne), is(Either.<String, Integer> left("foo")));
+    assertThat(Either.<String, Integer>left("foo").map(addOne), is(Either.<String, Integer>left("foo")));
   }
 
   @Test public void flatMapRight() {
-    assertThat(Either.<Integer, String> right("!foo").flatMap(reverseToEither),
-      is(Either.<Integer, String> right("oof!")));
+    assertThat(Either.<Integer, String>right("!foo").flatMap(reverseToEither), is(Either.<Integer, String>right("oof!")));
   }
 
   @Test public void flatMapLeft() {
-    assertThat(Either.<Integer, String> left(5).flatMap(reverseToEither), is(Either.<Integer, String> left(5)));
+    assertThat(Either.<Integer, String>left(5).flatMap(reverseToEither), is(Either.<Integer, String>left(5)));
   }
 
   @Test public void leftMapRight() {
-    assertThat(Either.<Integer, String> right("foo").leftMap(addOne), is(Either.<Integer, String> right("foo")));
+    assertThat(Either.<Integer, String> right("foo").leftMap(addOne), is(Either.<Integer, String>right("foo")));
   }
 
   @Test public void leftMapLeft() {
-    assertThat(Either.<Integer, String> left(3).leftMap(addOne), is(Either.<Integer, String> left(4)));
+    assertThat(Either.<Integer, String> left(3).leftMap(addOne), is(Either.<Integer, String>left(4)));
   }
 
   @Test public void getOrElseSupplierRight() {
@@ -146,30 +148,30 @@ public class EitherRightBiasTest {
 
   @Test public void filterRight() {
     assertThat(r.filter(Predicates.equalTo(12)), is(Option.some(r)));
-    assertThat(r.filter(Predicates.equalTo(11)), Matchers.is(Option.<Either<String, Integer>> none()));
+    assertThat(r.filter(Predicates.equalTo(11)), Matchers.is(Option.<Either<String, Integer>>none()));
   }
 
   @Test public void filterLeft() {
-    assertThat(l.filter(Predicates.equalTo(12)), Matchers.is(Option.<Either<String, Integer>> none()));
+    assertThat(l.filter(Predicates.equalTo(12)), Matchers.is(Option.<Either<String, Integer>>none()));
   }
 
   @Test public void orElseRightInstance() {
-    assertThat(r.orElse(Either.<String, Integer> right(44)), is(r));
+    assertThat(r.orElse(Either.<String, Integer>right(44)), is(r));
   }
 
   @Test public void orElseLeftInstance() {
     assertThat(l.orElse(Either.<String, Integer> right(44)), is(Either.<String, Integer> right(44)));
-    assertThat(l.orElse(Either.<String, Integer> left("left")), is(Either.<String, Integer> left("left")));
+    assertThat(l.orElse(Either.<String, Integer>left("left")), is(Either.<String, Integer>left("left")));
   }
 
   @Test public void orElseRightSupplier() {
-    assertThat(r.orElse(Suppliers.ofInstance(Either.<String, Integer> right(44))), is(r));
+    assertThat(r.orElse(Suppliers.ofInstance(Either.<String, Integer>right(44))), is(r));
   }
 
   @Test public void orElseLeftSupplier() {
-    assertThat(l.orElse(Suppliers.ofInstance(Either.<String, Integer> right(44))),
+    assertThat(l.orElse(Suppliers.ofInstance(Either.<String, Integer>right(44))),
       is(Either.<String, Integer> right(44)));
-    assertThat(l.orElse(Suppliers.ofInstance(Either.<String, Integer> left("left"))),
+    assertThat(l.orElse(Suppliers.ofInstance(Either.<String, Integer>left("left"))),
       is(Either.<String, Integer> left("left")));
   }
 
@@ -183,10 +185,54 @@ public class EitherRightBiasTest {
   }
 
   @Test public void valueOrRight() {
-    assertThat(r.valueOr(Functions.<String, Integer> constant(99)), is(12));
+    assertThat(r.valueOr(Functions.<String, Integer>constant(99)), is(12));
   }
 
   @Test public void valueOrLeft() {
     assertThat(l.valueOr(Functions.<String, Integer> constant(99)), is(99));
+  }
+
+  @Test public void flatMapSubTypesOnLeft() {
+    class ErrorType {}
+    class AnotherErrorType extends ErrorType{}
+
+    final AnotherErrorType anotherErrorType = new AnotherErrorType();
+    final Either<AnotherErrorType, Long> l = Either.left(anotherErrorType);
+
+    final Either<ErrorType, Long> longEither = Either.<ErrorType, Integer>right(1)
+      .flatMap(new Function<Integer, Either<AnotherErrorType, Long>>() {
+        @Nullable
+        @Override
+        public Either<AnotherErrorType, Long> apply(final Integer input) {
+          return l;
+        }
+      });
+
+    final ErrorType errorType = longEither.left().get();
+
+    assertThat(errorType, Matchers.<ErrorType>is(anotherErrorType));
+  }
+
+  @Test public void flatMapWithUpcastAndSubtypesOnLeft() {
+    class ErrorType {}
+    class MyErrorType extends ErrorType{}
+    class AnotherErrorType extends ErrorType{}
+
+    final AnotherErrorType anotherErrorType = new AnotherErrorType();
+
+    final Either<MyErrorType, Boolean> l = Either.right(true);
+    final Either<AnotherErrorType, Long> l2 = Either.left(anotherErrorType);
+
+    final Either<ErrorType, Long> either = Eithers.<ErrorType, MyErrorType, Boolean>upcastLeft(l)
+      .flatMap(new Function<Boolean, Either<AnotherErrorType, Long>>() {
+        @Override
+        public Either<AnotherErrorType, Long> apply(@Nullable final Boolean input) {
+          return l2;
+        }
+      });
+
+    final ErrorType errorType = either.left().get();
+
+    assertThat(errorType, Matchers.<ErrorType>is(anotherErrorType));
   }
 }
