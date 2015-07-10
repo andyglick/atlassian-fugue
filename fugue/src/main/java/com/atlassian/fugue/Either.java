@@ -303,7 +303,7 @@ public abstract class Either<L, R> implements Serializable {
    * @return A new either value after binding.
    * @since 2.4
    */
-  public final <X> Either<? extends L, X> flatMap2(final Function<? super R, Either<? extends L, X>> f) {
+  public final <X> Either<L, X> flatMap2(final Function<? super R, Either<? extends L, X>> f) {
     return right().flatMap2(f);
   }
 
@@ -716,9 +716,10 @@ public abstract class Either<L, R> implements Serializable {
      * @return A new either value after binding.
      * @since 2.4
      */
-    public <X> Either<X, ? extends R> flatMap2(final Function<? super L, Either<X, ? extends R>> f) {
+    @SuppressWarnings("unchecked")
+    public <X> Either<X, R> flatMap2(final Function<? super L, Either<X, ? extends R>> f) {
       if (isLeft()) {
-        return f.apply(get());
+        return (Either<X, R>) f.apply(get());
       } else {
         return this.toRight();
       }
@@ -843,9 +844,10 @@ public abstract class Either<L, R> implements Serializable {
      * @return A new either value after binding.
      * @since 2.4
      */
-    public <X> Either<? extends L, X> flatMap2(final Function<? super R, Either<? extends L, X>> f) {
+    @SuppressWarnings("unchecked")
+    public <X> Either<L, X> flatMap2(final Function<? super R, Either<? extends L, X>> f) {
       if (isRight()) {
-        return f.apply(get());
+        return (Either<L, X>) f.apply(get());
       } else {
         return this.toLeft();
       }
