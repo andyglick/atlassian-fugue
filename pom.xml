@@ -63,6 +63,15 @@
 
     <build>
         <plugins>
+<plugin>
+  <groupId>net.revelc.code</groupId>
+  <artifactId>formatter-maven-plugin</artifactId>
+  <version>0.5.2</version>
+  <configuration>
+    <configFile>{ish}src/etc/eclipse/formatter.xml</configFile>
+          <goalPrefix>java-formatter</goalPrefix>
+  </configuration>
+</plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
