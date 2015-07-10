@@ -12,13 +12,10 @@ import static org.junit.Assert.fail;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.google.common.base.Function;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import com.google.common.base.Predicates;
-
-import javax.annotation.Nullable;
 
 public class EitherRightBiasTest {
   private final Either<String, Integer> l = left("heyaa!");
@@ -41,11 +38,11 @@ public class EitherRightBiasTest {
   }
 
   @Test public void flatMap2Right() {
-    assertThat(Either.<Integer, String>right("!foo").flatMap2(reverseToEither2), Matchers.<Either<? extends Integer, String>>is(Either.<Integer, String>right("oof!")));
+    assertThat(Either.<Integer, String>right("!foo").flatMap(reverseToEither2), Matchers.<Either<? extends Integer, String>>is(Either.<Integer, String>right("oof!")));
   }
 
   @Test public void flatMap2Left() {
-    assertThat(Either.<Integer, String>left(5).flatMap2(reverseToEither2), Matchers.<Either<? extends Integer, String>>is(Either.<Integer, String>left(5)));
+    assertThat(Either.<Integer, String>left(5).flatMap(reverseToEither2), Matchers.is(Either.<Integer, String>left(5)));
   }
 
   @Test public void leftMapRight() {

@@ -23,14 +23,11 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
-import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
 import com.google.common.base.Supplier;
-
-import javax.annotation.Nullable;
 
 public class EitherLeftProjectionTest {
   private final Either<String, Integer> l = left("heyaa!");

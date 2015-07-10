@@ -132,10 +132,10 @@ public class EitherRightTest {
     final Either<AnotherErrorType, Long> r = Either.right(99l);
 
     final Either<? extends ErrorType, Long> longEither = Either.<ErrorType, Integer>right(1)
-      .flatMap2(new Function<Integer, Either<? extends ErrorType, Long>>() {
+      .flatMap(new Function<Integer, Either<AnotherErrorType, Long>>() {
         @Nullable
         @Override
-        public Either<? extends ErrorType, Long> apply(final Integer input) {
+        public Either<AnotherErrorType, Long> apply(final Integer input) {
           return r;
         }
       });

@@ -289,22 +289,8 @@ public abstract class Either<L, R> implements Serializable {
    * is a Right.
    * @since 2.2
    */
-  public final <X> Either<L, X> flatMap(final Function<? super R, Either<L, X>> f) {
+  public final <X, LL extends L> Either<L, X> flatMap(final Function<? super R, Either<LL, X>> f) {
     return right().flatMap(f);
-  }
-
-  /**
-   * Binds the given function across this projection's value if it has one.
-   *
-   * For use when require covariant support on the LHS
-   *
-   * @param <X> the RHS type
-   * @param f The function to bind across this projection.
-   * @return A new either value after binding.
-   * @since 2.4
-   */
-  public final <X> Either<L, X> flatMap2(final Function<? super R, Either<? extends L, X>> f) {
-    return right().flatMap2(f);
   }
 
   /**
@@ -826,9 +812,10 @@ public abstract class Either<L, R> implements Serializable {
      * @param f The function to bind across this projection.
      * @return A new either value after binding.
      */
-    public <X> Either<L, X> flatMap(final Function<? super R, Either<L, X>> f) {
+    public final <X, LL extends L> Either<L, X> flatMap(final Function<? super R, Either<LL, X>> f) {
       if (isRight()) {
-        return f.apply(get());
+        @SuppressWarnings("unchecked") Either<L, X> result = (Either<L, X>) f.apply(get());
+        return result;
       } else {
         return this.toLeft();
       }
@@ -864,7 +851,7 @@ public abstract class Either<L, R> implements Serializable {
      * @param e The value to bind with.
      * @return An either after binding through this projection.
      */
-    public <X> Either<? extends L, X> sequence(final Either<L, X> e) {
+    public <X> Either<L, X> sequence(final Either<L, X> e) {
       return flatMap(Functions.<R, Either<L, X>> constant(e));
     }
 
@@ -895,7 +882,7 @@ public abstract class Either<L, R> implements Serializable {
      * value.
      * @return The result of function application within either.
      */
-    public <X> Either<? extends L, X> apply(final Either<L, Function<R, X>> either) {
+    public <X> Either<L, X> apply(final Either<L, Function<R, X>> either) {
       return either.right().flatMap(new Function<Function<R, X>, Either<L, X>>() {
         public Either<L, X> apply(final Function<R, X> f) {
           return map(f);
