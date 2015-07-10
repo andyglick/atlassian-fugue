@@ -387,7 +387,7 @@ public abstract class Either<L, R> implements Serializable {
    * returns a right in <code>Some</code>.
    * @since 2.3
    */
-  public Option<Either<L, R>> filter(final Predicate<? super R> p) {
+  public final Option<Either<L, R>> filter(final Predicate<? super R> p) {
     return right().filter(p);
   }
 
@@ -684,28 +684,10 @@ public abstract class Either<L, R> implements Serializable {
      * @param f The function to bind across this projection.
      * @return A new either value after binding.
      */
-    public <X> Either<X, R> flatMap(final Function<? super L, Either<X, R>> f) {
+    public <X, RR extends R> Either<X, R> flatMap(final Function<? super L, Either<X, RR>> f) {
       if (isLeft()) {
-        return f.apply(get());
-      } else {
-        return this.toRight();
-      }
-    }
-
-    /**
-     * Binds the given function across this projection's value if it has one.
-     *
-     * For use when require covariant support on the RHS
-     *
-     * @param <X> the LHS type
-     * @param f The function to bind across this projection.
-     * @return A new either value after binding.
-     * @since 2.4
-     */
-    @SuppressWarnings("unchecked")
-    public <X> Either<X, R> flatMap2(final Function<? super L, Either<X, ? extends R>> f) {
-      if (isLeft()) {
-        return (Either<X, R>) f.apply(get());
+        @SuppressWarnings("unchecked") Either<X, R> result = (Either<X, R>) f.apply(get());
+        return result;
       } else {
         return this.toRight();
       }
@@ -722,7 +704,7 @@ public abstract class Either<L, R> implements Serializable {
      * @param e The value to bind with.
      * @return An either after binding through this projection.
      */
-    public <X> Either<X, ? extends R> sequence(final Either<X, R> e) {
+    public <X> Either<X, R> sequence(final Either<X, R> e) {
       return flatMap(Functions.<L, Either<X, R>> constant(e));
     }
 
@@ -812,29 +794,10 @@ public abstract class Either<L, R> implements Serializable {
      * @param f The function to bind across this projection.
      * @return A new either value after binding.
      */
-    public final <X, LL extends L> Either<L, X> flatMap(final Function<? super R, Either<LL, X>> f) {
+    public <X, LL extends L> Either<L, X> flatMap(final Function<? super R, Either<LL, X>> f) {
       if (isRight()) {
         @SuppressWarnings("unchecked") Either<L, X> result = (Either<L, X>) f.apply(get());
         return result;
-      } else {
-        return this.toLeft();
-      }
-    }
-
-    /**
-     * Binds the given function across this projection's value if it has one.
-     *
-     * For use when require covariant support on the LHS
-     *
-     * @param <X> the RHS type
-     * @param f The function to bind across this projection.
-     * @return A new either value after binding.
-     * @since 2.4
-     */
-    @SuppressWarnings("unchecked")
-    public <X> Either<L, X> flatMap2(final Function<? super R, Either<? extends L, X>> f) {
-      if (isRight()) {
-        return (Either<L, X>) f.apply(get());
       } else {
         return this.toLeft();
       }

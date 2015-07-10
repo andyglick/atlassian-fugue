@@ -42,11 +42,6 @@ public class EitherRightProjectionTest {
       return right(reverse.apply(from));
     }
   };
-  static Function<String, Either<Integer, String>> reverseToEither2 = new Function<String, Either<Integer, String>>() {
-    @Override public Either<Integer, String> apply(final String from) {
-      return right(reverse.apply(from));
-    }
-  };
 
   @Test public void isDefined() {
     assertThat(r.right().isDefined(), is(true));
@@ -171,14 +166,6 @@ public class EitherRightProjectionTest {
 
   @Test public void flatMapNotDefined() {
     assertThat(l.right().flatMap(reverseToEither).left().get(), is(12));
-  }
-
-  @Test public void flatMap2Defined() {
-    assertThat(r.right().flatMap(reverseToEither2).right().get(), is("!aayeh"));
-  }
-
-  @Test public void flatMap2NotDefined() {
-    assertThat(l.right().flatMap(reverseToEither2).left().get(), is(12));
   }
 
   @Test public void sequenceDefined() {

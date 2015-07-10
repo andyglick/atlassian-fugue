@@ -3,7 +3,6 @@ package com.atlassian.fugue;
 import static com.atlassian.fugue.Either.left;
 import static com.atlassian.fugue.Either.right;
 import static com.atlassian.fugue.EitherRightProjectionTest.reverseToEither;
-import static com.atlassian.fugue.EitherRightProjectionTest.reverseToEither2;
 import static com.atlassian.fugue.UtilityFunctions.addOne;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNull;
@@ -35,14 +34,6 @@ public class EitherRightBiasTest {
 
   @Test public void flatMapLeft() {
     assertThat(Either.<Integer, String>left(5).flatMap(reverseToEither), is(Either.<Integer, String>left(5)));
-  }
-
-  @Test public void flatMap2Right() {
-    assertThat(Either.<Integer, String>right("!foo").flatMap(reverseToEither2), Matchers.<Either<? extends Integer, String>>is(Either.<Integer, String>right("oof!")));
-  }
-
-  @Test public void flatMap2Left() {
-    assertThat(Either.<Integer, String>left(5).flatMap(reverseToEither2), Matchers.is(Either.<Integer, String>left(5)));
   }
 
   @Test public void leftMapRight() {

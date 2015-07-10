@@ -125,13 +125,13 @@ public class EitherRightTest {
     assertThat(result.left().get(), is("a"));
   }
 
-  @Test public void flatMap2RightSuperTypes() {
+  @Test public void flatMapRightSuperTypes() {
     class ErrorType {}
     class AnotherErrorType extends ErrorType{}
 
     final Either<AnotherErrorType, Long> r = Either.right(99l);
 
-    final Either<? extends ErrorType, Long> longEither = Either.<ErrorType, Integer>right(1)
+    final Either<ErrorType, Long> longEither = Either.<ErrorType, Integer>right(1)
       .flatMap(new Function<Integer, Either<AnotherErrorType, Long>>() {
         @Nullable
         @Override

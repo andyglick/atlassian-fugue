@@ -118,7 +118,7 @@ public class EitherLeftTest {
     assertThat(result.getRight(), is("a"));
   }
 
-  @Test public void flatMap2LeftSuperTypes() {
+  @Test public void flatMapLeftSuperTypes() {
     class ErrorType {}
     class AnotherErrorType extends ErrorType{}
 
