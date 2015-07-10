@@ -735,7 +735,7 @@ public abstract class Either<L, R> implements Serializable {
      * value.
      * @return The result of function application within either.
      */
-    public <X> Either<X, ? extends R> apply(final Either<Function<L, X>, R> either) {
+    public <X> Either<X, R> apply(final Either<Function<L, X>, R> either) {
       return either.left().flatMap(new Function<Function<L, X>, Either<X, R>>() {
         public Either<X, R> apply(final Function<L, X> f) {
           return map(f);
