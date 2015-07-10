@@ -15,6 +15,14 @@
  */
 package com.atlassian.fugue;
 
+import com.google.common.base.Function;
+import org.hamcrest.Matchers;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.util.NoSuchElementException;
+import javax.annotation.Nullable;
+
 import static com.atlassian.fugue.Either.left;
 import static com.atlassian.fugue.Eithers.getOrThrow;
 import static com.atlassian.fugue.UtilityFunctions.bool2String;
@@ -22,15 +30,6 @@ import static com.atlassian.fugue.UtilityFunctions.int2String;
 import static java.lang.String.valueOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-
-import java.io.IOException;
-import java.util.NoSuchElementException;
-
-import com.google.common.base.Function;
-import org.hamcrest.Matchers;
-import org.junit.Test;
-
-import javax.annotation.Nullable;
 
 public class EitherLeftTest {
   private static final Boolean ORIGINAL_VALUE = true;
@@ -118,23 +117,48 @@ public class EitherLeftTest {
     assertThat(result.getRight(), is("a"));
   }
 
-  @Test public void flatMapLeftSuperTypes() {
+  @Test public void flatMapLeftSubTypes() {
     class ErrorType {}
     class AnotherErrorType extends ErrorType{}
 
     final AnotherErrorType anotherErrorType = new AnotherErrorType();
-    final Either<AnotherErrorType, Long> l = Either.left(anotherErrorType);
+    final Either<AnotherErrorType, Integer> l = Either.left(anotherErrorType);
 
-    final Either<? extends ErrorType, Long> longEither = Either.<ErrorType, Integer>right(1)
-      .flatMap(new Function<Integer, Either<AnotherErrorType, Long>>() {
+    final Either<AnotherErrorType, Integer> either = Either.<ErrorType, Integer>left(new ErrorType()).left()
+      .flatMap(new Function<ErrorType, Either<AnotherErrorType, Integer>>() {
         @Nullable
         @Override
-        public Either<AnotherErrorType, Long> apply(final Integer input) {
+        public Either<AnotherErrorType, Integer> apply(@Nullable final ErrorType input) {
           return l;
         }
       });
 
-    final ErrorType errorType = longEither.left().get();
+    final ErrorType errorType = either.left().get();
+
+    assertThat(errorType, Matchers.<ErrorType>is(anotherErrorType));
+  }
+
+  @Test public void flatMapLeftWithUpcastAndSubtypes() {
+    class ErrorType {}
+    class MyErrorType extends ErrorType{}
+    class AnotherErrorType extends ErrorType{}
+
+    final MyErrorType myErrorType = new MyErrorType();
+    final AnotherErrorType anotherErrorType = new AnotherErrorType();
+
+    final Either<MyErrorType, Integer> l = Either.left(myErrorType);
+    final Either<AnotherErrorType, Integer> l2 = Either.left(anotherErrorType);
+
+    final Either<AnotherErrorType, Integer> either = Eithers.<ErrorType, MyErrorType, Integer>upcastLeft(l).left()
+      .flatMap(new Function<ErrorType, Either<AnotherErrorType, Integer>>() {
+        @Nullable
+        @Override
+        public Either<AnotherErrorType, Integer> apply(@Nullable final ErrorType input) {
+          return l2;
+        }
+      });
+
+    final ErrorType errorType = either.left().get();
 
     assertThat(errorType, Matchers.<ErrorType>is(anotherErrorType));
   }

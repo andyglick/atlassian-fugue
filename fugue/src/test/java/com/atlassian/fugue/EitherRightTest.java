@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.NoSuchElementException;
 
 import com.google.common.base.Function;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import javax.annotation.Nullable;
@@ -125,21 +126,49 @@ public class EitherRightTest {
     assertThat(result.left().get(), is("a"));
   }
 
-  @Test public void flatMapRightSuperTypes() {
-    class ErrorType {}
-    class AnotherErrorType extends ErrorType{}
+  @Test public void flatMapRightSubTypes() {
+    class Type {}
+    class AnotherType extends Type{}
 
-    final Either<AnotherErrorType, Long> r = Either.right(99l);
+    final AnotherType anotherType = new AnotherType();
+    final Either<Boolean, AnotherType> r = Either.right(anotherType);
 
-    final Either<ErrorType, Long> longEither = Either.<ErrorType, Integer>right(1)
-      .flatMap(new Function<Integer, Either<AnotherErrorType, Long>>() {
+    final Either<Boolean, AnotherType> either = Either.<Boolean, Type>right(new Type()).right()
+      .flatMap(new Function<Type, Either<Boolean, AnotherType>>() {
         @Nullable
         @Override
-        public Either<AnotherErrorType, Long> apply(final Integer input) {
+        public Either<Boolean, AnotherType> apply(@Nullable final Type input) {
           return r;
         }
       });
 
-    assertThat(longEither.getOrNull(), is(99l));
+    final Type type = either.right().get();
+
+    assertThat(type, Matchers.<Type>is(anotherType));
+  }
+
+  @Test public void flatMapRightWithUpcastAndSubtypes() {
+    class Type {}
+    class MyType extends Type {}
+    class AnotherType extends Type{}
+
+    final MyType myType = new MyType();
+    final AnotherType anotherType = new AnotherType();
+
+    final Either<Boolean, MyType> r = Either.right(myType);
+    final Either<Boolean, AnotherType> r2 = Either.right(anotherType);
+
+    final Either<Boolean, AnotherType> either = Eithers.<Boolean, Type, MyType>upcastRight(r).right()
+      .flatMap(new Function<Type, Either<Boolean, AnotherType>>() {
+        @Nullable
+        @Override
+        public Either<Boolean, AnotherType> apply(@Nullable final Type input) {
+          return r2;
+        }
+      });
+
+    final Type errorType = either.right().get();
+
+    assertThat(errorType, Matchers.<Type>is(anotherType));
   }
 }
