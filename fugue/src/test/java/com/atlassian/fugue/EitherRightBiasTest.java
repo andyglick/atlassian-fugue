@@ -218,10 +218,9 @@ public class EitherRightBiasTest {
     class MyErrorType extends ErrorType{}
     class AnotherErrorType extends ErrorType{}
 
-    final MyErrorType myErrorType = new MyErrorType();
     final AnotherErrorType anotherErrorType = new AnotherErrorType();
 
-    final Either<MyErrorType, Boolean> l = Either.left(myErrorType);
+    final Either<MyErrorType, Boolean> l = Either.right(true);
     final Either<AnotherErrorType, Long> l2 = Either.left(anotherErrorType);
 
     final Either<ErrorType, Long> either = Eithers.<ErrorType, MyErrorType, Boolean>upcastLeft(l)
