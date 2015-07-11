@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package com.atlassian.fugue
+package com.atlassian.fugue.scala
 
 import java.lang.{Boolean => JBool, Byte => JByte, Double => JDouble, Float => JFloat, Long => JLong, Short => JShort}
 
@@ -33,11 +33,10 @@ import com.google.common.base.{Function, Predicate, Supplier}
  * it converts to a tupled (1 arg that is a tuple) function. You can turn that into an
  * `(A, B) => C` with `scala.Function.untupled _'
  *
+ * Note: The class was moved from package com.atlassian.fugue to com.atlassian.fugue.scala in 2.4
+ *
  * @since 2.2
- * @deprecated From 2.4, please use {@see com.atlassian.fugue.scala.ScalaConverters} as this will be
- *      removed in 3.0
  */
-@deprecated(message = "Moved to com.atlasian.fugue.scala package, to be removed from here in 3.0", since = "2.4")
 object ScalaConverters extends LowPriorityConverters {
   import Iso.<~>
 
@@ -113,7 +112,6 @@ object ScalaConverters extends LowPriorityConverters {
     }
 }
 
-@deprecated(message = "Moved to com.atlasian.fugue.scala package, to be removed from here in 3.0", since = "2.4")
 trait LowPriorityConverters {
   import Iso._
 
@@ -143,13 +141,11 @@ trait LowPriorityConverters {
     implicit val MyTypeIso = Iso.id[MyType]
     """
 )
-@deprecated(message = "Moved to com.atlasian.fugue.scala package, to be removed from here in 3.0", since = "2.4")
 sealed trait Iso[A, B] {
   def asB(a: A): B
   def asA(s: B): A
 }
 
-@deprecated(message = "Moved to com.atlasian.fugue.scala package, to be removed from here in 3.0", since = "2.4")
 object Iso {
   /**
    * Construct an Iso that passes through the type to be used on both sides
