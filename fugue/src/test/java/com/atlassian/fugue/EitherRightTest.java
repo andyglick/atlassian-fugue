@@ -15,6 +15,7 @@
  */
 package com.atlassian.fugue;
 
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -120,5 +121,39 @@ public class EitherRightTest {
     Either<String, Integer> e = Either.left("a");
     Either<String, Number> result = Eithers.<String, Number, Integer> upcastRight(e);
     assertThat(result.left().get(), is("a"));
+  }
+
+  @Test public void flatMapRightSubTypes() {
+    class Type {}
+    class AnotherType extends Type{}
+
+    final AnotherType anotherType = new AnotherType();
+    final Either<Boolean, AnotherType> r = Either.right(anotherType);
+
+    final Either<Boolean, AnotherType> either = Either.<Boolean, Type>right(new Type()).right()
+      .flatMap(input -> r);
+
+    final Type type = either.right().get();
+
+    assertThat(type, Matchers.<Type>is(anotherType));
+  }
+
+  @Test public void flatMapRightWithUpcastAndSubtypes() {
+    class Type {}
+    class MyType extends Type {}
+    class AnotherType extends Type{}
+
+    final MyType myType = new MyType();
+    final AnotherType anotherType = new AnotherType();
+
+    final Either<Boolean, MyType> r = Either.right(myType);
+    final Either<Boolean, AnotherType> r2 = Either.right(anotherType);
+
+    final Either<Boolean, AnotherType> either = Eithers.<Boolean, Type, MyType>upcastRight(r).right()
+      .flatMap(input -> r2);
+
+    final Type errorType = either.right().get();
+
+    assertThat(errorType, Matchers.<Type>is(anotherType));
   }
 }
