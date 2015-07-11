@@ -188,13 +188,7 @@ public class EitherRightBiasTest {
     final Either<AnotherErrorType, Long> l = Either.left(anotherErrorType);
 
     final Either<ErrorType, Long> longEither = Either.<ErrorType, Integer>right(1)
-      .flatMap(new Function<Integer, Either<AnotherErrorType, Long>>() {
-        @Nullable
-        @Override
-        public Either<AnotherErrorType, Long> apply(final Integer input) {
-          return l;
-        }
-      });
+      .flatMap(input -> l);
 
     final ErrorType errorType = longEither.left().get();
 
@@ -212,12 +206,7 @@ public class EitherRightBiasTest {
     final Either<AnotherErrorType, Long> l2 = Either.left(anotherErrorType);
 
     final Either<ErrorType, Long> either = Eithers.<ErrorType, MyErrorType, Boolean>upcastLeft(l)
-      .flatMap(new Function<Boolean, Either<AnotherErrorType, Long>>() {
-        @Override
-        public Either<AnotherErrorType, Long> apply(@Nullable final Boolean input) {
-          return l2;
-        }
-      });
+      .flatMap(input -> l2);
 
     final ErrorType errorType = either.left().get();
 

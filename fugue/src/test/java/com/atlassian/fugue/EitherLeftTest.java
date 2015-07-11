@@ -15,6 +15,7 @@
  */
 package com.atlassian.fugue;
 
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -122,13 +123,7 @@ public class EitherLeftTest {
     final Either<AnotherErrorType, Integer> l = Either.left(anotherErrorType);
 
     final Either<AnotherErrorType, Integer> either = Either.<ErrorType, Integer>left(new ErrorType()).left()
-      .flatMap(new Function<ErrorType, Either<AnotherErrorType, Integer>>() {
-        @Nullable
-        @Override
-        public Either<AnotherErrorType, Integer> apply(@Nullable final ErrorType input) {
-          return l;
-        }
-      });
+      .flatMap(input -> l);
 
     final ErrorType errorType = either.left().get();
 
@@ -147,13 +142,7 @@ public class EitherLeftTest {
     final Either<AnotherErrorType, Integer> l2 = Either.left(anotherErrorType);
 
     final Either<AnotherErrorType, Integer> either = Eithers.<ErrorType, MyErrorType, Integer>upcastLeft(l).left()
-      .flatMap(new Function<ErrorType, Either<AnotherErrorType, Integer>>() {
-        @Nullable
-        @Override
-        public Either<AnotherErrorType, Integer> apply(@Nullable final ErrorType input) {
-          return l2;
-        }
-      });
+      .flatMap(input -> l2);
 
     final ErrorType errorType = either.left().get();
 
