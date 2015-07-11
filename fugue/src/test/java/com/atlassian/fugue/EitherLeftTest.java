@@ -113,4 +113,50 @@ public class EitherLeftTest {
     Either<Number, String> result = Eithers.<Number, Integer, String> upcastLeft(e);
     assertThat(result.getRight(), is("a"));
   }
+
+  @Test public void flatMapLeftSubTypes() {
+    class ErrorType {}
+    class AnotherErrorType extends ErrorType{}
+
+    final AnotherErrorType anotherErrorType = new AnotherErrorType();
+    final Either<AnotherErrorType, Integer> l = Either.left(anotherErrorType);
+
+    final Either<AnotherErrorType, Integer> either = Either.<ErrorType, Integer>left(new ErrorType()).left()
+      .flatMap(new Function<ErrorType, Either<AnotherErrorType, Integer>>() {
+        @Nullable
+        @Override
+        public Either<AnotherErrorType, Integer> apply(@Nullable final ErrorType input) {
+          return l;
+        }
+      });
+
+    final ErrorType errorType = either.left().get();
+
+    assertThat(errorType, Matchers.<ErrorType>is(anotherErrorType));
+  }
+
+  @Test public void flatMapLeftWithUpcastAndSubtypes() {
+    class ErrorType {}
+    class MyErrorType extends ErrorType{}
+    class AnotherErrorType extends ErrorType{}
+
+    final MyErrorType myErrorType = new MyErrorType();
+    final AnotherErrorType anotherErrorType = new AnotherErrorType();
+
+    final Either<MyErrorType, Integer> l = Either.left(myErrorType);
+    final Either<AnotherErrorType, Integer> l2 = Either.left(anotherErrorType);
+
+    final Either<AnotherErrorType, Integer> either = Eithers.<ErrorType, MyErrorType, Integer>upcastLeft(l).left()
+      .flatMap(new Function<ErrorType, Either<AnotherErrorType, Integer>>() {
+        @Nullable
+        @Override
+        public Either<AnotherErrorType, Integer> apply(@Nullable final ErrorType input) {
+          return l2;
+        }
+      });
+
+    final ErrorType errorType = either.left().get();
+
+    assertThat(errorType, Matchers.<ErrorType>is(anotherErrorType));
+  }
 }
