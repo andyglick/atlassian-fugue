@@ -284,6 +284,7 @@ public abstract class Either<L, R> implements Serializable {
    * Binds the given function across the right hand side value if it is one.
    *
    * @param <X> the RHS type
+   * @param <LL> The existing LHS or a subtype
    * @param f the function to bind.
    * @return A new either value after binding with the function applied if this
    * is a Right.
@@ -681,6 +682,7 @@ public abstract class Either<L, R> implements Serializable {
      * Binds the given function across this projection's value if it has one.
      * 
      * @param <X> the LHS type
+     * @param <RR> The existing RHS or a subtype
      * @param f The function to bind across this projection.
      * @return A new either value after binding.
      */
@@ -791,6 +793,7 @@ public abstract class Either<L, R> implements Serializable {
      * Binds the given function across this projection's value if it has one.
      * 
      * @param <X> the RHS type
+     * @param <LL> The existing LHS or a subtype
      * @param f The function to bind across this projection.
      * @return A new either value after binding.
      */
