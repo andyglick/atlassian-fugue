@@ -60,7 +60,7 @@ other way you can use `.asScala`.
 
 To enable this syntax you need to add the following to your scope:
 
-    import com.atlassian.fugue.ScalaConverters._
+    import com.atlassian.fugue.converters.ScalaConverters._
 
 ## Contributors
 
