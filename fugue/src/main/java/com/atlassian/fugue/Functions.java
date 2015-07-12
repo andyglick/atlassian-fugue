@@ -422,10 +422,10 @@ public class Functions {
    * 
    * @param <A> the input type
    * @return a function that never returns nulls.
-   * @since 2.3
+   * @since 2.2.1
    */
   public static <A> Function<A, Option<A>> nullToOption() {
-    return new ToOption<>();
+    return Options.toOption();
   }
 
   /**
@@ -504,12 +504,6 @@ public class Functions {
 
     @Override public String toString() {
       return "identity";
-    }
-  }
-
-  static class ToOption<A> implements Function<A, Option<A>> {
-    public Option<A> apply(final A from) {
-      return Option.option(from);
     }
   }
 
