@@ -13,12 +13,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package com.atlassian.fugue.scala
+package com.atlassian.fugue.converters
 
 import java.lang.{Boolean => JBool, Byte => JByte, Double => JDouble, Float => JFloat, Long => JLong, Short => JShort}
 
 import annotation.implicitNotFound
 
+import com.atlassian.fugue
 import com.google.common.base.{Function, Predicate, Supplier}
 
 /**
@@ -56,8 +57,8 @@ object ScalaConverters extends LowPriorityConverters {
   implicit val ShortIso = Iso[JShort, Short](identity)(identity)
   implicit val FloatIso = Iso[JFloat, Float](identity)(identity)
   implicit val DoubleIso = Iso[JDouble, Double](identity)(identity)
-  implicit val VoidIso = Iso[Void, scala.Unit] { _ => () } { _ => null }
-  implicit val UnitIso = Iso[Unit, scala.Unit] { _ => () } { _ => Unit.VALUE }
+  implicit val VoidIso = Iso[Void, Unit] { _ => () } { _ => null }
+  implicit val UnitIso = Iso[fugue.Unit, Unit] { _ => () } { _ => fugue.Unit.VALUE }
 
   implicit def SupplierIso[A, AA](implicit ev: A <~> AA) =
     Iso[Supplier[A], () => AA] {
@@ -74,10 +75,10 @@ object ScalaConverters extends LowPriorityConverters {
     }
 
   implicit def Function2Iso[A, AA, B, BB, C, CC](implicit ia: A <~> AA, ib: B <~> BB, ic: C <~> CC) =
-    Iso[Function2[A, B, C], (AA, BB) => CC] {
+    Iso[fugue.Function2[A, B, C], (AA, BB) => CC] {
       f => { case (a, b) => f(a.asJava, b.asJava).asScala }
     } {
-      f => new Function2[A, B, C] { def apply(a: A, b: B): C = f(a.asScala, b.asScala).asJava }
+      f => new fugue.Function2[A, B, C] { def apply(a: A, b: B): C = f(a.asScala, b.asScala).asJava }
     }
 
   implicit def PredicateIso[A, AA](implicit eva: A <~> AA) =
@@ -87,28 +88,28 @@ object ScalaConverters extends LowPriorityConverters {
       f => new Predicate[A] { def apply(a: A): Boolean = f(a.asScala) }
     }
 
-  implicit def OptionIso[A, B](implicit i: A <~> B): Iso[Option[A], scala.Option[B]] =
-    Iso[Option[A], scala.Option[B]] {
+  implicit def OptionIso[A, B](implicit i: A <~> B): Iso[fugue.Option[A], scala.Option[B]] =
+    Iso[fugue.Option[A], scala.Option[B]] {
       o => if (o.isEmpty) None else Some(o.get.asScala)
     } {
-      o => o.fold(Option.none[A])(b => Option.some(b.asJava))
+      o => o.fold(fugue.Option.none[A])(b => fugue.Option.some(b.asJava))
     }
 
   implicit def EitherIso[A, AA, B, BB](implicit ia: A <~> AA, ib: B <~> BB) =
-    Iso[Either[A, B], scala.Either[AA, BB]] {
+    Iso[fugue.Either[A, B], scala.Either[AA, BB]] {
       _.fold(
         new Function[A, scala.Either[AA, BB]] { def apply(a: A) = Left(a.asScala) },
         new Function[B, scala.Either[AA, BB]] { def apply(b: B) = Right(b.asScala) }
       )
     } {
-      _.fold(a => Either.left(a.asJava), b => Either.right(b.asJava))
+      _.fold(a => fugue.Either.left(a.asJava), b => fugue.Either.right(b.asJava))
     }
 
-  implicit def PairIso[A, AA, B, BB](implicit ia: A <~> AA, ib: B <~> BB): Iso[Pair[A, B], (AA, BB)] =
-    Iso[Pair[A, B], (AA, BB)] {
+  implicit def PairIso[A, AA, B, BB](implicit ia: A <~> AA, ib: B <~> BB): Iso[fugue.Pair[A, B], (AA, BB)] =
+    Iso[fugue.Pair[A, B], (AA, BB)] {
       p => (p.left.asScala, p.right.asScala)
     } {
-      case (a, b) => Pair.pair(a.asJava, b.asJava)
+      case (a, b) => fugue.Pair.pair(a.asJava, b.asJava)
     }
 }
 
