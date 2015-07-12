@@ -300,7 +300,7 @@ public class Iterables {
    * @param a The value to begin iterating from.
    * @return An infinite Iterable of repeated applications of {@code f} to
    * {@code start}.
-   * @since 2.3
+   * @since 2.4
    */
   public static <A> Iterable<A> iterate(final Function<? super A, ? extends A> f, final A start) {
     return new IteratingIterable<A>(f, start);
@@ -318,7 +318,7 @@ public class Iterables {
    * if it is done producing the elements.
    * @param seed The start value to begin the unfold.
    * @return An Iterable that is a result of unfolding.
-   * @since 2.3
+   * @since 2.4
    */
   public static <A, B> Iterable<A> unfold(final Function<? super B, Option<Pair<A, B>>> f, final B seed) {
     return new UnfoldingIterable<A, B>(f, seed);
