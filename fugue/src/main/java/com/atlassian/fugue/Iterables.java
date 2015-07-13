@@ -297,7 +297,7 @@ public class Iterables {
    *
    * @param <A> type of the elements
    * @param f The iteration function.
-   * @param a The value to begin iterating from.
+   * @param start The value to begin iterating from.
    * @return An infinite Iterable of repeated applications of {@code f} to
    * {@code start}.
    * @since 2.4
