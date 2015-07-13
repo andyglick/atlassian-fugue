@@ -7,6 +7,9 @@ This project attempts to adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - ScalaConverters moved to com.atlassian.fugue.converters package and 
 deprecated in existing com.atlassian.fugue package, to be removed in 3.0 release
+- Iterables has added the following new methods
+    * iterate
+    * unfold
 
 ### Changed
 - com.atlassian.fugue.converters.ScalaConverters changed syntax to 'toScala', 'toJava'
