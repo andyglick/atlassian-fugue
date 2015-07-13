@@ -25,7 +25,7 @@ import com.atlassian.fugue
 /**
  * Useful for converting Fugue and Guava types to Scala and vice-versa.
  *
- * to use, simply `import ScalaConverters._` and then add `.asScala` and `.asJava` as required.
+ * to use, simply `import ScalaConverters._` and then add `.toScala` and `.toJava` as required.
  *
  * Note: that the Fugue/Guava side will have Java types such as `java.lang.Integer` and the Scala
  * side will have the Scala equivalents such as `Int`. It will pass reference types though unchanged.
@@ -34,7 +34,8 @@ import com.atlassian.fugue
  * it converts to a tupled (1 arg that is a tuple) function. You can turn that into an
  * `(A, B) => C` with `scala.Function.untupled _'
  *
- * Note: The class was moved from package com.atlassian.fugue to com.atlassian.fugue.converters in 2.4
+ * Note: The class was moved from package com.atlassian.fugue to com.atlassian.fugue.converters in 2.4, where
+ * 'toScala', 'toJava' has been replaced by 'toScala', 'toJava'
  *
  * @since 2.2
  */
@@ -42,11 +43,11 @@ object ScalaConverters extends LowPriorityConverters {
   import Iso.<~>
 
   implicit class ToJavaSyntax[A](val a: A) extends AnyVal {
-    def asJava[B](implicit iso: B <~> A): B = iso asA a
+    def toJava[B](implicit iso: B <~> A): B = iso asA a
   }
 
   implicit class ToScalaSyntax[A](val a: A) extends AnyVal {
-    def asScala[B](implicit iso: A <~> B): B = iso asB a
+    def toScala[B](implicit iso: A <~> B): B = iso asB a
   }
 
   implicit val IntIso = Iso[Integer, Int](identity)(identity)
@@ -62,54 +63,54 @@ object ScalaConverters extends LowPriorityConverters {
 
   implicit def SupplierIso[A, AA](implicit ev: A <~> AA): <~>[JSuppiler[A], () => AA] =
     Iso[JSuppiler[A], () => AA] {
-      a => () => a.get.asScala
+      a => () => a.get.toScala
     } {
-      a => new JSuppiler[A] { def get = a().asJava }
+      a => new JSuppiler[A] { def get = a().toJava }
     }
 
   implicit def FunctionIso[A, AA, B, BB](implicit eva: A <~> AA, evb: B <~> BB): Iso[JFunction[A, B], AA => BB] =
     Iso[JFunction[A, B], AA => BB] {
-      f => a => f(a.asJava).asScala
+      f => a => f(a.toJava).toScala
     } {
-      f => new JFunction[A, B] { def apply(a: A): B = f(a.asScala).asJava }
+      f => new JFunction[A, B] { def apply(a: A): B = f(a.toScala).toJava }
     }
 
   implicit def Function2Iso[A, AA, B, BB, C, CC](implicit ia: A <~> AA, ib: B <~> BB, ic: C <~> CC): <~>[JFunction2[A, B, C], (AA, BB) => CC] =
     Iso[JFunction2[A, B, C], (AA, BB) => CC] {
-      f => { case (a, b) => f(a.asJava, b.asJava).asScala }
+      f => { case (a, b) => f(a.toJava, b.toJava).toScala }
     } {
-      f => new JFunction2[A, B, C] { def apply(a: A, b: B): C = f(a.asScala, b.asScala).asJava }
+      f => new JFunction2[A, B, C] { def apply(a: A, b: B): C = f(a.toScala, b.toScala).toJava }
     }
 
   implicit def PredicateIso[A, AA](implicit eva: A <~> AA): <~>[JPredicate[A], (AA) => Boolean] =
     Iso[JPredicate[A], AA => Boolean] {
-      f => a => f.test(a.asJava)
+      f => a => f.test(a.toJava)
     } {
-      f => new JPredicate[A] { def test(a: A): Boolean = f(a.asScala) }
+      f => new JPredicate[A] { def test(a: A): Boolean = f(a.toScala) }
     }
 
   implicit def OptionIso[A, B](implicit i: A <~> B): Iso[fugue.Option[A], scala.Option[B]] =
     Iso[fugue.Option[A], scala.Option[B]] {
-      o => if (o.isEmpty) None else Some(o.get.asScala)
+      o => if (o.isEmpty) None else Some(o.get.toScala)
     } {
-      o => o.fold(fugue.Option.none[A])(b => fugue.Option.some(b.asJava))
+      o => o.fold(fugue.Option.none[A])(b => fugue.Option.some(b.toJava))
     }
 
   implicit def EitherIso[A, AA, B, BB](implicit ia: A <~> AA, ib: B <~> BB): <~>[fugue.Either[A, B], scala.Either[AA, BB]] =
     Iso[fugue.Either[A, B], scala.Either[AA, BB]] {
       _.fold(
-        new JFunction[A, scala.Either[AA, BB]] { def apply(a: A) = Left(a.asScala) },
-        new JFunction[B, scala.Either[AA, BB]] { def apply(b: B) = Right(b.asScala) }
+        new JFunction[A, scala.Either[AA, BB]] { def apply(a: A) = Left(a.toScala) },
+        new JFunction[B, scala.Either[AA, BB]] { def apply(b: B) = Right(b.toScala) }
       )
     } {
-      _.fold(a => fugue.Either.left(a.asJava), b => fugue.Either.right(b.asJava))
+      _.fold(a => fugue.Either.left(a.toJava), b => fugue.Either.right(b.toJava))
     }
 
   implicit def PairIso[A, AA, B, BB](implicit ia: A <~> AA, ib: B <~> BB): Iso[fugue.Pair[A, B], (AA, BB)] =
     Iso[fugue.Pair[A, B], (AA, BB)] {
-      p => (p.left.asScala, p.right.asScala)
+      p => (p.left.toScala, p.right.toScala)
     } {
-      case (a, b) => fugue.Pair.pair(a.asJava, b.asJava)
+      case (a, b) => fugue.Pair.pair(a.toJava, b.toJava)
     }
 
 }
@@ -133,8 +134,8 @@ trait LowPriorityConverters {
 
 – usually this is because Scala can't infer one of the types correctly, try specifying the type parameters directly with: 
     
-     asScala[OutType]
-     asJava[OutType]
+     toScala[OutType]
+     toJava[OutType]
     
   Alternately there may not be an Iso for your type.
     
