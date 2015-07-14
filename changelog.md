@@ -14,6 +14,12 @@ deprecated in existing com.atlassian.fugue package, to be removed in 3.0 release
 ### Changed
 - com.atlassian.fugue.converters.ScalaConverters changed syntax to 'toScala', 'toJava'
 
+### Deprecated
+- com/atlassian/fugue/Throwables.java Java 7 close with resource and mutlticatch 
+covers most of the need for Throwables
+- com/atlassian/fugue/Function2.java Java 8 BiFunction will replace all uses of this
+interface in future
+
 ## [2.3.1] - 2015-07-11
 ### Changed
 - Either flatMap changed to be covariant on the other side of projection
