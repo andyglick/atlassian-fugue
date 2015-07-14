@@ -23,7 +23,9 @@ package com.atlassian.fugue;
  * @param <T> the type of the result of application
  * 
  * @since 1.0
+ * @deprecated since 2.4 migrate to using java.util.function.BiFunction
  */
+@Deprecated
 public interface Function2<F1, F2, T> {
   /**
    * Returns the results of applying this function to the supplied arguments.
@@ -36,6 +38,8 @@ public interface Function2<F1, F2, T> {
    * @param arg1 the first argument
    * @param arg2 the second argument
    * @return the result, should not be null
+   * @deprecated since 2.4 migrate to using java.util.function.BiFunction
    */
+  @Deprecated
   T apply(F1 arg1, F2 arg2);
 }
