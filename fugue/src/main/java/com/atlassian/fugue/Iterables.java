@@ -753,6 +753,114 @@ public class Iterables {
   }
 
   /**
+   * Returns an infinite Iterable constructed by applying the given iteration
+   * function starting at the given value.
+   *
+   * @param <A> type of the elements
+   * @param f The iteration function.
+   * @param start The value to begin iterating from.
+   * @return An infinite Iterable of repeated applications of {@code f} to
+   * {@code start}.
+   * @since 2.4
+   */
+  public static <A> Iterable<A> iterate(final Function<? super A, ? extends A> f, final A start) {
+    return new IteratingIterable<>(f, start);
+  }
+
+  /**
+   * Infinite iterable that repeatedly applies {@code f} to {@code start}
+   */
+  static final class IteratingIterable<A> implements Iterable<A> {
+    private final Function<? super A, ? extends A> f;
+    private final A start;
+
+    private IteratingIterable(final Function<? super A, ? extends A> f, final A start) {
+      this.f = requireNonNull(f, "f");
+      this.start = start;
+    }
+
+    @Override public Iterator<A> iterator() {
+      return new Iter<A>(f, start);
+    }
+
+    static final class Iter<A> extends Iterators.Unmodifiable<A> {
+      private final Function<? super A, ? extends A> f;
+      private A current;
+
+      Iter(final Function<? super A, ? extends A> f, final A start) {
+        this.f = f;
+        this.current = start;
+      }
+
+      @Override public boolean hasNext() {
+        return true;
+      }
+
+      @Override public A next() {
+        final A value = current;
+        current = f.apply(current);
+        return value;
+      }
+    }
+  }
+
+  /**
+   * Builds an Iterable from a seed value until {@code f} returns {@code none()}
+   * .
+   *
+   * @param <A> type of the returned elements.
+   * @param <B> type of the elements for which {@code f} is applied.
+   * @param f The function that returns some(pair(a, b)), in which case
+   * {@code a} is the next element of the resulting Iterable and {@code b} is
+   * used as the input value for the next call of {@code f}, or {@code none()}
+   * if it is done producing the elements.
+   * @param seed The start value to begin the unfold.
+   * @return An Iterable that is a result of unfolding.
+   * @since 2.4
+   */
+  public static <A, B> Iterable<A> unfold(final Function<? super B, Option<Pair<A, B>>> f, final B seed) {
+    return new UnfoldingIterable<>(f, seed);
+  }
+
+  /**
+   * Iterable that repeatedly applies {@code f} until it returns {@code none()}
+   */
+  static final class UnfoldingIterable<A, B> extends IterableToString<A> {
+    private final Function<? super B, Option<Pair<A, B>>> f;
+    private final B seed;
+
+    private UnfoldingIterable(final Function<? super B, Option<Pair<A, B>>> f, final B seed) {
+      this.f = requireNonNull(f, "f");
+      this.seed = seed;
+    }
+
+    @Override public Iterator<A> iterator() {
+      return new Iter<A, B>(f, seed);
+    }
+
+    static final class Iter<A, B> extends Iterators.Abstract<A> {
+      private final Function<? super B, Option<Pair<A, B>>> f;
+      private B current;
+
+      Iter(final Function<? super B, Option<Pair<A, B>>> f, final B seed) {
+        this.f = f;
+        this.current = seed;
+      }
+
+      @Override protected A computeNext() {
+        final Option<Pair<A, B>> option = f.apply(current);
+        if (option.isDefined()) {
+          final Pair<A, B> pair = option.get();
+          current = pair.right();
+          return pair.left();
+        } else {
+          return endOfData();
+        }
+      }
+    }
+  }
+
+  /**
    * Merge a number of already sorted collections of elements into a single
    * collection of elements, using the elements natural ordering.
    *
