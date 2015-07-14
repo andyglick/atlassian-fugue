@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package com.atlassian.fugue;
+package com.atlassian.fugue.deprecated;
 
 /**
  * Represents a function that takes two parameters.
@@ -22,7 +22,7 @@ package com.atlassian.fugue;
  * @param <B> the type of the result
  * @param <C> the type of the result of application
  * @since 1.0
- * @deprecated since 3.0 use BiFunction instead
+ * @deprecated since 2.4 use BiFunction instead
  */
 @Deprecated
 public interface Function2<A, B, C> {
@@ -37,7 +37,7 @@ public interface Function2<A, B, C> {
    * @param arg1 the first argument
    * @param arg2 the second argument
    * @return the result, should not be null
-   * @deprecated since 3.0 use BiFunction instead
+   * @deprecated since 2.4 use BiFunction instead
    */
   @Deprecated
   C apply(A arg1, B arg2);
