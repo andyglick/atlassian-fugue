@@ -28,7 +28,10 @@ import com.google.common.base.Function;
  * provided by Guava.
  * 
  * @since 1.2
+ * @deprecated since 2.4, no need in Java7 with closeWithResources and
+ * multi-catch
  */
+@Deprecated
 public final class Throwables {
   /**
    * Propagates {@code throwable} as-is if it is an instance of
@@ -62,7 +65,10 @@ public final class Throwables {
    * exception
    * @return nothing will ever be returned; this return type is only for your
    * convenience, as illustrated in the example above
+   * @deprecated since 2.4, no need in Java7 with closeWithResources and
+   * multi-catch
    */
+  @Deprecated
   public static <R extends RuntimeException> R propagate(Throwable throwable, Function<Throwable, R> function) {
     propagateIfPossible(checkNotNull(throwable));
     throw function.apply(throwable);
@@ -108,7 +114,10 @@ public final class Throwables {
    * @return nothing will ever be returned; this return type is only for your
    * convenience, as illustrated in the example above
    * @see #propagate(Throwable, Function)
+   * @deprecated since 2.4, no need in Java7 with closeWithResources and
+   * multi-catch
    */
+  @Deprecated
   public static <R extends RuntimeException> R propagate(Throwable throwable, Class<R> runtimeType) {
     return propagate(throwable, new ExceptionFunction<R>(checkNotNull(runtimeType)));
   }
