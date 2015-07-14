@@ -16,8 +16,6 @@
 
 package com.atlassian.fugue;
 
-import net.jcip.annotations.ThreadSafe;
-
 import java.io.Serializable;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -1117,7 +1115,7 @@ public class Iterables {
    *
    * @param <T> the type of the contained element.
    */
-  @ThreadSafe
+  //@ThreadSafe
   static abstract class LazyReference<T> extends WeakReference<T> implements Supplier<T> {
 
     private final Sync sync = new Sync();

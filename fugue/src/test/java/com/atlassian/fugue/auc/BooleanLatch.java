@@ -20,8 +20,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 import java.util.concurrent.locks.Condition;
 
-import net.jcip.annotations.ThreadSafe;
-
 /**
  * Class exists to support testing LazyReference it is not intended for general
  * use. See atlassian.util.concurrent.BooleanLatch
@@ -38,7 +36,8 @@ import net.jcip.annotations.ThreadSafe;
  * {@link Condition#signalAll()} is not supported and if there are multiple
  * waiters then the particular thread that is released is arbitrary.
  */
-@ThreadSafe public class BooleanLatch implements ReusableLatch {
+//@ThreadSafe
+public class BooleanLatch implements ReusableLatch {
   /**
    * Synchronization control For BooleanLatch. Uses AQS state to represent
    * released state.
