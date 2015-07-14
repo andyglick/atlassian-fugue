@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.atlassian.pom</groupId>
-        <artifactId>public-pom</artifactId>
+        <artifactId>central-pom</artifactId>
         <version>3.0.90</version>
     </parent>
 
