@@ -65,18 +65,16 @@ public interface Maybe<A> extends Iterable<A>, Effect.Applicant<A> {
    * @param supplier called if this {@link #isEmpty() is empty}
    * @return the wrapped value or the value from the {@code Supplier}
    */
-  A getOrElseLazily(final Supplier<? extends A> supplier);
+  A getElse(final Supplier<? extends A> supplier);
 
   /**
    * Get the value {@link #isDefined() if defined} or call the supplier and
    * return its value if not.
    *
-   * @deprecated due to compiler resolution issues in Java 8 when type inference on lambda arguments has not occurred before overloaded method resolution.
-   * A lambda expression's type is inferred from the target type, which in this case, is ambiguous due to the overloaded methods that require the type of the
-   * expression to resolve in the first place.
-   *
    * @param supplier called if this {@link #isEmpty() is empty}
    * @return the wrapped value or the value from the {@code Supplier}
+   * @deprecated since 3.0 {@link #getOrElse(Supplier)} is being replaced with {@link #getElse(Supplier)}. In Java 8 type inference cannot disambiguate
+   * between an overloaded method taking a generic A and the same method taking a Supplier<A>.
    */
   @Deprecated A getOrElse(final Supplier<? extends A> supplier);
 

@@ -69,12 +69,12 @@ public class OptionTest {
     assertThat(none(Integer.class).getOrElse(ofInstance(0)), is(equalTo(0)));
   }
 
-  @Test public void getOrElseLazilyOnNoneReturnsValueFromSupplier() {
-    assertThat(none(Integer.class).getOrElseLazily(ofInstance(0)), is(equalTo(0)));
+  @Test public void getElseOnNoneReturnsValueFromSupplier() {
+    assertThat(none(Integer.class).getElse(ofInstance(0)), is(equalTo(0)));
   }
 
-  @Test public void getOrElseLazilyOnNoneReturnsValueFromLambda() {
-    assertThat(none(Integer.class).getOrElseLazily(() -> 0), is(equalTo(0)));
+  @Test public void getElseOnNoneReturnsValueFromLambda() {
+    assertThat(none(Integer.class).getElse(() -> 0), is(equalTo(0)));
   }
 
   @Test public void iteratorOverSomeContainsOnlyValue() {

@@ -3,6 +3,15 @@ All notable changes to this project will be documented in this file.
 
 This project attempts to adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.0.0] - [unreleased]
+### Added
+- Added getElse to the Maybe interface as a replacement for the now deprecated getOrElse.
+
+### Deprecated
+- Deprecated getOrElse(Supplier<A>) to be replaced with {@link #getElse(Supplier)} because 
+Java 8 type inference cannot disambiguate between an overloaded method taking a generic A and
+the same method taking a Supplier<A>.
+
 ## [2.4.0] - [unreleased]
 ### Added
 - ScalaConverters moved to com.atlassian.fugue.converters package and 

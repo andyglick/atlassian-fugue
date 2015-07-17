@@ -156,10 +156,10 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   //
 
   @Override public final <B extends A> A getOrElse(final B other) {
-    return getOrElseLazily(Suppliers.<A> ofInstance(other));
+    return getElse(Suppliers.<A>ofInstance(other));
   }
 
-  @Override public final A getOrElseLazily(final Supplier<? extends A> supplier) {
+  @Override public final A getElse(final Supplier<? extends A> supplier) {
     return fold(supplier, Functions.<A> identity());
   }
 
