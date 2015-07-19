@@ -120,7 +120,7 @@ public abstract class Either<L, R> implements Serializable {
    * @since 2.3
    */
   public final R getOrElse(final Supplier<? extends R> supplier) {
-    return right().getOrElse(supplier);
+    return right().getOr(supplier);
   }
 
   /**
@@ -540,7 +540,11 @@ public abstract class Either<L, R> implements Serializable {
       return toOption().getOrThrow(ifUndefined);
     }
 
-    @Override public final A getOrElse(final Supplier<? extends A> a) {
+    @Override public final A getOr(final Supplier<? extends A> a) {
+      return isDefined() ? get() : a.get();
+    }
+
+    @Deprecated @Override public final A getOrElse(final Supplier<? extends A> a) {
       return isDefined() ? get() : a.get();
     }
 
