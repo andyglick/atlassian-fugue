@@ -5,7 +5,9 @@ This project attempts to adheres to [Semantic Versioning](http://semver.org/).
 
 ## [3.0.0] - [unreleased]
 ### Added
-- Added getElse to the Maybe interface as a replacement for the now deprecated getOrElse.
+- Added getOr(Supplier<A>) to the Maybe interface as a replacement for the now deprecated getOrElse(Supplier<A>).
+This works around an ambiguity in method resolution in Java 8 fo overloaded methods taking generic values or
+functional interfaces.
 
 ### Deprecated
 - Deprecated getOrElse(Supplier<A>) to be replaced with {@link #getElse(Supplier)} because 
