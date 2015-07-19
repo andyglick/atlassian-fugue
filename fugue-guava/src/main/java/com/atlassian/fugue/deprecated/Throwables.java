@@ -27,7 +27,7 @@ import static java.util.Objects.requireNonNull;
  * provided by Guava.
  * 
  * @since 1.2
- * @deprecated since 3.0, no need in Java7 with closeWithResources and
+ * @deprecated since 2.4, no need in Java7 with closeWithResources and
  * multi-catch
  */
 @Deprecated public final class Throwables {
@@ -64,7 +64,7 @@ import static java.util.Objects.requireNonNull;
    * exception
    * @return nothing will ever be returned; this return type is only for your
    * convenience, as illustrated in the example above
-   * @deprecated since 3.0, no need in Java7 with closeWithResources and
+   * @deprecated since 2.4, no need in Java7 with closeWithResources and
    * multi-catch
    */
   @Deprecated public static <R extends RuntimeException> R propagate(Throwable throwable, Function<Throwable, R> function) {
@@ -113,7 +113,7 @@ import static java.util.Objects.requireNonNull;
    * @return nothing will ever be returned; this return type is only for your
    * convenience, as illustrated in the example above
    * @see #propagate(Throwable, Function)
-   * @deprecated since 3.0, no need in Java7 with closeWithResources and
+   * @deprecated since 2.4, no need in Java7 with closeWithResources and
    * multi-catch
    */
   @Deprecated public static <R extends RuntimeException> R propagate(Throwable throwable, Class<R> runtimeType) {
