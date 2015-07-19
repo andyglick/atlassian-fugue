@@ -24,6 +24,7 @@ import java.util.function.Supplier;
 
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.some;
+import static com.atlassian.fugue.Suppliers.ofInstance;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -250,7 +251,7 @@ public abstract class Either<L, R> implements Serializable {
    * @since 2.3
    */
   public final Either<L, R> orElse(final Either<? extends L, ? extends R> orElse) {
-    return this.orElse(Suppliers.ofInstance(orElse));
+    return this.orElse(ofInstance(orElse));
   }
 
   /**

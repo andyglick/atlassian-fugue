@@ -23,6 +23,8 @@ import java.util.function.Supplier;
 
 import static com.atlassian.fugue.Iterables.collect;
 import static com.atlassian.fugue.Iterables.transform;
+import static com.atlassian.fugue.Suppliers.compose;
+import static com.atlassian.fugue.Suppliers.ofInstance;
 
 /**
  * Utility functions for Eithers.
@@ -146,7 +148,7 @@ public class Eithers {
   }
 
   public static <L, R> Supplier<Either<L, R>> toLeft(final L l) {
-    return Suppliers.compose(Eithers.<L, R> toLeft(), Suppliers.ofInstance(l));
+    return compose(Eithers.<L, R>toLeft(), ofInstance(l));
   }
 
   // allows static import
@@ -164,7 +166,7 @@ public class Eithers {
   }
 
   public static <L, R> Supplier<Either<L, R>> toRight(final R r) {
-    return Suppliers.compose(Eithers.<L, R> toRight(), Suppliers.ofInstance(r));
+    return compose(Eithers.<L, R>toRight(), ofInstance(r));
   }
 
   // allows static import

@@ -275,7 +275,7 @@ public class Iterables {
     if (xs instanceof List<?>) {
       final List<T> list = (List<T>) xs;
       if (n > (list.size() - 1)) {
-        return Collections.nCopies(0, (T) null);
+        return Collections.EMPTY_LIST;
       }
       return ((List<T>) xs).subList(n, list.size());
     }
@@ -612,14 +612,17 @@ public class Iterables {
   }
 
   /**
-   * Return the size of an iterable
+   * Return the size of an iterable. In most cases this function is required to
+   * walk the entire iterable to determine the result. Consider this an O(n)
+   * complexity function.
+   *
    * @param as iterable to compute the size of
    * @param <A> element type
    * @return number of elements in the iterable
    *
    * @since 3.0
    */
-  static <A> int size(Iterable<A> as) {
+  public static <A> int size(Iterable<A> as) {
     if (as instanceof Collection) {
       return ((Collection<?>) as).size();
     } else {
