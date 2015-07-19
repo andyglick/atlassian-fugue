@@ -57,7 +57,9 @@ public interface Maybe<A> extends Iterable<A>, Effect.Applicant<A> {
   <B extends A> A getOrElse(final B other);
 
   /**
-   * Same as the now deprecated {@link #getOrElse(Supplier)} but with a new signature to avoid overloading and possible ambiguity during compiler resolution.
+   * Get the value {@link #isDefined() if defined} or call the supplier and
+   * return its value if not.
+   * Replaces {@link #getOrElse(Supplier)}.
    *
    * Get the value {@link #isDefined() if defined} or call the supplier and
    * return its value if not.
@@ -73,8 +75,10 @@ public interface Maybe<A> extends Iterable<A>, Effect.Applicant<A> {
    *
    * @param supplier called if this {@link #isEmpty() is empty}
    * @return the wrapped value or the value from the {@code Supplier}
-   * @deprecated since 3.0 {@link #getOrElse(Supplier)} is being replaced with {@link #getElse(Supplier)}. In Java 8 type inference cannot disambiguate
-   * between an overloaded method taking a generic A and the same method taking a Supplier<A>.
+   * @deprecated since 3.0 {@link #getOrElse(Supplier)} is being replaced with
+   * {@link #getElse(Supplier)}. In Java 8 type inference cannot disambiguate
+   * between an overloaded method taking a generic A and the same method taking
+   * a Supplier<A>.
    */
   @Deprecated A getOrElse(final Supplier<? extends A> supplier);
 
