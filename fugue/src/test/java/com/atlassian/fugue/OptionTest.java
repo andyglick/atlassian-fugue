@@ -70,11 +70,11 @@ public class OptionTest {
   }
 
   @Test public void getElseOnNoneReturnsValueFromSupplier() {
-    assertThat(none(Integer.class).getElse(ofInstance(0)), is(equalTo(0)));
+    assertThat(none(Integer.class).getOr(ofInstance(0)), is(equalTo(0)));
   }
 
   @Test public void getElseOnNoneReturnsValueFromLambda() {
-    assertThat(none(Integer.class).getElse(() -> 0), is(equalTo(0)));
+    assertThat(none(Integer.class).getOr(() -> 0), is(equalTo(0)));
   }
 
   @Test public void iteratorOverSomeContainsOnlyValue() {

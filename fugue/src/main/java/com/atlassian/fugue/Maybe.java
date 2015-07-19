@@ -67,7 +67,7 @@ public interface Maybe<A> extends Iterable<A>, Effect.Applicant<A> {
    * @param supplier called if this {@link #isEmpty() is empty}
    * @return the wrapped value or the value from the {@code Supplier}
    */
-  A getElse(final Supplier<? extends A> supplier);
+  A getOr(final Supplier<? extends A> supplier);
 
   /**
    * Get the value {@link #isDefined() if defined} or call the supplier and
@@ -76,7 +76,7 @@ public interface Maybe<A> extends Iterable<A>, Effect.Applicant<A> {
    * @param supplier called if this {@link #isEmpty() is empty}
    * @return the wrapped value or the value from the {@code Supplier}
    * @deprecated since 3.0 {@link #getOrElse(Supplier)} is being replaced with
-   * {@link #getElse(Supplier)}. In Java 8 type inference cannot disambiguate
+   * {@link #getOr(Supplier)}. In Java 8 type inference cannot disambiguate
    * between an overloaded method taking a generic A and the same method taking
    * a Supplier<A>.
    */
