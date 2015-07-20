@@ -11,7 +11,7 @@
     <parent>
         <artifactId>fugue-parent</artifactId>
         <groupId>com.atlassian.fugue</groupId>
-        <version>3.0.0-m003-SNAPSHOT</version>
+        <version>3.0.0-m004-SNAPSHOT</version>
     </parent>
 
     <artifactId>fugue-scala</artifactId>
