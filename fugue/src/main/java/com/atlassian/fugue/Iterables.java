@@ -781,7 +781,7 @@ public class Iterables {
     }
 
     @Override public Iterator<A> iterator() {
-      return new Iter<A>(f, start);
+      return new Iter<>(f, start);
     }
 
     static final class Iter<A> extends Iterators.Unmodifiable<A> {
@@ -899,7 +899,9 @@ public class Iterables {
    */
   public static <A> boolean addAll(Collection<A> collectionToModify, Iterable<? extends A> elementsToAdd) {
     if (elementsToAdd instanceof Collection) {
-      return collectionToModify.addAll((Collection<? extends A>) elementsToAdd);
+      @SuppressWarnings("unchecked")
+      Collection<? extends A> cast = (Collection<? extends A>) elementsToAdd;
+      return collectionToModify.addAll(cast);
     }
     return Iterators.addAll(collectionToModify, requireNonNull(elementsToAdd).iterator());
   }

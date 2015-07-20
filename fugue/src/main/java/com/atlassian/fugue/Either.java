@@ -65,6 +65,7 @@ public abstract class Either<L, R> implements Serializable {
    * @param <R> the RHS type
    * @param left the value to be stored, must not be null
    * @return a Left containing the supplied value
+   * @since 1.0
    */
   public static <L, R> Either<L, R> left(final L left) {
     requireNonNull(left);
@@ -76,6 +77,7 @@ public abstract class Either<L, R> implements Serializable {
    * @param <R> the RHS type
    * @param right the value to be stored, must not be null
    * @return a Right containing the supplied value
+   * @since 1.0
    */
   public static <L, R> Either<L, R> right(final R right) {
     requireNonNull(right);

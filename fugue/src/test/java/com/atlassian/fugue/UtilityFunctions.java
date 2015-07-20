@@ -22,7 +22,6 @@ import java.util.function.Predicate;
 
 import static com.atlassian.fugue.Either.left;
 import static com.atlassian.fugue.Either.right;
-import static java.util.Objects.requireNonNull;
 
 public class UtilityFunctions {
   public static final Predicate<Integer> isEven = dividableBy(2);
