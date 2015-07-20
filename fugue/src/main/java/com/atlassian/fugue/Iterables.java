@@ -763,8 +763,8 @@ public class Iterables {
    * predicate otherwise false
    * @since 3.0
    */
-  public static <A> boolean any(final Iterable<? extends A> ia, final Predicate<? super A> p){
-    return !isEmpty().test(filter(ia, p));
+  public static <A> boolean any(final Iterable<? extends A> as, final Predicate<? super A> p){
+    return !isEmpty().test(filter(as, p));
   }
 
   /**
@@ -777,8 +777,8 @@ public class Iterables {
    * predicate otherwise false
    * @since 3.0
    */
-  public static <A> boolean all(final Iterable<? extends A> ia, final Predicate<? super A> p) {
-    return !isEmpty().test(ia) && isEmpty().test(filter(ia, p.negate()));
+  public static <A> boolean all(final Iterable<? extends A> as, final Predicate<? super A> p) {
+    return !isEmpty().test(as) && isEmpty().test(filter(as, p.negate()));
   }
 
 

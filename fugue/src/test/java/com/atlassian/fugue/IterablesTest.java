@@ -184,33 +184,27 @@ public class IterablesTest {
   }
 
   @Test public void findAnyMatching() {
-    Iterable<Integer> i = Arrays.asList(1, 2, 3);
-    assertThat(any(i, ii -> ii > 2), is(true));
+    assertThat(any(Arrays.asList(1, 2, 3), ii -> ii > 2), is(true));
   }
 
   @Test public void findAnyNoMatching() {
-    Iterable<Integer> i = Arrays.asList(1, 2, 3);
-    assertThat(any(i, ii -> ii < 0), is(false));
+    assertThat(any(Arrays.asList(1, 2, 3), ii -> ii < 0), is(false));
   }
 
   @Test public void findAnyEmpty() {
-    Iterable<Integer> i = Collections.emptyList();
-    assertThat(any(i, ii -> ii < 0), is(false));
+    assertThat(any(Collections.<Integer>emptyList(), ii -> ii < 0), is(false));
   }
 
   @Test public void findAllMatching() {
-    Iterable<Integer> i = Arrays.asList(1, 2, 3);
-    assertThat(all(i, ii -> ii > 0), is(true));
+    assertThat(all(Arrays.asList(1, 2, 3), ii -> ii > 0), is(true));
   }
 
   @Test public void findAllNoMatching() {
-    Iterable<Integer> i = Arrays.asList(1,2,3);
-    assertThat(all(i, ii -> ii < 2), is(false));
+    assertThat(all(Arrays.asList(1, 2, 3), ii -> ii < 2), is(false));
   }
 
   @Test public void findAllEmpty() {
-    Iterable<Integer> i = Collections.emptyList();
-    assertThat(all(i, ii -> ii < 0), is(false));
+    assertThat(all(Collections.<Integer>emptyList(), ii -> ii < 0), is(false));
   }
 
   /**
