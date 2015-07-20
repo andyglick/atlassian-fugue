@@ -17,7 +17,7 @@
     <groupId>com.atlassian.fugue</groupId>
     <artifactId>fugue-parent</artifactId>
     <packaging>pom</packaging>
-    <version>3.0.0-m004-SNAPSHOT</version>
+    <version>3.0.0-m004</version>
     <name>Functional Guava Extensions Library</name>
 
     <licenses>
@@ -59,7 +59,7 @@
         <connection>scm:git:git@bitbucket.org:atlassian/fugue.git</connection>
         <developerConnection>scm:git:git@bitbucket.org:atlassian/fugue.git</developerConnection>
         <url>https://bitbucket.org/atlassian/fugue</url>
-      <tag>HEAD</tag>
+      <tag>v3.0.0-m004</tag>
   </scm>
 
     <build>
