@@ -243,7 +243,7 @@ public class Iterables {
    * Takes the first {@code n} {@code xs} and returns them.
    *
    * @param <T> type of {@code xs}
-   * @param n number of {@code xs} to take
+   * @param n number of {@code xs} to take, must greater than or equal to zero
    * @param xs list of values, must not be null and must not contain null
    * @return first {@code n} {@code xs}
    * @since 1.1
@@ -263,7 +263,7 @@ public class Iterables {
    * Drop the first {@code n} {@code xs} and return the rest.
    *
    * @param <T> type of {@code xs}
-   * @param n number of {@code xs} to drop
+   * @param n number of {@code xs} to drop, must greater than or equal to zero
    * @param xs list of values, must not be null and must not contain null
    * @return remaining {@code xs} after dropping the first {@code n}
    * @since 1.1
@@ -394,7 +394,7 @@ public class Iterables {
    * Creates a sequence of {@link Integer integers} from start up to and
    * including end with the the supplied step between them.
    *
-   * @param start from (inclusive)
+   * @param start from (inclusive), must be greater than zero and less than end
    * @param end to (inclusive)
    * @param step size to step – must not be zero, must be positive if end is
    * greater than start, neagtive otherwise
