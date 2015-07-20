@@ -19,12 +19,15 @@ import org.junit.Test;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static com.atlassian.fugue.Iterables.all;
+import static com.atlassian.fugue.Iterables.any;
 import static com.atlassian.fugue.Iterables.emptyIterable;
 import static com.atlassian.fugue.Iterables.findFirst;
 import static com.atlassian.fugue.Iterables.flatten;
@@ -63,7 +66,7 @@ public class IterablesTest {
   }
 
   @Test public void findFirstEmpty() {
-    assertThat(findFirst(Arrays.<Integer> asList(), grepOne), is(Option.<Integer>none()));
+    assertThat(findFirst(Arrays.<Integer>asList(), grepOne), is(Option.<Integer>none()));
   }
 
   @Test public void findFirstAbsent() {
@@ -178,6 +181,30 @@ public class IterablesTest {
   @Test public void flattenCollapses() {
     Iterable<Iterable<Integer>> iterables = asList(singletonList(1), singletonList(2));
     assertThat(flatten(iterables), contains(1, 2));
+  }
+
+  @Test public void findAnyMatching() {
+    assertThat(any(Arrays.asList(1, 2, 3), ii -> ii > 2), is(true));
+  }
+
+  @Test public void findAnyNoMatching() {
+    assertThat(any(Arrays.asList(1, 2, 3), ii -> ii < 0), is(false));
+  }
+
+  @Test public void findAnyEmpty() {
+    assertThat(any(Collections.<Integer>emptyList(), ii -> ii < 0), is(false));
+  }
+
+  @Test public void findAllMatching() {
+    assertThat(all(Arrays.asList(1, 2, 3), ii -> ii > 0), is(true));
+  }
+
+  @Test public void findAllNoMatching() {
+    assertThat(all(Arrays.asList(1, 2, 3), ii -> ii < 2), is(false));
+  }
+
+  @Test public void findAllEmpty() {
+    assertThat(all(Collections.<Integer>emptyList(), ii -> ii < 0), is(true));
   }
 
   /**
