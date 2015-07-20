@@ -22,6 +22,8 @@ They will be removed in 4.0.
 - com.atlassian.fugue.retry.* can now be found in the fugue-guava package.
 - Effect now extends java.util.functions.Consumer
 - Iterables.mergeSorted now takes a Comparator instead of a Guava Ordering instance
+- Left.hashCode changed to avoid clashing with Right.hashCode when you have a left and a right containing the same
+value.
 - All copies of com.google.common.base.Function/Supplier/Predicate have been replaced with the equivalent classes
 from Java 8
 

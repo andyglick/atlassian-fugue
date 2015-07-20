@@ -82,7 +82,7 @@ public class EitherLeftTest {
   }
 
   @Test public void hashCodeTest() {
-    assertThat(either.hashCode(), is(ORIGINAL_VALUE.hashCode()));
+    assertThat(either.hashCode(), is(~ORIGINAL_VALUE.hashCode()));
   }
 
   @Test public void equalsItself() {
