@@ -31,8 +31,8 @@ class Iterators {
 
   /**
    * Adds all the elements of the iterator to the collectionToModify
-   * @param collectionToModify collection to add element to
-   * @param iterator source of elements to add
+   * @param collectionToModify collection to add element to, must not be null
+   * @param iterator source of elements to add, must not be null
    * @param <A> element type
    * @return true if any of the elements from iterator were not also in collectionToModify
    *
@@ -50,7 +50,7 @@ class Iterators {
 
   /**
    * Wrap an iterator to add support for the peek operation
-   * @param iterator iterator that may not support peek
+   * @param iterator iterator that may not support peek, must not be null
    * @param <A> element type
    * @return iterator that can return the next element without removing it from the iterator
    *

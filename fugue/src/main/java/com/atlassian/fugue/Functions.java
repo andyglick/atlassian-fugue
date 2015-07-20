@@ -52,8 +52,8 @@ public class Functions {
    * @param <A> The start type
    * @param <B> The intermediate type
    * @param <C> The finished type
-   * @param g the second function to apply
-   * @param f the first function to apply
+   * @param g the second function to apply, must not be null
+   * @param f the first function to apply, must not be null
    * @return the composition of {@code f} and {@code g}
    * @see <a href="//en.wikipedia.org/wiki/Function_composition">function
    * composition</a>
@@ -194,7 +194,7 @@ public class Functions {
    * 
    * @param <A> the input type
    * @param <B> the type we expect it to be
-   * @param cls the type to check against.
+   * @param cls the type to check against, must not be null
    * @return a function that returns a Some with the value if of the right type
    * otherwise a None
    * @since 1.2
@@ -230,8 +230,8 @@ public class Functions {
    * 
    * @param <A> the input type
    * @param <B> the output type
-   * @param p the predicate to test the value against.
-   * @param f the function to apply if the predicate passes.
+   * @param p the predicate to test the value against, must not be null
+   * @param f the function to apply if the predicate passes, must not be null
    * @return a PartialFunction that tests the supplied predicate before applying
    * the function.
    * @since 1.2
@@ -272,8 +272,8 @@ public class Functions {
    * @param <A> the input type
    * @param <B> the middle type
    * @param <C> the output type
-   * @param bc partial function from {@code B -> C}
-   * @param ab partial function from {@code A -> B}
+   * @param bc partial function from {@code B -> C}, must not be null
+   * @param ab partial function from {@code A -> B}, must not be null
    * @return a PartialFunction that flatMaps g on to the result of applying f.
    * @since 1.2
    */
@@ -313,7 +313,7 @@ public class Functions {
    * @param <A> the type of the left of the pair
    * @param <B> the type of the right of the pair
    * @param <C> the result type
-   * @param fpair the source function that takes a pair of arguments
+   * @param fpair the source function that takes a pair of arguments, must not be null
    * @return a function that takes two arguments
    * @since 2.0
    */
@@ -338,7 +338,7 @@ public class Functions {
    * @param <A> the type of the first argument
    * @param <B> the type of the second argument
    * @param <C> the type of the final result
-   * @param f2 the original function that takes 2 arguments
+   * @param f2 the original function that takes 2 arguments, must not be null
    * @return the curried form of the original function
    * @since 2.0
    */
@@ -374,7 +374,7 @@ public class Functions {
    * @param <A> the type of the first argument
    * @param <B> the type of the second argument
    * @param <C> the type of the final result
-   * @param f2 the original function from {@code A -> (B -> C)}
+   * @param f2 the original function from {@code A -> (B -> C)}, must not be null
    * @return the flipped form of the original function
    * @since 2.0
    */
@@ -442,7 +442,7 @@ public class Functions {
    * that is it should be immutable and have correct hashcode and equals
    * implementations.
    * @param <B> the output type
-   * @param f the function who's output will be memoized
+   * @param f the function who's output will be memoized, must not be null
    * @return a function that memoizes the results of the function using the
    * input as a weak key
    * 
@@ -457,7 +457,7 @@ public class Functions {
    * 
    * @param <D> the key type, ignored
    * @param <R> the result type
-   * @param supplier called for all inputs
+   * @param supplier called for all inputs, must not be null
    * @return the function
    * 
    * @since 2.2

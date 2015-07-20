@@ -69,7 +69,7 @@ public class Options {
    * Lifts a function that takes an A and returns a B into a function that takes
    * an option of A and returns an option of B.
    * 
-   * @param f the original function to be lifted
+   * @param f the original function to be lifted, must not be null
    * @param <A> the input type of the original function
    * @param <B> the result type of the original function
    * @return a function that takes an option of type A and returns an option of
@@ -99,7 +99,7 @@ public class Options {
    * Lifts a predicate that takes an A into a predicate that takes an option of
    * A.
    * 
-   * @param pred the original predicate to be lifted
+   * @param pred the original predicate to be lifted, must not be null
    * @param <A> the input type of the predicate
    * @return a predicate that takes an option of type A
    * @since 2.2

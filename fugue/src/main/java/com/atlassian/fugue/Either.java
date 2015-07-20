@@ -588,7 +588,7 @@ public abstract class Either<L, R> implements Serializable {
      * Map the given function across this projection's value if it has one.
      *
      * @param <X> the LHS type
-     * @param f The function to map across this projection.
+     * @param f The function to map across this projection, must not return null
      * @return A new either value after mapping.
      */
     public <X> Either<X, R> map(final Function<? super L, X> f) {

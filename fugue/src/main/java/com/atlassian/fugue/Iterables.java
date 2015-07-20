@@ -146,7 +146,7 @@ public class Iterables {
    * {@code some(get(as, 0))}.
    *
    * @param <A> type of elements in {@code as}
-   * @param as elements to get the first value of
+   * @param as elements to get the first value of, must not be null
    * @return {@code none()} if {@code as} is empty. {@code some(get(as, 0))}
    * otherwise
    * @since 1.1
@@ -216,7 +216,7 @@ public class Iterables {
    *
    * @param <A> the input type
    * @param <B> the output type
-   * @param from the input iterable
+   * @param from the input iterable, must not be null and must not contain null
    * @param partial the collecting function
    * @return the collected iterable
    * @since 2.2
@@ -244,7 +244,7 @@ public class Iterables {
    *
    * @param <T> type of {@code xs}
    * @param n number of {@code xs} to take
-   * @param xs list of values
+   * @param xs list of values, must not be null and must not contain null
    * @return first {@code n} {@code xs}
    * @since 1.1
    */
@@ -264,7 +264,7 @@ public class Iterables {
    *
    * @param <T> type of {@code xs}
    * @param n number of {@code xs} to drop
-   * @param xs list of values
+   * @param xs list of values, must not be null and must not contain null
    * @return remaining {@code xs} after dropping the first {@code n}
    * @since 1.1
    */
@@ -308,9 +308,10 @@ public class Iterables {
    * @param <A> LHS type
    * @param <B> RHS type
    * @param <C> result type
-   * @param f combiner function
+   * @param f combiner function, must not be null
    * @return an Function that takes two iterables and zips them using the
-   * supplied function
+   * supplied function. The input iterables must not be null and must not
+   * contain null
    * @since 1.2
    */
   public static <A, B, C> BiFunction<Iterable<A>, Iterable<B>, Iterable<C>> zipWith(final BiFunction<A, B, C> f) {
@@ -717,7 +718,8 @@ public class Iterables {
 
   /**
    * Merge {@literal Iterable<Iterable<A>>} down to {@literal Iterable<A>}
-   * @param ias one or more iterable to merge into the final iterable result
+   * @param ias one or more iterable to merge into the final iterable result,
+   * must not be null and must not return null
    * @param <A> element type
    * @return single level iterable with all the elements of the original iterables
    *
@@ -758,7 +760,7 @@ public class Iterables {
    * function starting at the given value.
    *
    * @param <A> type of the elements
-   * @param f The iteration function.
+   * @param f The iteration function, must not return null
    * @param start The value to begin iterating from.
    * @return An infinite Iterable of repeated applications of {@code f} to
    * {@code start}.
@@ -814,7 +816,8 @@ public class Iterables {
    * @param f The function that returns some(pair(a, b)), in which case
    * {@code a} is the next element of the resulting Iterable and {@code b} is
    * used as the input value for the next call of {@code f}, or {@code none()}
-   * if it is done producing the elements.
+   * if it is done producing the elements. f must not be null and must not
+   * return a pair containing null.
    * @param seed The start value to begin the unfold.
    * @return An Iterable that is a result of unfolding.
    * @since 2.4
@@ -866,7 +869,8 @@ public class Iterables {
    * collection of elements, using the elements natural ordering.
    *
    * @param <A> type of the elements
-   * @param xss collection of already sorted collections
+   * @param xss collection of already sorted collections, must not be null
+   * and must not return null
    * @return {@code xss} merged in a sorted order
    * @since 1.1
    */
@@ -879,8 +883,10 @@ public class Iterables {
    * collection of elements.
    *
    * @param <A> type of the elements
-   * @param xss already sorted collection of collections
-   * @param ordering ordering to use when comparing elements
+   * @param xss already sorted collection of collections, must not be null
+   * and must not return null
+   * @param ordering ordering to use when comparing elements, must not be
+   * null
    * @return {@code xss} merged in a sorted order
    * @since 1.1
    */

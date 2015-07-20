@@ -75,7 +75,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    * Factory method for Some instances.
    * 
    * @param <A> the contained type
-   * @param value the value to hold
+   * @param value the value to hold, must not be null
    * @return a Some if the parameter is not null
    * @throws NullPointerException if the parameter is null
    */

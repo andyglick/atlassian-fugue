@@ -130,7 +130,7 @@ public interface Maybe<A> extends Iterable<A>, Effect.Applicant<A> {
    * Whether this is {@link #isDefined() is defined} <strong>and</strong>
    * applying the predicate to the contained value returns true.
    * 
-   * @param p the predicate to test
+   * @param p the predicate to test, must not be null
    * @return {@code true} if defined and the predicate returns true for the
    * contained value, {@code false} otherwise.
    */
@@ -146,7 +146,8 @@ public interface Maybe<A> extends Iterable<A>, Effect.Applicant<A> {
    * Returns <code>true</code> {@link #isEmpty() if empty} or the result of the
    * application of the given function to the value.
    * 
-   * @param p The predicate function to test on the contained value.
+   * @param p The predicate function to test on the contained value, must not
+   * be null
    * @return <code>true</code> if no value or returns the result of the
    * application of the given function to the value.
    */
