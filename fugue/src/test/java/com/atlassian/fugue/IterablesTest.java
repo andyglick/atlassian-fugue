@@ -204,7 +204,7 @@ public class IterablesTest {
   }
 
   @Test public void findAllEmpty() {
-    assertThat(all(Collections.<Integer>emptyList(), ii -> ii < 0), is(false));
+    assertThat(all(Collections.<Integer>emptyList(), ii -> ii < 0), is(true));
   }
 
   /**
