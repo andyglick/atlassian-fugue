@@ -754,6 +754,33 @@ public class Iterables {
   }
 
   /**
+   * Check if the iterable contains any elements that match the predicate.
+   *
+   * @param ia iterable to compare for matching elements
+   * @param p predicate to test for matching elements
+   * @param <A> type of elements inside the input iterable
+   * @return true if any element in the iterable returns true for the input predicate
+   * @since 3.0
+   */
+  public static <A> boolean any(final Iterable<? extends A> ia, final Predicate<? super A> p){
+    return !isEmpty().test(filter(ia, p));
+  }
+
+  /**
+   * Check if all elements
+   *
+   * @param ia iterable to compare for matching elements
+   * @param p predicate to test for matching elements
+   * @param <A> type of elements inside the input iterable
+   * @return true if any element in the iterable returns true for the input predicate
+   * @since 3.0
+   */
+  public static <A> boolean all(final Iterable<? extends A> ia, final Predicate<? super A> p) {
+    return !isEmpty().test(ia) && isEmpty().test(filter(ia, p.negate()));
+  }
+
+
+  /**
    * Returns an infinite Iterable constructed by applying the given iteration
    * function starting at the given value.
    *
