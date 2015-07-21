@@ -78,7 +78,7 @@ public interface Maybe<A> extends Iterable<A>, Effect.Applicant<A> {
    * @deprecated since 3.0 {@link #getOrElse(Supplier)} is being replaced with
    * {@link #getOr(Supplier)}. In Java 8 type inference cannot disambiguate
    * between an overloaded method taking a generic A and the same method taking
-   * a Supplier<A>.
+   * a {@literal Supplier<A>}.
    */
   @Deprecated A getOrElse(final Supplier<? extends A> supplier);
 
