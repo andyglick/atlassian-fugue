@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.atlassian.pom</groupId>
-        <artifactId>central-pom</artifactId>
+        <artifactId>public-pom</artifactId>
         <version>3.0.90</version>
     </parent>
 
@@ -59,7 +59,7 @@
         <connection>scm:git:git@bitbucket.org:atlassian/fugue.git</connection>
         <developerConnection>scm:git:git@bitbucket.org:atlassian/fugue.git</developerConnection>
         <url>https://bitbucket.org/atlassian/fugue</url>
-  </scm>
+    </scm>
 
     <build>
         <plugins>
