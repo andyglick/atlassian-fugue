@@ -22,5 +22,16 @@ package com.atlassian.fugue;
  * @since 2.2
  */
 public enum Unit {
-  VALUE
+  VALUE;
+
+  /**
+   * Provide ability to statically import {@code Unit.UNIT} and then use {@code UNIT()}
+   * within your code, primarily for readability purposes.
+   *
+   * @return The value for Unit, ie. {@link #VALUE}
+   * @since 2.4.1
+   */
+  public static Unit UNIT() {
+    return VALUE;
+  }
 }
