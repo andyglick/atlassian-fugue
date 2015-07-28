@@ -18,6 +18,7 @@ package com.atlassian.fugue;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -68,7 +69,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    * @return a Some if the parameter is not null or a None if it is
    */
   public static <A> Option<A> option(final A a) {
-    return (a == null) ? Option.<A> none() : some(a);
+    return (a == null) ? Option.<A> none() : new Some<>(a);
   }
 
   /**
@@ -127,6 +128,16 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    */
   public static <A> Supplier<Option<A>> noneSupplier() {
     return ofInstance(Option.<A> none());
+  }
+
+  /**
+   * Factory method for {@link Option} instances from {@link Optional} instances.
+   *
+   * @param <A> the contained type
+   * @return a Some if {@link Optional#isPresent()} or a None otherwise.
+   */
+  public static <A> Option<A> fromOptional(Optional<A> optional) {
+    return option(optional.orElse(null));
   }
 
   //
@@ -292,6 +303,13 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
     return isEmpty() ? Either.<A, X> right(right.get()) : Either.<A, X> left(get());
   }
 
+  /**
+   * Create an {@link Optional} from this option.
+   *
+   * @return {@link Optional#of(Object)} with the value if defined, {@link Optional#empty()} otherwise.
+   */
+  public abstract Optional<A> toOptional();
+
   @Override public final int hashCode() {
     return fold(NONE_HASH, SOME_HASH);
   }
@@ -347,6 +365,10 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
     }
 
     @Override public void foreach(final Effect<? super Object> effect) {}
+
+    @Override public Optional<Object> toOptional() {
+      return Optional.empty();
+    }
   };
 
   private static final Supplier<String> NONE_STRING = ofInstance("none()");
@@ -390,6 +412,10 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
 
     @Override public void foreach(final Effect<? super A> effect) {
       effect.apply(value);
+    }
+
+    @Override public Optional<A> toOptional() {
+      return Optional.of(value);
     }
   }
 
