@@ -16,15 +16,13 @@
 package com.atlassian.fugue.converters
 
 import java.util.Date
+import java.util.function.{BiFunction => JFunction2, Function => JFunction, Predicate => JPredicate, Supplier => JSupplier}
 
 import com.atlassian.fugue
 import com.atlassian.fugue.Suppliers
 import org.hamcrest.Matchers.is
-import org.junit.Assert.assertThat
-import org.junit.Assert.assertTrue
+import org.junit.Assert.{assertThat, assertTrue}
 import org.junit.Test
-
-import java.util.function.{BiFunction => JFunction2, Function => JFunction, Predicate => JPredicate, Supplier => JSupplier}
 
 import scala.util.control.Exception.catching
 
@@ -46,23 +44,23 @@ class ScalaConvertersTest {
     assertTrue(either.left.get.isInstanceOf[NoSuchElementException])
   }
 
-  @Test def function1ToGuavaFunctionImplicitly() {
+  @Test def function1ToJavaFunctionImplicitly() {
     val g: JFunction[String, Integer] = { (s: String) => s.length }.toJava
     assertThat(new Integer(3), is(g.apply("abc")))
   }
 
-  @Test def function1ToGuavaFunctionTypeConvertedExplicitly() {
+  @Test def function1ToJavaFunctionTypeConvertedExplicitly() {
     val g: JFunction[Integer, Integer] = ((i: Int) => i * 2).toJava
     assertThat(new Integer(4), is(g.apply(2)))
   }
 
-  @Test def function1ToGuavaFunctionTypeConvertedImplicitly() {
+  @Test def function1ToJavaFunctionTypeConvertedImplicitly() {
     def f(ff: JFunction[Integer, Integer]): Integer = ff.apply(2)
     val g: JFunction[Integer, Integer] = ((i: Int) => i * 2).toJava
     assertThat(new Integer(4), is(f(g)))
   }
 
-  @Test def guavaFunctionToFunction1Implicitly() {
+  @Test def javaFunctionToFunction1Implicitly() {
     val f: JFunction[Integer, Integer] = new JFunction[Integer, Integer] {
       override def apply(input: Integer): Integer = input + 1
     }
@@ -70,7 +68,7 @@ class ScalaConvertersTest {
     assertThat(3, is(g(2)))
   }
 
-  @Test def guavaPredicateToFunction1Implicitly() {
+  @Test def javaPredicateToFunction1Implicitly() {
     val f: JPredicate[Integer] = new JPredicate[Integer] {
       override def test(input: Integer): Boolean = input % 2 == 0
     }
@@ -79,7 +77,7 @@ class ScalaConvertersTest {
     assertThat(g(3), is(false))
   }
 
-  @Test def guavaFunctionToFunction1TypeConvertedExplicitly() {
+  @Test def javaFunctionToFunction1TypeConvertedExplicitly() {
     val f: JFunction[Integer, Integer] = new JFunction[Integer, Integer] {
       def apply(input: Integer): Integer = input + 1
     }

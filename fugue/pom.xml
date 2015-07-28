@@ -16,7 +16,7 @@
 
     <artifactId>fugue</artifactId>
     <packaging>jar</packaging>
-    <name>Functional Guava Extensions</name>
+    <name>Functional Extensions</name>
 
     <build>
         <plugins>

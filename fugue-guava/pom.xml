@@ -16,7 +16,7 @@
 
     <artifactId>fugue-guava</artifactId>
     <packaging>jar</packaging>
-    <name>Functional Guava Extensions Guava Inter-Ops</name>
+    <name>Functional Extensions Guava Inter-Ops</name>
 
     <dependencies>
         <dependency>

@@ -50,10 +50,6 @@ import static java.util.Objects.requireNonNull;
  * Contains static utility methods that operate on or return objects of type
  * {code}Iterable{code}.
  *
- * This class is primarily focused around filling holes in Guava's Iterables
- * class which have become apparent with the addition of Fugue classes such as
- * Option and Either.
- *
  * When making changes to this class, please try to name methods differently to
  * those in Iterables so that methods from both classes can be statically
  * imported in the same class.

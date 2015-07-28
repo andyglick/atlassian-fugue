@@ -16,7 +16,7 @@
 
     <artifactId>fugue-scala</artifactId>
     <packaging>jar</packaging>
-    <name>Functional Guava Extensions Scala Inter-Ops</name>
+    <name>Functional Extensions Scala Inter-Ops</name>
 
     <properties>
         <scala.version>2.10.5</scala.version>

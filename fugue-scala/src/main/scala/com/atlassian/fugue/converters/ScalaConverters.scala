@@ -23,11 +23,11 @@ import annotation.implicitNotFound
 import com.atlassian.fugue
 
 /**
- * Useful for converting Fugue and Guava types to Scala and vice-versa.
+ * Useful for converting Fugue types to Scala and vice-versa.
  *
  * to use, simply `import ScalaConverters._` and then add `.toScala` and `.toJava` as required.
  *
- * Note: that the Fugue/Guava side will have Java types such as `java.lang.Integer` and the Scala
+ * Note: that the Fugue side will have Java types such as `java.lang.Integer` and the Scala
  * side will have the Scala equivalents such as `Int`. It will pass reference types though unchanged.
  *
  * Also note that a `Function[Pair[A, B], C]` converts to an `((A, B)) => C` – note the inner parens,

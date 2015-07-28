@@ -18,7 +18,7 @@
     <artifactId>fugue-parent</artifactId>
     <packaging>pom</packaging>
     <version>3.0.0-m006-SNAPSHOT</version>
-    <name>Functional Guava Extensions Library</name>
+    <name>Functional Extensions Library</name>
 
     <licenses>
         <license>

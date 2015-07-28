@@ -1,6 +1,6 @@
 # fugue
 
-## Functional Extensions to Guava
+## Functional Extensions
 
 Google's guava project is a solid utility library providing many useful interfaces
 and utilities, and it is a very commonly added dependency for most projects.
