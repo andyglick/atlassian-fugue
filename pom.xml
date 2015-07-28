@@ -30,6 +30,7 @@
 
     <modules>
         <module>fugue</module>
+        <module>fugue-optics</module>
         <module>fugue-scala</module>
         <module>fugue-guava</module>
     </modules>
