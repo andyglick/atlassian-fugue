@@ -305,8 +305,10 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
 
   /**
    * Create an {@link Optional} from this option.
+   * Will throw a {@link NullPointerException} if this option is defined and contains a null value.
    *
-   * @return {@link Optional#of(Object)} with the value if defined, {@link Optional#empty()} otherwise.
+   * @return {@link Optional#of(Object)} with the value if defined and not null,
+   * {@link Optional#empty()} if not defined.
    */
   public abstract Optional<A> toOptional();
 

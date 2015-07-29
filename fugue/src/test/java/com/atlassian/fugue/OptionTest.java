@@ -156,7 +156,7 @@ public class OptionTest {
   }
 
   @Test public void someToOptional() {
-    Assert.assertThat(some("value").toOptional(), is(Optional.of("value")));
+    assertThat(some("value").toOptional(), is(Optional.of("value")));
   }
 
   @Test(expected = NullPointerException.class) public void someWithNullToOptional() {
@@ -164,7 +164,7 @@ public class OptionTest {
   }
 
   @Test public void noneToOptional() {
-    Assert.assertThat(none().toOptional(), is(Optional.empty()));
+    assertThat(none().toOptional(), is(Optional.empty()));
   }
 
   //
