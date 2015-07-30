@@ -1,6 +1,6 @@
 package com.atlassian.fugue;
 
-import static com.atlassian.fugue.Unit.UNIT;
+import static com.atlassian.fugue.Unit.Unit;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -14,6 +14,6 @@ public class UnitTest {
   }
 
   @Test public void unitMethodIsSameAsValue() {
-    assertThat(UNIT(), is(Unit.VALUE));
+    assertThat(Unit(), is(Unit.VALUE));
   }
 }

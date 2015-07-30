@@ -3,9 +3,9 @@ All notable changes to this project will be documented in this file.
 
 This project attempts to adheres to [Semantic Versioning](http://semver.org/).
 
-## [2.4.1] - [unreleased]
+## [2.5.0] - [unreleased]
 ### Added
-- Added a static UNIT() method to com/atlassian/fugue/Unit that simply returns the 
+- Added a static Unit() method to com/atlassian/fugue/Unit that simply returns the 
 Unit.VALUE enum
 
 ## [2.4.0] - 2015-07-15

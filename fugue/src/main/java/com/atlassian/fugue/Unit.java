@@ -29,9 +29,10 @@ public enum Unit {
    * within your code, primarily for readability purposes.
    *
    * @return The value for Unit, ie. {@link #VALUE}
-   * @since 2.4.1
+   * @since 2.5
    */
-  public static Unit UNIT() {
+  public static Unit Unit() {
     return VALUE;
   }
+
 }
