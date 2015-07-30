@@ -41,6 +41,10 @@ slf4j and jsr305.
 return the same message string inside the exception.
 - Option.find and Option.filterNone were deprecated in 1.1 and are now removed. Find their replacements in Options.
 
+## [2.5.0] - [unreleased]
+### Added
+- Added a static Unit() method to com/atlassian/fugue/Unit that simply returns the 
+Unit.VALUE enum
 
 ## [2.4.0] - 2015-07-15
 ### Added
