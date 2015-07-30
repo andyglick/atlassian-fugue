@@ -12,8 +12,8 @@ Unit.VALUE enum
 ### Added
 - ScalaConverters moved to com/atlassian/fugue/converters package
 - Iterables has added the following new methods
-    * iterate
-    * unfold
+    * iterate - returns an infinite iterable built from the given iteration function
+    * unfold - returns an iterable built from the seed function which is called until it returns none()
 
 ### Changed
 - com/atlassian/fugue/converters/ScalaConverters syntax is now 'toScala' and 'toJava'
