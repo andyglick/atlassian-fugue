@@ -11,7 +11,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 /**
- *
+ * {@link Semigroup} instances and factories.
  */
 public final class Semigroups {
 
@@ -108,7 +108,8 @@ public final class Semigroups {
    */
   public static final Semigroup<Unit> unitSemigroup = (u1, u2) -> Unit.VALUE;
 
-  private Semigroups(){}
+  private Semigroups() {
+  }
 
   /**
    * A semigroup for functions.
@@ -218,36 +219,4 @@ public final class Semigroups {
     return Stream::concat;
   }
 
-  /**
-   * A semigroup for unary products.
-   *
-   * @param sa A semigroup for the product's type.
-   * @return A semigroup the unary product.
-   */
-  public static <P, A> Semigroup<P> p1Semigroup(final Function<P, A> getA, final Semigroup<A> sa, final Function<A, P> toP) {
-    return (p1, p2) -> toP.apply(sa.sum(getA.apply(p1), getA.apply(p2)));
-  }
-
-  /**
-   * A semigroup for binary products.
-   *
-   * @param sa A semigroup for the product's first type.
-   * @param sb A semigroup for the product's second type.
-   * @return A semigroup for the binary product.
-   */
-  public static <P, A, B> Semigroup<P> p2Semigroup(final Function<P, A> getA, final Semigroup<A> sa, final Function<P, B> getB, final Semigroup<B> sb,
-    final BiFunction<A, B, P> toP) {
-    return (p1, p2) -> toP.apply(sa.sum(getA.apply(p1), getA.apply(p2)), sb.sum(getB.apply(p1), getB.apply(p2)));
-  }
-
-  /**
-   * A semigroup for {@link Pair}
-   *
-   * @param sa A semigroup for the pair left type.
-   * @param sb A semigroup for the pair right type.
-   * @return A semigroup a pair.
-   */
-  public static <A, B> Semigroup<Pair<A, B>> pairSemigroup(final Semigroup<A> sa, final Semigroup<B> sb) {
-    return p2Semigroup(Pair::left, sa, Pair::right, sb, Pair::pair);
-  }
 }

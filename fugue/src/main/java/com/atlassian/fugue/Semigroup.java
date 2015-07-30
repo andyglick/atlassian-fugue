@@ -1,13 +1,8 @@
 package com.atlassian.fugue;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.function.*;
-import java.util.stream.Stream;
+import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
+import java.util.function.UnaryOperator;
 
 /**
  * Implementations must satisfy the law of associativity:
@@ -15,8 +10,7 @@ import java.util.stream.Stream;
  * <li><em>Associativity</em>; forall  x y z. sum(sum(x, y), z) == sum(x, sum(y, z))</li>
  * </ul>
  */
-@FunctionalInterface
-public interface Semigroup<A> extends BinaryOperator<A> {
+@FunctionalInterface public interface Semigroup<A> extends BinaryOperator<A> {
 
   /**
    * Sums the two given arguments.
@@ -38,13 +32,23 @@ public interface Semigroup<A> extends BinaryOperator<A> {
   }
 
   /**
+   * Composes this semigroup with another.
+   */
+  default <B> Semigroup<Pair<A, B>> composeSemigroup(Semigroup<B> sb) {
+    return (ab1, ab2) -> Pair.pair(sum(ab1.left(), ab2.left()), sb.sum(ab1.right(), ab2.right()));
+  }
+
+  /**
    * Apply method to conform to the {@link BinaryOperator} interface.
+   *
    * @deprecated use {@link #sum(Object, Object)} directly
    */
-  @Override
-  @Deprecated
-  default A apply(final A a1, final A a2) {
+  @Override @Deprecated default A apply(final A a1, final A a2) {
     return sum(a1, a2);
+  }
+
+  static <A> Semigroup<A> semigroup(BiFunction<A, A, A> operator) {
+    return operator::apply;
   }
 
 }

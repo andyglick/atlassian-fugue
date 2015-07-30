@@ -1,14 +1,5 @@
 package com.atlassian.fugue;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -90,7 +81,14 @@ public interface Monoid<A> extends Semigroup<A> {
   }
 
   /**
-   * Constructs a monoid from the given sum function and zero value, which must follow the monoidal laws.
+   * Composes this monoid with another.
+   */
+  default <B> Monoid<Pair<A, B>> composeMonoid(Monoid<B> mb) {
+    return monoid(composeSemigroup(mb), Pair.pair(zero(), mb.zero()));
+  }
+
+  /**
+   * Constructs a monoid from the given semigroup (sum function) and zero value, which must follow the monoidal laws.
    *
    * @param semigroup The semigroup for the monoid.
    * @param zero      The zero for the monoid.
@@ -99,13 +97,11 @@ public interface Monoid<A> extends Semigroup<A> {
   public static <A> Monoid<A> monoid(final Semigroup<A> semigroup, final A zero) {
     return new Monoid<A>() {
 
-      @Override
-      public A sum(final A a1, final A a2) {
+      @Override public A sum(final A a1, final A a2) {
         return semigroup.sum(a1, a2);
       }
 
-      @Override
-      public A zero() {
+      @Override public A zero() {
         return zero;
       }
     };
