@@ -15,9 +15,11 @@
  */
 package com.atlassian.fugue;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.function.Function;
 
 import static com.atlassian.fugue.Option.defined;
@@ -151,6 +153,18 @@ public class OptionTest {
 
   @Test public void definedOnNone() {
     assertThat(defined().test(none()), is(false));
+  }
+
+  @Test public void someToOptional() {
+    assertThat(some("value").toOptional(), is(Optional.of("value")));
+  }
+
+  @Test(expected = NullPointerException.class) public void someWithNullToOptional() {
+    some("null").map(Functions.constant(null)).toOptional();
+  }
+
+  @Test public void noneToOptional() {
+    assertThat(none().toOptional(), is(Optional.empty()));
   }
 
   //
