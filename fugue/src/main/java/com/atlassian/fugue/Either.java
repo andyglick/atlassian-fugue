@@ -526,7 +526,7 @@ public abstract class Either<L, R> implements Serializable {
     }
 
     @Override public int hashCode() {
-      return value.hashCode();
+      return ~value.hashCode();
     }
 
     @Override public String toString() {

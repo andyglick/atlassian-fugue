@@ -8,12 +8,16 @@ This project attempts to adheres to [Semantic Versioning](http://semver.org/).
 - Added a static Unit() method to com/atlassian/fugue/Unit that simply returns the 
 Unit.VALUE enum
 
+### Changed
+- Left.hashCode changed to avoid clashing with Right.hashCode when you have a left and a right containing the same
+value
+
 ## [2.4.0] - 2015-07-15
 ### Added
 - ScalaConverters moved to com/atlassian/fugue/converters package
 - Iterables has added the following new methods
-    * iterate
-    * unfold
+    * iterate - returns an infinite iterable built from the given iteration function
+    * unfold - returns an iterable built from the seed function which is called until it returns none()
 
 ### Changed
 - com/atlassian/fugue/converters/ScalaConverters syntax is now 'toScala' and 'toJava'
