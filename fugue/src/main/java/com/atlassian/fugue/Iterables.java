@@ -990,7 +990,9 @@ public class Iterables {
   }
 
   /**
-   * Concatenate a series of iterables into a single iterable
+   * Concatenate a series of iterables into a single iterable. Returns an empty
+   * iterable if no iterables are supplied.
+   *
    * @param as any number of iterables containing A
    * @param <A> super type of contained by all input iterables
    * @return new iterable containing all the elements of the input iterables
@@ -1001,7 +1003,7 @@ public class Iterables {
     for(Iterable<? extends A> i: as){
       requireNonNull(i);
     }
-    return new Concat<>(as);
+    return as.length > 0 ? new Concat<>(as) : emptyIterable();
   }
 
   static final class Concat<A> extends IterableToString<A>{

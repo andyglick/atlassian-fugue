@@ -18,7 +18,7 @@ public class IterablesConcatTest {
   }
 
   @Test public void concatOne(){
-    assertThat(concat(Arrays.asList(1,2)), contains(1,2));
+    assertThat(concat(Arrays.asList(1, 2)), contains(1,2));
   }
 
   @Test public void concatOneEmpty(){
@@ -31,6 +31,10 @@ public class IterablesConcatTest {
 
   @Test public void concatEmpty(){
     assertThat(concat(Collections.emptyList(), Collections.emptyList()), emptyIterable());
+  }
+
+  @Test public void concatNothing(){
+    assertThat(concat(), emptyIterable());
   }
 
   @Test(expected = NullPointerException.class) public void concatNullEmpty(){
