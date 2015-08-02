@@ -990,7 +990,7 @@ public class Iterables {
 
   /**
    * Return an infinite iterable that cycles through the input values in order
-   * in a loop
+   * in a loop. If no elements are provided returns an empty iterable.
    * @param as input values to cycle through
    * @param <A> returned elements
    * @return an infinite iterable containing the original elements
@@ -1001,7 +1001,12 @@ public class Iterables {
     for (A a : as) {
       requireNonNull(a);
     }
-    return new Cycle<>(as);
+    if(as.length > 0) {
+      return new Cycle<>(as);
+    }
+    else {
+      return emptyIterable();
+    }
   }
 
   static final class Cycle<A> extends IterableToString<A>{

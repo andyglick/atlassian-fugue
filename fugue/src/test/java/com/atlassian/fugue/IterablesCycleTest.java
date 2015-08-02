@@ -6,6 +6,7 @@ import static com.atlassian.fugue.Iterables.cycle;
 import static com.atlassian.fugue.Iterables.take;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.emptyIterable;
 
 public class IterablesCycleTest {
 
@@ -19,5 +20,9 @@ public class IterablesCycleTest {
 
   @Test(expected = NullPointerException.class) public void canNoNulls(){
     Iterable<Integer> c = cycle(1,2,null,4);
+  }
+
+  @Test public void canCycleNoElements(){
+    assertThat(cycle(), emptyIterable());
   }
 }
