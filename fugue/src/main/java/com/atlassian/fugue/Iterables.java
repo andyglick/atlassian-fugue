@@ -169,7 +169,7 @@ public class Iterables {
    */
   public static <A, B> Iterable<B> flatMap(final Iterable<A> collection,
     final Function<? super A, ? extends Iterable<? extends B>> f) {
-    return flatten(transform(collection, f));
+    return flatten(map(collection, f));
   }
 
   /**
@@ -184,7 +184,7 @@ public class Iterables {
    * @since 1.1
    */
   public static <A, B> Iterable<B> revMap(final Iterable<? extends Function<A, B>> fs, final A arg) {
-    return transform(fs, Functions.<A, B>apply(arg));
+    return map(fs, Functions.<A, B>apply(arg));
   }
 
   /**
@@ -339,7 +339,7 @@ public class Iterables {
    * @since 1.2
    */
   public static <A, B> Pair<Iterable<A>, Iterable<B>> unzip(Iterable<Pair<A, B>> pairs) {
-    return pair(transform(pairs, leftValue()), transform(pairs, rightValue()));
+    return pair(map(pairs, leftValue()), map(pairs, rightValue()));
   }
 
   /**
@@ -975,7 +975,7 @@ public class Iterables {
 
       private Iter(final Iterable<? extends Iterable<A>> xss, final Comparator<A> c) {
         this.xss = new TreeSet<>(peekingIteratorComparator(c));
-        addAll(this.xss, transform(filter(xss, isEmpty().negate()), i -> Iterators.peekingIterator(i.iterator())));
+        addAll(this.xss, map(filter(xss, isEmpty().negate()), i -> Iterators.peekingIterator(i.iterator())));
       }
 
       @Override protected A computeNext() {
