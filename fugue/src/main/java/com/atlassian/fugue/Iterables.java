@@ -16,6 +16,27 @@
 
 package com.atlassian.fugue;
 
+import java.io.Serializable;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Queue;
+import java.util.TreeSet;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.locks.AbstractQueuedSynchronizer;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+
 import static com.atlassian.fugue.Iterators.emptyIterator;
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.some;
@@ -27,32 +48,12 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 
-import java.io.Serializable;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.TreeSet;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.locks.AbstractQueuedSynchronizer;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-
 /**
  * Contains static utility methods that operate on or return objects of type
  * {code}Iterable{code}.
  *
- * When making changes to this class, please try to name methods differently to
- * those in Iterables so that methods from both classes can be statically
- * imported in the same class.
+ * The iterables produced from the functions in this class are safe to reuse
+ * multiple times. Iterables#iterator returns a new iterator each time.
  *
  * @since 1.0
  */
@@ -184,7 +185,7 @@ public class Iterables {
    * @since 1.1
    */
   public static <A, B> Iterable<B> revMap(final Iterable<? extends Function<A, B>> fs, final A arg) {
-    return transform(fs, Functions.<A, B> apply(arg));
+    return transform(fs, Functions.<A, B>apply(arg));
   }
 
   /**
@@ -986,6 +987,49 @@ public class Iterables {
         return (lhs, rhs) -> (lhs == rhs) ? 0 : comparator.compare(lhs.peek(), rhs.peek());
       }
     }
+  }
+
+  @SafeVarargs public static <A> Iterable<A> concat(Iterable<? extends A> ...as){
+    for(Iterable<? extends A> i: as){
+      requireNonNull(i);
+    }
+    return new Concat<>(as);
+  }
+
+  static final class Concat<A> extends IterableToString<A>{
+    final Iterable<? extends A>[] as;
+
+    Concat(final Iterable<? extends A>[] as){
+      this.as = as;
+    }
+
+    @Override public Iterator<A> iterator() {
+      return new Iter<>(as);
+    }
+
+    static class Iter<A> extends Iterators.Abstract<A> {
+      final Queue<Iterator<? extends A>> qas;
+
+      public Iter(final Iterable<? extends A>[] as)
+      {
+        qas = new LinkedList<>();
+        for (Iterable<? extends A> a : as) {
+          Iterator<? extends A> ias = requireNonNull(a.iterator());
+          qas.add(ias);
+        }
+      }
+
+      @Override protected A computeNext() {
+        while(!qas.isEmpty() && !qas.peek().hasNext()){
+          qas.remove();
+        }
+        if(qas.isEmpty()){
+          return endOfData();
+        }
+        return qas.peek().next();
+      }
+    }
+
   }
 
   /**
