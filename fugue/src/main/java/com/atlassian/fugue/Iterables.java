@@ -989,6 +989,14 @@ public class Iterables {
     }
   }
 
+  /**
+   * Concatenate a series of iterables into a single iterable
+   * @param as any number of iterables containing A
+   * @param <A> super type of contained by all input iterables
+   * @return new iterable containing all the elements of the input iterables
+   * 
+   * @since 3.0
+   */
   @SafeVarargs public static <A> Iterable<A> concat(Iterable<? extends A> ...as){
     for(Iterable<? extends A> i: as){
       requireNonNull(i);
