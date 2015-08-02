@@ -634,7 +634,7 @@ public class Iterables {
   }
 
   /**
-   * Transform and iterable by applying a function to each of it's values
+   * Transform and interable by mapping a function across each of it's elements
    *
    * @param as the source iterable
    * @param f function to apply to all the elements of as
@@ -642,16 +642,33 @@ public class Iterables {
    * @param <B> output iterable type
    * @return new iterable containing the transformed values produced by f#apply
    * @since 3.0
+   * @deprecated function provided to make migration easier perfer to use map where possible
    */
+  @Deprecated
   public static <A, B> Iterable<B> transform(final Iterable<A> as, final Function<? super A, ? extends B> f) {
-    return new Transform<>(as, f);
+    return map(as,f);
   }
 
-  static final class Transform<A, B> implements Iterable<B> {
+  /**
+   * Apply the input function to each of the elements of the input iterable returning a new iterable
+   *
+   * @param as the source iterable
+   * @param f function to apply to all the elements of as
+   * @param <A> original iterable type
+   * @param <B> output iterable type
+   * @return new iterable containing values produced by f#apply called on each element
+   * @since 3.0
+   */
+  public static <A, B> Iterable<B> map(final Iterable<A> as, final Function<? super A, ? extends B> f) {
+    return new Mapped<>(as, f);
+  }
+
+
+  static final class Mapped<A, B> implements Iterable<B> {
     private final Iterable<? extends A> as;
     private final Function<? super A, ? extends B> f;
 
-    Transform(Iterable<? extends A> as, Function<? super A, ? extends B> f) {
+    Mapped(Iterable<? extends A> as, Function<? super A, ? extends B> f) {
       this.as = as;
       this.f = f;
     }
