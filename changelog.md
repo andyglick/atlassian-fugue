@@ -13,6 +13,7 @@ This project attempts to adheres to [Semantic Versioning](http://semver.org/).
 - Iterables.addAll adds all of the input collection into the passed iterable
 - Options.nullSafe transforms a null producing function into one returning an option
 - Options.toOption returns a function that builds an option
+- Option.fromOptional and Option.toOptional for interoperability with java.util.Optional
 
 ### Changed
 - Throwables and Function2 have been moved to fugue-guava package and the com.atlassian.fugue.deprecated package.
@@ -22,8 +23,6 @@ They will be removed in 4.0.
 - com.atlassian.fugue.retry.* can now be found in the fugue-guava package.
 - Effect now extends java.util.functions.Consumer
 - Iterables.mergeSorted now takes a Comparator instead of a Guava Ordering instance
-- Left.hashCode changed to avoid clashing with Right.hashCode when you have a left and a right containing the same
-value.
 - All copies of com.google.common.base.Function/Supplier/Predicate have been replaced with the equivalent classes
 from Java 8
 
@@ -41,6 +40,14 @@ slf4j and jsr305.
 return the same message string inside the exception.
 - Option.find and Option.filterNone were deprecated in 1.1 and are now removed. Find their replacements in Options.
 
+## [2.5.0] - 2015-07-31
+### Added
+- Added a static Unit() method to com/atlassian/fugue/Unit that simply returns the 
+Unit.VALUE enum
+
+### Changed
+- Left.hashCode changed to avoid clashing with Right.hashCode when you have a left and a right containing the same
+value
 
 ## [2.4.0] - 2015-07-15
 ### Added

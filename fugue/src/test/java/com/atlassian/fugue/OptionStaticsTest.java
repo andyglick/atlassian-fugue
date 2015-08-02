@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -31,6 +32,7 @@ import static com.atlassian.fugue.Eithers.getOrThrow;
 import static com.atlassian.fugue.Iterables.filter;
 import static com.atlassian.fugue.Iterables.isEmpty;
 import static com.atlassian.fugue.Iterables.size;
+import static com.atlassian.fugue.Option.fromOptional;
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.option;
 import static com.atlassian.fugue.Option.some;
@@ -211,4 +213,13 @@ public class OptionStaticsTest {
     // throw new RuntimeException();
     MatcherAssert.assertThat(filter(Collections.singletonList(none(int.class)), Maybe::isDefined).iterator().hasNext(), is(false));
   }
+
+  @Test public void fromPresentOptional() {
+    assertThat(fromOptional(Optional.of("value")), is(some("value")));
+  }
+
+  @Test public void fromEmptyOptional() {
+    assertThat(fromOptional(Optional.empty()), is(none()));
+  }
+
 }
