@@ -68,7 +68,7 @@ public class OptionTest {
   }
 
   @Test public void getOrElseOnNoneReturnsValueFromSupplier() {
-    assertThat(none(Integer.class).getOrElse(ofInstance(0)), is(equalTo(0)));
+    assertThat(none(Integer.class).getOr(ofInstance(0)), is(equalTo(0)));
   }
 
   @Test public void getElseOnNoneReturnsValueFromSupplier() {

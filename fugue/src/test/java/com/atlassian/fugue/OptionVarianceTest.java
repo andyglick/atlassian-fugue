@@ -65,7 +65,7 @@ public class OptionVarianceTest {
   @Test public void getOrElseSupplier() {
     Option<Parent> some = some(new Parent());
     Supplier<Child> f = Child::new;
-    Parent mapped = some.getOrElse(f);
+    Parent mapped = some.getOr(f);
     assertThat(mapped, notNullValue());
   }
 
