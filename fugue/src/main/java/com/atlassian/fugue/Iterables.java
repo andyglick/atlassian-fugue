@@ -989,6 +989,44 @@ public class Iterables {
   }
 
   /**
+   * Return an infinite iterable that cycles through the input values in order
+   * in a loop
+   * @param as input values to cycle through
+   * @param <A> returned elements
+   * @return an infinite iterable containing the original elements
+   *
+   * @since 3.0
+   */
+  @SafeVarargs public static <A> Iterable<A> cycle(A ...as) {
+    for (A a : as) {
+      requireNonNull(a);
+    }
+    return new Cycle<>(as);
+  }
+
+  static final class Cycle<A> extends IterableToString<A>{
+    final A[] as;
+    Cycle(A[] as){
+      this.as = as;
+    }
+
+    @Override public Iterator<A> iterator() {
+      return new Iterator<A>() {
+        private int i = 0;
+        @Override public boolean hasNext() {
+          return true;
+        }
+
+        @Override public A next() {
+          final A ret = as[i];
+          i = i == as.length - 1 ? 0: i + 1;
+          return ret;
+        }
+      };
+    }
+  }
+
+  /**
    * Makes a lazy copy of {@code xs}.
    *
    * @param <A> type of elements in {@code xs}
