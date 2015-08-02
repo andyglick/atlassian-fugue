@@ -20,6 +20,7 @@ import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.BiFunction;
@@ -27,6 +28,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static com.atlassian.fugue.Option.option;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -250,7 +252,7 @@ public class Functions {
     }
 
     public Option<B> apply(A a) {
-      return (p.test(a)) ? Option.option(f.apply(a)) : Option.<B> none();
+      return (p.test(a)) ? option(f.apply(a)) : Option.<B> none();
     }
 
     @Override public String toString() {
@@ -414,7 +416,7 @@ public class Functions {
    * @since 2.0
    */
   public static <A, B> Function<A, Option<B>> mapNullToOption(Function<? super A, ? extends B> f) {
-    return Functions.compose(Functions.<B> nullToOption(), f);
+    return Functions.compose(Functions.<B>nullToOption(), f);
   }
 
   /**
@@ -516,6 +518,21 @@ public class Functions {
    */
   public static <A, B> Function<A, B> constant(final B constant) {
     return from -> constant;
+  }
+
+  /**
+   * Create a function that performs a map lookup supplying a default value when
+   * a Map#get returns null
+   *
+   * If you do not need a defaulted return result using a method reference is preferred
+   * {@literal map::get}
+   * @param map map to use for lookup
+   * @param <A> map key type
+   * @param <B> map value type
+   * @return result of calling Map#get returning defaultValue instead if the result was null
+   */
+  public static <A,B> Function<A, B> forMap(final Map<A, B> map, B defaultValue){
+    return a -> option(map.get(a)).getOrElse(defaultValue);
   }
 
   /**

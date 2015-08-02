@@ -18,11 +18,13 @@ package com.atlassian.fugue;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 import static com.atlassian.fugue.Functions.apply;
 import static com.atlassian.fugue.Functions.constant;
 import static com.atlassian.fugue.Functions.curried;
 import static com.atlassian.fugue.Functions.flip;
+import static com.atlassian.fugue.Functions.forMap;
 import static com.atlassian.fugue.Functions.matches;
 import static com.atlassian.fugue.Functions.partial;
 import static com.atlassian.fugue.Functions.toBiFunction;
@@ -119,5 +121,17 @@ public class FunctionsTest {
 
   @Test public void functionsConstant() {
     assertThat(transform(Arrays.asList(1, 2, 3), constant(1)), contains(1, 1, 1));
+  }
+
+  @Test public void forMapWithValue(){
+    assertThat(forMap(new HashMap<Integer, Integer>() {{ put(1, 1); }}, 2).apply(1), is(1));
+  }
+
+  @Test public void forMapWithNullValue(){
+    assertThat(forMap(new HashMap<Integer, Integer>() {{ put(1, 1); }}, 2).apply(null), is(2));
+  }
+
+  @Test public void forMapWithNoValue(){
+    assertThat(forMap(new HashMap<Integer, Integer>() {{ put(1, 1); }}, 2).apply(55), is(2));
   }
 }
