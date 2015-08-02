@@ -14,6 +14,7 @@ This project attempts to adheres to [Semantic Versioning](http://semver.org/).
 - Options.nullSafe transforms a null producing function into one returning an option
 - Options.toOption returns a function that builds an option
 - Option.fromOptional and Option.toOptional for interoperability with java.util.Optional
+- Functions.contant returns a function that always produces a constant return value
 
 ### Changed
 - Throwables and Function2 have been moved to fugue-guava package and the com.atlassian.fugue.deprecated package.
