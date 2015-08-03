@@ -7,7 +7,7 @@ import java.util.stream.Stream;
  * <ul>
  * <li><em>Left Identity</em>; forall x. sum(zero(), x) == x</li>
  * <li><em>Right Identity</em>; forall x. sum(x, zero()) == x</li>
- * <li><em>Associativity</em>; forall  x y z. sum(sum(x, y), z) == sum(x, sum(y, z))</li>
+ * <li><em>Associativity</em>; forall  x y z. sum(sumIterable(x, y), z) == sum(x, sum(y, z))</li>
  * </ul>
  */
 public interface Monoid<A> extends Semigroup<A> {
@@ -22,10 +22,10 @@ public interface Monoid<A> extends Semigroup<A> {
   /**
    * Sums the given values.
    *
-   * @param as The values to sum.
+   * @param as The values to sumIterable.
    * @return The sum of the given values.
    */
-  public default A sum(final Iterable<A> as) {
+  public default A sumIterable(final Iterable<A> as) {
     A m = zero();
     for (A a : as) {
       m = sum(m, a);
@@ -36,10 +36,10 @@ public interface Monoid<A> extends Semigroup<A> {
   /**
    * Sums the given values.
    *
-   * @param as The values to sum.
+   * @param as The values to sumIterable.
    * @return The sum of the given values.
    */
-  public default A sum(final Stream<A> as) {
+  public default A sumStream(final Stream<A> as) {
     return as.reduce(zero(), this);
   }
 
@@ -61,11 +61,11 @@ public interface Monoid<A> extends Semigroup<A> {
   /**
    * Intersperses the given value between each two elements of the stream, and sums the result.
    *
-   * @param as An stream of values to sum.
+   * @param as An stream of values to sumIterable.
    * @param a  The value to intersperse between values of the given iterable.
    * @return The sum of the given values and the interspersed value.
    */
-  public default A join(final Stream<A> as, final A a) {
+  public default A joinStream(final Stream<A> as, final A a) {
     return as.reduce((a1, a2) -> sum(a1, sum(a, a2))).orElse(zero());
   }
 
@@ -77,7 +77,7 @@ public interface Monoid<A> extends Semigroup<A> {
    * @return The sum of the given values and the interspersed value.
    */
   public default A join(final Iterable<A> as, final A a) {
-    return sum(Iterables.intersperse(as, a));
+    return sumIterable(Iterables.intersperse(as, a));
   }
 
   /**
@@ -88,7 +88,7 @@ public interface Monoid<A> extends Semigroup<A> {
   }
 
   /**
-   * Constructs a monoid from the given semigroup (sum function) and zero value, which must follow the monoidal laws.
+   * Constructs a monoid from the given semigroup (sumIterable function) and zero value, which must follow the monoidal laws.
    *
    * @param semigroup The semigroup for the monoid.
    * @param zero      The zero for the monoid.

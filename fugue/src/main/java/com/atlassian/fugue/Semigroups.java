@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -19,50 +18,48 @@ public final class Semigroups {
    * A semigroup that adds integers.
    */
   public static final Semigroup<Integer> intAdditionSemigroup = (i1, i2) -> i1 + i2;
+
   /**
    * A semigroup that adds doubles.
    */
   public static final Semigroup<Double> doubleAdditionSemigroup = (d1, d2) -> d1 + d2;
+
   /**
    * A semigroup that multiplies integers.
    */
   public static final Semigroup<Integer> intMultiplicationSemigroup = (i1, i2) -> i1 * i2;
-  /**
-   * A semigroup that multiplies doubles.
-   */
-  public static final Semigroup<Double> doubleMultiplicationSemigroup = (d1, d2) -> d1 * d2;
+
   /**
    * A semigroup that yields the maximum of integers.
    */
   public static final Semigroup<Integer> intMaximumSemigroup = Math::max;
+
   /**
    * A semigroup that yields the minimum of integers.
    */
   public static final Semigroup<Integer> intMinimumSemigroup = Math::min;
+
   /**
    * A semigroup that adds big integers.
    */
   public static final Semigroup<BigInteger> bigintAdditionSemigroup = BigInteger::add;
+
   /**
    * A semigroup that multiplies big integers.
    */
   public static final Semigroup<BigInteger> bigintMultiplicationSemigroup = BigInteger::multiply;
+
   /**
    * A semigroup that yields the maximum of big integers.
    */
   public static final Semigroup<BigInteger> bigintMaximumSemigroup = BigInteger::max;
+
   /**
    * A semigroup that yields the minimum of big integers.
    */
   public static final Semigroup<BigInteger> bigintMinimumSemigroup = BigInteger::min;
-  /**
-   * A semigroup that adds big decimals.
-   */
-  public static final Semigroup<BigDecimal> bigdecimalAdditionSemigroup = BigDecimal::add;
-  /**
-   * A semigroup that multiplies big decimals.
-   */
-  public static final Semigroup<BigDecimal> bigdecimalMultiplicationSemigroup = BigDecimal::multiply;
+
+
   /**
    * A semigroup that yields the maximum of big decimals.
    */
@@ -79,30 +76,37 @@ public final class Semigroups {
    * A semigroup that multiplies longs.
    */
   public static final Semigroup<Long> longMultiplicationSemigroup = (x, y) -> x * y;
+
   /**
    * A semigroup that yields the maximum of longs.
    */
   public static final Semigroup<Long> longMaximumSemigroup = Math::max;
+
   /**
    * A semigroup that yields the minimum of longs.
    */
   public static final Semigroup<Long> longMinimumSemigroup = Math::min;
+
   /**
    * A semigroup that ORs booleans.
    */
   public static final Semigroup<Boolean> disjunctionSemigroup = (b1, b2) -> b1 || b2;
+
   /**
    * A semigroup that XORs booleans.
    */
   public static final Semigroup<Boolean> exclusiveDisjunctionSemiGroup = (p, q) -> (p ^ q);
+
   /**
    * A semigroup that ANDs booleans.
    */
   public static final Semigroup<Boolean> conjunctionSemigroup = (b1, b2) -> b1 && b2;
+
   /**
    * A semigroup that appends strings.
    */
   public static final Semigroup<String> stringSemigroup = String::concat;
+
   /**
    * A semigroup for the Unit value.
    */

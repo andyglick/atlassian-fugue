@@ -25,9 +25,9 @@ import java.util.function.UnaryOperator;
    * Returns a function that sums the given value according to this semigroup.
    *
    * @param a1 The value to sum.
-   * @return A function that sums the given value according to this semigroup.
+   * @return A function that sums with the given value according to this semigroup.
    */
-  default UnaryOperator<A> sum(final A a1) {
+  default UnaryOperator<A> add(final A a1) {
     return a2 -> sum(a1, a2);
   }
 

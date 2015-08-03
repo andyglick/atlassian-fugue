@@ -1,12 +1,10 @@
 package com.atlassian.fugue;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -22,54 +20,52 @@ public final class Monoids {
    * A monoid that adds integers.
    */
   public static final Monoid<Integer> intAdditionMonoid = monoid(Semigroups.intAdditionSemigroup, 0);
+
   /**
    * A monoid that multiplies integers.
    */
   public static final Monoid<Integer> intMultiplicationMonoid = monoid(Semigroups.intMultiplicationSemigroup, 1);
+
   /**
    * A monoid that adds doubles.
    */
   public static final Monoid<Double> doubleAdditionMonoid = monoid(Semigroups.doubleAdditionSemigroup, 0.0);
-  /**
-   * A monoid that multiplies doubles.
-   */
-  public static final Monoid<Double> doubleMultiplicationMonoid = monoid(Semigroups.doubleMultiplicationSemigroup, 1.0);
+
   /**
    * A monoid that adds big integers.
    */
   public static final Monoid<BigInteger> bigintAdditionMonoid = monoid(Semigroups.bigintAdditionSemigroup, BigInteger.ZERO);
+
   /**
    * A monoid that multiplies big integers.
    */
   public static final Monoid<BigInteger> bigintMultiplicationMonoid = monoid(Semigroups.bigintMultiplicationSemigroup, BigInteger.ONE);
-  /**
-   * A monoid that adds big decimals.
-   */
-  public static final Monoid<BigDecimal> bigdecimalAdditionMonoid = monoid(Semigroups.bigdecimalAdditionSemigroup, BigDecimal.ZERO);
-  /**
-   * A monoid that multiplies big decimals.
-   */
-  public static final Monoid<BigDecimal> bigdecimalMultiplicationMonoid = monoid(Semigroups.bigdecimalMultiplicationSemigroup, BigDecimal.ONE);
+
   /**
    * A monoid that adds longs.
    */
   public static final Monoid<Long> longAdditionMonoid = monoid(Semigroups.longAdditionSemigroup, 0L);
+
   /**
    * A monoid that multiplies longs.
    */
   public static final Monoid<Long> longMultiplicationMonoid = monoid(Semigroups.longMultiplicationSemigroup, 1L);
+
   /**
    * A monoid that ORs booleans.
    */
   public static final Monoid<Boolean> disjunctionMonoid = monoid(Semigroups.disjunctionSemigroup, false);
+
   /**
    * A monoid that XORs booleans.
    */
   public static final Monoid<Boolean> exclusiveDisjunctionMonoid = monoid(Semigroups.exclusiveDisjunctionSemiGroup, false);
+
   /**
    * A monoid that ANDs booleans.
    */
   public static final Monoid<Boolean> conjunctionMonoid = monoid(Semigroups.conjunctionSemigroup, true);
+
   /**
    * A monoid that appends strings.
    */
@@ -82,7 +78,7 @@ public final class Monoids {
       return a1.concat(a2);
     }
 
-    @Override public String sum(Iterable<String> strings) {
+    @Override public String sumIterable(Iterable<String> strings) {
       StringBuilder sb = new StringBuilder();
       for (String s : strings) {
         sb.append(s);
@@ -90,10 +86,11 @@ public final class Monoids {
       return sb.toString();
     }
   };
+
   /**
    * A monoid for the Unit value.
    */
-  public static final Monoid<Unit> unitSemigroup = monoid(Semigroups.unitSemigroup, Unit.VALUE);
+  public static final Monoid<Unit> unitMonoid = monoid(Semigroups.unitSemigroup, Unit.VALUE);
 
   private Monoids() {
   }
@@ -123,11 +120,11 @@ public final class Monoids {
         return Collections.emptyList();
       }
 
-      @Override public List<A> sum(final Stream<List<A>> ll) {
+      @Override public List<A> sumStream(final Stream<List<A>> ll) {
         return ll.flatMap(l -> l.stream()).collect(Collectors.toList());
       }
 
-      @Override public List<A> sum(final Iterable<List<A>> ll) {
+      @Override public List<A> sumIterable(final Iterable<List<A>> ll) {
         final List<A> r = new ArrayList<>();
         for (final List<A> l : ll) {
           r.addAll(l);
@@ -152,7 +149,7 @@ public final class Monoids {
         return Iterables.flatten(Arrays.asList(l1, l2));
       }
 
-      @Override public Iterable<A> sum(Iterable<Iterable<A>> iterables) {
+      @Override public Iterable<A> sumIterable(Iterable<Iterable<A>> iterables) {
         return Iterables.flatten(iterables);
       }
     };
@@ -173,7 +170,7 @@ public final class Monoids {
         return Stream.concat(a1, a2);
       }
 
-      @Override public Stream<A> sum(Stream<Stream<A>> as) {
+      @Override public Stream<A> sumStream(Stream<Stream<A>> as) {
         return as.flatMap(Function.identity());
       }
     };
