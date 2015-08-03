@@ -7,7 +7,7 @@ import java.util.stream.Stream;
  * <ul>
  * <li><em>Left Identity</em>; forall x. sum(zero(), x) == x</li>
  * <li><em>Right Identity</em>; forall x. sum(x, zero()) == x</li>
- * <li><em>Associativity</em>; forall  x y z. sum(sumIterable(x, y), z) == sum(x, sum(y, z))</li>
+ * <li><em>Associativity</em>; forall  x y z. sum(sum(x, y), z) == sum(x, sum(y, z))</li>
  * </ul>
  */
 public interface Monoid<A> extends Semigroup<A> {
@@ -22,7 +22,7 @@ public interface Monoid<A> extends Semigroup<A> {
   /**
    * Sums the given values.
    *
-   * @param as The values to sumIterable.
+   * @param as The values to sum.
    * @return The sum of the given values.
    */
   public default A sumIterable(final Iterable<A> as) {
@@ -36,7 +36,7 @@ public interface Monoid<A> extends Semigroup<A> {
   /**
    * Sums the given values.
    *
-   * @param as The values to sumIterable.
+   * @param as The values to sum.
    * @return The sum of the given values.
    */
   public default A sumStream(final Stream<A> as) {
@@ -61,7 +61,7 @@ public interface Monoid<A> extends Semigroup<A> {
   /**
    * Intersperses the given value between each two elements of the stream, and sums the result.
    *
-   * @param as An stream of values to sumIterable.
+   * @param as An stream of values to sum.
    * @param a  The value to intersperse between values of the given iterable.
    * @return The sum of the given values and the interspersed value.
    */
@@ -88,7 +88,7 @@ public interface Monoid<A> extends Semigroup<A> {
   }
 
   /**
-   * Constructs a monoid from the given semigroup (sumIterable function) and zero value, which must follow the monoidal laws.
+   * Constructs a monoid from the given semigroup (sum function) and zero value, which must follow the monoidal laws.
    *
    * @param semigroup The semigroup for the monoid.
    * @param zero      The zero for the monoid.

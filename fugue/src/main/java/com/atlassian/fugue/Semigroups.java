@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import static com.atlassian.fugue.Iterables.*;
+import static java.util.Arrays.*;
+
 /**
  * {@link Semigroup} instances and factories.
  */
@@ -192,7 +195,7 @@ public final class Semigroups {
    * @return A semigroup for iterables.
    */
   public static <A> Semigroup<Iterable<A>> iterableSemigroup() {
-    return (l1, l2) -> Iterables.flatten(Arrays.asList(l1, l2));
+    return (l1, l2) -> flatten(asList(l1, l2));
   }
 
   /**

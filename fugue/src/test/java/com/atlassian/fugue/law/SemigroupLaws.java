@@ -15,4 +15,8 @@ public interface SemigroupLaws<A> {
     return isEq(semigroup().sum(semigroup().sum(x, y), z), semigroup().sum(x, semigroup().sum(y, z)));
   }
 
+  static <A> SemigroupLaws<A> semigroupLaws(Semigroup<A> semigroup) {
+    return () -> semigroup;
+  }
+
 }

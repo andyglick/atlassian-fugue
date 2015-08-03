@@ -13,7 +13,6 @@ import scala.collection.mutable.ListBuffer
 object MonoidDerivedFunctionsTests extends Laws {
 
   def apply[A: Arbitrary](monoid: Monoid[A]): RuleSet = {
-    val laws = monoidLaws(monoid)
     new SimpleRuleSet("Monoid derived functions",
 
       "apply is same as sum" -> forAll( (a1: A, a2: A) => isEq(monoid.apply(a1, a2), monoid.sum(a1, a2))),
