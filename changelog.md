@@ -26,6 +26,7 @@ They will be removed in 4.0.
 - Iterables.mergeSorted now takes a Comparator instead of a Guava Ordering instance
 - All copies of com.google.common.base.Function/Supplier/Predicate have been replaced with the equivalent classes
 from Java 8
+- Either.apply renamed to ap to improve consitancy of apply methods
 
 ### Deprecated
 - Deprecated getOrElse(Supplier<A>) to be replaced with {@link #getElse(Supplier)} because 

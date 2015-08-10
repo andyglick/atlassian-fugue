@@ -318,6 +318,21 @@ public abstract class Either<L, R> implements Serializable {
     return left().map(f);
   }
 
+
+  /**
+   * Function application on this projection's value.
+   *
+   * @param <X> the RHS type
+   * @param either The either of the function to apply on this projection's
+   * value.
+   * @return The result of function application within either.
+   *
+   * @since 3.0
+   */
+  public <X> Either<L, X> ap(final Either<L, Function<R, X>> either) {
+    return either.right().flatMap(this::map);
+  }
+
   //
   // abstract stuff
   //
@@ -653,9 +668,26 @@ public abstract class Either<L, R> implements Serializable {
      * @param either The either of the function to apply on this projection's
      * value.
      * @return The result of function application within either.
+     *
+     * @since 3.0
      */
+    public <X> Either<X, R> ap(final Either<Function<L, X>, R> either) {
+      return either.left().flatMap(this::map);
+    }
+
+    /**
+     * Function application on this projection's value.
+     *
+     * @param <X> the LHS type
+     * @param either The either of the function to apply on this projection's
+     * value.
+     * @return The result of function application within either.
+     *
+     * @deprecated since 3.0 see ap
+     */
+    @Deprecated
     public <X> Either<X, R> apply(final Either<Function<L, X>, R> either) {
-      return either.left().flatMap(LeftProjection.this::map);
+      return ap(either);
     }
 
     /**
@@ -731,7 +763,7 @@ public abstract class Either<L, R> implements Serializable {
      * @return An either after binding through this projection.
      */
     public <X> Either<L, X> sequence(final Either<L, X> e) {
-      return flatMap(Functions.<R, Either<L, X>> constant(e));
+      return flatMap(Functions.<R, Either<L, X>>constant(e));
     }
 
     /**
@@ -753,6 +785,7 @@ public abstract class Either<L, R> implements Serializable {
       return none();
     }
 
+
     /**
      * Function application on this projection's value.
      *
@@ -760,10 +793,28 @@ public abstract class Either<L, R> implements Serializable {
      * @param either The either of the function to apply on this projection's
      * value.
      * @return The result of function application within either.
+     *
+     * @since 3.0
      */
-    public <X> Either<L, X> apply(final Either<L, Function<R, X>> either) {
+    public <X> Either<L, X> ap(final Either<L, Function<R, X>> either) {
       return either.right().flatMap(this::map);
     }
+
+    /**
+     * Function application on this projection's value.
+     *
+     * @param <X> the RHS type
+     * @param either The either of the function to apply on this projection's
+     * value.
+     * @return The result of function application within either.
+     *
+     * @deprecated since 3.0 see ap
+     */
+    @Deprecated
+    public <X> Either<L, X> apply(final Either<L, Function<R, X>> either) {
+      return ap(either);
+    }
+
 
     /**
      * Coerces our left type as X. Dangerous, isRight() must be true
