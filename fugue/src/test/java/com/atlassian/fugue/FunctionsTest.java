@@ -26,6 +26,7 @@ import static com.atlassian.fugue.Functions.flip;
 import static com.atlassian.fugue.Functions.matches;
 import static com.atlassian.fugue.Functions.partial;
 import static com.atlassian.fugue.Functions.toBiFunction;
+import static com.atlassian.fugue.Iterables.map;
 import static com.atlassian.fugue.Iterables.transform;
 import static com.atlassian.fugue.UtilityFunctions.dividableBy;
 import static com.atlassian.fugue.UtilityFunctions.hasMinLength;
@@ -83,26 +84,26 @@ public class FunctionsTest {
 
   @Test public void matches4Some() {
     assertThat(
-      matches(partial(dividableBy(5), square), partial(dividableBy(4), square), partial(dividableBy(3), square),
-        partial(dividableBy(2), square)).apply(2), is(Option.some(4)));
+      matches(partial(dividableBy(5), square), partial(dividableBy(4), square), partial(dividableBy(3), square), partial(dividableBy(2), square)).apply(2), is(Option.some(
+        4)));
   }
 
   @Test public void matches4None() {
     assertThat(
       matches(partial(dividableBy(5), square), partial(dividableBy(4), square), partial(dividableBy(3), square),
-        partial(dividableBy(2), square)).apply(1), is(Option.<Integer> none()));
+        partial(dividableBy(2), square)).apply(1), is(Option.<Integer>none()));
   }
 
   @Test public void matches5Some() {
     assertThat(
-      matches(partial(dividableBy(6), square), partial(dividableBy(5), square), partial(dividableBy(4), square),
-        partial(dividableBy(3), square), partial(dividableBy(2), square)).apply(2), is(Option.some(4)));
+      matches(partial(dividableBy(6), square), partial(dividableBy(5), square), partial(dividableBy(4), square), partial(dividableBy(3), square),
+        partial(dividableBy(2), square)).apply(2), is(Option.some(4)));
   }
 
   @Test public void matches5None() {
     assertThat(
-      matches(partial(dividableBy(6), square), partial(dividableBy(5), square), partial(dividableBy(4), square),
-        partial(dividableBy(3), square), partial(dividableBy(2), square)).apply(1), is(Option.<Integer> none()));
+      matches(partial(dividableBy(6), square), partial(dividableBy(5), square), partial(dividableBy(4), square), partial(dividableBy(3), square),
+        partial(dividableBy(2), square)).apply(1), is(Option.<Integer> none()));
   }
 
   @Test public void functionsToBiFunction() {
@@ -118,6 +119,6 @@ public class FunctionsTest {
   }
 
   @Test public void functionsConstant() {
-    assertThat(transform(Arrays.asList(1, 2, 3), constant(1)), contains(1, 1, 1));
+    assertThat(map(Arrays.asList(1, 2, 3), constant(1)), contains(1, 1, 1));
   }
 }

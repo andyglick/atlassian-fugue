@@ -169,7 +169,7 @@ public class Iterables {
    */
   public static <A, B> Iterable<B> flatMap(final Iterable<A> collection,
     final Function<? super A, ? extends Iterable<? extends B>> f) {
-    return flatten(transform(collection, f));
+    return flatten(map(collection, f));
   }
 
   /**
@@ -184,7 +184,7 @@ public class Iterables {
    * @since 1.1
    */
   public static <A, B> Iterable<B> revMap(final Iterable<? extends Function<A, B>> fs, final A arg) {
-    return transform(fs, Functions.<A, B> apply(arg));
+    return map(fs, Functions.<A, B>apply(arg));
   }
 
   /**
@@ -339,7 +339,7 @@ public class Iterables {
    * @since 1.2
    */
   public static <A, B> Pair<Iterable<A>, Iterable<B>> unzip(Iterable<Pair<A, B>> pairs) {
-    return pair(transform(pairs, leftValue()), transform(pairs, rightValue()));
+    return pair(map(pairs, leftValue()), map(pairs, rightValue()));
   }
 
   /**
@@ -634,7 +634,7 @@ public class Iterables {
   }
 
   /**
-   * Transform and iterable by applying a function to each of it's values
+   * Transform an interable by mapping a function across each of its elements
    *
    * @param as the source iterable
    * @param f function to apply to all the elements of as
@@ -642,16 +642,33 @@ public class Iterables {
    * @param <B> output iterable type
    * @return new iterable containing the transformed values produced by f#apply
    * @since 3.0
+   * @deprecated function provided to make migration easier prefer to use #map where possible
    */
+  @Deprecated
   public static <A, B> Iterable<B> transform(final Iterable<A> as, final Function<? super A, ? extends B> f) {
-    return new Transform<>(as, f);
+    return map(as,f);
   }
 
-  static final class Transform<A, B> implements Iterable<B> {
+  /**
+   * Apply the input function to each of the elements of the input iterable returning a new iterable
+   *
+   * @param as the source iterable
+   * @param f function to apply to all the elements of as
+   * @param <A> original iterable type
+   * @param <B> output iterable type
+   * @return new iterable containing values produced by f#apply called on each element
+   * @since 3.0
+   */
+  public static <A, B> Iterable<B> map(final Iterable<A> as, final Function<? super A, ? extends B> f) {
+    return new Mapped<>(as, f);
+  }
+
+
+  static final class Mapped<A, B> implements Iterable<B> {
     private final Iterable<? extends A> as;
     private final Function<? super A, ? extends B> f;
 
-    Transform(Iterable<? extends A> as, Function<? super A, ? extends B> f) {
+    Mapped(Iterable<? extends A> as, Function<? super A, ? extends B> f) {
       this.as = as;
       this.f = f;
     }
@@ -960,7 +977,7 @@ public class Iterables {
 
       private Iter(final Iterable<? extends Iterable<A>> xss, final Comparator<A> c) {
         this.xss = new TreeSet<>(peekingIteratorComparator(c));
-        addAll(this.xss, transform(filter(xss, isEmpty().negate()), i -> Iterators.peekingIterator(i.iterator())));
+        addAll(this.xss, map(filter(xss, isEmpty().negate()), i -> Iterators.peekingIterator(i.iterator())));
       }
 
       @Override protected A computeNext() {
