@@ -22,7 +22,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static com.atlassian.fugue.Iterables.collect;
-import static com.atlassian.fugue.Iterables.transform;
+import static com.atlassian.fugue.Iterables.map;
 import static com.atlassian.fugue.Suppliers.compose;
 import static com.atlassian.fugue.Suppliers.ofInstance;
 
@@ -227,7 +227,7 @@ public class Eithers {
    * @return the right values contained in the contents of it
    */
   public static <L, R> Iterable<R> filterRight(Iterable<Either<L, R>> it) {
-    return Options.flatten(transform(it, Eithers.<L, R> rightMapper()));
+    return Options.flatten(map(it, Eithers.<L, R>rightMapper()));
   }
 
   /**

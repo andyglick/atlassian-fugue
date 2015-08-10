@@ -17,14 +17,24 @@ package com.atlassian.fugue;
 
 import org.junit.Test;
 
+import java.util.Arrays;
+
+import static com.atlassian.fugue.Functions.apply;
+import static com.atlassian.fugue.Functions.constant;
+import static com.atlassian.fugue.Functions.curried;
+import static com.atlassian.fugue.Functions.flip;
 import static com.atlassian.fugue.Functions.matches;
 import static com.atlassian.fugue.Functions.partial;
+import static com.atlassian.fugue.Functions.toBiFunction;
+import static com.atlassian.fugue.Iterables.map;
+import static com.atlassian.fugue.Iterables.transform;
 import static com.atlassian.fugue.UtilityFunctions.dividableBy;
 import static com.atlassian.fugue.UtilityFunctions.hasMinLength;
 import static com.atlassian.fugue.UtilityFunctions.isEven;
 import static com.atlassian.fugue.UtilityFunctions.leftOfString;
 import static com.atlassian.fugue.UtilityFunctions.square;
 import static com.atlassian.fugue.UtilityFunctions.subtract;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -40,11 +50,11 @@ public class FunctionsTest {
 
   @Test public void functionLazyApplyIsLazy() {
     // NoSuchElementException should not be thrown
-    Functions.apply(Suppliers.fromOption(Option.none()));
+    apply(Suppliers.fromOption(Option.none()));
   }
 
   @Test public void partialNone() {
-    assertThat(partial(isEven, square).apply(1), is(Option.<Integer> none()));
+    assertThat(partial(isEven, square).apply(1), is(Option.<Integer>none()));
   }
 
   @Test public void partialSome() {
@@ -74,37 +84,41 @@ public class FunctionsTest {
 
   @Test public void matches4Some() {
     assertThat(
-      matches(partial(dividableBy(5), square), partial(dividableBy(4), square), partial(dividableBy(3), square),
-        partial(dividableBy(2), square)).apply(2), is(Option.some(4)));
+      matches(partial(dividableBy(5), square), partial(dividableBy(4), square), partial(dividableBy(3), square), partial(dividableBy(2), square)).apply(2), is(Option.some(
+        4)));
   }
 
   @Test public void matches4None() {
     assertThat(
       matches(partial(dividableBy(5), square), partial(dividableBy(4), square), partial(dividableBy(3), square),
-        partial(dividableBy(2), square)).apply(1), is(Option.<Integer> none()));
+        partial(dividableBy(2), square)).apply(1), is(Option.<Integer>none()));
   }
 
   @Test public void matches5Some() {
     assertThat(
-      matches(partial(dividableBy(6), square), partial(dividableBy(5), square), partial(dividableBy(4), square),
-        partial(dividableBy(3), square), partial(dividableBy(2), square)).apply(2), is(Option.some(4)));
+      matches(partial(dividableBy(6), square), partial(dividableBy(5), square), partial(dividableBy(4), square), partial(dividableBy(3), square),
+        partial(dividableBy(2), square)).apply(2), is(Option.some(4)));
   }
 
   @Test public void matches5None() {
     assertThat(
-      matches(partial(dividableBy(6), square), partial(dividableBy(5), square), partial(dividableBy(4), square),
-        partial(dividableBy(3), square), partial(dividableBy(2), square)).apply(1), is(Option.<Integer> none()));
+      matches(partial(dividableBy(6), square), partial(dividableBy(5), square), partial(dividableBy(4), square), partial(dividableBy(3), square),
+        partial(dividableBy(2), square)).apply(1), is(Option.<Integer> none()));
   }
 
-  @Test public void toFunction2() {
-    assertThat(Functions.toBiFunction(leftOfString).apply("abcde", 3), is(Option.some("abc")));
+  @Test public void functionsToBiFunction() {
+    assertThat(toBiFunction(leftOfString).apply("abcde", 3), is(Option.some("abc")));
   }
 
-  @Test public void curried() {
-    assertThat(Functions.curried(subtract).apply(6).apply(2), is(4));
+  @Test public void functionsCurried() {
+    assertThat(curried(subtract).apply(6).apply(2), is(4));
   }
 
   @Test public void flipped() {
-    assertThat(Functions.flip(hasMinLength).apply(2).apply("abcde"), is(true));
+    assertThat(flip(hasMinLength).apply(2).apply("abcde"), is(true));
+  }
+
+  @Test public void functionsConstant() {
+    assertThat(map(Arrays.asList(1, 2, 3), constant(1)), contains(1, 1, 1));
   }
 }

@@ -7,12 +7,15 @@ This project attempts to adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Added getOr(Supplier<A>) to the Maybe interface as a replacement for the now deprecated getOrElse(Supplier<A>).
 - Iterables.size returning the size of the input iterable (generally in O(n))
-- Iterables.transform returning a new iterable with the input function applied
+- Iterables.map create a new iterable by applying a function to each element
+- Iterables.transform forwarding function calling map to help migration
 - Iterables.filter returning a new iterable containing only those elements for which the predicate returns true
 - Iterables.flatten transforms a nested collection of iterables into a single iterable
 - Iterables.addAll adds all of the input collection into the passed iterable
 - Options.nullSafe transforms a null producing function into one returning an option
 - Options.toOption returns a function that builds an option
+- Option.fromOptional and Option.toOptional for interoperability with java.util.Optional
+- Functions.contant returns a function that always produces a constant return value
 - Monoid and Semigroup abstractions
 
 ### Changed
@@ -23,8 +26,6 @@ They will be removed in 4.0.
 - com.atlassian.fugue.retry.* can now be found in the fugue-guava package.
 - Effect now extends java.util.functions.Consumer
 - Iterables.mergeSorted now takes a Comparator instead of a Guava Ordering instance
-- Left.hashCode changed to avoid clashing with Right.hashCode when you have a left and a right containing the same
-value.
 - All copies of com.google.common.base.Function/Supplier/Predicate have been replaced with the equivalent classes
 from Java 8
 
@@ -32,6 +33,7 @@ from Java 8
 - Deprecated getOrElse(Supplier<A>) to be replaced with {@link #getElse(Supplier)} because 
 Java 8 type inference cannot disambiguate between an overloaded method taking a generic A and
 the same method taking a Supplier<A>. It will be removed in 4.0.
+- Iterables.transform exists to ease migration by reimplementing the guava equivalent
 
 ### Removed
 - Either.merge, Either.cond, Either.getOrThrow, Either.sequenceRight/Left were deprecated in 1.2. They are now removed.
@@ -42,6 +44,14 @@ slf4j and jsr305.
 return the same message string inside the exception.
 - Option.find and Option.filterNone were deprecated in 1.1 and are now removed. Find their replacements in Options.
 
+## [2.5.0] - 2015-07-31
+### Added
+- Added a static Unit() method to com/atlassian/fugue/Unit that simply returns the 
+Unit.VALUE enum
+
+### Changed
+- Left.hashCode changed to avoid clashing with Right.hashCode when you have a left and a right containing the same
+value
 
 ## [2.4.0] - 2015-07-15
 ### Added

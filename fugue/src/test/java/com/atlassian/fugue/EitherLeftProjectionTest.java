@@ -89,11 +89,11 @@ public class EitherLeftProjectionTest {
   }
 
   @Test public void getOrElseSupplierDefined() {
-    assertThat(l.left().getOrElse(boo), is("heyaa!"));
+    assertThat(l.left().getOr(boo), is("heyaa!"));
   }
 
   @Test public void getOrElseSupplierEmpty() {
-    assertThat(r.left().getOrElse(boo), is("boo!"));
+    assertThat(r.left().getOr(boo), is("boo!"));
   }
 
   @Test public void existsDefinedTrue() {

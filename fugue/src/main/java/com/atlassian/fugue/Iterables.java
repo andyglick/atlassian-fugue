@@ -16,6 +16,17 @@
 
 package com.atlassian.fugue;
 
+import static com.atlassian.fugue.Iterators.emptyIterator;
+import static com.atlassian.fugue.Option.none;
+import static com.atlassian.fugue.Option.some;
+import static com.atlassian.fugue.Pair.leftValue;
+import static com.atlassian.fugue.Pair.pair;
+import static com.atlassian.fugue.Pair.rightValue;
+import static com.atlassian.fugue.Suppliers.ofInstance;
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableCollection;
+import static java.util.Objects.requireNonNull;
+
 import java.io.Serializable;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -34,17 +45,6 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-
-import static com.atlassian.fugue.Iterators.emptyIterator;
-import static com.atlassian.fugue.Option.none;
-import static com.atlassian.fugue.Option.some;
-import static com.atlassian.fugue.Pair.leftValue;
-import static com.atlassian.fugue.Pair.pair;
-import static com.atlassian.fugue.Pair.rightValue;
-import static com.atlassian.fugue.Suppliers.ofInstance;
-import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableCollection;
-import static java.util.Objects.requireNonNull;
 
 /**
  * Contains static utility methods that operate on or return objects of type
@@ -86,7 +86,7 @@ public class Iterables {
    */
   public static <T> Iterable<T> emptyIterable() {
     @SuppressWarnings("unchecked")
-    Iterable<T> result = (Iterable<T>) EMPTY;
+    final Iterable<T> result = (Iterable<T>) EMPTY;
     return result;
   }
 
@@ -169,7 +169,7 @@ public class Iterables {
    */
   public static <A, B> Iterable<B> flatMap(final Iterable<A> collection,
     final Function<? super A, ? extends Iterable<? extends B>> f) {
-    return flatten(transform(collection, f));
+    return flatten(map(collection, f));
   }
 
   /**
@@ -184,7 +184,7 @@ public class Iterables {
    * @since 1.1
    */
   public static <A, B> Iterable<B> revMap(final Iterable<? extends Function<A, B>> fs, final A arg) {
-    return transform(fs, Functions.<A, B>apply(arg));
+    return map(fs, Functions.<A, B>apply(arg));
   }
 
   /**
@@ -271,7 +271,7 @@ public class Iterables {
     if (xs instanceof List<?>) {
       final List<T> list = (List<T>) xs;
       if (n > (list.size() - 1)) {
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
       }
       return ((List<T>) xs).subList(n, list.size());
     }
@@ -339,7 +339,7 @@ public class Iterables {
    * @since 1.2
    */
   public static <A, B> Pair<Iterable<A>, Iterable<B>> unzip(Iterable<Pair<A, B>> pairs) {
-    return pair(transform(pairs, leftValue()), transform(pairs, rightValue()));
+    return pair(map(pairs, leftValue()), map(pairs, rightValue()));
   }
 
   /**
@@ -432,8 +432,8 @@ public class Iterables {
 
   static abstract class IterableToString<A> implements Iterable<A> {
     @Override public final String toString() {
-      Iterator<A> it = this.iterator();
-      StringBuilder buffer = new StringBuilder().append("[");
+      final Iterator<A> it = this.iterator();
+      final StringBuilder buffer = new StringBuilder().append("[");
       while (it.hasNext()) {
         buffer.append(Objects.requireNonNull(it.next()).toString());
         if (it.hasNext()) {
@@ -459,7 +459,7 @@ public class Iterables {
       this.size = size;
     }
 
-    public Iterator<A> iterator() {
+    @Override public Iterator<A> iterator() {
       return new Iter<>(drop, size, delegate.iterator());
     }
 
@@ -499,7 +499,7 @@ public class Iterables {
       this.partial = requireNonNull(partial);
     }
 
-    public Iterator<B> iterator() {
+    @Override public Iterator<B> iterator() {
       return new Iter();
     }
 
@@ -508,7 +508,7 @@ public class Iterables {
 
       @Override protected B computeNext() {
         while (it.hasNext()) {
-          Option<B> result = partial.apply(it.next());
+          final Option<B> result = partial.apply(it.next());
           if (result.isDefined())
             return result.get();
         }
@@ -623,7 +623,7 @@ public class Iterables {
     if (as instanceof Collection) {
       return ((Collection<?>) as).size();
     } else {
-      Iterator<A> iterator = as.iterator();
+      final Iterator<A> iterator = as.iterator();
       int count = 0;
       while (iterator.hasNext()) {
         iterator.next();
@@ -634,7 +634,7 @@ public class Iterables {
   }
 
   /**
-   * Transform and iterable by applying a function to each of it's values
+   * Transform an interable by mapping a function across each of its elements
    *
    * @param as the source iterable
    * @param f function to apply to all the elements of as
@@ -642,16 +642,33 @@ public class Iterables {
    * @param <B> output iterable type
    * @return new iterable containing the transformed values produced by f#apply
    * @since 3.0
+   * @deprecated function provided to make migration easier prefer to use #map where possible
    */
+  @Deprecated
   public static <A, B> Iterable<B> transform(final Iterable<A> as, final Function<? super A, ? extends B> f) {
-    return new Transform<>(as, f);
+    return map(as,f);
   }
 
-  static final class Transform<A, B> implements Iterable<B> {
+  /**
+   * Apply the input function to each of the elements of the input iterable returning a new iterable
+   *
+   * @param as the source iterable
+   * @param f function to apply to all the elements of as
+   * @param <A> original iterable type
+   * @param <B> output iterable type
+   * @return new iterable containing values produced by f#apply called on each element
+   * @since 3.0
+   */
+  public static <A, B> Iterable<B> map(final Iterable<A> as, final Function<? super A, ? extends B> f) {
+    return new Mapped<>(as, f);
+  }
+
+
+  static final class Mapped<A, B> implements Iterable<B> {
     private final Iterable<? extends A> as;
     private final Function<? super A, ? extends B> f;
 
-    Transform(Iterable<? extends A> as, Function<? super A, ? extends B> f) {
+    Mapped(Iterable<? extends A> as, Function<? super A, ? extends B> f) {
       this.as = as;
       this.f = f;
     }
@@ -671,11 +688,14 @@ public class Iterables {
   }
 
   /**
-   * Remove elements from the input iterable for which the predicate returns false
+   * Remove elements from the input iterable for which the predicate returns
+   * false
+   *
    * @param as original iterable
    * @param p predicate to filter by
    * @param <A> element type
-   * @return new iterable containing only those elements for which p#test returns true
+   * @return new iterable containing only those elements for which p#test
+   * returns true
    *
    * @since 3.0
    */
@@ -701,7 +721,7 @@ public class Iterables {
             return endOfData();
           }
           while (it.hasNext()) {
-            A a = it.next();
+            final A a = it.next();
             if (p.test(a)) {
               return a;
             }
@@ -714,10 +734,12 @@ public class Iterables {
 
   /**
    * Merge {@literal Iterable<Iterable<A>>} down to {@literal Iterable<A>}
+   *
    * @param ias one or more iterable to merge into the final iterable result,
    * must not be null and must not return null
    * @param <A> element type
-   * @return single level iterable with all the elements of the original iterables
+   * @return single level iterable with all the elements of the original
+   * iterables
    *
    * @since 3.0
    */
@@ -761,7 +783,7 @@ public class Iterables {
    * predicate otherwise false. False for an empty iterable.
    * @since 3.0
    */
-  public static <A> boolean any(final Iterable<? extends A> as, final Predicate<? super A> p){
+  public static <A> boolean any(final Iterable<? extends A> as, final Predicate<? super A> p) {
     return !isEmpty().test(filter(as, p));
   }
 
@@ -778,7 +800,6 @@ public class Iterables {
   public static <A> boolean all(final Iterable<? extends A> as, final Predicate<? super A> p) {
     return isEmpty().test(filter(as, p.negate()));
   }
-
 
   /**
    * Returns an infinite Iterable constructed by applying the given iteration
@@ -894,8 +915,8 @@ public class Iterables {
    * collection of elements, using the elements natural ordering.
    *
    * @param <A> type of the elements
-   * @param xss collection of already sorted collections, must not be null
-   * and must not return null
+   * @param xss collection of already sorted collections, must not be null and
+   * must not return null
    * @return {@code xss} merged in a sorted order
    * @since 1.1
    */
@@ -908,10 +929,9 @@ public class Iterables {
    * collection of elements.
    *
    * @param <A> type of the elements
-   * @param xss already sorted collection of collections, must not be null
-   * and must not return null
-   * @param ordering ordering to use when comparing elements, must not be
-   * null
+   * @param xss already sorted collection of collections, must not be null and
+   * must not return null
+   * @param ordering ordering to use when comparing elements, must not be null
    * @return {@code xss} merged in a sorted order
    * @since 1.1
    */
@@ -921,6 +941,7 @@ public class Iterables {
 
   /**
    * Add all the elements of the iterable to the collection
+   *
    * @param collectionToModify collection to add elements to
    * @param elementsToAdd source of addtional elements
    * @param <A> element type
@@ -930,9 +951,7 @@ public class Iterables {
    */
   public static <A> boolean addAll(Collection<A> collectionToModify, Iterable<? extends A> elementsToAdd) {
     if (elementsToAdd instanceof Collection) {
-      @SuppressWarnings("unchecked")
-      Collection<? extends A> cast = (Collection<? extends A>) elementsToAdd;
-      return collectionToModify.addAll(cast);
+      return collectionToModify.addAll((Collection<? extends A>) elementsToAdd);
     }
     return Iterators.addAll(collectionToModify, requireNonNull(elementsToAdd).iterator());
   }
@@ -949,7 +968,7 @@ public class Iterables {
       this.comparator = requireNonNull(comparator, "comparator");
     }
 
-    public Iterator<A> iterator() {
+    @Override public Iterator<A> iterator() {
       return new Iter<>(xss, comparator);
     }
 
@@ -958,7 +977,7 @@ public class Iterables {
 
       private Iter(final Iterable<? extends Iterable<A>> xss, final Comparator<A> c) {
         this.xss = new TreeSet<>(peekingIteratorComparator(c));
-        addAll(this.xss, transform(filter(xss, isEmpty().negate()), i -> Iterators.peekingIterator(i.iterator())));
+        addAll(this.xss, map(filter(xss, isEmpty().negate()), i -> Iterators.peekingIterator(i.iterator())));
       }
 
       @Override protected A computeNext() {
@@ -1008,7 +1027,7 @@ public class Iterables {
       head = nextNode(delegate.iterator());
     }
 
-    public Iterator<A> iterator() {
+    @Override public Iterator<A> iterator() {
       return new Iter<>(head);
     }
 
@@ -1049,30 +1068,30 @@ public class Iterables {
         return nextNode(delegate);
       }
 
-      public Node<A> next() throws NoSuchElementException {
+      @Override public Node<A> next() throws NoSuchElementException {
         return get();
       }
 
-      public boolean isEnd() {
+      @Override public boolean isEnd() {
         return false;
       }
 
-      public A value() {
+      @Override public A value() {
         return value;
       }
     }
 
     static class End<A> implements Node<A> {
-      public boolean isEnd() {
+      @Override public boolean isEnd() {
         return true;
       }
 
       // /CLOVER:OFF
-      public Node<A> next() {
+      @Override public Node<A> next() {
         throw new NoSuchElementException();
       }
 
-      public A value() {
+      @Override public A value() {
         throw new NoSuchElementException();
       }
       // /CLOVER:ON
@@ -1099,15 +1118,16 @@ public class Iterables {
   }
 
   /**
-   * Class supports the implementation of {@link Iterables#memoize(Iterable)} and
-   * is not intended for general use.
+   * Class supports the implementation of {@link Iterables#memoize(Iterable)}
+   * and is not intended for general use.
    *
-   * Lazily loaded reference that is not constructed until required. This class is
-   * used to maintain a reference to an object that is expensive to create and
-   * must be constructed once and once only. This reference behaves as though the
-   * <code>final</code> keyword has been used (you cannot reset it once it has
-   * been constructed). Object creation is guaranteed to be thread-safe and the
-   * first thread that calls {@link #get()} will be the one that creates it.
+   * Lazily loaded reference that is not constructed until required. This class
+   * is used to maintain a reference to an object that is expensive to create
+   * and must be constructed once and once only. This reference behaves as
+   * though the <code>final</code> keyword has been used (you cannot reset it
+   * once it has been constructed). Object creation is guaranteed to be
+   * thread-safe and the first thread that calls {@link #get()} will be the one
+   * that creates it.
    * <p>
    * Usage: clients need to implement the {@link #create()} method to return the
    * object this reference will hold.
@@ -1130,11 +1150,12 @@ public class Iterables {
    * MyObject myLazyLoadedObject = ref.get()
    * </pre>
    *
-   * NOTE: Interruption policy is that if you want to be cancellable while waiting
-   * for another thread to create the value, instead of calling {@link #get()}
-   * call {@link #getInterruptibly()}. However, If your {@link #create()} method
-   * is interrupted and throws an {@link InterruptedException}, it is treated as
-   * an application exception and will be the causal exception inside the runtime
+   * NOTE: Interruption policy is that if you want to be cancellable while
+   * waiting for another thread to create the value, instead of calling
+   * {@link #get()} call {@link #getInterruptibly()}. However, If your
+   * {@link #create()} method is interrupted and throws an
+   * {@link InterruptedException}, it is treated as an application exception and
+   * will be the causal exception inside the runtime
    * {@link InitializationException} that {@link #get()} or
    * {@link #getInterruptibly()} throws and your {@link #create()} will not be
    * called again.
@@ -1143,15 +1164,16 @@ public class Iterables {
    * <p>
    * Implementation note. This class extends {@link WeakReference} as
    * {@link Reference} does not have a public constructor. WeakReference is
-   * preferable as it does not have any members and therefore doesn't increase the
-   * memory footprint. As we never pass a referent through to the super-class and
-   * override {@link #get()}, the garbage collection semantics of WeakReference
-   * are irrelevant. The referenced object will not become eligible for GC unless
-   * the object holding the reference to this object is collectible.
+   * preferable as it does not have any members and therefore doesn't increase
+   * the memory footprint. As we never pass a referent through to the
+   * super-class and override {@link #get()}, the garbage collection semantics
+   * of WeakReference are irrelevant. The referenced object will not become
+   * eligible for GC unless the object holding the reference to this object is
+   * collectible.
    *
    * @param <T> the type of the contained element.
    */
-  //@ThreadSafe
+  // @ThreadSafe
   static abstract class LazyReference<T> extends WeakReference<T> implements Supplier<T> {
 
     private final Sync sync = new Sync();
@@ -1163,10 +1185,11 @@ public class Iterables {
     /**
      * The object factory method, guaranteed to be called once and only once.
      *
-     * @return the object that {@link #get()} and {@link #getInterruptibly()} will
-     * return.
+     * @return the object that {@link #get()} and {@link #getInterruptibly()}
+     * will return.
      * @throws Exception if anything goes wrong, rethrown as an
-     * InitializationException from {@link #get()} and {@link #getInterruptibly()}
+     * InitializationException from {@link #get()} and
+     * {@link #getInterruptibly()}
      */
     protected abstract T create() throws Exception;
 
@@ -1178,8 +1201,8 @@ public class Iterables {
      *
      * @return the object that {@link #create()} created.
      * @throws InitializationException if the {@link #create()} method throws an
-     * exception. The {@link InitializationException#getCause()} will contain the
-     * exception thrown by the {@link #create()} method
+     * exception. The {@link InitializationException#getCause()} will contain
+     * the exception thrown by the {@link #create()} method
      */
     @Override public final T get() {
       boolean interrupted = false;
@@ -1202,13 +1225,13 @@ public class Iterables {
     /**
      * Get the lazily loaded reference in a cancellable manner. If your
      * <code>create()</code> method throws an Exception, calls to
-     * <code>get()</code> will throw a RuntimeException which wraps the previously
-     * thrown exception.
+     * <code>get()</code> will throw a RuntimeException which wraps the
+     * previously thrown exception.
      *
      * @return the object that {@link #create()} created.
      * @throws InitializationException if the {@link #create()} method throws an
-     * exception. The {@link InitializationException#getCause()} will contain the
-     * exception thrown by the {@link #create()} method
+     * exception. The {@link InitializationException#getCause()} will contain
+     * the exception thrown by the {@link #create()} method
      * @throws InterruptedException If the calling thread is Interrupted while
      * waiting for another thread to create the value (if the creating thread is
      * interrupted while blocking on something, the {@link InterruptedException}

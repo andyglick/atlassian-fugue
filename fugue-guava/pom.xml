@@ -18,6 +18,39 @@
     <packaging>jar</packaging>
     <name>Functional Extensions Guava Inter-Ops</name>
 
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                            <goal>bundle</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <instructions>
+                        <Export-Package>
+                            com.atlassian.fugue.deprecated.*;version="${fugue.osgi.import.version}",
+                            com.atlassian.fugue.extras.*;version="${fugue.osgi.import.version}",
+                            com.atlassian.fugue.retry.*;version="${fugue.osgi.import.version}"
+                        </Export-Package>
+                        <Import-Package>
+                            *
+                        </Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
     <dependencies>
         <dependency>
             <groupId>org.slf4j</groupId>

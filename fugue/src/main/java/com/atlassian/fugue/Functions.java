@@ -507,7 +507,14 @@ public class Functions {
     }
   }
 
-  static <A, B> Function<A, B> constant(final B constant) {
+  /**
+   * Create a function ignores it's input an produces a constant value
+   * @param constant value to return
+   * @param <A> type of the ignored input
+   * @param <B> type of the constant returned
+   * @return a function producing a constant value
+   */
+  public static <A, B> Function<A, B> constant(final B constant) {
     return from -> constant;
   }
 
