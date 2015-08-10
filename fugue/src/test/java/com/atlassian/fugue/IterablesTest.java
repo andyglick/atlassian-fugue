@@ -30,7 +30,7 @@ import static com.atlassian.fugue.Iterables.all;
 import static com.atlassian.fugue.Iterables.any;
 import static com.atlassian.fugue.Iterables.emptyIterable;
 import static com.atlassian.fugue.Iterables.findFirst;
-import static com.atlassian.fugue.Iterables.flatten;
+import static com.atlassian.fugue.Iterables.join;
 import static com.atlassian.fugue.Iterables.partition;
 import static com.atlassian.fugue.Iterables.rangeTo;
 import static com.atlassian.fugue.Iterables.rangeUntil;
@@ -180,7 +180,7 @@ public class IterablesTest {
 
   @Test public void flattenCollapses() {
     Iterable<Iterable<Integer>> iterables = asList(singletonList(1), singletonList(2));
-    assertThat(flatten(iterables), contains(1, 2));
+    assertThat(join(iterables), contains(1, 2));
   }
 
   @Test public void findAnyMatching() {
