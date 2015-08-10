@@ -634,7 +634,7 @@ public class Iterables {
   }
 
   /**
-   * Transform and interable by mapping a function across each of it's elements
+   * Transform an interable by mapping a function across each of its elements
    *
    * @param as the source iterable
    * @param f function to apply to all the elements of as
@@ -642,7 +642,7 @@ public class Iterables {
    * @param <B> output iterable type
    * @return new iterable containing the transformed values produced by f#apply
    * @since 3.0
-   * @deprecated function provided to make migration easier perfer to use map where possible
+   * @deprecated function provided to make migration easier prefer to use #map where possible
    */
   @Deprecated
   public static <A, B> Iterable<B> transform(final Iterable<A> as, final Function<? super A, ? extends B> f) {
