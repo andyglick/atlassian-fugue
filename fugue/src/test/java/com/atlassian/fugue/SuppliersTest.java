@@ -87,18 +87,13 @@ public class SuppliersTest {
     assertThat(memoize.get(), is(1));
   }
 
-  @Test public void wekMemoize() {
-    Supplier<Integer> weakMemoized = Suppliers.memoize(() -> 1);
+  @Test public void weakMemoize() {
+    AtomicInteger intRef = new AtomicInteger(Integer.valueOf(1));
+    Supplier<Integer> weakMemoized = Suppliers.weakMemoize(() -> intRef.get());
 
     assertThat(weakMemoized.get(), is(1));
+    intRef.set(Integer.valueOf(2));
     assertThat(weakMemoized.get(), is(1));
   }
 
-  @Test public void wekMemoizeNull() {
-    Supplier<Object> weakMemoized = Suppliers.memoize(Suppliers.alwaysNull());
-
-    Object nully = null;
-    assertThat(weakMemoized.get(), is(nully));
-    assertThat(weakMemoized.get(), is(nully));
-  }
 }
