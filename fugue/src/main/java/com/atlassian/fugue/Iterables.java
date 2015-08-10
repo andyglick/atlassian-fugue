@@ -868,7 +868,7 @@ public class Iterables {
     }
 
     @Override public Iterator<A> iterator() {
-      return new Iter<A, B>(f, seed);
+      return new Iter<>(f, seed);
     }
 
     static final class Iter<A, B> extends Iterators.Abstract<A> {
@@ -990,8 +990,7 @@ public class Iterables {
 
   /**
    * Return an infinite iterable that cycles through the input values in order
-   * in a loop. If no elements are provided returns an empty iterable. Input
-   * elements must not be null.
+   * in a loop. If no elements are provided returns an empty iterable.
    *
    * @param as input values to cycle through
    * @param <A> returned elements
@@ -1008,9 +1007,9 @@ public class Iterables {
     }
   }
 
-  static final class Cycle<A> extends IterableToString<A>{
+  static final class Cycle<A> implements Iterable<A>{
     final A[] as;
-    Cycle(A[] as){
+    Cycle(final A[] as){
       this.as = as;
     }
 
@@ -1027,6 +1026,16 @@ public class Iterables {
           return ret;
         }
       };
+    }
+
+    @Override public String toString(){
+      StringBuilder b = new StringBuilder();
+      b.append("[");
+      for(A a: this.as){
+        b.append(String.valueOf(a)).append(", ");
+      }
+      b.append("...]");
+      return b.toString();
     }
   }
 
