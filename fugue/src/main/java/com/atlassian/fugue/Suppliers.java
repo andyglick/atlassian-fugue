@@ -169,35 +169,23 @@ public class Suppliers {
 
     private final Supplier<A> delegate;
 
-    // 0: uninitialized, -1: initialized but value is null, 1: initialized and value is non-null
-    private volatile int state = 0;
-
-    // "value" does not need to be volatile; visibility piggy-backs
-    // on volatile read of "state". Contains a non-null value from delegate.
-    private WeakReference<A> value;
+    // Contains a the value from delegate.
+    private volatile WeakReference<A> value;
 
     WeakMemoizingSupplier(final Supplier<A> delegate) {
       this.delegate = delegate;
     }
 
     @Override public A get() {
-      final int s = state;
-      if (s == -1) {
-        return null;
-      }
-      A a;
+      A a = value == null ? null : value.get();
       // double Checked Locking
-      if ((s == 0) || ((a = value.get()) == null)) {
+      if (a == null) {
         synchronized (this) {
-          if ((state == 0) || ((a = value.get()) == null)) {
+          a = value == null ? null : value.get();
+          if (a == null) {
             a = delegate.get();
-            if (a == null) {
-              state = -1;
-            } else {
-              final WeakReference<A> tmp = new WeakReference<A>(a);
-              value = tmp;
-              state = 1;
-            }
+            final WeakReference<A> tmp = new WeakReference<A>(a);
+            value = tmp;
           }
         }
       }
