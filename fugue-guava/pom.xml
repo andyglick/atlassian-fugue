@@ -37,9 +37,9 @@
                 <configuration>
                     <instructions>
                         <Export-Package>
-                            com.atlassian.fugue.deprecated.*;version="${project.version}",
-                            com.atlassian.fugue.extras.*;version="${project.version}",
-                            com.atlassian.fugue.retry.*;version="${project.version}"
+                            com.atlassian.fugue.deprecated.*;version="${fugue.osgi.import.version}",
+                            com.atlassian.fugue.extras.*;version="${fugue.osgi.import.version}",
+                            com.atlassian.fugue.retry.*;version="${fugue.osgi.import.version}"
                         </Export-Package>
                         <Import-Package>
                             *
