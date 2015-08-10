@@ -990,7 +990,9 @@ public class Iterables {
 
   /**
    * Return an infinite iterable that cycles through the input values in order
-   * in a loop. If no elements are provided returns an empty iterable.
+   * in a loop. If no elements are provided returns an empty iterable. Input
+   * elements must not be null.
+   *
    * @param as input values to cycle through
    * @param <A> returned elements
    * @return an infinite iterable containing the original elements
@@ -998,9 +1000,6 @@ public class Iterables {
    * @since 3.0
    */
   @SafeVarargs public static <A> Iterable<A> cycle(A ...as) {
-    for (A a : as) {
-      requireNonNull(a);
-    }
     if(as.length > 0) {
       return new Cycle<>(as);
     }
