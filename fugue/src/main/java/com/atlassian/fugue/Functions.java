@@ -521,6 +521,21 @@ public class Functions {
   }
 
   /**
+   * Create a function that performs a map lookup returning None for null
+   *
+   * If you do not need a nondefaulted return result using a method reference is preferred
+   * {@literal map::get}
+   * @param map map to use for lookup
+   * @param <A> map key type
+   * @param <B> map value type
+   * @return result of calling Map#get replacing null with none
+   * @see Functions#forMapWithDefault to supply a default value for none
+   */
+  public static <A,B> Function<A, Option<B>> forMap(final Map<A, B> map){
+    return a -> option(map.get(a));
+  }
+
+  /**
    * Create a function that performs a map lookup supplying a default value when
    * a Map#get returns null
    *
@@ -531,9 +546,10 @@ public class Functions {
    * @param <B> map value type
    * @return result of calling Map#get returning defaultValue instead if the result was null
    */
-  public static <A,B> Function<A, B> forMap(final Map<A, B> map, B defaultValue){
-    return a -> option(map.get(a)).getOrElse(defaultValue);
+  public static <A,B> Function<A, B> forMapWithDefault(final Map<A, B> map, B defaultValue){
+    return forMap(map).andThen(o -> o.getOrElse(defaultValue));
   }
+
 
   /**
    * Creates a stack of matcher functions and returns the first result that

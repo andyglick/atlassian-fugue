@@ -25,10 +25,13 @@ import static com.atlassian.fugue.Functions.constant;
 import static com.atlassian.fugue.Functions.curried;
 import static com.atlassian.fugue.Functions.flip;
 import static com.atlassian.fugue.Functions.forMap;
+import static com.atlassian.fugue.Functions.forMapWithDefault;
 import static com.atlassian.fugue.Functions.matches;
 import static com.atlassian.fugue.Functions.partial;
 import static com.atlassian.fugue.Functions.toBiFunction;
 import static com.atlassian.fugue.Iterables.transform;
+import static com.atlassian.fugue.Option.none;
+import static com.atlassian.fugue.Option.some;
 import static com.atlassian.fugue.UtilityFunctions.dividableBy;
 import static com.atlassian.fugue.UtilityFunctions.hasMinLength;
 import static com.atlassian.fugue.UtilityFunctions.isEven;
@@ -51,7 +54,7 @@ public class FunctionsTest {
 
   @Test public void functionLazyApplyIsLazy() {
     // NoSuchElementException should not be thrown
-    apply(Suppliers.fromOption(Option.none()));
+    apply(Suppliers.fromOption(none()));
   }
 
   @Test public void partialNone() {
@@ -59,11 +62,11 @@ public class FunctionsTest {
   }
 
   @Test public void partialSome() {
-    assertThat(partial(isEven, square).apply(4), is(Option.some(16)));
+    assertThat(partial(isEven, square).apply(4), is(some(16)));
   }
 
   @Test public void matches2Some() {
-    assertThat(matches(partial(dividableBy(3), square), partial(dividableBy(2), square)).apply(2), is(Option.some(4)));
+    assertThat(matches(partial(dividableBy(3), square), partial(dividableBy(2), square)).apply(2), is(some(4)));
   }
 
   @Test public void matches2None() {
@@ -74,7 +77,7 @@ public class FunctionsTest {
   @Test public void matches3Some() {
     assertThat(
       matches(partial(dividableBy(4), square), partial(dividableBy(3), square), partial(dividableBy(2), square)).apply(
-        2), is(Option.some(4)));
+        2), is(some(4)));
   }
 
   @Test public void matches3None() {
@@ -86,7 +89,7 @@ public class FunctionsTest {
   @Test public void matches4Some() {
     assertThat(
       matches(partial(dividableBy(5), square), partial(dividableBy(4), square), partial(dividableBy(3), square),
-        partial(dividableBy(2), square)).apply(2), is(Option.some(4)));
+        partial(dividableBy(2), square)).apply(2), is(some(4)));
   }
 
   @Test public void matches4None() {
@@ -98,7 +101,7 @@ public class FunctionsTest {
   @Test public void matches5Some() {
     assertThat(
       matches(partial(dividableBy(6), square), partial(dividableBy(5), square), partial(dividableBy(4), square),
-        partial(dividableBy(3), square), partial(dividableBy(2), square)).apply(2), is(Option.some(4)));
+        partial(dividableBy(3), square), partial(dividableBy(2), square)).apply(2), is(some(4)));
   }
 
   @Test public void matches5None() {
@@ -108,7 +111,7 @@ public class FunctionsTest {
   }
 
   @Test public void functionsToBiFunction() {
-    assertThat(toBiFunction(leftOfString).apply("abcde", 3), is(Option.some("abc")));
+    assertThat(toBiFunction(leftOfString).apply("abcde", 3), is(some("abc")));
   }
 
   @Test public void functionsCurried() {
@@ -123,15 +126,38 @@ public class FunctionsTest {
     assertThat(transform(Arrays.asList(1, 2, 3), constant(1)), contains(1, 1, 1));
   }
 
+  @Test public void forMapWithDefaultWithValue(){
+    assertThat(forMapWithDefault(new HashMap<Integer, Integer>() {{
+      put(1, 1);
+    }}, 2).apply(1), is(1));
+  }
+
+  @Test public void forMapWithDefaultWithNullValue(){
+    assertThat(forMapWithDefault(new HashMap<Integer, Integer>() {{
+      put(1, 1);
+    }}, 2).apply(null), is(2));
+  }
+
+  @Test public void forMapWithDefaultWithNoValue(){
+    assertThat(forMapWithDefault(new HashMap<Integer, Integer>() {{ put(1, 1); }}, 2).apply(55), is(2));
+  }
+
+
   @Test public void forMapWithValue(){
-    assertThat(forMap(new HashMap<Integer, Integer>() {{ put(1, 1); }}, 2).apply(1), is(1));
+    assertThat(forMap(new HashMap<Integer, Integer>() {{
+      put(1, 1);
+    }}).apply(1), is(some(1)));
   }
 
   @Test public void forMapWithNullValue(){
-    assertThat(forMap(new HashMap<Integer, Integer>() {{ put(1, 1); }}, 2).apply(null), is(2));
+    assertThat(forMap(new HashMap<Integer, Integer>() {{
+      put(1, 1);
+    }}).apply(null), is(none()));
   }
 
   @Test public void forMapWithNoValue(){
-    assertThat(forMap(new HashMap<Integer, Integer>() {{ put(1, 1); }}, 2).apply(55), is(2));
+    assertThat(forMap(new HashMap<Integer, Integer>() {{
+      put(1, 1);
+    }}).apply(55), is(none()));
   }
 }
