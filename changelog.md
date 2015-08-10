@@ -15,6 +15,7 @@ This project attempts to adheres to [Semantic Versioning](http://semver.org/).
 - Options.toOption returns a function that builds an option
 - Option.fromOptional and Option.toOptional for interoperability with java.util.Optional
 - Functions.contant returns a function that always produces a constant return value
+- Suppliers.memoize and Suppliers.weakMemoize provide call-by-need evaluation strategies
 
 ### Changed
 - Throwables and Function2 have been moved to fugue-guava package and the com.atlassian.fugue.deprecated package.
