@@ -4,7 +4,7 @@ import java.math.{BigDecimal, BigInteger}
 import java.util.Comparator
 
 import com.atlassian.fugue.Semigroups._
-import com.atlassian.fugue.law.discipline.SemigroupTests
+import com.atlassian.fugue.law.SemigroupTests
 
 
 class SemigroupsSpec extends TestSuite {
@@ -13,48 +13,48 @@ class SemigroupsSpec extends TestSuite {
     intMaximumSemigroup.sum(1, 2) shouldEqual 2
     maxSemigroup(Comparator.naturalOrder[Integer]()).sum(1, 2) shouldEqual 2
     maxSemigroup[Integer]().sum(1, 2) shouldEqual 2
+    check(SemigroupTests(intMaximumSemigroup))
   }
-  checkAll("intMaximum law", SemigroupTests(intMaximumSemigroup))
-  checkAll("intMaximum via comparator law", SemigroupTests(maxSemigroup(Comparator.naturalOrder[Integer]())))
-  checkAll("intMaximum via comparable law", SemigroupTests(maxSemigroup[Integer]()))
+  test("intMaximum via comparator") { check(SemigroupTests(maxSemigroup(Comparator.naturalOrder[Integer]()))) }
+  test("intMaximum via comparable") { check(SemigroupTests(maxSemigroup[Integer]())) }
 
   test("intMinimum") {
     intMinimumSemigroup.sum(1, 2) shouldEqual 1
     minSemigroup(Comparator.naturalOrder[Integer]()).sum(1, 2) shouldEqual 1
     minSemigroup[Integer]().sum(1, 2) shouldEqual 1
+    check(SemigroupTests(intMinimumSemigroup))
   }
-  checkAll("intMinimum law", SemigroupTests(intMinimumSemigroup))
-  checkAll("intMinimum via comparator law", SemigroupTests(minSemigroup(Comparator.naturalOrder[Integer]())))
-  checkAll("intMinimum via comparable law", SemigroupTests(minSemigroup[Integer]()))
+  test("intMinimum via comparator") { check(SemigroupTests(minSemigroup(Comparator.naturalOrder[Integer]())))}
+  test("intMinimum via comparable") { check(SemigroupTests(minSemigroup[Integer]()))}
 
 
   test("longMaximum") {
     longMaximumSemigroup.sum(1L, 2L) shouldEqual 2L
+    check(SemigroupTests(longMaximumSemigroup))
   }
-  checkAll("longMaximum law", SemigroupTests(longMaximumSemigroup))
 
   test("longMinimum") {
     longMinimumSemigroup.sum(1L, 2L) shouldEqual 1L
+    check(SemigroupTests(longMinimumSemigroup))
   }
-  checkAll("longMinimum law", SemigroupTests(longMinimumSemigroup))
 
   test("bigintMaximum") {
     bigintMaximumSemigroup.sum(BigInteger.valueOf(1), BigInteger.valueOf(2)) shouldEqual BigInteger.valueOf(2)
+    check(SemigroupTests(bigintMaximumSemigroup))
   }
-  checkAll("bigintMaximum law", SemigroupTests(bigintMaximumSemigroup))
 
   test("bigintMinimum") {
     bigintMinimumSemigroup.sum(BigInteger.valueOf(1), BigInteger.valueOf(2)) shouldEqual BigInteger.valueOf(1)
+    check(SemigroupTests(bigintMinimumSemigroup))
   }
-  checkAll("bigintMinimum law", SemigroupTests(bigintMinimumSemigroup))
 
   test("bigDecimalMaximum") {
     bigDecimalMaximumSemigroup.sum(BigDecimal.valueOf(1.0), BigDecimal.valueOf(2.0)) shouldEqual BigDecimal.valueOf(2.0)
+    check(SemigroupTests(bigDecimalMaximumSemigroup))
   }
-  checkAll("bigDecimalMaximum law", SemigroupTests(bigDecimalMaximumSemigroup))
 
   test("bigDecimalMinimum") {
     bigDecimalMinimumSemigroup.sum(BigDecimal.valueOf(1.0), BigDecimal.valueOf(2.0)) shouldEqual BigDecimal.valueOf(1.0)
+    check( SemigroupTests(bigDecimalMinimumSemigroup))
   }
-  checkAll("bigDecimalMinimum law", SemigroupTests(bigDecimalMinimumSemigroup))
 }

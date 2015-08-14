@@ -1,4 +1,4 @@
-package com.atlassian.fugue.law
+package com.atlassian.fugue
 
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Prop._
@@ -7,7 +7,7 @@ import org.scalacheck.{Arbitrary, Prop}
 
 import scala.collection.JavaConversions._
 
-package object discipline {
+package object law {
 
   implicit def isEqToProp[A](isEq: IsEq[A]): Prop =
     if (if (isEq.lhs().isInstanceOf[Comparable[_]]) isEq.lhs().asInstanceOf[Comparable[A]].compareTo(isEq.rhs()) == 0

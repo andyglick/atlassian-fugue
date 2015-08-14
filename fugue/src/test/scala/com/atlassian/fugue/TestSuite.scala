@@ -1,8 +1,8 @@
 package com.atlassian.fugue
 
+import org.scalatest.prop.Checkers
 import org.scalatest.{FunSuite, Matchers}
-import org.typelevel.discipline.scalatest.Discipline
 
-trait TestSuite extends FunSuite with Discipline with Matchers with TestInstances
+trait TestSuite extends FunSuite with Checkers with Matchers with TestInstances
 
 

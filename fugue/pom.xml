@@ -106,12 +106,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.typelevel</groupId>
-            <artifactId>discipline_2.11</artifactId>
-            <version>0.4</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.scalacheck</groupId>
             <artifactId>scalacheck_2.11</artifactId>
             <version>1.12.4</version>
