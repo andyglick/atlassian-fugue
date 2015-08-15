@@ -434,16 +434,7 @@ public class Iterables {
 
   static abstract class IterableToString<A> implements Iterable<A> {
     @Override public final String toString() {
-      final Iterator<A> it = this.iterator();
-      final StringBuilder buffer = new StringBuilder().append("[");
-      while (it.hasNext()) {
-        buffer.append(Objects.requireNonNull(it.next()).toString());
-        if (it.hasNext()) {
-          buffer.append(", ");
-        }
-      }
-      buffer.append("]");
-      return buffer.toString();
+      return makeString(this, "[", ", ", "]");
     }
   }
 
