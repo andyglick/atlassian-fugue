@@ -683,7 +683,8 @@ public abstract class Either<L, R> implements Serializable {
      * value.
      * @return The result of function application within either.
      *
-     * @deprecated since 3.0 see ap
+     * @deprecated since 3.0 
+     * @see #ap ap
      */
     @Deprecated
     public <X> Either<X, R> apply(final Either<Function<L, X>, R> either) {
