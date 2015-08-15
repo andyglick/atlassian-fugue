@@ -24,10 +24,10 @@ public class IterablesCycleTest {
   }
 
   @Test public void toStringResult(){
-    assertThat(cycle(1,2,3).toString(), is("[1, 2, 3, ...]"));
+    assertThat(cycle(1,2,3).toString(), is("[1, 2, 3...]"));
   }
 
   @Test public void toStringResultNull(){
-    assertThat(cycle(1,2,null).toString(), is("[1, 2, null, ...]"));
+    assertThat(cycle(1,2,null).toString(), is("[1, 2, null...]"));
   }
 }

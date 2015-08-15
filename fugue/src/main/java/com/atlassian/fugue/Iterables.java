@@ -24,12 +24,14 @@ import static com.atlassian.fugue.Pair.pair;
 import static com.atlassian.fugue.Pair.rightValue;
 import static com.atlassian.fugue.Suppliers.ofInstance;
 import static java.util.Arrays.asList;
+import static java.util.Collections.max;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 
 import java.io.Serializable;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -184,7 +186,7 @@ public class Iterables {
    * @since 1.1
    */
   public static <A, B> Iterable<B> revMap(final Iterable<? extends Function<A, B>> fs, final A arg) {
-    return transform(fs, Functions.<A, B> apply(arg));
+    return transform(fs, Functions.<A, B>apply(arg));
   }
 
   /**
@@ -998,45 +1000,125 @@ public class Iterables {
    *
    * @since 3.0
    */
-  @SafeVarargs public static <A> Iterable<A> cycle(A ...as) {
+  @SafeVarargs public static <A> Iterable<A> cycle(final A... as) {
     if(as.length > 0) {
-      return new Cycle<>(as);
+      return new Cycle<>(Arrays.asList(as));
     }
     else {
       return emptyIterable();
     }
   }
 
+  /**
+   * Return an infinite iterable that cycles through the input values in order
+   * in a loop. If no elements are provided returns an empty iterable.
+   *
+   * @param as input values to cycle through
+   * @param <A> returned elements
+   * @return an infinite iterable containing the original elements
+   *
+   * @since 3.0
+   */
+  public static <A> Iterable<A> cycle(final Iterable<? extends A> as){
+    return new Cycle<>(as);
+  }
+
   static final class Cycle<A> implements Iterable<A>{
-    final A[] as;
-    Cycle(final A[] as){
+    final Iterable<? extends A> as;
+    Cycle(final Iterable<? extends A> as){
       this.as = as;
     }
 
     @Override public Iterator<A> iterator() {
-      return new Iterator<A>() {
-        private int i = 0;
-        @Override public boolean hasNext() {
-          return true;
-        }
+      return new Iter<>(as);
+    }
 
-        @Override public A next() {
-          final A ret = as[i];
-          i = i == as.length - 1 ? 0: i + 1;
-          return ret;
+    static final class Iter<A> extends Iterators.Abstract<A> {
+      Iterable<? extends A> as;
+      Iterator<? extends A> ias;
+
+      Iter(final Iterable<? extends A> as) {
+        this.as = as;
+        this.ias = as.iterator();
+      }
+
+      @Override protected A computeNext() {
+        if (!ias.hasNext() && !(ias = as.iterator()).hasNext()) {
+          return endOfData();
         }
-      };
+        return ias.next();
+      }
     }
 
     @Override public String toString(){
-      StringBuilder b = new StringBuilder();
-      b.append("[");
-      for(A a: this.as){
-        b.append(String.valueOf(a)).append(", ");
-      }
-      b.append("...]");
-      return b.toString();
+      return makeString(as, "[", ", ", "...]", 100);
     }
+  }
+
+  /**
+   * Pretty print an Iterable.
+   *
+   * Printing following this pattern:
+   * {@literal <start><element><sep><element><end>}
+   * If the iterable would result in a String with length more than maxLength
+   * printing follows this pattern:
+   * {@literal <start><element><sep><element>...<end>}
+   *
+   * @param as the iterable to print
+   * @param start prefix to start the printing with
+   * @param sep separator to use between each element
+   * @param end suffic to end the printing with
+   * @param maxLength limit the length of the resulting string
+   * @param <A> type of the elements in the iterable
+   * @return a pretty printed copy of the input iterable
+   *
+   * @since 3.0
+   */
+  public static <A> String makeString(final Iterable<? extends A> as, final String start, final String sep, final String end, final int maxLength){
+    final StringBuilder b = new StringBuilder();
+    b.append(start);
+    final Iterator<? extends A> ias = as.iterator();
+
+    if(ias.hasNext()){
+      b.append(String.valueOf(ias.next()));
+    }
+    while(ias.hasNext()){
+      if(b.length() >= maxLength){
+        break;
+      }
+
+      b.append(sep);
+      final String value = String.valueOf(ias.next());
+      b.append(value);
+    }
+    if(ias.hasNext()){
+      b.append("...");
+    }
+    b.append(end);
+    return b.toString();
+  }
+
+  /**
+   * Pretty print an Iterable.
+   *
+   * Printing following this pattern:
+   * {@literal <start><element><sep><element><end>}
+   * If the iterable would result in a String with length more than 100
+   * characters printing follows this pattern:
+   * {@literal <start><element><sep><element>...<end>}
+   *
+   * @param as the iterable to print
+   * @param start prefix to start the printing with
+   * @param sep separator to use between each element
+   * @param end suffic to end the printing with
+   * @param <A> type of the elements in the iterable
+   * @return a pretty printed copy of the input iterable
+   * @see #makeString(Iterable, String, String, String, int) pretty print iterable with a custom length
+   *
+   * @since 3.0
+   */
+  public static <A> String makeString(final Iterable<? extends A> as, final String start, final String sep, final String end) {
+    return makeString(as, start, sep, end, 100);
   }
 
   /**
