@@ -188,22 +188,22 @@ public class EitherLeftProjectionTest {
 
   @Test public void applyDefinedLeft() {
     final Either<Function<String, String>, Integer> func = left(reverse);
-    assertThat(l.left().apply(func).left().get(), is("!aayeh"));
+    assertThat(l.left().ap(func).left().get(), is("!aayeh"));
   }
 
   @Test public void applyDefinedRight() {
     final Either<Function<String, String>, Integer> func = right(36);
-    assertThat(l.left().apply(func).right().get(), is(36));
+    assertThat(l.left().ap(func).right().get(), is(36));
   }
 
   @Test public void applyNotDefinedLeft() {
     final Either<Function<String, String>, Integer> func = left(reverse);
-    assertThat(r.left().apply(func).right().get(), is(12));
+    assertThat(r.left().ap(func).right().get(), is(12));
   }
 
   @Test public void applyNotDefinedRight() {
     final Either<Function<String, String>, Integer> func = right(36);
-    assertThat(r.left().apply(func).right().get(), is(36));
+    assertThat(r.left().ap(func).right().get(), is(36));
   }
 
   static class MyException extends Exception {

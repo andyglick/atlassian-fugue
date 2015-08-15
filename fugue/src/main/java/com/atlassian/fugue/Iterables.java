@@ -16,6 +16,28 @@
 
 package com.atlassian.fugue;
 
+import java.io.Serializable;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Queue;
+import java.util.TreeSet;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.locks.AbstractQueuedSynchronizer;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+
 import static com.atlassian.fugue.Iterators.emptyIterator;
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.some;
@@ -27,32 +49,12 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 
-import java.io.Serializable;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.TreeSet;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.locks.AbstractQueuedSynchronizer;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-
 /**
  * Contains static utility methods that operate on or return objects of type
  * {code}Iterable{code}.
  *
- * When making changes to this class, please try to name methods differently to
- * those in Iterables so that methods from both classes can be statically
- * imported in the same class.
+ * The iterables produced from the functions in this class are safe to reuse
+ * multiple times. Iterables#iterator returns a new iterator each time.
  *
  * @since 1.0
  */
@@ -169,7 +171,7 @@ public class Iterables {
    */
   public static <A, B> Iterable<B> flatMap(final Iterable<A> collection,
     final Function<? super A, ? extends Iterable<? extends B>> f) {
-    return flatten(map(collection, f));
+    return join(map(collection, f));
   }
 
   /**
@@ -733,7 +735,10 @@ public class Iterables {
   }
 
   /**
-   * Merge {@literal Iterable<Iterable<A>>} down to {@literal Iterable<A>}
+   * Join {@literal Iterable<Iterable<A>>} down to {@literal Iterable<A>}. The
+   * resulting iterable will exhaust the first input iterable in order before
+   * returning values from the second. Input iterables must not be null and
+   * must not contain null.
    *
    * @param ias one or more iterable to merge into the final iterable result,
    * must not be null and must not return null
@@ -743,34 +748,58 @@ public class Iterables {
    *
    * @since 3.0
    */
-  public static <A> Iterable<A> flatten(Iterable<? extends Iterable<? extends A>> ias) {
-    return new Flatten<>(ias);
+  public static <A> Iterable<A> join(Iterable<? extends Iterable<? extends A>> ias) {
+    return new Join<>(ias);
   }
 
-  static final class Flatten<A> implements Iterable<A> {
+  static final class Join<A> extends IterableToString<A> {
     private final Iterable<? extends Iterable<? extends A>> ias;
 
-    public Flatten(Iterable<? extends Iterable<? extends A>> ias) {
+    public Join(Iterable<? extends Iterable<? extends A>> ias) {
       this.ias = ias;
     }
 
     @Override public Iterator<A> iterator() {
-      return new Iterators.Abstract<A>() {
-        private final Iterator<? extends Iterable<? extends A>> i = ias.iterator();
-        private Iterator<? extends A> currentIterator = emptyIterator();
-
-        @Override protected A computeNext() {
-          boolean currentHasNext;
-          while (!(currentHasNext = Objects.requireNonNull(currentIterator).hasNext()) && i.hasNext()) {
-            currentIterator = i.next().iterator();
-          }
-          if (!currentHasNext) {
-            return endOfData();
-          }
-          return currentIterator.next();
-        }
-      };
+      return new Iter<>(ias);
     }
+
+    static class Iter<A> extends Iterators.Abstract<A> {
+      final Queue<Iterator<? extends A>> qas;
+
+      public Iter(final Iterable<? extends Iterable<? extends A>> ias)
+      {
+        qas = new LinkedList<>();
+        for (Iterable<? extends A> a : ias) {
+          Iterator<? extends A> as = requireNonNull(a.iterator());
+          qas.add(as);
+        }
+      }
+
+      @Override protected A computeNext() {
+        while(!qas.isEmpty() && !qas.peek().hasNext()){
+          qas.remove();
+        }
+        if(qas.isEmpty()){
+          return endOfData();
+        }
+        return qas.peek().next();
+      }
+    }
+  }
+
+  /**
+   * Concatenate a series of iterables into a single iterable. Returns an empty
+   * iterable if no iterables are supplied. Input iterables must not be null
+   * and must not contain null.
+   *
+   * @param as any number of iterables containing A
+   * @param <A> super type of contained by all input iterables
+   * @return new iterable containing all the elements of the input iterables
+   *
+   * @since 3.0
+   */
+  @SafeVarargs public static <A> Iterable<A> concat(Iterable<? extends A> ...as){
+    return as.length > 0 ? join(Arrays.asList(as)) : emptyIterable();
   }
 
   /**

@@ -10,8 +10,9 @@ This project attempts to adheres to [Semantic Versioning](http://semver.org/).
 - Iterables.map create a new iterable by applying a function to each element
 - Iterables.transform forwarding function calling map to help migration
 - Iterables.filter returning a new iterable containing only those elements for which the predicate returns true
-- Iterables.flatten transforms a nested collection of iterables into a single iterable
+- Iterables.join transforms a nested iterable of iterables into a single iterable
 - Iterables.addAll adds all of the input collection into the passed iterable
+- Iterables.concat creates a single iterable containing all of the input iterables values
 - Options.nullSafe transforms a null producing function into one returning an option
 - Options.toOption returns a function that builds an option
 - Option.fromOptional and Option.toOptional for interoperability with java.util.Optional
@@ -28,6 +29,7 @@ They will be removed in 4.0.
 - Iterables.mergeSorted now takes a Comparator instead of a Guava Ordering instance
 - All copies of com.google.common.base.Function/Supplier/Predicate have been replaced with the equivalent classes
 from Java 8
+- Either.apply renamed to ap to improve consitancy of apply methods
 
 ### Deprecated
 - Deprecated getOrElse(Supplier<A>) to be replaced with {@link #getElse(Supplier)} because 
