@@ -2,21 +2,18 @@ package com.atlassian.fugue;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.atlassian.fugue.Either.right;
 import static com.atlassian.fugue.Iterables.flatten;
 import static com.atlassian.fugue.Monoid.monoid;
 import static com.atlassian.fugue.Option.none;
+import static com.atlassian.fugue.Option.some;
 import static com.atlassian.fugue.Semigroups.*;
-import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
-import static java.util.function.Function.identity;
-import static java.util.stream.Stream.empty;
 
 /**
  * {@link Monoid} instances and factories.
@@ -77,15 +74,15 @@ public final class Monoids {
    * A monoid that appends strings.
    */
   public static final Monoid<String> stringMonoid = new Monoid<String>() {
-    @Override public String zero() {
+    @Override public String empty() {
       return "";
     }
 
-    @Override public String sum(String a1, String a2) {
-      return stringSemigroup.sum(a1, a2);
+    @Override public String append(String a1, String a2) {
+      return stringSemigroup.append(a1, a2);
     }
 
-    @Override public String sumIterable(Iterable<String> strings) {
+    @Override public String join(Iterable<String> strings) {
       StringBuilder sb = new StringBuilder();
       for (String s : strings) {
         sb.append(s);
@@ -109,7 +106,7 @@ public final class Monoids {
    * @return A monoid for functions.
    */
   public static <A, B> Monoid<Function<A, B>> functionMonoid(final Monoid<B> mb) {
-    return monoid(functionSemigroup(mb), f -> mb.zero());
+    return monoid(functionSemigroup(mb), f -> mb.empty());
   }
 
   /**
@@ -119,19 +116,19 @@ public final class Monoids {
    */
   public static <A> Monoid<List<A>> listMonoid() {
     return new Monoid<List<A>>() {
-      @Override public List<A> sum(final List<A> a1, final List<A> a2) {
-        return Semigroups.<A>listSemigroup().sum(a1, a2);
+      @Override public List<A> append(final List<A> a1, final List<A> a2) {
+        return Semigroups.<A>listSemigroup().append(a1, a2);
       }
 
-      @Override public List<A> zero() {
+      @Override public List<A> empty() {
         return emptyList();
       }
 
-      @Override public List<A> sumStream(final Stream<List<A>> ll) {
+      @Override public List<A> join(final Stream<List<A>> ll) {
         return ll.flatMap(l -> l.stream()).collect(Collectors.toList());
       }
 
-      @Override public List<A> sumIterable(final Iterable<List<A>> ll) {
+      @Override public List<A> join(final Iterable<List<A>> ll) {
         final List<A> r = new ArrayList<>();
         for (final List<A> l : ll) {
           r.addAll(l);
@@ -148,37 +145,16 @@ public final class Monoids {
    */
   public static <A> Monoid<Iterable<A>> iterableMonoid() {
     return new Monoid<Iterable<A>>() {
-      @Override public Iterable<A> zero() {
+      @Override public Iterable<A> empty() {
         return emptyList();
       }
 
-      @Override public Iterable<A> sum(Iterable<A> l1, Iterable<A> l2) {
-        return Semigroups.<A>iterableSemigroup().sum(l1, l2);
+      @Override public Iterable<A> append(Iterable<A> l1, Iterable<A> l2) {
+        return Semigroups.<A>iterableSemigroup().append(l1, l2);
       }
 
-      @Override public Iterable<A> sumIterable(Iterable<Iterable<A>> iterables) {
+      @Override public Iterable<A> join(Iterable<Iterable<A>> iterables) {
         return flatten(iterables);
-      }
-    };
-  }
-
-  /**
-   * A monoid for streams.
-   *
-   * @return A monoid for streams.
-   */
-  public static <A> Monoid<Stream<A>> streamSemigroup() {
-    return new Monoid<Stream<A>>() {
-      @Override public Stream<A> zero() {
-        return empty();
-      }
-
-      @Override public Stream<A> sum(Stream<A> a1, Stream<A> a2) {
-        return Semigroups.<A>streamSemigroup().sum(a1, a2);
-      }
-
-      @Override public Stream<A> sumStream(Stream<Stream<A>> as) {
-        return as.flatMap(identity());
       }
     };
   }
@@ -188,8 +164,8 @@ public final class Monoids {
    *
    * @return A monoid for options (that take the first available value).
    */
-  public static <A> Monoid<Option<A>> optionMonoid() {
-    return monoid(optionSemigroup(), none());
+  public static <A> Monoid<Option<A>> firstOptionMonoid() {
+    return monoid(firstOptionSemigroup(), none());
   }
 
   /**
@@ -199,6 +175,27 @@ public final class Monoids {
    */
   public static <A> Monoid<Option<A>> lastOptionMonoid() {
     return monoid(Semigroups.lastOptionSemigroup(), none());
+  }
+
+  /**
+   * A monoid for options that combine inner value with a semigroup.
+   *
+   * @return A monoid for options that combine inner value with a semigroup.
+   */
+  public static <A> Monoid<Option<A>> optionMonoid(Semigroup<A> semigroup) {
+    return monoid((o1, o2) -> o1.fold(() -> o2, a1 -> o2.fold(() -> o1, a2 -> some(semigroup.append(a1, a2)))), none());
+  }
+
+  /**
+   * A monoid Sums up values inside either {@see Semigroups#eitherSemigroup}.
+   * Monoid of right values provide the identity element of the resulting monoid.
+   *
+   * @param lS semigroup for left values
+   * @param rM monoid for right values.
+   * @return A monoid Sums up values inside either.
+   */
+  public static <L, R> Monoid<Either<L, R>> eitherMonoid(Semigroup<L> lS, Monoid<R> rM) {
+    return monoid(eitherSemigroup(lS, rM), right(rM.empty()));
   }
 
 }

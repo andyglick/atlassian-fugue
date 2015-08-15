@@ -11,7 +11,7 @@ object SemigroupTests {
 
     val laws = semigroupLaws(semigroup)
 
-    property("sum is associative") = forAll((x: A, y: A, z: A) => laws.semigroupAssociative(x, y, z))
+    property("append is associative") = forAll((x: A, y: A, z: A) => laws.semigroupAssociative(x, y, z))
   }
 
 }

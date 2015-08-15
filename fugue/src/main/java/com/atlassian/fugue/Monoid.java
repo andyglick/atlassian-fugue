@@ -5,30 +5,34 @@ import java.util.stream.Stream;
 /**
  * A monoid abstraction to be defined across types of the given type argument. Implementations must follow the monoidal laws:
  * <ul>
- * <li><em>Left Identity</em>; forall x. sum(zero(), x) == x</li>
- * <li><em>Right Identity</em>; forall x. sum(x, zero()) == x</li>
- * <li><em>Associativity</em>; forall  x y z. sum(sum(x, y), z) == sum(x, sum(y, z))</li>
+ * <li><em>Left Identity</em>; forall x. append(empty(), x) == x</li>
+ * <li><em>Right Identity</em>; forall x. append(x, empty()) == x</li>
+ * <li><em>Associativity</em>; forall  x y z. append(append(x, y), z) == append(x, append(y, z))</li>
  * </ul>
  */
 public interface Monoid<A> extends Semigroup<A> {
 
   /**
-   * The zero value for this monoid.
+   * The identity element value for this monoid.
    *
-   * @return The zero value for this monoid.
+   * @return The identity element for this monoid.
    */
-  A zero();
+  A empty();
+
+  @Override default Monoid<A> flipped() {
+    return monoid(Semigroup.super.flipped(), empty());
+  }
 
   /**
    * Sums the given values.
    *
-   * @param as The values to sum.
-   * @return The sum of the given values.
+   * @param as The values to append.
+   * @return The append of the given values.
    */
-  public default A sumIterable(final Iterable<A> as) {
-    A m = zero();
+  default A join(final Iterable<A> as) {
+    A m = empty();
     for (A a : as) {
-      m = sum(m, a);
+      m = append(m, a);
     }
     return m;
   }
@@ -36,24 +40,24 @@ public interface Monoid<A> extends Semigroup<A> {
   /**
    * Sums the given values.
    *
-   * @param as The values to sum.
-   * @return The sum of the given values.
+   * @param as The values to append.
+   * @return The append of the given values.
    */
-  public default A sumStream(final Stream<A> as) {
-    return as.reduce(zero(), this);
+  default A join(final Stream<A> as) {
+    return as.reduce(empty(), this);
   }
 
   /**
    * Returns a value summed <code>n</code> times (<code>a + a + ... + a</code>)
    *
    * @param n multiplier
-   * @param a the value to multiply
-   * @return <code>a</code> summed <code>n</code> times. If <code>n <= 0</code>, returns <code>zero()</code>
+   * @param a the value to joinRepeated
+   * @return <code>a</code> summed <code>n</code> times. If <code>n <= 0</code>, returns <code>empty()</code>
    */
-  public default A multiply(final int n, final A a) {
-    A m = zero();
+  default A joinRepeated(final int n, final A a) {
+    A m = empty();
     for (int i = 0; i < n; i++) {
-      m = sum(m, a);
+      m = append(m, a);
     }
     return m;
   }
@@ -61,47 +65,47 @@ public interface Monoid<A> extends Semigroup<A> {
   /**
    * Intersperses the given value between each two elements of the stream, and sums the result.
    *
-   * @param as An stream of values to sum.
+   * @param as An stream of values to append.
    * @param a  The value to intersperse between values of the given iterable.
-   * @return The sum of the given values and the interspersed value.
+   * @return The append of the given values and the interspersed value.
    */
-  public default A joinStream(final Stream<A> as, final A a) {
-    return as.reduce((a1, a2) -> sum(a1, sum(a, a2))).orElse(zero());
+  default A joinInterspersedStream(final Stream<A> as, final A a) {
+    return as.reduce((a1, a2) -> append(a1, append(a, a2))).orElse(empty());
   }
 
   /**
    * Intersperses the given value between each two elements of the collection, and sums the result.
    *
-   * @param as An stream of values to sum.
+   * @param as An stream of values to append.
    * @param a  The value to intersperse between values of the given iterable.
-   * @return The sum of the given values and the interspersed value.
+   * @return The append of the given values and the interspersed value.
    */
-  public default A join(final Iterable<A> as, final A a) {
-    return sumIterable(Iterables.intersperse(as, a));
+  default A joinInterspersed(final Iterable<A> as, final A a) {
+    return join(Iterables.intersperse(as, a));
   }
 
   /**
    * Composes this monoid with another.
    */
   default <B> Monoid<Pair<A, B>> composeMonoid(Monoid<B> mb) {
-    return monoid(composeSemigroup(mb), Pair.pair(zero(), mb.zero()));
+    return monoid(composeSemigroup(mb), Pair.pair(empty(), mb.empty()));
   }
 
   /**
-   * Constructs a monoid from the given semigroup (sum function) and zero value, which must follow the monoidal laws.
+   * Constructs a monoid from the given semigroup (append function) and empty value, which must follow the monoidal laws.
    *
    * @param semigroup The semigroup for the monoid.
-   * @param zero      The zero for the monoid.
-   * @return A monoid instance that uses the given semigroup and zero value.
+   * @param zero      The empty for the monoid.
+   * @return A monoid instance that uses the given semigroup and empty value.
    */
-  public static <A> Monoid<A> monoid(final Semigroup<A> semigroup, final A zero) {
+  static <A> Monoid<A> monoid(final Semigroup<A> semigroup, final A zero) {
     return new Monoid<A>() {
 
-      @Override public A sum(final A a1, final A a2) {
-        return semigroup.sum(a1, a2);
+      @Override public A append(final A a1, final A a2) {
+        return semigroup.append(a1, a2);
       }
 
-      @Override public A zero() {
+      @Override public A empty() {
         return zero;
       }
     };

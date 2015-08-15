@@ -11,8 +11,8 @@ public interface SemigroupLaws<A> {
 
   Semigroup<A> semigroup();
 
-  default IsEq<A> semigroupAssociative(A x,A y, A z) {
-    return isEq(semigroup().sum(semigroup().sum(x, y), z), semigroup().sum(x, semigroup().sum(y, z)));
+  default IsEq<A> semigroupAssociative(A x, A y, A z) {
+    return isEq(semigroup().append(semigroup().append(x, y), z), semigroup().append(x, semigroup().append(y, z)));
   }
 
   static <A> SemigroupLaws<A> semigroupLaws(Semigroup<A> semigroup) {

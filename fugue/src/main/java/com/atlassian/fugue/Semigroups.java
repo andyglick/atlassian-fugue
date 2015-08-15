@@ -3,14 +3,14 @@ package com.atlassian.fugue;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
-import static com.atlassian.fugue.Iterables.*;
-import static java.util.Arrays.*;
+import static com.atlassian.fugue.Either.left;
+import static com.atlassian.fugue.Either.right;
+import static com.atlassian.fugue.Iterables.flatten;
+import static java.util.Arrays.asList;
 
 /**
  * {@link Semigroup} instances and factories.
@@ -62,19 +62,21 @@ public final class Semigroups {
    */
   public static final Semigroup<BigInteger> bigintMinimumSemigroup = BigInteger::min;
 
-
   /**
    * A semigroup that yields the maximum of big decimals.
    */
   public static final Semigroup<BigDecimal> bigDecimalMaximumSemigroup = BigDecimal::max;
+
   /**
    * A semigroup that yields the minimum of big decimals.
    */
   public static final Semigroup<BigDecimal> bigDecimalMinimumSemigroup = BigDecimal::min;
+
   /**
    * A semigroup that adds longs.
    */
   public static final Semigroup<Long> longAdditionSemigroup = (x, y) -> x + y;
+
   /**
    * A semigroup that multiplies longs.
    */
@@ -118,6 +120,14 @@ public final class Semigroups {
   private Semigroups() {
   }
 
+  public static <A> Semigroup<A> first() {
+    return (x, y) -> x;
+  }
+
+  public static <A> Semigroup<A> last() {
+    return (x, y) -> y;
+  }
+
   /**
    * A semigroup for functions.
    *
@@ -125,7 +135,7 @@ public final class Semigroups {
    * @return A semigroup for functions.
    */
   public static <A, B> Semigroup<Function<A, B>> functionSemigroup(final Semigroup<B> sb) {
-    return (a1, a2) -> a -> sb.sum(a1.apply(a), a2.apply(a));
+    return (a1, a2) -> a -> sb.append(a1.apply(a), a2.apply(a));
   }
 
   /**
@@ -204,7 +214,7 @@ public final class Semigroups {
    *
    * @return A semigroup for option values (that take the first defined value).
    */
-  public static <A> Semigroup<Option<A>> optionSemigroup() {
+  public static <A> Semigroup<Option<A>> firstOptionSemigroup() {
     return (a1, a2) -> a1.isDefined() ? a1 : a2;
   }
 
@@ -218,12 +228,21 @@ public final class Semigroups {
   }
 
   /**
-   * A semigroup for streams.
+   * Sums up values inside either, if both are left or right. Returns first left otherwise.
+   * <ul>
+   * <li>right(v1) + right(v2) → right(v1 + v2)</li>
+   * <li>right(v1) + -left(v2) → left(v2)</li>
+   * <li>left(v1) + right(v2) → left(v1)</li>
+   * <li>left(v1) + left(v2) → left(v1 + v2)</li>
+   * </ul>
    *
-   * @return A semigroup for streams.
+   * @param lS Semigroup for left values
+   * @param rS Semigroup for right values
+   * @return A semigroup that Sums up values inside either.
    */
-  public static <A> Semigroup<Stream<A>> streamSemigroup() {
-    return Stream::concat;
+  public static <L, R> Semigroup<Either<L, R>> eitherSemigroup(Semigroup<L> lS, Semigroup<R> rS) {
+    return (e1, e2) -> e1.<Either<L, R>>fold(l1 -> e2.<Either<L, R>>fold(l2 -> left(lS.append(l1, l2)), r2 -> e1),
+      r1 -> e2.<Either<L, R>>fold(l2 -> e2, r2 -> right(rS.append(r1, r2))));
   }
 
 }

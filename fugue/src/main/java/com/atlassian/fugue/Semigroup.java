@@ -2,49 +2,45 @@ package com.atlassian.fugue;
 
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
-import java.util.function.UnaryOperator;
 
 /**
  * Implementations must satisfy the law of associativity:
  * <ul>
- * <li><em>Associativity</em>; forall  x y z. sum(sum(x, y), z) == sum(x, sum(y, z))</li>
+ * <li><em>Associativity</em>; forall  x y z. append(append(x, y), z) == append(x, append(y, z))</li>
  * </ul>
  */
 @FunctionalInterface public interface Semigroup<A> extends BinaryOperator<A> {
 
   /**
-   * Sums the two given arguments.
+   * Combine the two given arguments.
    *
-   * @param a1 A value to sum with another.
-   * @param a2 A value to sum with another.
-   * @return The sum of the two given arguments.
+   * @param a1 left value to combine
+   * @param a2 right value to combine
+   * @return the combination of the left and right value.
    */
-  A sum(final A a1, final A a2);
-
-  /**
-   * Returns a function that sums the given value according to this semigroup.
-   *
-   * @param a1 The value to sum.
-   * @return A function that sums with the given value according to this semigroup.
-   */
-  default UnaryOperator<A> add(final A a1) {
-    return a2 -> sum(a1, a2);
-  }
+  A append(final A a1, final A a2);
 
   /**
    * Composes this semigroup with another.
    */
   default <B> Semigroup<Pair<A, B>> composeSemigroup(Semigroup<B> sb) {
-    return (ab1, ab2) -> Pair.pair(sum(ab1.left(), ab2.left()), sb.sum(ab1.right(), ab2.right()));
+    return (ab1, ab2) -> Pair.pair(append(ab1.left(), ab2.left()), sb.append(ab1.right(), ab2.right()));
+  }
+
+  /**
+   * @return a semigroup appending in reverse order
+   */
+  default Semigroup<A> flipped() {
+    return (a1, a2) -> append(a2, a1);
   }
 
   /**
    * Apply method to conform to the {@link BinaryOperator} interface.
    *
-   * @deprecated use {@link #sum(Object, Object)} directly
+   * @deprecated use {@link #append(Object, Object)} directly
    */
   @Override @Deprecated default A apply(final A a1, final A a2) {
-    return sum(a1, a2);
+    return append(a1, a2);
   }
 
   static <A> Semigroup<A> semigroup(BiFunction<A, A, A> operator) {

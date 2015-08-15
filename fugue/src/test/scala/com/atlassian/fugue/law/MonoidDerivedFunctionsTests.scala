@@ -12,17 +12,19 @@ object MonoidDerivedFunctionsTests {
 
   def apply[A: Arbitrary](monoid: Monoid[A]) = new Properties("Monoid derived functions") {
 
-    SemigroupDerivedFunctionsTests(monoid)
+    property("semigroup derived function") = SemigroupDerivedFunctionsTests(monoid)
 
-    property("sumIterable is equivalent to fold") = forAll((aa: List[A]) => isEq(aa.fold(monoid.zero())((a1, a2) => monoid.sum(a1, a2)), monoid.sumIterable(aa)))
+    property("flipped is also a monoid") = MonoidTests(monoid.flipped())
 
-    property("sumStream is equivalent to  sumIterable") = forAll((aa: java.util.List[A]) => isEq(monoid.sumIterable(aa), monoid.sumStream(aa.stream())))
+    property("join is equivalent to fold") = forAll((aa: List[A]) => isEq(aa.fold(monoid.empty())((a1, a2) => monoid.append(a1, a2)), monoid.join(aa)))
 
-    property("join is consistent with sumIterable") = forAll((a: A, aa: java.util.List[A]) => isEq(monoid.sumIterable(Iterables.intersperse(aa, a)), monoid.join(aa, a)))
+    property("join is equivalent to  join") = forAll((aa: java.util.List[A]) => isEq(monoid.join(aa), monoid.join(aa.stream())))
 
-    property("joinStream is equivalent to join") = forAll((a: A, aa: java.util.List[A]) => isEq(monoid.join(aa, a), monoid.joinStream(aa.stream(), a)))
+    property("joinInterspersed is consistent with join") = forAll((a: A, aa: java.util.List[A]) => isEq(monoid.join(Iterables.intersperse(aa, a)), monoid.joinInterspersed(aa, a)))
 
-    property("multiply is consistent with sumIterable") = sizedProp(n => forAll((a: A) => isEq(monoid.sumIterable(asJavaIterable(ListBuffer.fill(n)(a))), monoid.multiply(n, a))))
+    property("joinInterspersedStream is equivalent to joinInterspersed") = forAll((a: A, aa: java.util.List[A]) => isEq(monoid.joinInterspersed(aa, a), monoid.joinInterspersedStream(aa.stream(), a)))
+
+    property("joinRepeated is consistent with join") = sizedProp(n => forAll((a: A) => isEq(monoid.join(asJavaIterable(ListBuffer.fill(n)(a))), monoid.joinRepeated(n, a))))
 
   }
 
