@@ -25,7 +25,7 @@ import java.util.function.Function;
 
 import static com.atlassian.fugue.Either.left;
 import static com.atlassian.fugue.Either.right;
-import static com.atlassian.fugue.Iterables.flatten;
+import static com.atlassian.fugue.Iterables.join;
 import static java.util.Arrays.asList;
 
 /**
@@ -221,7 +221,7 @@ public final class Semigroups {
    * @return A semigroup for iterables.
    */
   public static <A> Semigroup<Iterable<A>> iterableSemigroup() {
-    return (l1, l2) -> flatten(asList(l1, l2));
+    return (l1, l2) -> join(asList(l1, l2));
   }
 
   /**

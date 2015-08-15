@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.atlassian.fugue.Either.right;
-import static com.atlassian.fugue.Iterables.flatten;
+import static com.atlassian.fugue.Iterables.join;
 import static com.atlassian.fugue.Monoid.monoid;
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.some;
@@ -170,7 +170,7 @@ public final class Monoids {
       }
 
       @Override public Iterable<A> join(Iterable<Iterable<A>> iterables) {
-        return flatten(iterables);
+        return join(iterables);
       }
     };
   }
