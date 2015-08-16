@@ -284,8 +284,10 @@ public class Iterables {
   /**
    * Drop elements of {@code as} until an element returns false for {@literal p#test}
    *
-   * @param as iterable to remove the first elements of
-   * @param p predicate used to test which elements to drop from the iterable
+   * @param as iterable to remove the first elements of {@code as}, must not
+   * be null
+   * @param p predicate used to test which elements to drop from the iterable,
+   * must not be null
    * @param <A> type of {@code as}
    * @return remaining elements of {@code as} after removing the starting elements
    * that for which {@code p#test} returns true
@@ -300,8 +302,10 @@ public class Iterables {
    * Return a new iterable containing only the first elements of {@code as} for which
    * {@code p#test} returns true.
    *
-   * @param as iterable to source the first elements of
-   * @param p predicate used to test which elements to include in the new iterable
+   * @param as iterable to source the first elements of {@code as}, must not
+   * be null
+   * @param p predicate used to test which elements to include in the new
+   * iterable, must not be null
    * @param <A> type of {@code as}
    * @return a new iterable containing elements of {@code as} starting from the first
    * element of {@code as} until {@code p#test} returns false
