@@ -25,6 +25,8 @@ import java.util.function.Function;
  * <ul>
  * <li><em>Associativity</em>; forall  x y z. append(append(x, y), z) == append(x, append(y, z))</li>
  * </ul>
+ *
+ * @since 3.0
  */
 @FunctionalInterface public interface Semigroup<A> extends BinaryOperator<A> {
 

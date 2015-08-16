@@ -29,7 +29,9 @@ import static com.atlassian.fugue.Iterables.join;
 import static java.util.Arrays.asList;
 
 /**
- * {@link Semigroup} instances and factories.
+ * {@link Semigroup} instances and utility methods.
+ *
+ * @since 3.0
  */
 public final class Semigroups {
 

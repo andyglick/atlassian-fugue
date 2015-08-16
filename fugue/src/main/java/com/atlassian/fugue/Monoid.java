@@ -25,6 +25,8 @@ package com.atlassian.fugue;
  * <li><em>Right Identity</em>; forall x. append(x, empty()) == x</li>
  * <li><em>Associativity</em>; forall  x y z. append(append(x, y), z) == append(x, append(y, z))</li>
  * </ul>
+ *
+ * @since 3.0
  */
 public interface Monoid<A> extends Semigroup<A> {
 
