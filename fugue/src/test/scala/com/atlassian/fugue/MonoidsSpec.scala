@@ -22,7 +22,13 @@ import java.util.stream.{Collectors, StreamSupport}
 
 import com.atlassian.fugue.Either.right
 import com.atlassian.fugue.Monoids._
-import com.atlassian.fugue.law.{MonoidDerivedFunctionsTests, MonoidTests}
+import com.atlassian.fugue.law.IsEq._
+import com.atlassian.fugue.law.MonoidTests
+import org.scalacheck.Prop._
+import org.scalacheck.{Arbitrary, Properties}
+
+import scala.collection.JavaConversions._
+import scala.collection.mutable.ListBuffer
 
 
 class MonoidsSpec extends TestSuite {
@@ -83,7 +89,6 @@ class MonoidsSpec extends TestSuite {
   test("string") {
     stringMonoid.append("a", "b") shouldEqual "ab"
     check(MonoidTests(stringMonoid))
-    check(MonoidDerivedFunctionsTests(stringMonoid))
   }
 
   test("unit") {
@@ -93,7 +98,6 @@ class MonoidsSpec extends TestSuite {
   test("list") {
     listMonoid[String]().append(asList("a"), asList("b")) shouldEqual asList("a", "b")
     check(MonoidTests(listMonoid[Integer]()))
-    check(MonoidDerivedFunctionsTests(listMonoid[Integer]()))
   }
 
   test("iterable") {
@@ -121,6 +125,24 @@ class MonoidsSpec extends TestSuite {
     m.append(right("a"), right("b")) shouldEqual right("ab")
     m.append(Either.left(1), Either.left(2)) shouldEqual Either.left(3)
     check(MonoidTests(m))
+  }
+
+  test("Monoids derived methods") {
+    check(derivedMethodsTests(stringMonoid))
+  }
+
+  test("Monoids composition") {
+    check(MonoidTests(compose(stringMonoid, intAdditionMonoid)))
+  }
+
+  def derivedMethodsTests[A: Arbitrary](monoid: Monoid[A]) = new Properties("derived methods") {
+
+    property("dual is also a monoid") = MonoidTests(Monoids.dual(monoid))
+
+    property("concatInterspersed is consistent with concat") = forAll((a: A, aa: java.util.List[A]) => isEq(monoid.concat(Iterables.intersperse(aa, a)), Monoids.concatInterspersed(monoid, aa, a)))
+
+    property("concatRepeated is consistent with concat") = sizedProp(n => forAll((a: A) => isEq(monoid.concat(asJavaIterable(ListBuffer.fill(n)(a))), Monoids.concatRepeated(monoid, n, a))))
+
   }
 
 }

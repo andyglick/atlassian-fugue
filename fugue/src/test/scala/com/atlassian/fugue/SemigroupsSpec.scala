@@ -31,8 +31,12 @@ class SemigroupsSpec extends TestSuite {
     maxSemigroup[Integer]().append(1, 2) shouldEqual 2
     check(SemigroupTests(intMaximumSemigroup))
   }
-  test("intMaximum via comparator") { check(SemigroupTests(maxSemigroup(Comparator.naturalOrder[Integer]()))) }
-  test("intMaximum via comparable") { check(SemigroupTests(maxSemigroup[Integer]())) }
+  test("intMaximum via comparator") {
+    check(SemigroupTests(maxSemigroup(Comparator.naturalOrder[Integer]())))
+  }
+  test("intMaximum via comparable") {
+    check(SemigroupTests(maxSemigroup[Integer]()))
+  }
 
   test("intMinimum") {
     intMinimumSemigroup.append(1, 2) shouldEqual 1
@@ -40,8 +44,12 @@ class SemigroupsSpec extends TestSuite {
     minSemigroup[Integer]().append(1, 2) shouldEqual 1
     check(SemigroupTests(intMinimumSemigroup))
   }
-  test("intMinimum via comparator") { check(SemigroupTests(minSemigroup(Comparator.naturalOrder[Integer]())))}
-  test("intMinimum via comparable") { check(SemigroupTests(minSemigroup[Integer]()))}
+  test("intMinimum via comparator") {
+    check(SemigroupTests(minSemigroup(Comparator.naturalOrder[Integer]())))
+  }
+  test("intMinimum via comparable") {
+    check(SemigroupTests(minSemigroup[Integer]()))
+  }
 
 
   test("longMaximum") {
@@ -71,6 +79,11 @@ class SemigroupsSpec extends TestSuite {
 
   test("bigDecimalMinimum") {
     bigDecimalMinimumSemigroup.append(BigDecimal.valueOf(1.0), BigDecimal.valueOf(2.0)) shouldEqual BigDecimal.valueOf(1.0)
-    check( SemigroupTests(bigDecimalMinimumSemigroup))
+    check(SemigroupTests(bigDecimalMinimumSemigroup))
   }
+
+  test("dual is also a semigroup") {
+    check(SemigroupTests(Semigroups.dual(intMaximumSemigroup)))
+  }
+
 }

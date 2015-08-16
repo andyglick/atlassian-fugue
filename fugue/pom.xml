@@ -58,6 +58,17 @@
                 </executions>
                 <configuration>
                     <scalaVersion>${scala.version}</scalaVersion>
+                        <args>
+                        <!-- to avoid 'error: File name too long' in Linux/ecryptfs file system -->
+                        <arg>-Xmax-classfile-name</arg>
+                        <arg>143</arg>
+                        <arg>-unchecked</arg>
+                        <arg>-deprecation</arg>
+                        <arg>-feature</arg>
+                        <arg>-language:_</arg>
+                        <arg>-target:jvm-1.${maven.compiler.target}</arg>
+                        <arg>-Xfatal-warnings</arg>
+                     </args>
                 </configuration>
             </plugin>
             <!-- enable scalatest -->

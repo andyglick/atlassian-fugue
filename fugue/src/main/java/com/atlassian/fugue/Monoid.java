@@ -16,10 +16,10 @@
 
 package com.atlassian.fugue;
 
-import java.util.stream.Stream;
-
 /**
- * A monoid abstraction to be defined across types of the given type argument. Implementations must follow the monoidal laws:
+ * A Monoid is an algebraic structure consisting of an associative binary operation across the values of a given type (a monoid is a {@link Semigroup})
+ * and an identity element for this operation.
+ * Implementations must follow the monoidal laws:
  * <ul>
  * <li><em>Left Identity</em>; forall x. append(empty(), x) == x</li>
  * <li><em>Right Identity</em>; forall x. append(x, empty()) == x</li>
@@ -35,76 +35,18 @@ public interface Monoid<A> extends Semigroup<A> {
    */
   A empty();
 
-  @Override default Monoid<A> flipped() {
-    return monoid(Semigroup.super.flipped(), empty());
-  }
-
   /**
    * Sums the given values.
    *
    * @param as The values to append.
    * @return The append of the given values.
    */
-  default A join(final Iterable<A> as) {
+  default A concat(final Iterable<A> as) {
     A m = empty();
     for (A a : as) {
       m = append(m, a);
     }
     return m;
-  }
-
-  /**
-   * Sums the given values.
-   *
-   * @param as The values to append.
-   * @return The append of the given values.
-   */
-  default A join(final Stream<A> as) {
-    return as.reduce(empty(), this);
-  }
-
-  /**
-   * Returns a value summed <code>n</code> times (<code>a + a + ... + a</code>)
-   *
-   * @param n multiplier
-   * @param a the value to joinRepeated
-   * @return <code>a</code> summed <code>n</code> times. If <code>n <= 0</code>, returns <code>empty()</code>
-   */
-  default A joinRepeated(final int n, final A a) {
-    A m = empty();
-    for (int i = 0; i < n; i++) {
-      m = append(m, a);
-    }
-    return m;
-  }
-
-  /**
-   * Intersperses the given value between each two elements of the stream, and sums the result.
-   *
-   * @param as An stream of values to append.
-   * @param a  The value to intersperse between values of the given iterable.
-   * @return The append of the given values and the interspersed value.
-   */
-  default A joinInterspersedStream(final Stream<A> as, final A a) {
-    return as.reduce((a1, a2) -> append(a1, append(a, a2))).orElse(empty());
-  }
-
-  /**
-   * Intersperses the given value between each two elements of the collection, and sums the result.
-   *
-   * @param as An stream of values to append.
-   * @param a  The value to intersperse between values of the given iterable.
-   * @return The append of the given values and the interspersed value.
-   */
-  default A joinInterspersed(final Iterable<A> as, final A a) {
-    return join(Iterables.intersperse(as, a));
-  }
-
-  /**
-   * Composes this monoid with another.
-   */
-  default <B> Monoid<Pair<A, B>> composeMonoid(Monoid<B> mb) {
-    return monoid(composeSemigroup(mb), Pair.pair(empty(), mb.empty()));
   }
 
   /**

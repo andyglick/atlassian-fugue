@@ -1,7 +1,7 @@
 package com.atlassian
 
 
-import java.util.function.{BiFunction, Function}
+import java.util.function.{Function, BiFunction}
 
 /**
  *
@@ -9,6 +9,10 @@ import java.util.function.{BiFunction, Function}
 package object fugue {
 
   implicit def Function1Function[A, B](g: A => B): Function[A, B] = new Function[A, B] {
+    def apply(a: A) = g(a)
+  }
+
+  implicit def Function1Function1FunctionFunction[A, B, C](g: A => B => C) =  new Function[A, Function[B, C]] {
     def apply(a: A) = g(a)
   }
 

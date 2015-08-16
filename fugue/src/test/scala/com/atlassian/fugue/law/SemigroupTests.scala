@@ -16,7 +16,10 @@
 
 package com.atlassian.fugue.law
 
+import java.util.function.BinaryOperator
+
 import com.atlassian.fugue.Semigroup
+import com.atlassian.fugue.law.IsEq._
 import com.atlassian.fugue.law.SemigroupLaws.semigroupLaws
 import org.scalacheck.Prop._
 import org.scalacheck.{Arbitrary, Properties}
@@ -28,6 +31,10 @@ object SemigroupTests {
     val laws = semigroupLaws(semigroup)
 
     property("append is associative") = forAll((x: A, y: A, z: A) => laws.semigroupAssociative(x, y, z))
+
+    val asBinaryOp = semigroup.asInstanceOf[BinaryOperator[A]]
+
+    property("apply is same as append") = forAll((a1: A, a2: A) => isEq(asBinaryOp.apply(a1, a2), semigroup.append(a1, a2)))
   }
 
 }

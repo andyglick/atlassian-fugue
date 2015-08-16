@@ -20,14 +20,12 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.atlassian.fugue.Either.right;
-import static com.atlassian.fugue.Iterables.join;
 import static com.atlassian.fugue.Monoid.monoid;
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.some;
+import static com.atlassian.fugue.Pair.pair;
 import static com.atlassian.fugue.Semigroups.*;
 import static java.util.Collections.emptyList;
 
@@ -98,7 +96,7 @@ public final class Monoids {
       return stringSemigroup.append(a1, a2);
     }
 
-    @Override public String join(Iterable<String> strings) {
+    @Override public String concat(Iterable<String> strings) {
       StringBuilder sb = new StringBuilder();
       for (String s : strings) {
         sb.append(s);
@@ -140,11 +138,7 @@ public final class Monoids {
         return emptyList();
       }
 
-      @Override public List<A> join(final Stream<List<A>> ll) {
-        return ll.flatMap(l -> l.stream()).collect(Collectors.toList());
-      }
-
-      @Override public List<A> join(final Iterable<List<A>> ll) {
+      @Override public List<A> concat(final Iterable<List<A>> ll) {
         final List<A> r = new ArrayList<>();
         for (final List<A> l : ll) {
           r.addAll(l);
@@ -169,8 +163,8 @@ public final class Monoids {
         return Semigroups.<A>iterableSemigroup().append(l1, l2);
       }
 
-      @Override public Iterable<A> join(Iterable<Iterable<A>> iterables) {
-        return join(iterables);
+      @Override public Iterable<A> concat(Iterable<Iterable<A>> iterables) {
+        return concat(iterables);
       }
     };
   }
@@ -212,6 +206,47 @@ public final class Monoids {
    */
   public static <L, R> Monoid<Either<L, R>> eitherMonoid(Semigroup<L> lS, Monoid<R> rM) {
     return monoid(eitherSemigroup(lS, rM), right(rM.empty()));
+  }
+
+  /**
+   * Composes a monoid with another.
+   */
+  public static <A, B> Monoid<Pair<A, B>> compose(Monoid<A> ma, Monoid<B> mb) {
+    return monoid(Semigroups.compose(ma, mb), pair(ma.empty(), mb.empty()));
+  }
+
+  /**
+   * Return the dual Monoid.
+   *
+   * @param monoid a monoid.
+   * @return a Monoid appending in reverse order,
+   */
+  public static <A> Monoid<A> dual(Monoid<A> monoid) {
+    return monoid(Semigroups.dual(monoid), monoid.empty());
+  }
+
+  /**
+   * Intersperses the given value between each two elements of the collection, and sums the result.
+   *
+   * @param monoid a monoid for A
+   * @param as     An stream of values to append.
+   * @param a      The value to intersperse between values of the given iterable.
+   * @return The append of the given values and the interspersed value.
+   */
+  public static <A> A concatInterspersed(Monoid<A> monoid, final Iterable<A> as, final A a) {
+    return monoid.concat(Iterables.intersperse(as, a));
+  }
+
+  /**
+   * Returns a value summed <code>n</code> times (<code>a + a + ... + a</code>)
+   *
+   * @param monoid a monoid for A
+   * @param n      multiplier
+   * @param a      the value to be reapeatly summed
+   * @return <code>a</code> summed <code>n</code> times. If <code>n <= 0</code>, returns <code>monoid.empty()</code>
+   */
+  public static <A> A concatRepeated(Monoid<A> monoid, final int n, final A a) {
+    return monoid.concat(Iterables.<A, Integer>unfold(i -> (i < n) ? some(pair(a, i + 1)) : none(), 0));
   }
 
 }

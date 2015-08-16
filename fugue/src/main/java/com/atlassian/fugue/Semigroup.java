@@ -16,10 +16,11 @@
 
 package com.atlassian.fugue;
 
-import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
+import java.util.function.Function;
 
 /**
+ * A Semigroup is an algebraic structure consisting of an associative binary operation across the values of a given type (the Semigroup type argument).
  * Implementations must satisfy the law of associativity:
  * <ul>
  * <li><em>Associativity</em>; forall  x y z. append(append(x, y), z) == append(x, append(y, z))</li>
@@ -37,20 +38,6 @@ import java.util.function.BinaryOperator;
   A append(final A a1, final A a2);
 
   /**
-   * Composes this semigroup with another.
-   */
-  default <B> Semigroup<Pair<A, B>> composeSemigroup(Semigroup<B> sb) {
-    return (ab1, ab2) -> Pair.pair(append(ab1.left(), ab2.left()), sb.append(ab1.right(), ab2.right()));
-  }
-
-  /**
-   * @return a semigroup appending in reverse order
-   */
-  default Semigroup<A> flipped() {
-    return (a1, a2) -> append(a2, a1);
-  }
-
-  /**
    * Apply method to conform to the {@link BinaryOperator} interface.
    *
    * @deprecated use {@link #append(Object, Object)} directly
@@ -59,8 +46,14 @@ import java.util.function.BinaryOperator;
     return append(a1, a2);
   }
 
-  static <A> Semigroup<A> semigroup(BiFunction<A, A, A> operator) {
-    return operator::apply;
+  /**
+   * Construct a semigroup from a curried associative binary operator
+   *
+   * @param binaryOperator a curried binary operator
+   * @return The semigroup yielding from the operator.
+   */
+  static <A> Semigroup<A> semigroup(Function<A, Function<A, A>> binaryOperator) {
+    return (a1, a2) -> binaryOperator.apply(a1).apply(a2);
   }
 
 }

@@ -17,9 +17,12 @@
 package com.atlassian.fugue.law
 
 import com.atlassian.fugue.Monoid
+import com.atlassian.fugue.law.IsEq._
 import com.atlassian.fugue.law.MonoidLaws.monoidLaws
 import org.scalacheck.Prop._
 import org.scalacheck.{Arbitrary, Properties}
+
+import scala.collection.JavaConversions._
 
 object MonoidTests {
 
@@ -32,6 +35,9 @@ object MonoidTests {
     property("left identity") = forAll((x: A) => laws.monoidLeftIdentity(x))
 
     property("right identity") = forAll((x: A) => laws.monoidRightIdentity(x))
+
+    property("concat is equivalent to foldr") = forAll((aa: List[A]) => isEq(aa.fold(monoid.empty())((a1, a2) => monoid.append(a1, a2)), monoid.concat(aa)))
+
   }
 
 }
