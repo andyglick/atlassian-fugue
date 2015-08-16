@@ -130,7 +130,7 @@ public class Suppliers {
    * The returned {@link Supplier} is thread-safe
    *
    * @param <A>      the type
-   * @param supplier the supplier to  memoize
+   * @param supplier the supplier to memoize
    * @return the weakly memoizing supplier
    */
   public static <A> Supplier<A> weakMemoize(final Supplier<A> supplier) {
