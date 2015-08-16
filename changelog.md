@@ -13,6 +13,8 @@ This project attempts to adheres to [Semantic Versioning](http://semver.org/).
 - Iterables.join transforms a nested iterable of iterables into a single iterable
 - Iterables.addAll adds all of the input collection into the passed iterable
 - Iterables.concat creates a single iterable containing all of the input iterables values
+- Iterables.takeWhile creates a new iterable that contains only the begin elements of the input iterable
+- Iterables.dropWhile creates a new iterable that skips the beginning elements of the input iterable
 - Options.nullSafe transforms a null producing function into one returning an option
 - Options.toOption returns a function that builds an option
 - Option.fromOptional and Option.toOptional for interoperability with java.util.Optional

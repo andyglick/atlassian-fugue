@@ -18,16 +18,17 @@ package com.atlassian.fugue;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.function.Predicate;
 
 import static com.atlassian.fugue.Functions.apply;
 import static com.atlassian.fugue.Functions.constant;
+import static com.atlassian.fugue.Functions.countingPredicate;
 import static com.atlassian.fugue.Functions.curried;
 import static com.atlassian.fugue.Functions.flip;
 import static com.atlassian.fugue.Functions.matches;
 import static com.atlassian.fugue.Functions.partial;
 import static com.atlassian.fugue.Functions.toBiFunction;
 import static com.atlassian.fugue.Iterables.map;
-import static com.atlassian.fugue.Iterables.transform;
 import static com.atlassian.fugue.UtilityFunctions.dividableBy;
 import static com.atlassian.fugue.UtilityFunctions.hasMinLength;
 import static com.atlassian.fugue.UtilityFunctions.isEven;
@@ -120,5 +121,20 @@ public class FunctionsTest {
 
   @Test public void functionsConstant() {
     assertThat(map(Arrays.asList(1, 2, 3), constant(1)), contains(1, 1, 1));
+  }
+
+  @Test public void countingPredicateWithOne() {
+    final Predicate<Integer> p = countingPredicate(1);
+    assertThat(p.test(1), is(true));
+    assertThat(p.test(1), is(false));
+  }
+
+  @Test public void countingPredicateWithZero() {
+    final Predicate<Integer> p = countingPredicate(0);
+    assertThat(p.test(1), is(false));
+  }
+
+  @Test(expected = IllegalArgumentException.class) public void countingPredicateWithNegative() {
+    final Predicate<Integer> p = countingPredicate(-1);
   }
 }
