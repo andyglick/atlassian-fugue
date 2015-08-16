@@ -1004,7 +1004,7 @@ public class Iterables {
    * Return an infinite iterable that cycles through the input values in order
    * in a loop. If no elements are provided returns an empty iterable.
    *
-   * @param as input values to cycle through
+   * @param as input values to cycle through must not be null
    * @param <A> returned elements
    * @return an infinite iterable containing the original elements
    *
@@ -1017,7 +1017,7 @@ public class Iterables {
   static final class Cycle<A> implements Iterable<A>{
     final Iterable<? extends A> as;
     Cycle(final Iterable<? extends A> as){
-      this.as = as;
+      this.as = requireNonNull(as);
     }
 
     @Override public Iterator<A> iterator() {
@@ -1055,7 +1055,7 @@ public class Iterables {
    * printing follows this pattern:
    * {@literal <start><element><sep><element>...<end>}
    *
-   * @param as the iterable to print
+   * @param as the iterable to print must not be null
    * @param start prefix to start the printing with
    * @param sep separator to use between each element
    * @param end suffic to end the printing with
@@ -1068,7 +1068,7 @@ public class Iterables {
   public static <A> String makeString(final Iterable<? extends A> as, final String start, final String sep, final String end, final int maxLength){
     final StringBuilder b = new StringBuilder();
     b.append(start);
-    final Iterator<? extends A> ias = as.iterator();
+    final Iterator<? extends A> ias = requireNonNull(as).iterator();
 
     if(ias.hasNext()){
       b.append(String.valueOf(ias.next()));
@@ -1098,7 +1098,7 @@ public class Iterables {
    * characters printing follows this pattern:
    * {@literal <start><element><sep><element>...<end>}
    *
-   * @param as the iterable to print
+   * @param as the iterable to print must not be null
    * @param start prefix to start the printing with
    * @param sep separator to use between each element
    * @param end suffic to end the printing with
