@@ -26,64 +26,64 @@ import com.atlassian.fugue.law.SemigroupTests
 class SemigroupsSpec extends TestSuite {
 
   test("intMaximum") {
-    intMaximumSemigroup.append(1, 2) shouldEqual 2
-    maxSemigroup(Comparator.naturalOrder[Integer]()).append(1, 2) shouldEqual 2
-    maxSemigroup[Integer]().append(1, 2) shouldEqual 2
-    check(SemigroupTests(intMaximumSemigroup))
+    intMaximum.append(1, 2) shouldEqual 2
+    max(Comparator.naturalOrder[Integer]()).append(1, 2) shouldEqual 2
+    max[Integer]().append(1, 2) shouldEqual 2
+    check(SemigroupTests(intMaximum))
   }
   test("intMaximum via comparator") {
-    check(SemigroupTests(maxSemigroup(Comparator.naturalOrder[Integer]())))
+    check(SemigroupTests(max(Comparator.naturalOrder[Integer]())))
   }
   test("intMaximum via comparable") {
-    check(SemigroupTests(maxSemigroup[Integer]()))
+    check(SemigroupTests(max[Integer]()))
   }
 
   test("intMinimum") {
-    intMinimumSemigroup.append(1, 2) shouldEqual 1
-    minSemigroup(Comparator.naturalOrder[Integer]()).append(1, 2) shouldEqual 1
-    minSemigroup[Integer]().append(1, 2) shouldEqual 1
-    check(SemigroupTests(intMinimumSemigroup))
+    intMinimum.append(1, 2) shouldEqual 1
+    min(Comparator.naturalOrder[Integer]()).append(1, 2) shouldEqual 1
+    min[Integer]().append(1, 2) shouldEqual 1
+    check(SemigroupTests(intMinimum))
   }
   test("intMinimum via comparator") {
-    check(SemigroupTests(minSemigroup(Comparator.naturalOrder[Integer]())))
+    check(SemigroupTests(min(Comparator.naturalOrder[Integer]())))
   }
   test("intMinimum via comparable") {
-    check(SemigroupTests(minSemigroup[Integer]()))
+    check(SemigroupTests(min[Integer]()))
   }
 
 
   test("longMaximum") {
-    longMaximumSemigroup.append(1L, 2L) shouldEqual 2L
-    check(SemigroupTests(longMaximumSemigroup))
+    longMaximum.append(1L, 2L) shouldEqual 2L
+    check(SemigroupTests(longMaximum))
   }
 
   test("longMinimum") {
-    longMinimumSemigroup.append(1L, 2L) shouldEqual 1L
-    check(SemigroupTests(longMinimumSemigroup))
+    longMinimum.append(1L, 2L) shouldEqual 1L
+    check(SemigroupTests(longMinimum))
   }
 
   test("bigintMaximum") {
-    bigintMaximumSemigroup.append(BigInteger.valueOf(1), BigInteger.valueOf(2)) shouldEqual BigInteger.valueOf(2)
-    check(SemigroupTests(bigintMaximumSemigroup))
+    bigintMaximum.append(BigInteger.valueOf(1), BigInteger.valueOf(2)) shouldEqual BigInteger.valueOf(2)
+    check(SemigroupTests(bigintMaximum))
   }
 
   test("bigintMinimum") {
-    bigintMinimumSemigroup.append(BigInteger.valueOf(1), BigInteger.valueOf(2)) shouldEqual BigInteger.valueOf(1)
-    check(SemigroupTests(bigintMinimumSemigroup))
+    bigintMinimum.append(BigInteger.valueOf(1), BigInteger.valueOf(2)) shouldEqual BigInteger.valueOf(1)
+    check(SemigroupTests(bigintMinimum))
   }
 
   test("bigDecimalMaximum") {
-    bigDecimalMaximumSemigroup.append(BigDecimal.valueOf(1.0), BigDecimal.valueOf(2.0)) shouldEqual BigDecimal.valueOf(2.0)
-    check(SemigroupTests(bigDecimalMaximumSemigroup))
+    bigDecimalMaximum.append(BigDecimal.valueOf(1.0), BigDecimal.valueOf(2.0)) shouldEqual BigDecimal.valueOf(2.0)
+    check(SemigroupTests(bigDecimalMaximum))
   }
 
   test("bigDecimalMinimum") {
-    bigDecimalMinimumSemigroup.append(BigDecimal.valueOf(1.0), BigDecimal.valueOf(2.0)) shouldEqual BigDecimal.valueOf(1.0)
-    check(SemigroupTests(bigDecimalMinimumSemigroup))
+    bigDecimalMinimum.append(BigDecimal.valueOf(1.0), BigDecimal.valueOf(2.0)) shouldEqual BigDecimal.valueOf(1.0)
+    check(SemigroupTests(bigDecimalMinimum))
   }
 
   test("dual is also a semigroup") {
-    check(SemigroupTests(Semigroup.dual(intMaximumSemigroup)))
+    check(SemigroupTests(Semigroup.dual(intMaximum)))
   }
 
 }

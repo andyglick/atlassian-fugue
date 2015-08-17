@@ -49,9 +49,9 @@ class MonoidSpec extends TestSuite {
 
     property("dual is also a monoid") = MonoidTests(Monoid.dual(intMonoid))
 
-    property("concatInterspersed is consistent with concat") = forAll((a: A, aa: java.util.List[A]) => isEq(monoid.concat(Iterables.intersperse(aa, a)), Monoid.concatInterspersed(monoid, aa, a)))
+    property("intersperse is consistent with sum") = forAll((a: A, aa: java.util.List[A]) => isEq(monoid.sum(Iterables.intersperse(aa, a)), Monoid.intersperse(monoid, aa, a)))
 
-    property("concatRepeated is consistent with concat") = sizedProp(n => forAll((a: A) => isEq(monoid.concat(asJavaIterable(ListBuffer.fill(n)(a))), Monoid.concatRepeated(monoid, n, a))))
+    property("multiply is consistent with sum") = sizedProp(n => forAll((a: A) => isEq(monoid.sum(asJavaIterable(ListBuffer.fill(n)(a))), Monoid.multiply(monoid, n, a))))
 
   }
 

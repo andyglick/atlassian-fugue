@@ -34,93 +34,93 @@ import scala.collection.mutable.ListBuffer
 class MonoidsSpec extends TestSuite {
 
   test("intAddition") {
-    intAdditionMonoid.append(1, 2) shouldEqual 3
-    check(MonoidTests(intAdditionMonoid))
+    intAddition.append(1, 2) shouldEqual 3
+    check(MonoidTests(intAddition))
   }
 
   test("intMultiplication") {
-    intMultiplicationMonoid.append(2, 3) shouldEqual 6
-    check(MonoidTests(intMultiplicationMonoid))
+    intMultiplication.append(2, 3) shouldEqual 6
+    check(MonoidTests(intMultiplication))
   }
 
   test("doubleAddition") {
-    doubleAdditionMonoid.append(2.0, 3.0) shouldEqual 5.0
-    check(MonoidTests(doubleAdditionMonoid))
+    doubleAddition.append(2.0, 3.0) shouldEqual 5.0
+    check(MonoidTests(doubleAddition))
   }
 
   test("bigintAddition") {
-    bigintAdditionMonoid.append(BigInteger.valueOf(2), BigInteger.valueOf(3)) shouldEqual BigInteger.valueOf(5)
-    check(MonoidTests(bigintAdditionMonoid))
+    bigintAddition.append(BigInteger.valueOf(2), BigInteger.valueOf(3)) shouldEqual BigInteger.valueOf(5)
+    check(MonoidTests(bigintAddition))
   }
 
   test("bigintMultiplication") {
-    bigintMultiplicationMonoid.append(BigInteger.valueOf(2), BigInteger.valueOf(3)) shouldEqual BigInteger.valueOf(6)
-    check(MonoidTests(bigintMultiplicationMonoid))
+    bigintMultiplication.append(BigInteger.valueOf(2), BigInteger.valueOf(3)) shouldEqual BigInteger.valueOf(6)
+    check(MonoidTests(bigintMultiplication))
   }
 
   test("longAddition") {
-    longAdditionMonoid.append(1L, 2L) shouldEqual 3L
-    check(MonoidTests(longAdditionMonoid))
+    longAddition.append(1L, 2L) shouldEqual 3L
+    check(MonoidTests(longAddition))
   }
 
   test("longMultiplication") {
-    longMultiplicationMonoid.append(2L, 3L) shouldEqual 6L
-    check(MonoidTests(longMultiplicationMonoid))
+    longMultiplication.append(2L, 3L) shouldEqual 6L
+    check(MonoidTests(longMultiplication))
   }
 
   test("disjunction") {
-    disjunctionMonoid.append(false, true) shouldEqual true
-    disjunctionMonoid.append(true, true) shouldEqual true
-    check(MonoidTests(disjunctionMonoid))
+    disjunction.append(false, true) shouldEqual true
+    disjunction.append(true, true) shouldEqual true
+    check(MonoidTests(disjunction))
   }
 
   test("exclusiveDisjunction") {
-    exclusiveDisjunctionMonoid.append(false, true) shouldEqual true
-    exclusiveDisjunctionMonoid.append(true, true) shouldEqual false
-    check(MonoidTests(exclusiveDisjunctionMonoid))
+    exclusiveDisjunction.append(false, true) shouldEqual true
+    exclusiveDisjunction.append(true, true) shouldEqual false
+    check(MonoidTests(exclusiveDisjunction))
   }
 
   test("conjunction") {
-    conjunctionMonoid.append(false, true) shouldEqual false
-    conjunctionMonoid.append(true, true) shouldEqual true
-    check(MonoidTests(conjunctionMonoid))
+    conjunction.append(false, true) shouldEqual false
+    conjunction.append(true, true) shouldEqual true
+    check(MonoidTests(conjunction))
   }
 
   test("string") {
-    stringMonoid.append("a", "b") shouldEqual "ab"
-    check(MonoidTests(stringMonoid))
+    string.append("a", "b") shouldEqual "ab"
+    check(MonoidTests(string))
   }
 
   test("unit") {
-    check(MonoidTests(unitMonoid))
+    check(MonoidTests(unit))
   }
 
   test("list") {
-    listMonoid[String]().append(asList("a"), asList("b")) shouldEqual asList("a", "b")
-    check(MonoidTests(listMonoid[Integer]()))
+    list[String]().append(asList("a"), asList("b")) shouldEqual asList("a", "b")
+    check(MonoidTests(list[Integer]()))
   }
 
   test("iterable") {
-    StreamSupport.stream(iterableMonoid[String]().append(asList("a"), asList("b")).spliterator(), false).collect(Collectors.toList[String]) shouldEqual asList("a", "b")
+    StreamSupport.stream(iterable[String]().append(asList("a"), asList("b")).spliterator(), false).collect(Collectors.toList[String]) shouldEqual asList("a", "b")
   }
 
   test("firstOption") {
-    firstOptionMonoid[String]().append(Option.some("a"), Option.some("b")) shouldEqual Option.some("a")
-    check(MonoidTests(firstOptionMonoid[Integer]()))
+    firstOption[String]().append(Option.some("a"), Option.some("b")) shouldEqual Option.some("a")
+    check(MonoidTests(firstOption[Integer]()))
   }
 
   test("lastOption") {
-    lastOptionMonoid[String]().append(Option.some("a"), Option.some("b")) shouldEqual Option.some("b")
-    check(MonoidTests(lastOptionMonoid[Integer]()))
+    lastOption[String]().append(Option.some("a"), Option.some("b")) shouldEqual Option.some("b")
+    check(MonoidTests(lastOption[Integer]()))
   }
 
   test("option") {
-    optionMonoid(Semigroups.intAdditionSemigroup).append(Option.some(1), Option.some(2)) shouldEqual Option.some(3)
-    check(MonoidTests(optionMonoid(Semigroups.intAdditionSemigroup)))
+    option(Semigroups.intAddition).append(Option.some(1), Option.some(2)) shouldEqual Option.some(3)
+    check(MonoidTests(option(Semigroups.intAddition)))
   }
 
   test("either") {
-    val m = eitherMonoid(Semigroups.intAdditionSemigroup, stringMonoid)
+    val m = either(Semigroups.intAddition, string)
 
     m.append(right("a"), right("b")) shouldEqual right("ab")
     m.append(Either.left(1), Either.left(2)) shouldEqual Either.left(3)

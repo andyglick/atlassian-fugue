@@ -25,8 +25,8 @@ import static com.atlassian.fugue.Pair.pair;
  * and an identity element for this operation.
  * Implementations must follow the monoidal laws:
  * <ul>
- * <li><em>Left Identity</em>; forall x. append(empty(), x) == x</li>
- * <li><em>Right Identity</em>; forall x. append(x, empty()) == x</li>
+ * <li><em>Left Identity</em>; forall x. append(zero(), x) == x</li>
+ * <li><em>Right Identity</em>; forall x. append(x, zero()) == x</li>
  * <li><em>Associativity</em>; forall  x y z. append(append(x, y), z) == append(x, append(y, z))</li>
  * </ul>
  *
@@ -39,7 +39,7 @@ public interface Monoid<A> extends Semigroup<A> {
    *
    * @return The identity element for this monoid.
    */
-  A empty();
+  A zero();
 
   /**
    * Sums the given values.
@@ -47,8 +47,8 @@ public interface Monoid<A> extends Semigroup<A> {
    * @param as The values to append.
    * @return The append of the given values.
    */
-  default A concat(final Iterable<A> as) {
-    A m = empty();
+  default A sum(final Iterable<A> as) {
+    A m = zero();
     for (A a : as) {
       m = append(m, a);
     }
@@ -56,11 +56,11 @@ public interface Monoid<A> extends Semigroup<A> {
   }
 
   /**
-   * Constructs a monoid from the given semigroup (append function) and empty value, which must follow the monoidal laws.
+   * Constructs a monoid from the given semigroup (append function) and zero value, which must follow the monoidal laws.
    *
    * @param semigroup The semigroup for the monoid.
-   * @param zero      The empty for the monoid.
-   * @return A monoid instance that uses the given semigroup and empty value.
+   * @param zero      The zero for the monoid.
+   * @return A monoid instance that uses the given semigroup and zero value.
    */
   static <A> Monoid<A> monoid(final Semigroup<A> semigroup, final A zero) {
     return new Monoid<A>() {
@@ -69,7 +69,7 @@ public interface Monoid<A> extends Semigroup<A> {
         return semigroup.append(a1, a2);
       }
 
-      @Override public A empty() {
+      @Override public A zero() {
         return zero;
       }
     };
@@ -79,7 +79,7 @@ public interface Monoid<A> extends Semigroup<A> {
    * Composes a monoid with another.
    */
   static <A, B> Monoid<Pair<A, B>> compose(Monoid<A> ma, Monoid<B> mb) {
-    return monoid(Semigroup.compose(ma, mb), pair(ma.empty(), mb.empty()));
+    return monoid(Semigroup.compose(ma, mb), pair(ma.zero(), mb.zero()));
   }
 
   /**
@@ -89,7 +89,7 @@ public interface Monoid<A> extends Semigroup<A> {
    * @return a Monoid appending in reverse order,
    */
   static <A> Monoid<A> dual(Monoid<A> monoid) {
-    return monoid(Semigroup.dual(monoid), monoid.empty());
+    return monoid(Semigroup.dual(monoid), monoid.zero());
   }
 
   /**
@@ -100,8 +100,8 @@ public interface Monoid<A> extends Semigroup<A> {
    * @param a      The value to intersperse between values of the given iterable.
    * @return The append of the given values and the interspersed value.
    */
-  static <A> A concatInterspersed(Monoid<A> monoid, final Iterable<A> as, final A a) {
-    return monoid.concat(Iterables.intersperse(as, a));
+  static <A> A intersperse(Monoid<A> monoid, final Iterable<A> as, final A a) {
+    return monoid.sum(Iterables.intersperse(as, a));
   }
 
   /**
@@ -110,10 +110,10 @@ public interface Monoid<A> extends Semigroup<A> {
    * @param monoid a monoid for A
    * @param n      multiplier
    * @param a      the value to be reapeatly summed
-   * @return <code>a</code> summed <code>n</code> times. If <code>n <= 0</code>, returns <code>monoid.empty()</code>
+   * @return <code>a</code> summed <code>n</code> times. If <code>n <= 0</code>, returns <code>monoid.zero()</code>
    */
-  static <A> A concatRepeated(Monoid<A> monoid, final int n, final A a) {
-    return monoid.concat(Iterables.<A, Integer>unfold(i -> (i < n) ? some(pair(a, i + 1)) : none(), 0));
+  static <A> A multiply(Monoid<A> monoid, final int n, final A a) {
+    return monoid.sum(Iterables.<A, Integer>unfold(i -> (i < n) ? some(pair(a, i + 1)) : none(), 0));
   }
 
 }

@@ -36,7 +36,7 @@ object MonoidTests {
 
     property("right identity") = forAll((x: A) => laws.monoidRightIdentity(x))
 
-    property("concat is equivalent to foldr") = forAll((aa: List[A]) => isEq(aa.fold(monoid.empty())((a1, a2) => monoid.append(a1, a2)), monoid.concat(aa)))
+    property("sum is equivalent to foldr") = forAll((aa: List[A]) => isEq(aa.fold(monoid.zero())((a1, a2) => monoid.append(a1, a2)), monoid.sum(aa)))
 
   }
 

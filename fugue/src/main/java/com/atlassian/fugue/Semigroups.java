@@ -38,102 +38,102 @@ public final class Semigroups {
   /**
    * A semigroup that adds integers.
    */
-  public static final Semigroup<Integer> intAdditionSemigroup = (i1, i2) -> i1 + i2;
+  public static final Semigroup<Integer> intAddition = (i1, i2) -> i1 + i2;
 
   /**
    * A semigroup that adds doubles.
    */
-  public static final Semigroup<Double> doubleAdditionSemigroup = (d1, d2) -> d1 + d2;
+  public static final Semigroup<Double> doubleAddition = (d1, d2) -> d1 + d2;
 
   /**
    * A semigroup that multiplies integers.
    */
-  public static final Semigroup<Integer> intMultiplicationSemigroup = (i1, i2) -> i1 * i2;
+  public static final Semigroup<Integer> intMultiplication = (i1, i2) -> i1 * i2;
 
   /**
    * A semigroup that yields the maximum of integers.
    */
-  public static final Semigroup<Integer> intMaximumSemigroup = Math::max;
+  public static final Semigroup<Integer> intMaximum = Math::max;
 
   /**
    * A semigroup that yields the minimum of integers.
    */
-  public static final Semigroup<Integer> intMinimumSemigroup = Math::min;
+  public static final Semigroup<Integer> intMinimum = Math::min;
 
   /**
    * A semigroup that adds big integers.
    */
-  public static final Semigroup<BigInteger> bigintAdditionSemigroup = BigInteger::add;
+  public static final Semigroup<BigInteger> bigintAddition = BigInteger::add;
 
   /**
    * A semigroup that multiplies big integers.
    */
-  public static final Semigroup<BigInteger> bigintMultiplicationSemigroup = BigInteger::multiply;
+  public static final Semigroup<BigInteger> bigintMultiplication = BigInteger::multiply;
 
   /**
    * A semigroup that yields the maximum of big integers.
    */
-  public static final Semigroup<BigInteger> bigintMaximumSemigroup = BigInteger::max;
+  public static final Semigroup<BigInteger> bigintMaximum = BigInteger::max;
 
   /**
    * A semigroup that yields the minimum of big integers.
    */
-  public static final Semigroup<BigInteger> bigintMinimumSemigroup = BigInteger::min;
+  public static final Semigroup<BigInteger> bigintMinimum = BigInteger::min;
 
   /**
    * A semigroup that yields the maximum of big decimals.
    */
-  public static final Semigroup<BigDecimal> bigDecimalMaximumSemigroup = BigDecimal::max;
+  public static final Semigroup<BigDecimal> bigDecimalMaximum = BigDecimal::max;
 
   /**
    * A semigroup that yields the minimum of big decimals.
    */
-  public static final Semigroup<BigDecimal> bigDecimalMinimumSemigroup = BigDecimal::min;
+  public static final Semigroup<BigDecimal> bigDecimalMinimum = BigDecimal::min;
 
   /**
    * A semigroup that adds longs.
    */
-  public static final Semigroup<Long> longAdditionSemigroup = (x, y) -> x + y;
+  public static final Semigroup<Long> longAddition = (x, y) -> x + y;
 
   /**
    * A semigroup that multiplies longs.
    */
-  public static final Semigroup<Long> longMultiplicationSemigroup = (x, y) -> x * y;
+  public static final Semigroup<Long> longMultiplication = (x, y) -> x * y;
 
   /**
    * A semigroup that yields the maximum of longs.
    */
-  public static final Semigroup<Long> longMaximumSemigroup = Math::max;
+  public static final Semigroup<Long> longMaximum = Math::max;
 
   /**
    * A semigroup that yields the minimum of longs.
    */
-  public static final Semigroup<Long> longMinimumSemigroup = Math::min;
+  public static final Semigroup<Long> longMinimum = Math::min;
 
   /**
    * A semigroup that ORs booleans.
    */
-  public static final Semigroup<Boolean> disjunctionSemigroup = (b1, b2) -> b1 || b2;
+  public static final Semigroup<Boolean> disjunction = (b1, b2) -> b1 || b2;
 
   /**
    * A semigroup that XORs booleans.
    */
-  public static final Semigroup<Boolean> exclusiveDisjunctionSemiGroup = (p, q) -> (p ^ q);
+  public static final Semigroup<Boolean> exclusiveDisjunction = (p, q) -> (p ^ q);
 
   /**
    * A semigroup that ANDs booleans.
    */
-  public static final Semigroup<Boolean> conjunctionSemigroup = (b1, b2) -> b1 && b2;
+  public static final Semigroup<Boolean> conjunction = (b1, b2) -> b1 && b2;
 
   /**
    * A semigroup that appends strings.
    */
-  public static final Semigroup<String> stringSemigroup = String::concat;
+  public static final Semigroup<String> string = String::concat;
 
   /**
    * A semigroup for the Unit value.
    */
-  public static final Semigroup<Unit> unitSemigroup = (u1, u2) -> Unit.VALUE;
+  public static final Semigroup<Unit> unit = (u1, u2) -> Unit.VALUE;
 
   private Semigroups() {
   }
@@ -152,7 +152,7 @@ public final class Semigroups {
    * @param sb The semigroup for the codomain.
    * @return A semigroup for functions.
    */
-  public static <A, B> Semigroup<Function<A, B>> functionSemigroup(final Semigroup<B> sb) {
+  public static <A, B> Semigroup<Function<A, B>> function(final Semigroup<B> sb) {
     return (a1, a2) -> a -> sb.append(a1.apply(a), a2.apply(a));
   }
 
@@ -162,7 +162,7 @@ public final class Semigroups {
    * @param comparator the comparator used to define the max of two value.
    * @return A max semigroup.
    */
-  public static <A> Semigroup<A> maxSemigroup(final Comparator<A> comparator) {
+  public static <A> Semigroup<A> max(final Comparator<A> comparator) {
     return (a1, a2) -> comparator.compare(a1, a2) < 0 ? a2 : a1;
   }
 
@@ -172,7 +172,7 @@ public final class Semigroups {
    * @param comparator the comparator used to define the min of two value.
    * @return A min semigroup.
    */
-  public static <A> Semigroup<A> minSemigroup(final Comparator<A> comparator) {
+  public static <A> Semigroup<A> min(final Comparator<A> comparator) {
     return (a1, a2) -> comparator.compare(a1, a2) > 0 ? a2 : a1;
   }
 
@@ -181,7 +181,7 @@ public final class Semigroups {
    *
    * @return A max semigroup.
    */
-  public static <A extends Comparable<A>> Semigroup<A> maxSemigroup() {
+  public static <A extends Comparable<A>> Semigroup<A> max() {
     return (a1, a2) -> a1.compareTo(a2) < 0 ? a2 : a1;
   }
 
@@ -190,7 +190,7 @@ public final class Semigroups {
    *
    * @return A min semigroup.
    */
-  public static <A extends Comparable<A>> Semigroup<A> minSemigroup() {
+  public static <A extends Comparable<A>> Semigroup<A> min() {
     return (a1, a2) -> a1.compareTo(a2) > 0 ? a2 : a1;
   }
 
@@ -199,7 +199,7 @@ public final class Semigroups {
    *
    * @return A semigroup for lists.
    */
-  public static <A> Semigroup<List<A>> listSemigroup() {
+  public static <A> Semigroup<List<A>> list() {
     return (l1, l2) -> {
       final List<A> sumList;
       if (l1.isEmpty()) {
@@ -222,7 +222,7 @@ public final class Semigroups {
    *
    * @return A semigroup for iterables.
    */
-  public static <A> Semigroup<Iterable<A>> iterableSemigroup() {
+  public static <A> Semigroup<Iterable<A>> iterable() {
     return (l1, l2) -> join(asList(l1, l2));
   }
 
@@ -232,7 +232,7 @@ public final class Semigroups {
    *
    * @return A semigroup for option values (that take the first defined value).
    */
-  public static <A> Semigroup<Option<A>> firstOptionSemigroup() {
+  public static <A> Semigroup<Option<A>> firstOption() {
     return (a1, a2) -> a1.isDefined() ? a1 : a2;
   }
 
@@ -241,7 +241,7 @@ public final class Semigroups {
    *
    * @return A semigroup for option values that take the last defined value.
    */
-  public static <A> Semigroup<Option<A>> lastOptionSemigroup() {
+  public static <A> Semigroup<Option<A>> lastOption() {
     return (a1, a2) -> a2.isDefined() ? a2 : a1;
   }
 
@@ -258,7 +258,7 @@ public final class Semigroups {
    * @param rS Semigroup for right values
    * @return A semigroup that Sums up values inside either.
    */
-  public static <L, R> Semigroup<Either<L, R>> eitherSemigroup(Semigroup<L> lS, Semigroup<R> rS) {
+  public static <L, R> Semigroup<Either<L, R>> either(Semigroup<L> lS, Semigroup<R> rS) {
     return (e1, e2) -> e1.<Either<L, R>>fold(l1 -> e2.<Either<L, R>>fold(l2 -> left(lS.append(l1, l2)), r2 -> e1),
       r1 -> e2.<Either<L, R>>fold(l2 -> e2, r2 -> right(rS.append(r1, r2))));
   }

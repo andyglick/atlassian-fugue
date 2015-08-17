@@ -33,11 +33,11 @@ public interface MonoidLaws<A> extends SemigroupLaws<A> {
   }
 
   default IsEq<A> monoidLeftIdentity(A x) {
-    return isEq(x, monoid().append(monoid().empty(), x));
+    return isEq(x, monoid().append(monoid().zero(), x));
   }
 
   default IsEq<A> monoidRightIdentity(A x) {
-    return isEq(x, monoid().append(x, monoid().empty()));
+    return isEq(x, monoid().append(x, monoid().zero()));
   }
 
   static <A> MonoidLaws<A> monoidLaws(Monoid<A> monoid) {
