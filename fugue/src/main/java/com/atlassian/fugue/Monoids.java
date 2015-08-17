@@ -22,9 +22,11 @@ import java.util.List;
 import java.util.function.Function;
 
 import static com.atlassian.fugue.Either.right;
+import static com.atlassian.fugue.Iterables.map;
 import static com.atlassian.fugue.Monoid.monoid;
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.some;
+import static com.atlassian.fugue.Unit.Unit;
 import static java.util.Collections.emptyList;
 
 /**
@@ -37,7 +39,7 @@ public final class Monoids {
   /**
    * A monoid that adds integers.
    */
-  public static final Monoid<Integer> intAddition = monoid(Semigroups.intAddition, 0);
+  public static final Monoid<Integer> intAddition = monoid(Semigroups.intAddition, 0, (n, i) -> n * i);
 
   /**
    * A monoid that multiplies integers.
@@ -52,17 +54,18 @@ public final class Monoids {
   /**
    * A monoid that adds big integers.
    */
-  public static final Monoid<BigInteger> bigintAddition = monoid(Semigroups.bigintAddition, BigInteger.ZERO);
+  public static final Monoid<BigInteger> bigintAddition = monoid(Semigroups.bigintAddition, BigInteger.ZERO,
+    (n, b) -> b.multiply(BigInteger.valueOf(n)));
 
   /**
    * A monoid that multiplies big integers.
    */
-  public static final Monoid<BigInteger> bigintMultiplication = monoid(Semigroups.bigintMultiplication, BigInteger.ONE);
+  public static final Monoid<BigInteger> bigintMultiplication = monoid(Semigroups.bigintMultiplication, BigInteger.ONE, (n, b) -> b.pow(n));
 
   /**
    * A monoid that adds longs.
    */
-  public static final Monoid<Long> longAddition = monoid(Semigroups.longAddition, 0L);
+  public static final Monoid<Long> longAddition = monoid(Semigroups.longAddition, 0L, (n, d) -> n * d);
 
   /**
    * A monoid that multiplies longs.
@@ -72,43 +75,40 @@ public final class Monoids {
   /**
    * A monoid that ORs booleans.
    */
-  public static final Monoid<Boolean> disjunction = monoid(Semigroups.disjunction, false);
+  public static final Monoid<Boolean> disjunction = monoid(Semigroups.disjunction, false, bs -> Iterables.filter(bs, b -> b).iterator().hasNext(),
+    (n, b) -> b);
 
   /**
    * A monoid that XORs booleans.
    */
-  public static final Monoid<Boolean> exclusiveDisjunction = monoid(Semigroups.exclusiveDisjunction, false);
+  public static final Monoid<Boolean> exclusiveDisjunction = monoid(Semigroups.exclusiveDisjunction, false, (n, b) -> b && n == 1);
 
   /**
    * A monoid that ANDs booleans.
    */
-  public static final Monoid<Boolean> conjunction = monoid(Semigroups.conjunction, true);
+  public static final Monoid<Boolean> conjunction = monoid(Semigroups.conjunction, true, bs -> !Iterables.filter(bs, b -> !b).iterator().hasNext());
 
   /**
    * A monoid that appends strings.
    */
-  public static final Monoid<String> string = new Monoid<String>() {
-    @Override public String zero() {
-      return "";
+  public static final Monoid<String> string = monoid(Semigroups.string, "", ss -> {
+    StringBuilder sb = new StringBuilder();
+    for (String s : ss) {
+      sb.append(s);
     }
-
-    @Override public String append(String a1, String a2) {
-      return Semigroups.string.append(a1, a2);
+    return sb.toString();
+  }, (n, s) -> {
+    StringBuilder sb = new StringBuilder(n * s.length());
+    for (int i = 0; i < n; i++) {
+      sb.append(s);
     }
-
-    @Override public String sum(Iterable<String> strings) {
-      StringBuilder sb = new StringBuilder();
-      for (String s : strings) {
-        sb.append(s);
-      }
-      return sb.toString();
-    }
-  };
+    return sb.toString();
+  });
 
   /**
    * A monoid for the Unit value.
    */
-  public static final Monoid<Unit> unit = monoid(Semigroups.unit, Unit.Unit());
+  public static final Monoid<Unit> unit = monoid(Semigroups.unit, Unit(), us -> Unit(), (n, u) -> Unit());
 
   private Monoids() {
   }
@@ -120,7 +120,8 @@ public final class Monoids {
    * @return A monoid for functions.
    */
   public static <A, B> Monoid<Function<A, B>> function(final Monoid<B> mb) {
-    return monoid(Semigroups.function(mb), f -> mb.zero());
+    return monoid(Semigroups.function(mb), f -> mb.zero(), fs -> a -> mb.sum(map(fs, Functions.<A, B>apply(a))),
+      (n, f) -> a -> mb.multiply(n, f.apply(a)));
   }
 
   /**
@@ -129,23 +130,13 @@ public final class Monoids {
    * @return A monoid for lists.
    */
   public static <A> Monoid<List<A>> list() {
-    return new Monoid<List<A>>() {
-      @Override public List<A> append(final List<A> a1, final List<A> a2) {
-        return Semigroups.<A>list().append(a1, a2);
+    return monoid(Semigroups.<A>list(), emptyList(), ls -> {
+      final List<A> r = new ArrayList<>();
+      for (final List<A> l : ls) {
+        r.addAll(l);
       }
-
-      @Override public List<A> zero() {
-        return emptyList();
-      }
-
-      @Override public List<A> sum(final Iterable<List<A>> ll) {
-        final List<A> r = new ArrayList<>();
-        for (final List<A> l : ll) {
-          r.addAll(l);
-        }
-        return r;
-      }
-    };
+      return r;
+    });
   }
 
   /**
@@ -154,19 +145,7 @@ public final class Monoids {
    * @return A monoid for iterables.
    */
   public static <A> Monoid<Iterable<A>> iterable() {
-    return new Monoid<Iterable<A>>() {
-      @Override public Iterable<A> zero() {
-        return emptyList();
-      }
-
-      @Override public Iterable<A> append(Iterable<A> l1, Iterable<A> l2) {
-        return Semigroups.<A>iterable().append(l1, l2);
-      }
-
-      @Override public Iterable<A> sum(Iterable<Iterable<A>> iterables) {
-        return Iterables.join(iterables);
-      }
-    };
+    return monoid(Semigroups.<A>iterable(), emptyList(), Iterables::join);
   }
 
   /**
@@ -175,7 +154,7 @@ public final class Monoids {
    * @return A monoid for options (that take the first available value).
    */
   public static <A> Monoid<Option<A>> firstOption() {
-    return monoid(Semigroups.firstOption(), none());
+    return monoid(Semigroups.<A>firstOption(), none(), os -> Iterables.first(Options.filterNone(os)).getOrElse(none()));
   }
 
   /**

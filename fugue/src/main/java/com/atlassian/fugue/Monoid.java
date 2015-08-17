@@ -16,6 +16,9 @@
 
 package com.atlassian.fugue;
 
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.some;
 import static com.atlassian.fugue.Pair.pair;
@@ -56,6 +59,17 @@ public interface Monoid<A> extends Semigroup<A> {
   }
 
   /**
+   * Returns a value summed <code>n</code> times (<code>a + a + ... + a</code>)
+   *
+   * @param n multiplier
+   * @param a the value to be reapeatly summed
+   * @return <code>a</code> summed <code>n</code> times. If <code>n <= 0</code>, returns <code>zero()</code>
+   */
+  default A multiply(final int n, final A a) {
+    return sum(Iterables.<A, Integer>unfold(i -> (i < n) ? some(pair(a, i + 1)) : none(), 0));
+  }
+
+  /**
    * Constructs a monoid from the given semigroup (append function) and zero value, which must follow the monoidal laws.
    *
    * @param semigroup The semigroup for the monoid.
@@ -76,10 +90,93 @@ public interface Monoid<A> extends Semigroup<A> {
   }
 
   /**
+   * Constructs a monoid from the given semigroup (append function) and zero value, which must follow the monoidal laws,
+   * and provide an optimized implementation of sum.
+   *
+   * @param semigroup The semigroup for the monoid.
+   * @param zero      The zero for the monoid.
+   * @param sum       optimized sum implementation.
+   * @return A monoid instance that uses the given semigroup and zero value.
+   */
+  static <A> Monoid<A> monoid(final Semigroup<A> semigroup, final A zero, Function<Iterable<A>, A> sum) {
+    return new Monoid<A>() {
+
+      @Override public A append(final A a1, final A a2) {
+        return semigroup.append(a1, a2);
+      }
+
+      @Override public A zero() {
+        return zero;
+      }
+
+      @Override public A sum(Iterable<A> as) {
+        return sum.apply(as);
+      }
+    };
+  }
+
+  /**
+   * Constructs a monoid from the given semigroup (append function) and zero value, which must follow the monoidal laws,
+   * and provide an optimized implementation of multiply.
+   *
+   * @param semigroup The semigroup for the monoid.
+   * @param zero      The zero for the monoid.
+   * @param multiply  optimized multiply implementation.
+   * @return A monoid instance that uses the given semigroup and zero value.
+   */
+  static <A> Monoid<A> monoid(final Semigroup<A> semigroup, final A zero, BiFunction<Integer, A, A> multiply) {
+    return new Monoid<A>() {
+
+      @Override public A append(final A a1, final A a2) {
+        return semigroup.append(a1, a2);
+      }
+
+      @Override public A zero() {
+        return zero;
+      }
+
+      @Override public A multiply(int n, A a) {
+        return n <= 0 ? zero() : multiply.apply(n, a);
+      }
+    };
+  }
+
+  /**
+   * Constructs a monoid from the given semigroup (append function) and zero value, which must follow the monoidal laws,
+   * and provide optimized implementations of sum and multiply.
+   *
+   * @param semigroup The semigroup for the monoid.
+   * @param zero      The zero for the monoid.
+   * @param sum       optimized sum implementation.
+   * @param multiply  optimized multiply implementation.
+   * @return A monoid instance that uses the given semigroup and zero value.
+   */
+  static <A> Monoid<A> monoid(final Semigroup<A> semigroup, final A zero, Function<Iterable<A>, A> sum, BiFunction<Integer, A, A> multiply) {
+    return new Monoid<A>() {
+
+      @Override public A append(final A a1, final A a2) {
+        return semigroup.append(a1, a2);
+      }
+
+      @Override public A zero() {
+        return zero;
+      }
+
+      @Override public A sum(Iterable<A> as) {
+        return sum.apply(as);
+      }
+
+      @Override public A multiply(int n, A a) {
+        return n <= 0 ? zero() : multiply.apply(n, a);
+      }
+    };
+  }
+
+  /**
    * Composes a monoid with another.
    */
   static <A, B> Monoid<Pair<A, B>> compose(Monoid<A> ma, Monoid<B> mb) {
-    return monoid(Semigroup.compose(ma, mb), pair(ma.zero(), mb.zero()));
+    return monoid(Semigroup.compose(ma, mb), pair(ma.zero(), mb.zero()), (n, p) -> pair(ma.multiply(n, p.left()), mb.multiply(n, p.right())));
   }
 
   /**
@@ -89,7 +186,7 @@ public interface Monoid<A> extends Semigroup<A> {
    * @return a Monoid appending in reverse order,
    */
   static <A> Monoid<A> dual(Monoid<A> monoid) {
-    return monoid(Semigroup.dual(monoid), monoid.zero());
+    return monoid(Semigroup.dual(monoid), monoid.zero(), monoid::multiply);
   }
 
   /**
@@ -100,20 +197,8 @@ public interface Monoid<A> extends Semigroup<A> {
    * @param a      The value to intersperse between values of the given iterable.
    * @return The append of the given values and the interspersed value.
    */
-  static <A> A intersperse(Monoid<A> monoid, final Iterable<A> as, final A a) {
+  static <A> A intersperse(Monoid<A> monoid, final Iterable<? extends A> as, final A a) {
     return monoid.sum(Iterables.intersperse(as, a));
-  }
-
-  /**
-   * Returns a value summed <code>n</code> times (<code>a + a + ... + a</code>)
-   *
-   * @param monoid a monoid for A
-   * @param n      multiplier
-   * @param a      the value to be reapeatly summed
-   * @return <code>a</code> summed <code>n</code> times. If <code>n <= 0</code>, returns <code>monoid.zero()</code>
-   */
-  static <A> A multiply(Monoid<A> monoid, final int n, final A a) {
-    return monoid.sum(Iterables.<A, Integer>unfold(i -> (i < n) ? some(pair(a, i + 1)) : none(), 0));
   }
 
 }

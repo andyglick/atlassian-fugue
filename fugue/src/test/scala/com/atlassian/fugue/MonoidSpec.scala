@@ -51,8 +51,6 @@ class MonoidSpec extends TestSuite {
 
     property("intersperse is consistent with sum") = forAll((a: A, aa: java.util.List[A]) => isEq(monoid.sum(Iterables.intersperse(aa, a)), Monoid.intersperse(monoid, aa, a)))
 
-    property("multiply is consistent with sum") = sizedProp(n => forAll((a: A) => isEq(monoid.sum(asJavaIterable(ListBuffer.fill(n)(a))), Monoid.multiply(monoid, n, a))))
-
   }
 
 }

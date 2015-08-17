@@ -23,6 +23,7 @@ import org.scalacheck.Prop._
 import org.scalacheck.{Arbitrary, Properties}
 
 import scala.collection.JavaConversions._
+import scala.collection.mutable.ListBuffer
 
 object MonoidTests {
 
@@ -37,6 +38,8 @@ object MonoidTests {
     property("right identity") = forAll((x: A) => laws.monoidRightIdentity(x))
 
     property("sum is equivalent to foldr") = forAll((aa: List[A]) => isEq(aa.fold(monoid.zero())((a1, a2) => monoid.append(a1, a2)), monoid.sum(aa)))
+
+    property("multiply is consistent with sum") = sizedProp(n => forAll((a: A) => isEq(monoid.sum(asJavaIterable(ListBuffer.fill(n)(a))), monoid.multiply(n, a))))
 
   }
 
