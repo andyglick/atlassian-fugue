@@ -29,7 +29,7 @@ import static com.atlassian.fugue.Semigroups.*;
 import static java.util.Collections.emptyList;
 
 /**
- * {@link Monoid} instances and utility methods.
+ * {@link Monoid} instances.
  *
  * @since 3.0
  */
