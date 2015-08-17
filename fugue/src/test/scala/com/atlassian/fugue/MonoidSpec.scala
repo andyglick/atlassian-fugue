@@ -18,7 +18,13 @@ package com.atlassian.fugue
 
 import com.atlassian.fugue.Monoid._
 import com.atlassian.fugue.Semigroup.semigroup
+import com.atlassian.fugue.law.IsEq._
 import com.atlassian.fugue.law.MonoidTests
+import org.scalacheck.Prop._
+import org.scalacheck.{Arbitrary, Properties}
+
+import scala.collection.JavaConversions._
+import scala.collection.mutable.ListBuffer
 
 
 class MonoidSpec extends TestSuite {
@@ -27,6 +33,26 @@ class MonoidSpec extends TestSuite {
 
   test("Monoid laws") {
     check(MonoidTests(intMonoid))
+  }
+
+  val stringMonoid = monoid(semigroup((s1: String) => (s2: String) => s1 + s2), "")
+
+  test("Monoids derived methods") {
+    check(derivedMethodsTests(stringMonoid))
+  }
+
+  test("Monoids composition") {
+    check(MonoidTests(compose(stringMonoid, intMonoid)))
+  }
+
+  def derivedMethodsTests[A: Arbitrary](monoid: Monoid[A]) = new Properties("derived methods") {
+
+    property("dual is also a monoid") = MonoidTests(Monoid.dual(intMonoid))
+
+    property("concatInterspersed is consistent with concat") = forAll((a: A, aa: java.util.List[A]) => isEq(monoid.concat(Iterables.intersperse(aa, a)), Monoid.concatInterspersed(monoid, aa, a)))
+
+    property("concatRepeated is consistent with concat") = sizedProp(n => forAll((a: A) => isEq(monoid.concat(asJavaIterable(ListBuffer.fill(n)(a))), Monoid.concatRepeated(monoid, n, a))))
+
   }
 
 }

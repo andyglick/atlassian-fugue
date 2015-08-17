@@ -83,7 +83,7 @@ class SemigroupsSpec extends TestSuite {
   }
 
   test("dual is also a semigroup") {
-    check(SemigroupTests(Semigroups.dual(intMaximumSemigroup)))
+    check(SemigroupTests(Semigroup.dual(intMaximumSemigroup)))
   }
 
 }

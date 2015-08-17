@@ -16,6 +16,10 @@
 
 package com.atlassian.fugue;
 
+import static com.atlassian.fugue.Option.none;
+import static com.atlassian.fugue.Option.some;
+import static com.atlassian.fugue.Pair.pair;
+
 /**
  * A Monoid is an algebraic structure consisting of an associative binary operation across the values of a given type (a monoid is a {@link Semigroup})
  * and an identity element for this operation.
@@ -69,6 +73,47 @@ public interface Monoid<A> extends Semigroup<A> {
         return zero;
       }
     };
+  }
+
+  /**
+   * Composes a monoid with another.
+   */
+  static <A, B> Monoid<Pair<A, B>> compose(Monoid<A> ma, Monoid<B> mb) {
+    return monoid(Semigroup.compose(ma, mb), pair(ma.empty(), mb.empty()));
+  }
+
+  /**
+   * Return the dual Monoid.
+   *
+   * @param monoid a monoid.
+   * @return a Monoid appending in reverse order,
+   */
+  static <A> Monoid<A> dual(Monoid<A> monoid) {
+    return monoid(Semigroup.dual(monoid), monoid.empty());
+  }
+
+  /**
+   * Intersperses the given value between each two elements of the collection, and sums the result.
+   *
+   * @param monoid a monoid for A
+   * @param as     An stream of values to append.
+   * @param a      The value to intersperse between values of the given iterable.
+   * @return The append of the given values and the interspersed value.
+   */
+  static <A> A concatInterspersed(Monoid<A> monoid, final Iterable<A> as, final A a) {
+    return monoid.concat(Iterables.intersperse(as, a));
+  }
+
+  /**
+   * Returns a value summed <code>n</code> times (<code>a + a + ... + a</code>)
+   *
+   * @param monoid a monoid for A
+   * @param n      multiplier
+   * @param a      the value to be reapeatly summed
+   * @return <code>a</code> summed <code>n</code> times. If <code>n <= 0</code>, returns <code>monoid.empty()</code>
+   */
+  static <A> A concatRepeated(Monoid<A> monoid, final int n, final A a) {
+    return monoid.concat(Iterables.<A, Integer>unfold(i -> (i < n) ? some(pair(a, i + 1)) : none(), 0));
   }
 
 }

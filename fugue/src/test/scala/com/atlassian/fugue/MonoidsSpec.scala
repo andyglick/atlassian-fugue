@@ -127,22 +127,4 @@ class MonoidsSpec extends TestSuite {
     check(MonoidTests(m))
   }
 
-  test("Monoids derived methods") {
-    check(derivedMethodsTests(stringMonoid))
-  }
-
-  test("Monoids composition") {
-    check(MonoidTests(compose(stringMonoid, intAdditionMonoid)))
-  }
-
-  def derivedMethodsTests[A: Arbitrary](monoid: Monoid[A]) = new Properties("derived methods") {
-
-    property("dual is also a monoid") = MonoidTests(Monoids.dual(monoid))
-
-    property("concatInterspersed is consistent with concat") = forAll((a: A, aa: java.util.List[A]) => isEq(monoid.concat(Iterables.intersperse(aa, a)), Monoids.concatInterspersed(monoid, aa, a)))
-
-    property("concatRepeated is consistent with concat") = sizedProp(n => forAll((a: A) => isEq(monoid.concat(asJavaIterable(ListBuffer.fill(n)(a))), Monoids.concatRepeated(monoid, n, a))))
-
-  }
-
 }

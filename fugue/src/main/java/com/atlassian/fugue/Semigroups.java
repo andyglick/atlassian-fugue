@@ -263,21 +263,4 @@ public final class Semigroups {
       r1 -> e2.<Either<L, R>>fold(l2 -> e2, r2 -> right(rS.append(r1, r2))));
   }
 
-  /**
-   * Composes a semigroup with another.
-   */
-  public static <A, B> Semigroup<Pair<A, B>> compose(Semigroup<A> sa, Semigroup<B> sb) {
-    return (ab1, ab2) -> Pair.pair(sa.append(ab1.left(), ab2.left()), sb.append(ab1.right(), ab2.right()));
-  }
-
-  /**
-   * Return the dual Semigroup of a semigroup
-   *
-   * @param semigroup
-   * @return a semigroup appending in reverse order
-   */
-  public static <A> Semigroup<A> dual(Semigroup<A> semigroup) {
-    return (a1, a2) -> semigroup.append(a2, a1);
-  }
-
 }
