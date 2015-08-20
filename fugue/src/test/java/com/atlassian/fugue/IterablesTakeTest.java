@@ -21,8 +21,8 @@ import org.junit.Test;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import static com.atlassian.fugue.Iterables.take;
 import static com.atlassian.fugue.Iterables.map;
+import static com.atlassian.fugue.Iterables.take;
 import static com.atlassian.fugue.Iterables.takeWhile;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -106,6 +106,10 @@ public class IterablesTakeTest {
 
   @Test(expected = NullPointerException.class) public void takeWhileNull() {
     takeWhile(null, null);
+  }
+
+  @Test(expected = NullPointerException.class) public void takeWhileNullWithPredicate() {
+    takeWhile(null, x -> true);
   }
 
   @Test(expected = NullPointerException.class) public void takeWhileNullPredicate() {

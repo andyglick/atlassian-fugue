@@ -88,6 +88,10 @@ public class IterablesDropTest {
     dropWhile(null, null);
   }
 
+  @Test(expected = NullPointerException.class) public void dropWhileNullWithPredicate() {
+    dropWhile(null, x -> true);
+  }
+
   @Test(expected = NullPointerException.class) public void dropWhileNullPredicate() {
     dropWhile(Iterables.emptyIterable(), null);
   }
