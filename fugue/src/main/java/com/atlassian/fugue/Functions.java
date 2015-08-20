@@ -15,6 +15,8 @@
  */
 package com.atlassian.fugue;
 
+import static java.util.Objects.requireNonNull;
+
 import java.io.Serializable;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
@@ -27,14 +29,12 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * Utility methods for Functions
  * <P>
  * Note that this class defines Partial Functions to be functions that return an
  * {@link Option} of the result type, and has some methods for creating them.
- * 
+ *
  * @since 1.1
  */
 public class Functions {
@@ -77,7 +77,7 @@ public class Functions {
 
     @Override public boolean equals(Object obj) {
       if (obj instanceof FunctionComposition) {
-        FunctionComposition<?, ?, ?> that = (FunctionComposition<?, ?, ?>) obj;
+        final FunctionComposition<?, ?, ?> that = (FunctionComposition<?, ?, ?>) obj;
         return f.equals(that.f) && g.equals(that.g);
       }
       return false;
@@ -98,16 +98,16 @@ public class Functions {
    * Apply f to each element in elements, with each application using the result
    * of the previous application as the other argument to f. zero is used as the
    * first 'result' value. The final result is returned.
-   * 
+   *
    * @param <F> the element type
    * @param <T> the final result type
    * @param f the function to apply to all the elements
    * @param zero the starting point for the function
    * @param elements the series of which each element will be accumulated into a
    * result
-   * 
+   *
    * @return the result of accumulating the application of f to all elements
-   * 
+   *
    * @since 1.1
    */
   public static <F, T> T fold(final BiFunction<? super T, F, T> f, final T zero, final Iterable<? extends F> elements) {
@@ -122,7 +122,7 @@ public class Functions {
    * Apply f to each element in elements, with each application using the result
    * of the previous application as the other argument to f. zero is used as the
    * first 'result' value. The final result is returned.
-   * 
+   *
    * @param <F> the element type
    * @param <S> the accumulator function input type
    * @param <T> the final result type
@@ -130,9 +130,9 @@ public class Functions {
    * @param zero the starting point for the function
    * @param elements the series of which each element will be accumulated into a
    * result
-   * 
+   *
    * @return the result of accumulating the application of f to all elements
-   * 
+   *
    * @since 1.1
    */
   public static <F, S, T extends S> T fold(final Function<Pair<S, F>, T> f, final T zero,
@@ -142,18 +142,18 @@ public class Functions {
 
   /**
    * Function that takes another function and applies it to the argument.
-   * 
+   *
    * @param <A> the argument and function input type
    * @param <B> the result type
    * @param arg the argument that will be applied to any input functions
    * @return a function that takes a function from A to B , applies the arg and
    * returns the result
-   * 
+   *
    * @since 1.1
    */
   public static <A, B> Function<Function<A, B>, B> apply(final A arg) {
     return new Function<Function<A, B>, B>() {
-      public B apply(final Function<A, B> f) {
+      @Override public B apply(final Function<A, B> f) {
         return f.apply(arg);
       }
 
@@ -166,14 +166,14 @@ public class Functions {
   /**
    * Function that takes another function and applies it to the argument
    * supplied by the parameter.
-   * 
+   *
    * @param lazyA the supplier of the argument that will be applied to any input
    * functions
    * @param <A> the type of the argument supplied, and the function input type
    * @param <B> the result type of the function
    * @return a function that takes a function from A to B, applies the argument
    * from the supplier and returns the result
-   * 
+   *
    * @since 2.0
    */
   public static <A, B> Function<Function<A, B>, B> apply(final Supplier<A> lazyA) {
@@ -191,7 +191,7 @@ public class Functions {
   /**
    * Partial Function that does a type check and matches if the value is of the
    * right type.
-   * 
+   *
    * @param <A> the input type
    * @param <B> the type we expect it to be
    * @param cls the type to check against, must not be null
@@ -210,7 +210,7 @@ public class Functions {
       this.cls = requireNonNull(cls);
     }
 
-    public Option<B> apply(A a) {
+    @Override public Option<B> apply(A a) {
       return (cls.isAssignableFrom(a.getClass())) ? Option.some(cls.cast(a)) : Option.<B> none();
     }
 
@@ -227,7 +227,7 @@ public class Functions {
 
   /**
    * Create a PartialFunction from a {@link Predicate} and a {@link Function}.
-   * 
+   *
    * @param <A> the input type
    * @param <B> the output type
    * @param p the predicate to test the value against, must not be null
@@ -249,7 +249,7 @@ public class Functions {
       this.f = requireNonNull(f);
     }
 
-    public Option<B> apply(A a) {
+    @Override public Option<B> apply(A a) {
       return (p.test(a)) ? Option.option(f.apply(a)) : Option.<B> none();
     }
 
@@ -268,7 +268,7 @@ public class Functions {
    * Kleisli composition. In Haskell it is defined as <code>&gt;=&gt;</code>,
    * AKA <a href="http://stackoverflow.com/a/7833488/210216">
    * "compose, fishy, compose"</a>
-   * 
+   *
    * @param <A> the input type
    * @param <B> the middle type
    * @param <C> the output type
@@ -293,7 +293,7 @@ public class Functions {
       this.bc = requireNonNull(bc);
     }
 
-    public Option<C> apply(A a) {
+    @Override public Option<C> apply(A a) {
       return ab.apply(a).flatMap(bc);
     }
 
@@ -309,11 +309,12 @@ public class Functions {
   /**
    * Converts a function that takes a pair of arguments to a function that takes
    * two arguments
-   * 
+   *
    * @param <A> the type of the left of the pair
    * @param <B> the type of the right of the pair
    * @param <C> the result type
-   * @param fpair the source function that takes a pair of arguments, must not be null
+   * @param fpair the source function that takes a pair of arguments, must not
+   * be null
    * @return a function that takes two arguments
    * @since 2.0
    */
@@ -334,7 +335,7 @@ public class Functions {
    * Transforms a function that takes 2 arguments into a function that takes the
    * first argument and return a new function that takes the second argument and
    * return the final result.
-   * 
+   *
    * @param <A> the type of the first argument
    * @param <B> the type of the second argument
    * @param <C> the type of the final result
@@ -370,11 +371,12 @@ public class Functions {
   /**
    * Transforms a function from {@code A -> (B -> C)} into a function from
    * {@code B -> (A -> C)}.
-   * 
+   *
    * @param <A> the type of the first argument
    * @param <B> the type of the second argument
    * @param <C> the type of the final result
-   * @param f2 the original function from {@code A -> (B -> C)}, must not be null
+   * @param f2 the original function from {@code A -> (B -> C)}, must not be
+   * null
    * @return the flipped form of the original function
    * @since 2.0
    */
@@ -406,7 +408,7 @@ public class Functions {
   /**
    * Maps a function that returns nulls into a Partial function that returns an
    * Option of the result.
-   * 
+   *
    * @param <A> the input type
    * @param <B> the output type
    * @param f the function that may return nulls
@@ -419,7 +421,7 @@ public class Functions {
 
   /**
    * Function that turns null inputs into a none, and not-null inputs into some.
-   * 
+   *
    * @param <A> the input type
    * @return a function that never returns nulls.
    * @since 2.2.1
@@ -437,7 +439,7 @@ public class Functions {
    * NOTE: it is very important that the docs on the input type are read
    * carefully. Failure to heed adhere to this will lead to unspecified behavior
    * (bugs!)
-   * 
+   *
    * @param <A> the input type, like any cache, this type should be a value,
    * that is it should be immutable and have correct hashcode and equals
    * implementations.
@@ -445,7 +447,7 @@ public class Functions {
    * @param f the function who's output will be memoized, must not be null
    * @return a function that memoizes the results of the function using the
    * input as a weak key
-   * 
+   *
    * @since 2.2
    */
   public static <A, B> Function<A, B> weakMemoize(Function<A, B> f) {
@@ -454,12 +456,12 @@ public class Functions {
 
   /**
    * Get a function that uses the Supplier as a factory for all inputs.
-   * 
+   *
    * @param <D> the key type, ignored
    * @param <R> the result type
    * @param supplier called for all inputs, must not be null
    * @return the function
-   * 
+   *
    * @since 2.2
    */
   static <D, R> Function<D, R> fromSupplier(final Supplier<R> supplier) {
@@ -473,7 +475,7 @@ public class Functions {
       this.supplier = requireNonNull(supplier, "supplier");
     }
 
-    public R apply(final D ignore) {
+    @Override public R apply(final D ignore) {
       return supplier.get();
     }
 
@@ -509,6 +511,7 @@ public class Functions {
 
   /**
    * Create a function ignores it's input an produces a constant value
+   *
    * @param constant value to return
    * @param <A> type of the ignored input
    * @param <B> type of the constant returned
@@ -595,7 +598,7 @@ public class Functions {
     Function<? super A, ? extends Option<? extends B>> f5, Function<? super A, ? extends Option<? extends B>>... fs) {
 
     @SuppressWarnings("unchecked")
-    Function<? super A, ? extends Option<? extends B>>[] matchingFunctions = new Function[5 + fs.length];
+    final Function<? super A, ? extends Option<? extends B>>[] matchingFunctions = new Function[5 + fs.length];
     matchingFunctions[0] = f1;
     matchingFunctions[1] = f2;
     matchingFunctions[2] = f3;
@@ -609,10 +612,10 @@ public class Functions {
   /* utility copy function */
   @SafeVarargs private static <A, B> Matcher<A, B> matcher(Function<? super A, ? extends Option<? extends B>>... fs) {
     @SuppressWarnings("unchecked")
-    Function<? super A, ? extends Option<? extends B>>[] dest = new Function[fs.length];
+    final Function<? super A, ? extends Option<? extends B>>[] dest = new Function[fs.length];
 
     System.arraycopy(fs, 0, dest, 0, fs.length);
-    for (Function<? super A, ? extends Option<? extends B>> f : fs) {
+    for (final Function<? super A, ? extends Option<? extends B>> f : fs) {
       if (f == null) {
         throw new NullPointerException("function value was null");
       }
@@ -632,10 +635,10 @@ public class Functions {
       }
     }
 
-    public Option<B> apply(A a) {
-      for (Function<? super A, ? extends Option<? extends B>> f : fs) {
+    @Override public Option<B> apply(A a) {
+      for (final Function<? super A, ? extends Option<? extends B>> f : fs) {
         @SuppressWarnings("unchecked")
-        Option<B> b = (Option<B>) f.apply(a);
+        final Option<B> b = (Option<B>) f.apply(a);
         if (b.isDefined())
           return b;
       }
@@ -652,19 +655,20 @@ public class Functions {
   }
 
   /**
-   * Class supports the implementation of {@link Functions#weakMemoize(Function)}
-   * and is not intended for general use.
+   * Class supports the implementation of
+   * {@link Functions#weakMemoize(Function)} and is not intended for general
+   * use.
    *
    * {@link WeakMemoizer} caches the result of another function. The result is
    * {@link WeakReference weakly referenced} internally. This is useful if the
-   * result is expensive to compute or the identity of the result is particularly
-   * important.
+   * result is expensive to compute or the identity of the result is
+   * particularly important.
    * <p>
    * If the results from this function are further cached then they will tend to
    * stay in this cache for longer.
    *
-   * @param <A> comparable descriptor, the usual rules for any {@link HashMap} key
-   * apply.
+   * @param <A> comparable descriptor, the usual rules for any {@link HashMap}
+   * key apply.
    * @param <B> the value
    */
   static final class WeakMemoizer<A, B> implements Function<A, B> {
@@ -680,8 +684,6 @@ public class Functions {
      * Construct a new {@link WeakMemoizer} instance.
      *
      * @param delegate for creating the initial values.
-     * @throws IllegalArgumentException if the initial capacity of elements is
-     * negative.
      */
     WeakMemoizer(Function<A, B> delegate) {
       this.map = new ConcurrentHashMap<>();
@@ -690,11 +692,11 @@ public class Functions {
 
     /**
      * Get a result for the supplied Descriptor.
-     *q
+     *
      * @param descriptor must not be null
      * @return descriptor lock
      */
-    public B apply(final A descriptor) {
+    @Override public B apply(final A descriptor) {
       expungeStaleEntries();
       requireNonNull(descriptor, "descriptor");
       while (true) {
@@ -742,5 +744,18 @@ public class Functions {
         return key;
       }
     }
+  }
+
+  static <A> Predicate<A> countingPredicate(final int n) {
+    if (n < 0) {
+      throw new IllegalArgumentException("n must be positive");
+    }
+    return new Predicate<A>() {
+      int count = n;
+
+      @Override public boolean test(final A a) {
+        return --count >= 0;
+      }
+    };
   }
 }

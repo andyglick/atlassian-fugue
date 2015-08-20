@@ -21,7 +21,6 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -37,7 +36,9 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static com.atlassian.fugue.Functions.countingPredicate;
 import static com.atlassian.fugue.Iterators.emptyIterator;
+import static com.atlassian.fugue.Iterators.peekingIterator;
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.some;
 import static com.atlassian.fugue.Pair.leftValue;
@@ -237,46 +238,81 @@ public class Iterables {
   }
 
   /**
-   * Takes the first {@code n} {@code xs} and returns them.
+   * Aakes the first {@code n} {@code as} and returns them.
    *
-   * @param <T> type of {@code xs}
-   * @param n number of {@code xs} to take, must greater than or equal to zero
-   * @param xs list of values, must not be null and must not contain null
-   * @return first {@code n} {@code xs}
+   * @param <A> type of {@code as}
+   * @param n number of {@code as} to take, must greater than or equal to zero
+   * @param as list of values, must not be null and must not contain null
+   * @return first {@code n} {@code as}
    * @since 1.1
    */
-  public static <T> Iterable<T> take(final int n, final Iterable<T> xs) {
+  public static <A> Iterable<A> take(final int n, final Iterable<A> as) {
     if (n < 0) {
       throw new IllegalArgumentException("Cannot take a negative number of elements");
     }
-    if (xs instanceof List<?>) {
-      final List<T> list = (List<T>) xs;
+    if (as instanceof List<?>) {
+      final List<A> list = (List<A>) as;
       return list.subList(0, n < list.size() ? n : list.size());
     }
-    return new Range<>(0, n, xs);
+    return new Take<>(as, countingPredicate(n));
   }
 
   /**
-   * Drop the first {@code n} {@code xs} and return the rest.
+   * Drop the first {@code n} {@code as} and return the rest.
    *
-   * @param <T> type of {@code xs}
-   * @param n number of {@code xs} to drop, must greater than or equal to zero
-   * @param xs list of values, must not be null and must not contain null
-   * @return remaining {@code xs} after dropping the first {@code n}
+   * @param <A> type of {@code as}
+   * @param n number of {@code as} to drop, must greater than or equal to zero
+   * @param as list of values, must not be null and must not contain null
+   * @return remaining {@code as} after dropping the first {@code n}
    * @since 1.1
    */
-  public static <T> Iterable<T> drop(final int n, final Iterable<T> xs) {
+  public static <A> Iterable<A> drop(final int n, final Iterable<A> as) {
     if (n < 0) {
       throw new IllegalArgumentException("Cannot drop a negative number of elements");
     }
-    if (xs instanceof List<?>) {
-      final List<T> list = (List<T>) xs;
+    if (as instanceof List<?>) {
+      final List<A> list = (List<A>) as;
       if (n > (list.size() - 1)) {
-        return Collections.emptyList();
+        return emptyIterable();
       }
-      return ((List<T>) xs).subList(n, list.size());
+      return list.subList(n, list.size());
     }
-    return new Range<>(n, Integer.MAX_VALUE, xs);
+    return new Drop<>(as, countingPredicate(n));
+  }
+
+  /**
+   * Drop elements of {@code as} until an element returns false for {@literal p#test}
+   *
+   * @param as iterable to remove the first elements of {@code as}, must not
+   * be null
+   * @param p predicate used to test which elements to drop from the iterable,
+   * must not be null
+   * @param <A> type of {@code as}
+   * @return remaining elements of {@code as} after removing the starting elements
+   * that for which {@code p#test} returns true
+   * @since 3.0
+   * @see #drop(int, Iterable) to remove the first n elements
+   */
+  public static <A> Iterable<A> dropWhile(final Iterable<A> as, final Predicate<A> p){
+    return new Drop<>(as,p);
+  }
+
+  /**
+   * Return a new iterable containing only the first elements of {@code as} for which
+   * {@code p#test} returns true.
+   *
+   * @param as iterable to source the first elements of {@code as}, must not
+   * be null
+   * @param p predicate used to test which elements to include in the new
+   * iterable, must not be null
+   * @param <A> type of {@code as}
+   * @return a new iterable containing elements of {@code as} starting from the first
+   * element of {@code as} until {@code p#test} returns false
+   * @since 3.0
+   * @see #take(int, Iterable) to take only the first n elements
+   */
+  public static <A> Iterable<A> takeWhile(final Iterable<A> as, final Predicate<A> p){
+    return new Take<>(as,p);
   }
 
   /**
@@ -289,7 +325,6 @@ public class Iterables {
    * @param bs right values
    * @return an {@link Iterable iterable} of pairs, only as long as the shortest
    * input iterable.
-   *
    *
    * @since 1.2
    */
@@ -440,41 +475,69 @@ public class Iterables {
   /**
    * Iterable that only shows a small range of the original Iterable.
    */
-  static final class Range<A> extends IterableToString<A> {
-    private final Iterable<A> delegate;
-    private final int drop;
-    private final int size;
+  static final class Take<A> extends IterableToString<A> {
+    private final Iterable<A> as;
+    private final Predicate<A> p;
 
-    private Range(final int drop, final int size, final Iterable<A> delegate) {
-      this.delegate = requireNonNull(delegate);
-      this.drop = drop;
-      this.size = size;
+    private Take(final Iterable<A> as, final Predicate<A> p) {
+      this.p = requireNonNull(p);
+      this.as = requireNonNull(as);
     }
 
     @Override public Iterator<A> iterator() {
-      return new Iter<>(drop, size, delegate.iterator());
+      return new Iter<>(as.iterator(), p);
     }
 
-    static final class Iter<T> extends Iterators.Abstract<T> {
-      private final Iterator<T> it;
-      private int remaining;
+    static final class Iter<A> extends Iterators.Abstract<A> {
+      private final Iterator<A> ias;
+      private final Predicate<A> p;
 
-      Iter(final int drop, final int size, final Iterator<T> it) {
-        this.it = it;
-        this.remaining = size;
+      Iter(final Iterator<A> ias, final Predicate<A> p) {
+        this.ias = ias;
+        this.p = p;
+      }
 
-        for (int i = 0; (i < drop) && it.hasNext(); i++) {
-          it.next();
+      @Override protected A computeNext() {
+        if(ias.hasNext()){
+          final A a = ias.next();
+          return p.test(a) ? a : endOfData();
+        }
+        return endOfData();
+      }
+    }
+  }
+
+
+  /**
+   * Iterable that only shows a small range of the original Iterable.
+   */
+  static final class Drop<A> extends IterableToString<A> {
+    private final Iterable<A> as;
+    private final Predicate<A> p;
+
+    private Drop(final Iterable<A> as, final Predicate<A> p) {
+      this.p = requireNonNull(p);
+      this.as = requireNonNull(as);
+    }
+
+    @Override public Iterator<A> iterator() {
+      return new Iter<>(as.iterator(), p);
+    }
+
+    static final class Iter<A> extends Iterators.Abstract<A> {
+      private final Iterators.Peeking<A> ias;
+      private final Predicate<A> p;
+
+      Iter(final Iterator<A> ias, final Predicate<A> p) {
+        this.ias = peekingIterator(ias);
+        this.p = p;
+        while(this.ias.hasNext() && p.test(this.ias.peek())){
+          this.ias.next();
         }
       }
 
-      @Override protected T computeNext() {
-        if ((remaining > 0) && it.hasNext()) {
-          remaining--;
-          return it.next();
-        } else {
-          return endOfData();
-        }
+      @Override protected A computeNext() {
+        return ias.hasNext() ? ias.next() : endOfData();
       }
     }
   }
@@ -995,7 +1058,7 @@ public class Iterables {
 
       private Iter(final Iterable<? extends Iterable<A>> xss, final Comparator<A> c) {
         this.xss = new TreeSet<>(peekingIteratorComparator(c));
-        addAll(this.xss, map(filter(xss, isEmpty().negate()), i -> Iterators.peekingIterator(i.iterator())));
+        addAll(this.xss, map(filter(xss, isEmpty().negate()), i -> peekingIterator(i.iterator())));
       }
 
       @Override protected A computeNext() {

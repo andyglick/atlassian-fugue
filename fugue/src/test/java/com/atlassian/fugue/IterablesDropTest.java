@@ -19,9 +19,11 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import static com.atlassian.fugue.Iterables.drop;
+import static com.atlassian.fugue.Iterables.dropWhile;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.emptyIterable;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -68,5 +70,33 @@ public class IterablesDropTest {
 
   @Test(expected = IllegalArgumentException.class) public void dropNegativeFromList() {
     drop(-1, emptyList());
+  }
+
+  @Test public void dropWhileTest(){
+    assertThat(dropWhile(asList(1, 2, 3, 4), i -> i < 2), contains(2, 3, 4));
+  }
+
+  @Test public void dropWhileAll(){
+    assertThat(dropWhile(asList(1, 2, 3, 4), i -> true), emptyIterable());
+  }
+
+  @Test public void dropWhileNone(){
+    assertThat(dropWhile(asList(1, 2, 3, 4), i -> false), contains(1, 2, 3, 4));
+  }
+
+  @Test(expected = NullPointerException.class) public void dropWhileNull() {
+    dropWhile(null, null);
+  }
+
+  @Test(expected = NullPointerException.class) public void dropWhileNullWithPredicate() {
+    dropWhile(null, x -> true);
+  }
+
+  @Test(expected = NullPointerException.class) public void dropWhileNullPredicate() {
+    dropWhile(Iterables.emptyIterable(), null);
+  }
+
+  @Test public void dropWhileNotAfter(){
+    assertThat(dropWhile(asList(1, 2, 3, 4, 1, 2), i -> i < 2), contains(2, 3, 4, 1, 2));
   }
 }
