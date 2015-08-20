@@ -39,6 +39,7 @@ import java.util.function.Supplier;
 
 import static com.atlassian.fugue.Functions.countingPredicate;
 import static com.atlassian.fugue.Iterators.emptyIterator;
+import static com.atlassian.fugue.Iterators.peekingIterator;
 import static com.atlassian.fugue.Option.none;
 import static com.atlassian.fugue.Option.some;
 import static com.atlassian.fugue.Pair.leftValue;
@@ -534,25 +535,19 @@ public class Iterables {
     }
 
     static final class Iter<A> extends Iterators.Abstract<A> {
-      private final Iterator<A> ias;
+      private final Iterators.Peeking<A> ias;
       private final Predicate<A> p;
-      private boolean foundFirstFailure = false;
 
       Iter(final Iterator<A> ias, final Predicate<A> p) {
-        this.ias = ias;
+        this.ias = peekingIterator(ias);
         this.p = p;
+        while(this.ias.hasNext() && p.test(this.ias.peek())){
+          this.ias.next();
+        }
       }
 
       @Override protected A computeNext() {
-        int count = 0;
-        while(ias.hasNext() && ++count <= Integer.MAX_VALUE){
-          final A a = ias.next();
-          if(foundFirstFailure || !p.test(a)){
-            foundFirstFailure = true;
-            return a;
-          }
-        }
-        return endOfData();
+        return ias.hasNext() ? ias.next() : endOfData();
       }
     }
   }
@@ -1074,7 +1069,7 @@ public class Iterables {
 
       private Iter(final Iterable<? extends Iterable<A>> xss, final Comparator<A> c) {
         this.xss = new TreeSet<>(peekingIteratorComparator(c));
-        addAll(this.xss, map(filter(xss, isEmpty().negate()), i -> Iterators.peekingIterator(i.iterator())));
+        addAll(this.xss, map(filter(xss, isEmpty().negate()), i -> peekingIterator(i.iterator())));
       }
 
       @Override protected A computeNext() {
