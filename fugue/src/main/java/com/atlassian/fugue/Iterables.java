@@ -27,7 +27,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.Queue;
 import java.util.TreeSet;
 import java.util.concurrent.CancellationException;
@@ -434,16 +433,7 @@ public class Iterables {
 
   static abstract class IterableToString<A> implements Iterable<A> {
     @Override public final String toString() {
-      final Iterator<A> it = this.iterator();
-      final StringBuilder buffer = new StringBuilder().append("[");
-      while (it.hasNext()) {
-        buffer.append(Objects.requireNonNull(it.next()).toString());
-        if (it.hasNext()) {
-          buffer.append(", ");
-        }
-      }
-      buffer.append("]");
-      return buffer.toString();
+      return makeString(this, "[", ", ", "]");
     }
   }
 
@@ -789,8 +779,7 @@ public class Iterables {
 
   /**
    * Concatenate a series of iterables into a single iterable. Returns an empty
-   * iterable if no iterables are supplied. Input iterables must not be null
-   * and must not contain null.
+   * iterable if no iterables are supplied. Input iterables must not be null.
    *
    * @param as any number of iterables containing A
    * @param <A> super type of contained by all input iterables
@@ -798,7 +787,7 @@ public class Iterables {
    *
    * @since 3.0
    */
-  @SafeVarargs public static <A> Iterable<A> concat(Iterable<? extends A> ...as){
+  @SafeVarargs public static <A> Iterable<A> concat(Iterable<? extends A>... as){
     return as.length > 0 ? join(Arrays.asList(as)) : emptyIterable();
   }
 
@@ -914,7 +903,7 @@ public class Iterables {
     }
 
     @Override public Iterator<A> iterator() {
-      return new Iter<A, B>(f, seed);
+      return new Iter<>(f, seed);
     }
 
     static final class Iter<A, B> extends Iterators.Abstract<A> {
@@ -1032,6 +1021,139 @@ public class Iterables {
         return (lhs, rhs) -> (lhs == rhs) ? 0 : comparator.compare(lhs.peek(), rhs.peek());
       }
     }
+  }
+
+  /**
+   * Return an infinite iterable that cycles through the input values in order
+   * in a loop. If no elements are provided returns an empty iterable. Does not
+   * support element removal via Iterator#remove.
+   *
+   * @param as input values to cycle through
+   * @param <A> returned elements
+   * @return an infinite iterable containing the original elements
+   *
+   * @since 3.0
+   */
+  @SafeVarargs public static <A> Iterable<A> cycle(final A... as) {
+    if(as.length > 0) {
+      return new Cycle<>(Arrays.asList(as));
+    }
+    else {
+      return emptyIterable();
+    }
+  }
+
+  /**
+   * Return an infinite iterable that cycles through the input values in order
+   * in a loop. If no elements are provided returns an empty iterable. Does not
+   * support element removal via Iterator#remove.
+   *
+   * @param as input values to cycle through must not be null
+   * @param <A> returned elements
+   * @return an infinite iterable containing the original elements
+   *
+   * @since 3.0
+   */
+  public static <A> Iterable<A> cycle(final Iterable<? extends A> as){
+    return new Cycle<>(as);
+  }
+
+  static final class Cycle<A> implements Iterable<A>{
+    final Iterable<? extends A> as;
+    Cycle(final Iterable<? extends A> as){
+      this.as = requireNonNull(as);
+    }
+
+    @Override public Iterator<A> iterator() {
+      return new Iter<>(as);
+    }
+
+    static final class Iter<A> extends Iterators.Abstract<A> {
+      Iterable<? extends A> as;
+      Iterator<? extends A> ias;
+
+      Iter(final Iterable<? extends A> as) {
+        this.as = as;
+        this.ias = as.iterator();
+      }
+
+      @Override protected A computeNext() {
+        if (!ias.hasNext() && !(ias = as.iterator()).hasNext()) {
+          return endOfData();
+        }
+        return ias.next();
+      }
+    }
+
+    @Override public String toString(){
+      return makeString(as, "[", ", ", "...]", 100);
+    }
+  }
+
+  /**
+   * Pretty print an Iterable.
+   *
+   * Printing following this pattern:
+   * {@literal <start><element><sep><element><end>}
+   * If the iterable would result in a String with length more than maxLength
+   * printing follows this pattern:
+   * {@literal <start><element><sep><element>...<end>}
+   *
+   * @param as the iterable to print must not be null
+   * @param start prefix to start the printing with
+   * @param sep separator to use between each element
+   * @param end suffic to end the printing with
+   * @param maxLength limit the length of the resulting string
+   * @param <A> type of the elements in the iterable
+   * @return a pretty printed copy of the input iterable
+   *
+   * @since 3.0
+   */
+  public static <A> String makeString(final Iterable<? extends A> as, final String start, final String sep, final String end, final int maxLength){
+    final StringBuilder b = new StringBuilder();
+    b.append(start);
+    final Iterator<? extends A> ias = requireNonNull(as).iterator();
+
+    if(ias.hasNext()){
+      b.append(String.valueOf(ias.next()));
+    }
+    while(ias.hasNext()){
+      if(b.length() >= maxLength){
+        break;
+      }
+
+      b.append(sep);
+      final String value = String.valueOf(ias.next());
+      b.append(value);
+    }
+    if(ias.hasNext()){
+      b.append("...");
+    }
+    b.append(end);
+    return b.toString();
+  }
+
+  /**
+   * Pretty print an Iterable.
+   *
+   * Printing following this pattern:
+   * {@literal <start><element><sep><element><end>}
+   * If the iterable would result in a String with length more than 100
+   * characters printing follows this pattern:
+   * {@literal <start><element><sep><element>...<end>}
+   *
+   * @param as the iterable to print must not be null
+   * @param start prefix to start the printing with
+   * @param sep separator to use between each element
+   * @param end suffic to end the printing with
+   * @param <A> type of the elements in the iterable
+   * @return a pretty printed copy of the input iterable
+   * @see #makeString(Iterable, String, String, String, int) pretty print iterable with a custom length
+   *
+   * @since 3.0
+   */
+  public static <A> String makeString(final Iterable<? extends A> as, final String start, final String sep, final String end) {
+    return makeString(as, start, sep, end, 100);
   }
 
   /**
