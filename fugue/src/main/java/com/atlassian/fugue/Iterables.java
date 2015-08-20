@@ -1025,7 +1025,8 @@ public class Iterables {
 
   /**
    * Return an infinite iterable that cycles through the input values in order
-   * in a loop. If no elements are provided returns an empty iterable.
+   * in a loop. If no elements are provided returns an empty iterable. Does not
+   * support element removal via Iterator#remove.
    *
    * @param as input values to cycle through
    * @param <A> returned elements
@@ -1044,7 +1045,8 @@ public class Iterables {
 
   /**
    * Return an infinite iterable that cycles through the input values in order
-   * in a loop. If no elements are provided returns an empty iterable.
+   * in a loop. If no elements are provided returns an empty iterable. Does not
+   * support element removal via Iterator#remove.
    *
    * @param as input values to cycle through must not be null
    * @param <A> returned elements
