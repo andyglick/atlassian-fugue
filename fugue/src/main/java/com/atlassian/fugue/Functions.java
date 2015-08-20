@@ -748,10 +748,11 @@ public class Functions {
     if(n < 0){
       throw new IllegalArgumentException("n must be positive");
     }
-    final int[] seen = {0};
-    return a -> {
-      seen[0] = seen[0] + 1;
-      return seen[0] <= n;
+    return new Predicate<A>() {
+      int count = 0;
+      @Override public boolean test(final A a) {
+        return ++count <= n;
+      }
     };
   }
 }
