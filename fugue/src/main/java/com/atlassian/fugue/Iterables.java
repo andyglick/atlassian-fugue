@@ -21,7 +21,6 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -537,6 +536,7 @@ public class Iterables {
     static final class Iter<A> extends Iterators.Abstract<A> {
       private final Iterator<A> ias;
       private final Predicate<A> p;
+      private boolean foundFirstFailure = false;
 
       Iter(final Iterator<A> ias, final Predicate<A> p) {
         this.ias = ias;
@@ -547,7 +547,8 @@ public class Iterables {
         int count = 0;
         while(ias.hasNext() && ++count <= Integer.MAX_VALUE){
           final A a = ias.next();
-          if(!p.test(a)){
+          if(foundFirstFailure || !p.test(a)){
+            foundFirstFailure = true;
             return a;
           }
         }

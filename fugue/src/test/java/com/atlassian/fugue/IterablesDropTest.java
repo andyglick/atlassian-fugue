@@ -81,7 +81,7 @@ public class IterablesDropTest {
   }
 
   @Test public void dropWhileNone(){
-    assertThat(dropWhile(asList(1,2,3,4), i -> false), contains(1,2,3,4));
+    assertThat(dropWhile(asList(1, 2, 3, 4), i -> false), contains(1, 2, 3, 4));
   }
 
   @Test(expected = NullPointerException.class) public void dropWhileNull() {
@@ -90,5 +90,9 @@ public class IterablesDropTest {
 
   @Test(expected = NullPointerException.class) public void dropWhileNullPredicate() {
     dropWhile(Iterables.emptyIterable(), null);
+  }
+
+  @Test public void dropWhileNotAfter(){
+    assertThat(dropWhile(asList(1, 2, 3, 4, 1, 2), i -> i < 2), contains(2, 3, 4, 1, 2));
   }
 }
