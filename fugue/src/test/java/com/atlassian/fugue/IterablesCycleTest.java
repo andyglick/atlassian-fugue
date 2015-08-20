@@ -30,4 +30,8 @@ public class IterablesCycleTest {
   @Test public void toStringResultNull(){
     assertThat(cycle(1,2,null).toString(), is("[1, 2, null...]"));
   }
+
+  @Test(expected = UnsupportedOperationException.class) public void removeOnOutput() {
+    cycle(1,2,3).iterator().remove();
+  }
 }
