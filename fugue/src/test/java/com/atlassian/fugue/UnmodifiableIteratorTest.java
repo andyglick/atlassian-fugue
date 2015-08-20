@@ -2,10 +2,12 @@ package com.atlassian.fugue;
 
 import org.junit.Test;
 
+import java.util.Iterator;
+
 public class UnmodifiableIteratorTest {
 
-  @SuppressWarnings("deprecation") @Test(expected=UnsupportedOperationException.class) public void testRemove() {
-    Iterators.Unmodifiable<Integer> unmodifiableIterator = new Iterators.Unmodifiable<Integer>() {
+  @Test(expected=UnsupportedOperationException.class) public void testRemove() {
+    final Iterators.Unmodifiable<Integer> unmodifiableIterator = new Iterators.Unmodifiable<Integer>() {
       @Override
       public boolean hasNext() {
         return false;
@@ -17,6 +19,10 @@ public class UnmodifiableIteratorTest {
       }
     };
 
-    unmodifiableIterator.remove();
+    remove(unmodifiableIterator);
+  }
+  @SuppressWarnings("deprecation")
+  private void remove(Iterator<Integer> i){
+    i.remove();
   }
 }

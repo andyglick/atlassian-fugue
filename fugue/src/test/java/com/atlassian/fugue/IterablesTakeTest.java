@@ -22,7 +22,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import static com.atlassian.fugue.Iterables.take;
-import static com.atlassian.fugue.Iterables.transform;
+import static com.atlassian.fugue.Iterables.map;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.hamcrest.Matchers.contains;
@@ -86,6 +86,6 @@ public class IterablesTakeTest {
   }
 
   @SafeVarargs static <A> Iterable<A> asIterable(final A... as) {
-    return transform(asList(as), Functions.<A> identity()::apply);
+    return map(asList(as), Functions.<A>identity()::apply);
   }
 }

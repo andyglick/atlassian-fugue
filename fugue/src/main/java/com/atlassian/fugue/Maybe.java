@@ -28,9 +28,9 @@ import java.util.function.Supplier;
  * (due to the lack of higher-kinded types). These are for instance (where M is
  * the implementing Maybe sub-type):
  * <ul>
- * <li>&lt;B&gt; M&lt;B&gt; map(Function&lt;? super A, B&gt;)
- * <li>&lt;B&gt; M&lt;B&gt; flatMap(Function&lt;? super A, M&lt;B&gt;&gt;)
- * <li>M&lt;A&gt; filter(final Predicate&gt;? super A&lt; p)
+ * <li>{@literal <B> Maybe<B> map(Function<? super A, B>)}
+ * <li>{@literal <B> Maybe<B> flatMap(Function<? super A, Maybe<B>>}
+ * <li>{@literal Maybe<A> filter(Predicate<? super A>)}
  * </ul>
  * 
  * @param <A> the contained type

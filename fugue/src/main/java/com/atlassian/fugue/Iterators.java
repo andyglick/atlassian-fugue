@@ -38,7 +38,7 @@ class Iterators {
    *
    * @since 3.0
    */
-  static <A> boolean addAll(Collection<A> collectionToModify, Iterator<? extends A> iterator) {
+  static <A> boolean addAll(final Collection<A> collectionToModify, final Iterator<? extends A> iterator) {
     requireNonNull(collectionToModify);
     requireNonNull(iterator);
     boolean wasModified = false;
@@ -56,12 +56,12 @@ class Iterators {
    *
    * @since 3.0
    */
-  static <A> Iterators.Peeking<A> peekingIterator(java.util.Iterator<? extends A> iterator) {
+  static <A> Iterators.Peeking<A> peekingIterator(final Iterator<? extends A> iterator) {
     if (iterator instanceof PeekingImpl) {
       // Safe to cast <? extends T> to <T> because PeekingImpl only uses T
       // covariantly (and cannot be subclassed to add non-covariant uses).
       @SuppressWarnings("unchecked")
-      PeekingImpl<A> peeking = (PeekingImpl<A>) iterator;
+      final PeekingImpl<A> peeking = (PeekingImpl<A>) iterator;
       return peeking;
     }
     return new PeekingImpl<>(iterator);
@@ -76,7 +76,7 @@ class Iterators {
     private boolean hasPeeked;
     private A peekedElement;
 
-    public PeekingImpl(java.util.Iterator<? extends A> iterator) {
+    public PeekingImpl(final Iterator<? extends A> iterator) {
       this.iterator = requireNonNull(iterator);
     }
 
@@ -88,7 +88,7 @@ class Iterators {
       if (!hasPeeked) {
         return iterator.next();
       }
-      A result = peekedElement;
+      final A result = peekedElement;
       hasPeeked = false;
       peekedElement = null;
       return result;

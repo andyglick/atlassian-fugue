@@ -7,12 +7,14 @@ This project attempts to adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Added getOr(Supplier<A>) to the Maybe interface as a replacement for the now deprecated getOrElse(Supplier<A>).
 - Iterables.size returning the size of the input iterable (generally in O(n))
-- Iterables.transform returning a new iterable with the input function applied
+- Iterables.map create a new iterable by applying a function to each element
+- Iterables.transform forwarding function calling map to help migration
 - Iterables.filter returning a new iterable containing only those elements for which the predicate returns true
-- Iterables.flatten transforms a nested collection of iterables into a single iterable
+- Iterables.join transforms a nested iterable of iterables into a single iterable
 - Iterables.addAll adds all of the input collection into the passed iterable
 - Iterables.cycle returns an infinite iterable that cycles through the input elements (does not support removing elements)
 - Iterables.makeString pretty prints the contents of an iterable
+- Iterables.concat creates a single iterable containing all of the input iterables values
 - Options.nullSafe transforms a null producing function into one returning an option
 - Options.toOption returns a function that builds an option
 - Option.fromOptional and Option.toOptional for interoperability with java.util.Optional
@@ -28,11 +30,13 @@ They will be removed in 4.0.
 - Iterables.mergeSorted now takes a Comparator instead of a Guava Ordering instance
 - All copies of com.google.common.base.Function/Supplier/Predicate have been replaced with the equivalent classes
 from Java 8
+- Either.apply renamed to ap to improve consitancy of apply methods
 
 ### Deprecated
 - Deprecated getOrElse(Supplier<A>) to be replaced with {@link #getElse(Supplier)} because 
 Java 8 type inference cannot disambiguate between an overloaded method taking a generic A and
 the same method taking a Supplier<A>. It will be removed in 4.0.
+- Iterables.transform exists to ease migration by reimplementing the guava equivalent
 
 ### Removed
 - Either.merge, Either.cond, Either.getOrThrow, Either.sequenceRight/Left were deprecated in 1.2. They are now removed.

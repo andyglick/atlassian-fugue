@@ -20,7 +20,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.atlassian.fugue.Iterables.filter;
-import static com.atlassian.fugue.Iterables.transform;
+import static com.atlassian.fugue.Iterables.map;
 import static com.atlassian.fugue.Option.none;
 import static java.util.Objects.requireNonNull;
 
@@ -184,7 +184,7 @@ public class Options {
    * @return an {@link Iterable} of the contained type
    */
   public static <A> Iterable<A> flatten(final Iterable<Option<A>> options) {
-    return transform(filterNone(options), Maybe::get);
+    return map(filterNone(options), Maybe::get);
   }
 
 

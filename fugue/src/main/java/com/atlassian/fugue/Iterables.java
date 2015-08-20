@@ -16,18 +16,6 @@
 
 package com.atlassian.fugue;
 
-import static com.atlassian.fugue.Iterators.emptyIterator;
-import static com.atlassian.fugue.Option.none;
-import static com.atlassian.fugue.Option.some;
-import static com.atlassian.fugue.Pair.leftValue;
-import static com.atlassian.fugue.Pair.pair;
-import static com.atlassian.fugue.Pair.rightValue;
-import static com.atlassian.fugue.Suppliers.ofInstance;
-import static java.util.Arrays.asList;
-import static java.util.Collections.max;
-import static java.util.Collections.unmodifiableCollection;
-import static java.util.Objects.requireNonNull;
-
 import java.io.Serializable;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -36,9 +24,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.util.Queue;
 import java.util.TreeSet;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
@@ -48,13 +37,23 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static com.atlassian.fugue.Iterators.emptyIterator;
+import static com.atlassian.fugue.Option.none;
+import static com.atlassian.fugue.Option.some;
+import static com.atlassian.fugue.Pair.leftValue;
+import static com.atlassian.fugue.Pair.pair;
+import static com.atlassian.fugue.Pair.rightValue;
+import static com.atlassian.fugue.Suppliers.ofInstance;
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableCollection;
+import static java.util.Objects.requireNonNull;
+
 /**
  * Contains static utility methods that operate on or return objects of type
  * {code}Iterable{code}.
  *
- * When making changes to this class, please try to name methods differently to
- * those in Iterables so that methods from both classes can be statically
- * imported in the same class.
+ * The iterables produced from the functions in this class are safe to reuse
+ * multiple times. Iterables#iterator returns a new iterator each time.
  *
  * @since 1.0
  */
@@ -171,7 +170,7 @@ public class Iterables {
    */
   public static <A, B> Iterable<B> flatMap(final Iterable<A> collection,
     final Function<? super A, ? extends Iterable<? extends B>> f) {
-    return flatten(transform(collection, f));
+    return join(map(collection, f));
   }
 
   /**
@@ -186,7 +185,7 @@ public class Iterables {
    * @since 1.1
    */
   public static <A, B> Iterable<B> revMap(final Iterable<? extends Function<A, B>> fs, final A arg) {
-    return transform(fs, Functions.<A, B>apply(arg));
+    return map(fs, Functions.<A, B>apply(arg));
   }
 
   /**
@@ -341,7 +340,7 @@ public class Iterables {
    * @since 1.2
    */
   public static <A, B> Pair<Iterable<A>, Iterable<B>> unzip(Iterable<Pair<A, B>> pairs) {
-    return pair(transform(pairs, leftValue()), transform(pairs, rightValue()));
+    return pair(map(pairs, leftValue()), map(pairs, rightValue()));
   }
 
   /**
@@ -627,7 +626,7 @@ public class Iterables {
   }
 
   /**
-   * Transform and iterable by applying a function to each of it's values
+   * Transform an interable by mapping a function across each of its elements
    *
    * @param as the source iterable
    * @param f function to apply to all the elements of as
@@ -635,16 +634,33 @@ public class Iterables {
    * @param <B> output iterable type
    * @return new iterable containing the transformed values produced by f#apply
    * @since 3.0
+   * @deprecated function provided to make migration easier prefer to use #map where possible
    */
+  @Deprecated
   public static <A, B> Iterable<B> transform(final Iterable<A> as, final Function<? super A, ? extends B> f) {
-    return new Transform<>(as, f);
+    return map(as,f);
   }
 
-  static final class Transform<A, B> implements Iterable<B> {
+  /**
+   * Apply the input function to each of the elements of the input iterable returning a new iterable
+   *
+   * @param as the source iterable
+   * @param f function to apply to all the elements of as
+   * @param <A> original iterable type
+   * @param <B> output iterable type
+   * @return new iterable containing values produced by f#apply called on each element
+   * @since 3.0
+   */
+  public static <A, B> Iterable<B> map(final Iterable<A> as, final Function<? super A, ? extends B> f) {
+    return new Mapped<>(as, f);
+  }
+
+
+  static final class Mapped<A, B> implements Iterable<B> {
     private final Iterable<? extends A> as;
     private final Function<? super A, ? extends B> f;
 
-    Transform(Iterable<? extends A> as, Function<? super A, ? extends B> f) {
+    Mapped(Iterable<? extends A> as, Function<? super A, ? extends B> f) {
       this.as = as;
       this.f = f;
     }
@@ -709,7 +725,10 @@ public class Iterables {
   }
 
   /**
-   * Merge {@literal Iterable<Iterable<A>>} down to {@literal Iterable<A>}
+   * Join {@literal Iterable<Iterable<A>>} down to {@literal Iterable<A>}. The
+   * resulting iterable will exhaust the first input iterable in order before
+   * returning values from the second. Input iterables must not be null and
+   * must not contain null.
    *
    * @param ias one or more iterable to merge into the final iterable result,
    * must not be null and must not return null
@@ -719,34 +738,57 @@ public class Iterables {
    *
    * @since 3.0
    */
-  public static <A> Iterable<A> flatten(Iterable<? extends Iterable<? extends A>> ias) {
-    return new Flatten<>(ias);
+  public static <A> Iterable<A> join(Iterable<? extends Iterable<? extends A>> ias) {
+    return new Join<>(ias);
   }
 
-  static final class Flatten<A> implements Iterable<A> {
+  static final class Join<A> extends IterableToString<A> {
     private final Iterable<? extends Iterable<? extends A>> ias;
 
-    public Flatten(Iterable<? extends Iterable<? extends A>> ias) {
+    public Join(Iterable<? extends Iterable<? extends A>> ias) {
       this.ias = ias;
     }
 
     @Override public Iterator<A> iterator() {
-      return new Iterators.Abstract<A>() {
-        private final Iterator<? extends Iterable<? extends A>> i = ias.iterator();
-        private Iterator<? extends A> currentIterator = emptyIterator();
-
-        @Override protected A computeNext() {
-          boolean currentHasNext;
-          while (!(currentHasNext = Objects.requireNonNull(currentIterator).hasNext()) && i.hasNext()) {
-            currentIterator = i.next().iterator();
-          }
-          if (!currentHasNext) {
-            return endOfData();
-          }
-          return currentIterator.next();
-        }
-      };
+      return new Iter<>(ias);
     }
+
+    static class Iter<A> extends Iterators.Abstract<A> {
+      final Queue<Iterator<? extends A>> qas;
+
+      public Iter(final Iterable<? extends Iterable<? extends A>> ias)
+      {
+        qas = new LinkedList<>();
+        for (Iterable<? extends A> a : ias) {
+          Iterator<? extends A> as = requireNonNull(a.iterator());
+          qas.add(as);
+        }
+      }
+
+      @Override protected A computeNext() {
+        while(!qas.isEmpty() && !qas.peek().hasNext()){
+          qas.remove();
+        }
+        if(qas.isEmpty()){
+          return endOfData();
+        }
+        return qas.peek().next();
+      }
+    }
+  }
+
+  /**
+   * Concatenate a series of iterables into a single iterable. Returns an empty
+   * iterable if no iterables are supplied. Input iterables must not be null.
+   *
+   * @param as any number of iterables containing A
+   * @param <A> super type of contained by all input iterables
+   * @return new iterable containing all the elements of the input iterables
+   *
+   * @since 3.0
+   */
+  @SafeVarargs public static <A> Iterable<A> concat(Iterable<? extends A>... as){
+    return as.length > 0 ? join(Arrays.asList(as)) : emptyIterable();
   }
 
   /**
@@ -953,7 +995,7 @@ public class Iterables {
 
       private Iter(final Iterable<? extends Iterable<A>> xss, final Comparator<A> c) {
         this.xss = new TreeSet<>(peekingIteratorComparator(c));
-        addAll(this.xss, transform(filter(xss, isEmpty().negate()), i -> Iterators.peekingIterator(i.iterator())));
+        addAll(this.xss, map(filter(xss, isEmpty().negate()), i -> Iterators.peekingIterator(i.iterator())));
       }
 
       @Override protected A computeNext() {

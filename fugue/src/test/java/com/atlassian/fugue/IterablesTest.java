@@ -30,7 +30,8 @@ import static com.atlassian.fugue.Iterables.all;
 import static com.atlassian.fugue.Iterables.any;
 import static com.atlassian.fugue.Iterables.emptyIterable;
 import static com.atlassian.fugue.Iterables.findFirst;
-import static com.atlassian.fugue.Iterables.flatten;
+import static com.atlassian.fugue.Iterables.map;
+import static com.atlassian.fugue.Iterables.join;
 import static com.atlassian.fugue.Iterables.partition;
 import static com.atlassian.fugue.Iterables.rangeTo;
 import static com.atlassian.fugue.Iterables.rangeUntil;
@@ -38,7 +39,9 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 public class IterablesTest {
 
@@ -180,7 +183,7 @@ public class IterablesTest {
 
   @Test public void flattenCollapses() {
     Iterable<Iterable<Integer>> iterables = asList(singletonList(1), singletonList(2));
-    assertThat(flatten(iterables), contains(1, 2));
+    assertThat(join(iterables), contains(1, 2));
   }
 
   @Test public void findAnyMatching() {
@@ -205,6 +208,14 @@ public class IterablesTest {
 
   @Test public void findAllEmpty() {
     assertThat(all(Collections.<Integer>emptyList(), ii -> ii < 0), is(true));
+  }
+
+  @Test public void mapChangesIterable() {
+    assertThat(map(Arrays.asList(1, 2, 3), i -> i + 1), contains(2, 3, 4));
+  }
+
+  @Test public void mappingNull() {
+    assertThat(map(Arrays.asList(1, 2, 3), i -> null), everyItem(nullValue()));
   }
 
   /**
