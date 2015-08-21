@@ -39,7 +39,7 @@ And then add fugue as a dependency to your pom.xml:
         <dependency>
             <groupId>com.atlassian.fugue</groupId>
             <artifactId>fugue</artifactId>
-            <version>2.2.0</version>
+            <version>2.6.0</version>
         </dependency>
         ...
     </dependencies>
