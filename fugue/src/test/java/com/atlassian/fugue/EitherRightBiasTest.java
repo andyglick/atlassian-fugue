@@ -235,4 +235,12 @@ public class EitherRightBiasTest {
 
     assertThat(errorType, Matchers.<ErrorType>is(anotherErrorType));
   }
+
+  @Test public void toOptionRight() {
+    assertThat(r.toOption(), is(Option.some(12)));
+  }
+
+  @Test public void toOptionLeft() {
+    assertThat(l.toOption(), Matchers.is(Option.<Integer>none()));
+  }
 }

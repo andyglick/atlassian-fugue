@@ -393,6 +393,18 @@ public abstract class Either<L, R> implements Serializable {
   }
 
   /**
+   * Returns <code>Some</code> with the projections value if it is a right,
+   * otherwise <code>None</code>.
+   *
+   * @return The right projection's value in <code>Some</code> if it exists,
+   * otherwise <code>None</code>.
+   * @since 2.6
+   */
+  public final Option<R> toOption() {
+    return right().toOption();
+  }
+
+  /**
    * Map the given function across the left hand side value if it is one.
    * 
    * @param <X> the LHS type
