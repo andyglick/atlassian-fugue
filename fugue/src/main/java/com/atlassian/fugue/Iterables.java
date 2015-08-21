@@ -16,6 +16,19 @@
 
 package com.atlassian.fugue;
 
+import static com.atlassian.fugue.Functions.countingPredicate;
+import static com.atlassian.fugue.Iterators.emptyIterator;
+import static com.atlassian.fugue.Iterators.peekingIterator;
+import static com.atlassian.fugue.Option.none;
+import static com.atlassian.fugue.Option.some;
+import static com.atlassian.fugue.Pair.leftValue;
+import static com.atlassian.fugue.Pair.pair;
+import static com.atlassian.fugue.Pair.rightValue;
+import static com.atlassian.fugue.Suppliers.ofInstance;
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableCollection;
+import static java.util.Objects.requireNonNull;
+
 import java.io.Serializable;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -35,19 +48,6 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-
-import static com.atlassian.fugue.Functions.countingPredicate;
-import static com.atlassian.fugue.Iterators.emptyIterator;
-import static com.atlassian.fugue.Iterators.peekingIterator;
-import static com.atlassian.fugue.Option.none;
-import static com.atlassian.fugue.Option.some;
-import static com.atlassian.fugue.Pair.leftValue;
-import static com.atlassian.fugue.Pair.pair;
-import static com.atlassian.fugue.Pair.rightValue;
-import static com.atlassian.fugue.Suppliers.ofInstance;
-import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableCollection;
-import static java.util.Objects.requireNonNull;
 
 /**
  * Contains static utility methods that operate on or return objects of type
@@ -169,8 +169,7 @@ public class Iterables {
    * {@code collection}
    * @since 1.1
    */
-  public static <A, B> Iterable<B> flatMap(final Iterable<A> collection,
-    final Function<? super A, ? extends Iterable<? extends B>> f) {
+  public static <A, B> Iterable<B> flatMap(final Iterable<A> collection, final Function<? super A, ? extends Iterable<? extends B>> f) {
     return join(map(collection, f));
   }
 
@@ -186,7 +185,7 @@ public class Iterables {
    * @since 1.1
    */
   public static <A, B> Iterable<B> revMap(final Iterable<? extends Function<A, B>> fs, final A arg) {
-    return map(fs, Functions.<A, B>apply(arg));
+    return map(fs, Functions.<A, B> apply(arg));
   }
 
   /**
@@ -281,38 +280,39 @@ public class Iterables {
   }
 
   /**
-   * Drop elements of {@code as} until an element returns false for {@literal p#test}
+   * Drop elements of {@code as} until an element returns false for
+   * {@literal p#test}
    *
-   * @param as iterable to remove the first elements of {@code as}, must not
-   * be null
+   * @param as iterable to remove the first elements of {@code as}, must not be
+   * null
    * @param p predicate used to test which elements to drop from the iterable,
    * must not be null
    * @param <A> type of {@code as}
-   * @return remaining elements of {@code as} after removing the starting elements
-   * that for which {@code p#test} returns true
+   * @return remaining elements of {@code as} after removing the starting
+   * elements that for which {@code p#test} returns true
    * @since 3.0
    * @see #drop(int, Iterable) to remove the first n elements
    */
-  public static <A> Iterable<A> dropWhile(final Iterable<A> as, final Predicate<A> p){
-    return new Drop<>(as,p);
+  public static <A> Iterable<A> dropWhile(final Iterable<A> as, final Predicate<A> p) {
+    return new Drop<>(as, p);
   }
 
   /**
-   * Return a new iterable containing only the first elements of {@code as} for which
-   * {@code p#test} returns true.
+   * Return a new iterable containing only the first elements of {@code as} for
+   * which {@code p#test} returns true.
    *
-   * @param as iterable to source the first elements of {@code as}, must not
-   * be null
+   * @param as iterable to source the first elements of {@code as}, must not be
+   * null
    * @param p predicate used to test which elements to include in the new
    * iterable, must not be null
    * @param <A> type of {@code as}
-   * @return a new iterable containing elements of {@code as} starting from the first
-   * element of {@code as} until {@code p#test} returns false
+   * @return a new iterable containing elements of {@code as} starting from the
+   * first element of {@code as} until {@code p#test} returns false
    * @since 3.0
    * @see #take(int, Iterable) to take only the first n elements
    */
-  public static <A> Iterable<A> takeWhile(final Iterable<A> as, final Predicate<A> p){
-    return new Take<>(as,p);
+  public static <A> Iterable<A> takeWhile(final Iterable<A> as, final Predicate<A> p) {
+    return new Take<>(as, p);
   }
 
   /**
@@ -439,13 +439,11 @@ public class Iterables {
     }
     if (step > 0) {
       if (start > end) {
-        throw new IllegalArgumentException(String.format("Start %s must not be greater than end %s with step %s",
-          start, end, step));
+        throw new IllegalArgumentException(String.format("Start %s must not be greater than end %s with step %s", start, end, step));
       }
     } else {
       if (start < end) {
-        throw new IllegalArgumentException(String.format("Start %s must not be less than end %s with step %s", start,
-          end, step));
+        throw new IllegalArgumentException(String.format("Start %s must not be less than end %s with step %s", start, end, step));
       }
     }
 
@@ -498,7 +496,7 @@ public class Iterables {
       }
 
       @Override protected A computeNext() {
-        if(ias.hasNext()){
+        if (ias.hasNext()) {
           final A a = ias.next();
           return p.test(a) ? a : endOfData();
         }
@@ -506,7 +504,6 @@ public class Iterables {
       }
     }
   }
-
 
   /**
    * Iterable that only shows a small range of the original Iterable.
@@ -525,19 +522,18 @@ public class Iterables {
     }
 
     static final class Iter<A> extends Iterators.Abstract<A> {
-      private final Iterators.Peeking<A> ias;
-      private final Predicate<A> p;
+      private final Iterator<A> as;
 
-      Iter(final Iterator<A> ias, final Predicate<A> p) {
-        this.ias = peekingIterator(ias);
-        this.p = p;
-        while(this.ias.hasNext() && p.test(this.ias.peek())){
-          this.ias.next();
+      Iter(final Iterator<A> as, final Predicate<A> p) {
+        this.as = as;
+        final Iterators.Peeking<A> peeker = peekingIterator(as);
+        while (peeker.hasNext() && p.test(peeker.peek())) {
+          peeker.next();
         }
       }
 
       @Override protected A computeNext() {
-        return ias.hasNext() ? ias.next() : endOfData();
+        return as.hasNext() ? as.next() : endOfData();
       }
     }
   }
@@ -697,27 +693,28 @@ public class Iterables {
    * @param <B> output iterable type
    * @return new iterable containing the transformed values produced by f#apply
    * @since 3.0
-   * @deprecated function provided to make migration easier prefer to use #map where possible
+   * @deprecated function provided to make migration easier prefer to use #map
+   * where possible
    */
-  @Deprecated
-  public static <A, B> Iterable<B> transform(final Iterable<A> as, final Function<? super A, ? extends B> f) {
-    return map(as,f);
+  @Deprecated public static <A, B> Iterable<B> transform(final Iterable<A> as, final Function<? super A, ? extends B> f) {
+    return map(as, f);
   }
 
   /**
-   * Apply the input function to each of the elements of the input iterable returning a new iterable
+   * Apply the input function to each of the elements of the input iterable
+   * returning a new iterable
    *
    * @param as the source iterable
    * @param f function to apply to all the elements of as
    * @param <A> original iterable type
    * @param <B> output iterable type
-   * @return new iterable containing values produced by f#apply called on each element
+   * @return new iterable containing values produced by f#apply called on each
+   * element
    * @since 3.0
    */
   public static <A, B> Iterable<B> map(final Iterable<A> as, final Function<? super A, ? extends B> f) {
     return new Mapped<>(as, f);
   }
-
 
   static final class Mapped<A, B> implements Iterable<B> {
     private final Iterable<? extends A> as;
@@ -790,8 +787,8 @@ public class Iterables {
   /**
    * Join {@literal Iterable<Iterable<A>>} down to {@literal Iterable<A>}. The
    * resulting iterable will exhaust the first input iterable in order before
-   * returning values from the second. Input iterables must not be null and
-   * must not contain null.
+   * returning values from the second. Input iterables must not be null and must
+   * not contain null.
    *
    * @param ias one or more iterable to merge into the final iterable result,
    * must not be null and must not return null
@@ -817,22 +814,19 @@ public class Iterables {
     }
 
     static class Iter<A> extends Iterators.Abstract<A> {
-      final Queue<Iterator<? extends A>> qas;
+      final Queue<Iterator<? extends A>> qas = new LinkedList<>();
 
-      public Iter(final Iterable<? extends Iterable<? extends A>> ias)
-      {
-        qas = new LinkedList<>();
-        for (Iterable<? extends A> a : ias) {
-          Iterator<? extends A> as = requireNonNull(a.iterator());
-          qas.add(as);
+      public Iter(final Iterable<? extends Iterable<? extends A>> ias) {
+        for (final Iterable<? extends A> a : ias) {
+          qas.add(requireNonNull(a.iterator()));
         }
       }
 
       @Override protected A computeNext() {
-        while(!qas.isEmpty() && !qas.peek().hasNext()){
+        while (!qas.isEmpty() && !qas.peek().hasNext()) {
           qas.remove();
         }
-        if(qas.isEmpty()){
+        if (qas.isEmpty()) {
           return endOfData();
         }
         return qas.peek().next();
@@ -842,7 +836,8 @@ public class Iterables {
 
   /**
    * Concatenate a series of iterables into a single iterable. Returns an empty
-   * iterable if no iterables are supplied. Input iterables must not be null.
+   * iterable if no iterables are supplied. Input iterables must not be null and
+   * must not contain null.
    *
    * @param as any number of iterables containing A
    * @param <A> super type of contained by all input iterables
@@ -850,7 +845,7 @@ public class Iterables {
    *
    * @since 3.0
    */
-  @SafeVarargs public static <A> Iterable<A> concat(Iterable<? extends A>... as){
+  @SafeVarargs public static <A> Iterable<A> concat(Iterable<? extends A>... as) {
     return as.length > 0 ? join(Arrays.asList(as)) : emptyIterable();
   }
 
@@ -1098,10 +1093,9 @@ public class Iterables {
    * @since 3.0
    */
   @SafeVarargs public static <A> Iterable<A> cycle(final A... as) {
-    if(as.length > 0) {
+    if (as.length > 0) {
       return new Cycle<>(Arrays.asList(as));
-    }
-    else {
+    } else {
       return emptyIterable();
     }
   }
@@ -1117,13 +1111,14 @@ public class Iterables {
    *
    * @since 3.0
    */
-  public static <A> Iterable<A> cycle(final Iterable<? extends A> as){
+  public static <A> Iterable<A> cycle(final Iterable<? extends A> as) {
     return new Cycle<>(as);
   }
 
-  static final class Cycle<A> implements Iterable<A>{
+  static final class Cycle<A> implements Iterable<A> {
     final Iterable<? extends A> as;
-    Cycle(final Iterable<? extends A> as){
+
+    Cycle(final Iterable<? extends A> as) {
       this.as = requireNonNull(as);
     }
 
@@ -1148,7 +1143,7 @@ public class Iterables {
       }
     }
 
-    @Override public String toString(){
+    @Override public String toString() {
       return makeString(as, "[", ", ", "...]", 100);
     }
   }
@@ -1157,9 +1152,8 @@ public class Iterables {
    * Pretty print an Iterable.
    *
    * Printing following this pattern:
-   * {@literal <start><element><sep><element><end>}
-   * If the iterable would result in a String with length more than maxLength
-   * printing follows this pattern:
+   * {@literal <start><element><sep><element><end>} If the iterable would result
+   * in a String with length more than maxLength printing follows this pattern:
    * {@literal <start><element><sep><element>...<end>}
    *
    * @param as the iterable to print must not be null
@@ -1172,16 +1166,16 @@ public class Iterables {
    *
    * @since 3.0
    */
-  public static <A> String makeString(final Iterable<? extends A> as, final String start, final String sep, final String end, final int maxLength){
+  public static <A> String makeString(final Iterable<? extends A> as, final String start, final String sep, final String end, final int maxLength) {
     final StringBuilder b = new StringBuilder();
     b.append(start);
     final Iterator<? extends A> ias = requireNonNull(as).iterator();
 
-    if(ias.hasNext()){
+    if (ias.hasNext()) {
       b.append(String.valueOf(ias.next()));
     }
-    while(ias.hasNext()){
-      if(b.length() >= maxLength){
+    while (ias.hasNext()) {
+      if (b.length() >= maxLength) {
         break;
       }
 
@@ -1189,7 +1183,7 @@ public class Iterables {
       final String value = String.valueOf(ias.next());
       b.append(value);
     }
-    if(ias.hasNext()){
+    if (ias.hasNext()) {
       b.append("...");
     }
     b.append(end);
@@ -1200,10 +1194,9 @@ public class Iterables {
    * Pretty print an Iterable.
    *
    * Printing following this pattern:
-   * {@literal <start><element><sep><element><end>}
-   * If the iterable would result in a String with length more than 100
-   * characters printing follows this pattern:
-   * {@literal <start><element><sep><element>...<end>}
+   * {@literal <start><element><sep><element><end>} If the iterable would result
+   * in a String with length more than 100 characters printing follows this
+   * pattern: {@literal <start><element><sep><element>...<end>}
    *
    * @param as the iterable to print must not be null
    * @param start prefix to start the printing with
@@ -1211,7 +1204,8 @@ public class Iterables {
    * @param end suffic to end the printing with
    * @param <A> type of the elements in the iterable
    * @return a pretty printed copy of the input iterable
-   * @see #makeString(Iterable, String, String, String, int) pretty print iterable with a custom length
+   * @see #makeString(Iterable, String, String, String, int) pretty print
+   * iterable with a custom length
    *
    * @since 3.0
    */
