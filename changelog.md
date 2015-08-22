@@ -35,6 +35,7 @@ They will be removed in 4.0.
 - All copies of com.google.common.base.Function/Supplier/Predicate have been replaced with the equivalent classes
 from Java 8
 - Either.apply renamed to ap to improve consitancy of apply methods
+- ScalaConverters._ now convert between Scala types and Java 8 types (Guava converters are no longer available)
 
 ### Deprecated
 - Deprecated getOrElse(Supplier<A>) to be replaced with {@link #getElse(Supplier)} because 
@@ -50,6 +51,7 @@ slf4j and jsr305.
 - Internal usages of Preconditions.checkState have been removed. Methods returning IllegalArguementExceptions may no longer
 return the same message string inside the exception.
 - Option.find and Option.filterNone were deprecated in 1.1 and are now removed. Find their replacements in Options.
+- Dependency on maven.atlassian.com. You no longer need to include that repository
 
 ## [2.5.0] - 2015-07-31
 ### Added
