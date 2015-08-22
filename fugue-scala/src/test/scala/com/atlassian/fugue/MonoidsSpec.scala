@@ -22,13 +22,7 @@ import java.util.stream.{Collectors, StreamSupport}
 
 import com.atlassian.fugue.Either.right
 import com.atlassian.fugue.Monoids._
-import com.atlassian.fugue.law.IsEq._
 import com.atlassian.fugue.law.MonoidTests
-import org.scalacheck.Prop._
-import org.scalacheck.{Arbitrary, Properties}
-
-import scala.collection.JavaConversions._
-import scala.collection.mutable.ListBuffer
 
 
 class MonoidsSpec extends TestSuite {

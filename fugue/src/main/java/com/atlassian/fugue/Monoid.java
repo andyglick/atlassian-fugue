@@ -19,8 +19,6 @@ package com.atlassian.fugue;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import static com.atlassian.fugue.Option.none;
-import static com.atlassian.fugue.Option.some;
 import static com.atlassian.fugue.Pair.pair;
 
 /**

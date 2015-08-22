@@ -23,19 +23,17 @@ import com.atlassian.fugue.law.MonoidTests
 import org.scalacheck.Prop._
 import org.scalacheck.{Arbitrary, Properties}
 
-import scala.collection.JavaConversions._
-import scala.collection.mutable.ListBuffer
+import com.atlassian.fugue.converters.ScalaConverters._
 
 
 class MonoidSpec extends TestSuite {
-
-  val intMonoid = monoid(semigroup((i1: Int) => (i2: Int) => i1 + i2), 0)
+  val intMonoid = monoid(semigroup(((i1: Int) => (i2: Int) => i1 + i2).toJava), 0.toJava)
 
   test("Monoid laws") {
     check(MonoidTests(intMonoid))
   }
 
-  val stringMonoid = monoid(semigroup((s1: String) => (s2: String) => s1 + s2), "")
+  val stringMonoid = monoid(semigroup(((s1: String) => (s2: String) => s1 + s2).toJava), "")
 
   test("Monoids derived methods") {
     check(derivedMethodsTests(stringMonoid))
