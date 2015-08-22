@@ -19,6 +19,8 @@ package com.atlassian.fugue;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 
+import static com.atlassian.fugue.Functions.fold;
+
 /**
  * A Semigroup is an algebraic structure consisting of an associative binary operation across the values of a given type (the Semigroup type argument).
  * Implementations must satisfy the law of associativity:
@@ -38,6 +40,45 @@ import java.util.function.Function;
    * @return the combination of the left and right value.
    */
   A append(final A a1, final A a2);
+
+  /**
+   * Reduce a 'non-empty list' with {@link #append(Object, Object)}
+   *
+   * @param head the head of the non-empty
+   * @param tail the tail of non-empty
+   * @return the sum of all elements.
+   */
+  default A sumNel(A head, Iterable<A> tail) {
+    return fold(this, head, tail);
+  }
+
+  /**
+   * Returns a value summed <code>n + 1</code> times (<code>a + a + ... + a</code>)
+   * The default definition uses peasant multiplication, exploiting associativity to only
+   * require `O(log n)` uses of {@link #append(Object, Object)}.
+   *
+   * @param n multiplier
+   * @param a the value to be reapeatly summed n + 1 times
+   * @return <code>a</code> summed <code>n</code> times. If <code>n <= 0</code>, returns <code>zero()</code>
+   */
+  default A multiply1p(int n, A a) {
+    if (n<=0) {
+      return a;
+    }
+    A xTmp = a;
+    int yTmp = n;
+    A zTmp = a;
+    while (true) {
+      if ((yTmp & 1) == 1) {
+        zTmp = append(xTmp, zTmp);
+        if (yTmp == 1) {
+          return zTmp;
+        }
+      }
+      xTmp = append(xTmp, xTmp);
+      yTmp = (yTmp) >>> 1;
+    }
+  }
 
   /**
    * Apply method to conform to the {@link BinaryOperator} interface.

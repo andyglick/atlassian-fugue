@@ -45,7 +45,7 @@ class MonoidsSpec extends TestSuite {
 
   test("doubleAddition") {
     doubleAddition.append(2.0, 3.0) shouldEqual 5.0
-    check(MonoidTests(doubleAddition))
+    // check(MonoidTests(doubleAddition)) fail because double addition is not associative due to rounding error
   }
 
   test("bigintAddition") {

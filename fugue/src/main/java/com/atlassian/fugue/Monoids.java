@@ -49,7 +49,7 @@ public final class Monoids {
   /**
    * A monoid that adds doubles.
    */
-  public static final Monoid<Double> doubleAddition = monoid(Semigroups.doubleAddition, 0.0);
+  public static final Monoid<Double> doubleAddition = monoid(Semigroups.doubleAddition, 0.0, (n, d) -> d * n);
 
   /**
    * A monoid that adds big integers.
@@ -65,7 +65,7 @@ public final class Monoids {
   /**
    * A monoid that adds longs.
    */
-  public static final Monoid<Long> longAddition = monoid(Semigroups.longAddition, 0L, (n, d) -> n * d);
+  public static final Monoid<Long> longAddition = monoid(Semigroups.longAddition, 0L, (n, l) -> l * n);
 
   /**
    * A monoid that multiplies longs.

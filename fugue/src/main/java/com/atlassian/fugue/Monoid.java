@@ -51,11 +51,7 @@ public interface Monoid<A> extends Semigroup<A> {
    * @return The append of the given values.
    */
   default A sum(final Iterable<A> as) {
-    A m = zero();
-    for (A a : as) {
-      m = append(m, a);
-    }
-    return m;
+    return sumNel(zero(), as);
   }
 
   /**
@@ -66,7 +62,7 @@ public interface Monoid<A> extends Semigroup<A> {
    * @return <code>a</code> summed <code>n</code> times. If <code>n <= 0</code>, returns <code>zero()</code>
    */
   default A multiply(final int n, final A a) {
-    return sum(Iterables.<A, Integer>unfold(i -> (i < n) ? some(pair(a, i + 1)) : none(), 0));
+    return n <= 0 ? zero() : multiply1p(n - 1, a);
   }
 
   /**
