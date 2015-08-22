@@ -43,6 +43,20 @@ And then add fugue as a dependency to your pom.xml:
         </dependency>
         ...
     </dependencies>
+    
+If you are using Gradle, add a new repository to your `repositories` section:
+
+    repositories {
+        maven {
+            url "https://maven.atlassian.com/content/groups/public/"
+        }
+    }
+    
+and add a new dependency to your `dependencies` section:
+
+    compile 'com.atlassian.fugue:fugue:2.2.0'
+
+
 
 ## Guava compatibility
 
