@@ -49,7 +49,4 @@ public class IterablesConcatTest {
     assertThat(concat(Arrays.asList(1,2)).toString(), is("[1, 2]"));
   }
 
-  @Test(expected = NullPointerException.class) public void concatToStringThrows(){
-    String exceptionResult = concat(Arrays.asList(1,null)).toString();
-  }
 }
