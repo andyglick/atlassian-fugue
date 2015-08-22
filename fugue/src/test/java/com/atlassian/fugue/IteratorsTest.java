@@ -12,6 +12,7 @@ import static com.atlassian.fugue.Iterators.emptyIterator;
 import static com.atlassian.fugue.Iterators.peekingIterator;
 import static com.atlassian.fugue.Iterators.singletonIterator;
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -53,18 +54,19 @@ public class IteratorsTest {
     assertThat(intIter.hasNext(), is(false));
   }
 
-  @Test public void unsafeReferenceReuseExternalElementConsumption() {
+  @Test(expected = NoSuchElementException.class) public void unsafeReferenceReuseExternalElementConsumption() {
     final Iterator<Integer> i = asList(1, 2).iterator();
     final Iterators.Peeking<Integer> peeking = peekingIterator(i);
     assertThat(peeking.peek(), is(1));
-    assertThat(i.hasNext(), is(true));
     assertThat(peeking.next(), is(1));
+    assertThat(peeking.hasNext(), is(true));
+    assertThat(i.hasNext(), is(true));
     assertThat(i.next(), is(2));
-    assertThat(peeking.hasNext(), is(false));
+    peeking.next();
   }
 
   @Test(expected = NoSuchElementException.class) public void unsafeReferenceReusePeekConsumesElement() {
-    final Iterator<Integer> i = Collections.singletonList(1).iterator();
+    final Iterator<Integer> i = singletonList(1).iterator();
     final Iterators.Peeking<Integer> peeking = peekingIterator(i);
     assertThat(peeking.peek(), is(1));
     i.next();
