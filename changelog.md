@@ -21,6 +21,8 @@ This project attempts to adheres to [Semantic Versioning](http://semver.org/).
 - Options.toOption returns a function that builds an option
 - Option.fromOptional and Option.toOptional for interoperability with java.util.Optional
 - Functions.contant returns a function that always produces a constant return value
+- Functions.forMap returns a function that performs a map lookup returning an Option
+- Functions.forMapWithDefault returns a function that performs a map lookup returning a default value when it fails
 
 ### Changed
 - Throwables and Function2 have been moved to fugue-guava package and the com.atlassian.fugue.deprecated package.
