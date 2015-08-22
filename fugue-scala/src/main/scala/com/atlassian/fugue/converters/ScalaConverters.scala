@@ -32,7 +32,7 @@ import com.atlassian.fugue
  *
  * Also note that a `Function[Pair[A, B], C]` converts to an `((A, B)) => C` – note the inner parens,
  * it converts to a tupled (1 arg that is a tuple) function. You can turn that into an
- * `(A, B) => C` with `scala.Function.untupled _'
+ * `(A, B) => C` with `scala.Function.untupled _`
  *
  * Note: The class was moved from package com.atlassian.fugue to com.atlassian.fugue.converters in 2.4, where
  * 'toScala', 'toJava' has been replaced by 'toScala', 'toJava'
@@ -112,7 +112,6 @@ object ScalaConverters extends LowPriorityConverters {
     } {
       case (a, b) => fugue.Pair.pair(a.toJava, b.toJava)
     }
-
 }
 
 trait LowPriorityConverters {
