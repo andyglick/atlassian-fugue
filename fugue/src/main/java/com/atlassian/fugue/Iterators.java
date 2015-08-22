@@ -49,10 +49,15 @@ class Iterators {
   }
 
   /**
-   * Wrap an iterator to add support for the peek operation
+   * Wrap an iterator to add support for the peek operation. Do not maintain a
+   * reference to the iterator passed in as a parameter. Iterators are mutable
+   * by nature and this function makes no promises about how or when the input
+   * iterator will be mutated.
+   *
    * @param iterator iterator that may not support peek, must not be null
    * @param <A> element type
-   * @return iterator that can return the next element without removing it from the iterator
+   * @return an iterator for which {@code peek} will return Iterator#next
+   * without removing the value from the iterator
    *
    * @since 3.0
    */

@@ -522,13 +522,12 @@ public class Iterables {
     }
 
     static final class Iter<A> extends Iterators.Abstract<A> {
-      private final Iterator<A> as;
+      private final Iterators.Peeking<A> as;
 
       Iter(final Iterator<A> as, final Predicate<A> p) {
-        this.as = as;
-        final Iterators.Peeking<A> peeker = peekingIterator(as);
-        while (peeker.hasNext() && p.test(peeker.peek())) {
-          peeker.next();
+        this.as = peekingIterator(as);
+        while (this.as.hasNext() && p.test(this.as.peek())) {
+          this.as.next();
         }
       }
 
