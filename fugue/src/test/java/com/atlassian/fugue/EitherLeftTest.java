@@ -117,23 +117,22 @@ public class EitherLeftTest {
 
   @Test public void flatMapLeftSubTypes() {
     class ErrorType {}
-    class AnotherErrorType extends ErrorType{}
+    class AnotherErrorType extends ErrorType {}
 
     final AnotherErrorType anotherErrorType = new AnotherErrorType();
     final Either<AnotherErrorType, Integer> l = Either.left(anotherErrorType);
 
-    final Either<AnotherErrorType, Integer> either = Either.<ErrorType, Integer>left(new ErrorType()).left()
-      .flatMap(input -> l);
+    final Either<AnotherErrorType, Integer> either = Either.<ErrorType, Integer> left(new ErrorType()).left().flatMap(input -> l);
 
     final ErrorType errorType = either.left().get();
 
-    assertThat(errorType, Matchers.<ErrorType>is(anotherErrorType));
+    assertThat(errorType, Matchers.<ErrorType> is(anotherErrorType));
   }
 
   @Test public void flatMapLeftWithUpcastAndSubtypes() {
     class ErrorType {}
-    class MyErrorType extends ErrorType{}
-    class AnotherErrorType extends ErrorType{}
+    class MyErrorType extends ErrorType {}
+    class AnotherErrorType extends ErrorType {}
 
     final MyErrorType myErrorType = new MyErrorType();
     final AnotherErrorType anotherErrorType = new AnotherErrorType();
@@ -141,11 +140,10 @@ public class EitherLeftTest {
     final Either<MyErrorType, Integer> l = Either.left(myErrorType);
     final Either<AnotherErrorType, Integer> l2 = Either.left(anotherErrorType);
 
-    final Either<AnotherErrorType, Integer> either = Eithers.<ErrorType, MyErrorType, Integer>upcastLeft(l).left()
-      .flatMap(input -> l2);
+    final Either<AnotherErrorType, Integer> either = Eithers.<ErrorType, MyErrorType, Integer> upcastLeft(l).left().flatMap(input -> l2);
 
     final ErrorType errorType = either.left().get();
 
-    assertThat(errorType, Matchers.<ErrorType>is(anotherErrorType));
+    assertThat(errorType, Matchers.<ErrorType> is(anotherErrorType));
   }
 }

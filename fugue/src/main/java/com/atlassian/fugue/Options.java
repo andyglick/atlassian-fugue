@@ -121,8 +121,7 @@ public class Options {
    * @since 2.0
    */
   public static <A, B> Option<B> ap(final Option<A> oa, Option<Function<A, B>> of) {
-    return of.fold(Option.<B> noneSupplier(),
-      Functions.compose(Functions.<Option<A>, Option<B>> apply(oa), Options.<A, B> lift()));
+    return of.fold(Option.<B> noneSupplier(), Functions.compose(Functions.<Option<A>, Option<B>> apply(oa), Options.<A, B> lift()));
   }
 
   /**
@@ -187,7 +186,6 @@ public class Options {
     return map(filterNone(options), Maybe::get);
   }
 
-
   /**
    * Function for wrapping values in a Some or None.
    *
@@ -203,7 +201,8 @@ public class Options {
    * Turn a null producing function into one that returns an option instead.
    *
    * @param nullProducing the function that may return null
-   * @return a function that turns nulls into None, and wraps non-null values in Some.
+   * @return a function that turns nulls into None, and wraps non-null values in
+   * Some.
    * @since 3.0
    */
   public static <A, B> Function<A, Option<B>> nullSafe(Function<A, B> nullProducing) {

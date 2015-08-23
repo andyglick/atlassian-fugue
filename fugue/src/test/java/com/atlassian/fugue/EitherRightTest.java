@@ -125,23 +125,22 @@ public class EitherRightTest {
 
   @Test public void flatMapRightSubTypes() {
     class Type {}
-    class AnotherType extends Type{}
+    class AnotherType extends Type {}
 
     final AnotherType anotherType = new AnotherType();
     final Either<Boolean, AnotherType> r = Either.right(anotherType);
 
-    final Either<Boolean, AnotherType> either = Either.<Boolean, Type>right(new Type()).right()
-      .flatMap(input -> r);
+    final Either<Boolean, AnotherType> either = Either.<Boolean, Type> right(new Type()).right().flatMap(input -> r);
 
     final Type type = either.right().get();
 
-    assertThat(type, Matchers.<Type>is(anotherType));
+    assertThat(type, Matchers.<Type> is(anotherType));
   }
 
   @Test public void flatMapRightWithUpcastAndSubtypes() {
     class Type {}
     class MyType extends Type {}
-    class AnotherType extends Type{}
+    class AnotherType extends Type {}
 
     final MyType myType = new MyType();
     final AnotherType anotherType = new AnotherType();
@@ -149,11 +148,10 @@ public class EitherRightTest {
     final Either<Boolean, MyType> r = Either.right(myType);
     final Either<Boolean, AnotherType> r2 = Either.right(anotherType);
 
-    final Either<Boolean, AnotherType> either = Eithers.<Boolean, Type, MyType>upcastRight(r).right()
-      .flatMap(input -> r2);
+    final Either<Boolean, AnotherType> either = Eithers.<Boolean, Type, MyType> upcastRight(r).right().flatMap(input -> r2);
 
     final Type errorType = either.right().get();
 
-    assertThat(errorType, Matchers.<Type>is(anotherType));
+    assertThat(errorType, Matchers.<Type> is(anotherType));
   }
 }

@@ -51,18 +51,16 @@ public class IterablesMergeSortedTest {
   }
 
   @Test public void mergingNonEmptyIterablesOutOfOrderGivesMergedIterableInOrder() {
-    assertThat(mergeSorted(Arrays.asList(Arrays.asList("b", "d"), Arrays.asList("a", "c", "e"))),
-      contains("a", "b", "c", "d", "e"));
+    assertThat(mergeSorted(Arrays.asList(Arrays.asList("b", "d"), Arrays.asList("a", "c", "e"))), contains("a", "b", "c", "d", "e"));
   }
 
   @Test public void mergingManyNonEmptyIterablesOutOfOrderGivesMergedIterableInOrder() {
     assertThat(
-      mergeSorted(Arrays.asList(Arrays.asList("b", "d"), Arrays.asList("f", "x"), Arrays.asList("c", "e"),
-        Arrays.asList("g", "h"), Arrays.asList("a", "z"))), contains("a", "b", "c", "d", "e", "f", "g", "h", "x", "z"));
+      mergeSorted(Arrays.asList(Arrays.asList("b", "d"), Arrays.asList("f", "x"), Arrays.asList("c", "e"), Arrays.asList("g", "h"),
+        Arrays.asList("a", "z"))), contains("a", "b", "c", "d", "e", "f", "g", "h", "x", "z"));
   }
 
   @Test public void mergedToString() {
-    assertThat(mergeSorted(Arrays.asList(Arrays.asList("b", "d"), Arrays.asList("a", "c", "e"))).toString(),
-      is("[a, b, c, d, e]"));
+    assertThat(mergeSorted(Arrays.asList(Arrays.asList("b", "d"), Arrays.asList("a", "c", "e"))).toString(), is("[a, b, c, d, e]"));
   }
 }

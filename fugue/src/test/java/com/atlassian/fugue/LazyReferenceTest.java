@@ -54,8 +54,7 @@ public class LazyReferenceTest {
     pause(WAIT);
   }
 
-  @Test
-  public void concurrentCreate() throws Exception {
+  @Test public void concurrentCreate() throws Exception {
     final int nThreads = 40;
     final Object[] results = new Object[nThreads];
     final AtomicInteger createCallCount = new AtomicInteger(0);
@@ -90,9 +89,9 @@ public class LazyReferenceTest {
       final int j = i;
       tasks.add(() -> {
         /*
-         * Put in a latch to synchronize all threads and try to get them to
-         * call ref.get() at the same time (to increase concurrency and make
-         * this test more useful)
+         * Put in a latch to synchronize all threads and try to get them to call
+         * ref.get() at the same time (to increase concurrency and make this
+         * test more useful)
          */
         latch.countDown();
         latch.await();

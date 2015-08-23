@@ -58,7 +58,7 @@ public class OptionStaticsTest {
   }
 
   @Test(expected = InvocationTargetException.class) public void nonInstantiable() throws Exception {
-    getOrThrow(UtilityFunctions.<Options>defaultCtor().apply(Options.class));
+    getOrThrow(UtilityFunctions.<Options> defaultCtor().apply(Options.class));
   }
 
   @Test public void identity() {
@@ -83,7 +83,7 @@ public class OptionStaticsTest {
   @Test public void upcastNone() {
     Option<Integer> none = Option.none();
     Option<Number> result = Options.<Number, Integer> upcast(none);
-    assertThat(result, is(sameInstance(Option.<Number>none())));
+    assertThat(result, is(sameInstance(Option.<Number> none())));
   }
 
   @Test public void liftToString() {
@@ -91,7 +91,7 @@ public class OptionStaticsTest {
   }
 
   @Test public void liftNone() {
-    assertThat(lift(UtilityFunctions.bool2String).apply(Option.<Boolean>none()), is(sameInstance(Option.<String>none())));
+    assertThat(lift(UtilityFunctions.bool2String).apply(Option.<Boolean> none()), is(sameInstance(Option.<String> none())));
   }
 
   @Test public void liftFunction() {
@@ -108,39 +108,31 @@ public class OptionStaticsTest {
   }
 
   @Test public void apTest() {
-    assertThat(ap(Option.some(false), Option.some(UtilityFunctions.bool2String)),
-      is(Option.some(String.valueOf(false))));
+    assertThat(ap(Option.some(false), Option.some(UtilityFunctions.bool2String)), is(Option.some(String.valueOf(false))));
   }
 
   @Test public void apNone() {
-    assertThat(ap(Option.<Boolean>none(), Option.some(UtilityFunctions.bool2String)),
-      is(sameInstance(Option.<String> none())));
+    assertThat(ap(Option.<Boolean> none(), Option.some(UtilityFunctions.bool2String)), is(sameInstance(Option.<String> none())));
   }
 
   @Test public void apNoneFunction() {
-    assertThat(ap(Option.<Boolean>none(), Option.<Function<Boolean, Integer>>none()),
-      is(sameInstance(Option.<Integer>none())));
+    assertThat(ap(Option.<Boolean> none(), Option.<Function<Boolean, Integer>> none()), is(sameInstance(Option.<Integer> none())));
   }
 
   @Test public void lift2() {
-    BiFunction<Option<String>, Option<Integer>, Option<Option<Character>>> liftedCharAt = Options
-      .lift2(UtilityFunctions.charAt);
+    BiFunction<Option<String>, Option<Integer>, Option<Option<Character>>> liftedCharAt = Options.lift2(UtilityFunctions.charAt);
     Option<Option<Character>> b = Option.some(Option.some('b'));
     assertThat(liftedCharAt.apply(some("abc"), Option.some(1)), is(b));
   }
 
   @Test public void lift2FirstNone() {
-    BiFunction<Option<String>, Option<Integer>, Option<Option<Character>>> liftedCharAt = Options
-      .lift2(UtilityFunctions.charAt);
-    assertThat(liftedCharAt.apply(Option.<String>none(), Option.some(1)),
-      is(sameInstance(Option.<Option<Character>>none())));
+    BiFunction<Option<String>, Option<Integer>, Option<Option<Character>>> liftedCharAt = Options.lift2(UtilityFunctions.charAt);
+    assertThat(liftedCharAt.apply(Option.<String> none(), Option.some(1)), is(sameInstance(Option.<Option<Character>> none())));
   }
 
   @Test public void lift2SecondNone() {
-    BiFunction<Option<String>, Option<Integer>, Option<Option<Character>>> liftedCharAt = Options
-      .lift2(UtilityFunctions.charAt);
-    assertThat(liftedCharAt.apply(some("abc"), Option.<Integer> none()),
-      is(sameInstance(Option.<Option<Character>> none())));
+    BiFunction<Option<String>, Option<Integer>, Option<Option<Character>>> liftedCharAt = Options.lift2(UtilityFunctions.charAt);
+    assertThat(liftedCharAt.apply(some("abc"), Option.<Integer> none()), is(sameInstance(Option.<Option<Character>> none())));
   }
 
   @Test public void lift2Function() {
@@ -153,9 +145,8 @@ public class OptionStaticsTest {
     Predicate<Option<Integer>> lifted = lift(Predicate.isEqual(3));
     assertThat(lifted.test(some(3)), is(true));
     assertThat(lifted.test(some(2)), is(false));
-    assertThat(lifted.test(Option.<Integer>none()), is(false));
+    assertThat(lifted.test(Option.<Integer> none()), is(false));
   }
-
 
   private BiFunction<Option<String>, Option<Integer>, Option<Option<Character>>> liftCharAtFunction() {
     return Options.<String, Integer, Option<Character>> lift2().apply(UtilityFunctions.charAt);
@@ -198,7 +189,6 @@ public class OptionStaticsTest {
   @Test public void filterFindsNone() {
     assertThat(isEmpty().test(filterNone(fourNones())), is(true));
   }
-
 
   @Test public void filterNones() {
     final List<Option<Integer>> list = Arrays.asList(some(1), none(Integer.class), some(2));

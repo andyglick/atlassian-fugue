@@ -148,7 +148,7 @@ public class Eithers {
   }
 
   public static <L, R> Supplier<Either<L, R>> toLeft(final L l) {
-    return compose(Eithers.<L, R>toLeft(), ofInstance(l));
+    return compose(Eithers.<L, R> toLeft(), ofInstance(l));
   }
 
   // allows static import
@@ -166,7 +166,7 @@ public class Eithers {
   }
 
   public static <L, R> Supplier<Either<L, R>> toRight(final R r) {
-    return compose(Eithers.<L, R>toRight(), ofInstance(r));
+    return compose(Eithers.<L, R> toRight(), ofInstance(r));
   }
 
   // allows static import
@@ -214,7 +214,7 @@ public class Eithers {
    * @return the left values contained in the contents of it
    */
   public static <L, R> Iterable<L> filterLeft(Iterable<Either<L, R>> it) {
-    return collect(it, Eithers.<L, R>leftMapper());
+    return collect(it, Eithers.<L, R> leftMapper());
   }
 
   /**
@@ -227,7 +227,7 @@ public class Eithers {
    * @return the right values contained in the contents of it
    */
   public static <L, R> Iterable<R> filterRight(Iterable<Either<L, R>> it) {
-    return Options.flatten(map(it, Eithers.<L, R>rightMapper()));
+    return Options.flatten(map(it, Eithers.<L, R> rightMapper()));
   }
 
   /**
