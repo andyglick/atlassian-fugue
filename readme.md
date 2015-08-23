@@ -78,3 +78,9 @@ Source code should be formatted according to the local style, which is encoded i
 rules in:
 
     src/etc/eclipse/formatter.xml
+
+This can be applied by running maven-formatter-plugin for Java and maven-scalariform-plugin for
+Scala
+
+    mvn formatter:format
+    mvn scalariform:format
