@@ -36,7 +36,7 @@
                 <configuration>
                     <instructions>
                         <Export-Package>
-                            com.atlassian.fugue.*;version="${project.version}"
+                            io.atlassian.fugue.*;version="${project.version}"
                         </Export-Package>
                     </instructions>
                 </configuration>

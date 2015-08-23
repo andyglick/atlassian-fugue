@@ -15,7 +15,7 @@
  */
 package com.atlassian.fugue.retry;
 
-import com.atlassian.fugue.Suppliers;
+import io.atlassian.fugue.Suppliers;
 
 import java.util.function.Function;
 

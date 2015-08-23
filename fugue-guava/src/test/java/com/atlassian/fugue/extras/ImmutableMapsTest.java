@@ -28,8 +28,8 @@ import javax.annotation.Nullable;
 
 import org.junit.Test;
 
-import com.atlassian.fugue.Functions;
-import com.atlassian.fugue.Option;
+import io.atlassian.fugue.Functions;
+import io.atlassian.fugue.Option;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 

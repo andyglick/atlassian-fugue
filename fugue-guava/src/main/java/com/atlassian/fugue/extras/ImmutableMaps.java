@@ -20,10 +20,10 @@ import java.util.Map.Entry;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import com.atlassian.fugue.Functions;
-import com.atlassian.fugue.Option;
-import com.atlassian.fugue.Options;
-import com.atlassian.fugue.Iterables;
+import io.atlassian.fugue.Functions;
+import io.atlassian.fugue.Option;
+import io.atlassian.fugue.Options;
+import io.atlassian.fugue.Iterables;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
