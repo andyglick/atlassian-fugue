@@ -405,6 +405,30 @@ public abstract class Either<L, R> implements Serializable {
   }
 
   /**
+   * If this is a right, it will perform an anonymous bind.
+   *
+   * @param <X> the RHS type
+   * @param e The value to bind with.
+   * @return An either after binding through this projection.
+   * @since 2.6
+   */
+  public <X> Either<L, X> sequence(final Either<L, X> e) {
+    return right().sequence(e);
+  }
+
+  /**
+   * If this is a right, it will return an iterator of the contained value,
+   * otherwise an empty iterator
+   *
+   * @return an iterator over the contained value if is a right,
+   * or an empty one otherwise.
+   * @since 2.6
+   */
+  public Iterator<R> iterator() {
+    return right().iterator();
+  }
+
+  /**
    * Map the given function across the left hand side value if it is one.
    * 
    * @param <X> the LHS type

@@ -243,4 +243,22 @@ public class EitherRightBiasTest {
   @Test public void toOptionLeft() {
     assertThat(l.toOption(), Matchers.is(Option.<Integer>none()));
   }
+
+  @Test public void sequenceDefined() {
+    final Either<String, Integer> e = right(98);
+    assertThat(r.sequence(e).right().get(), is(98));
+  }
+
+  @Test public void sequenceNotDefined() {
+    final Either<String, Integer> e = left("bar");
+    assertThat(l.sequence(e).left().get(), is("heyaa!"));
+  }
+
+  @Test public void iteratorNotEmpty() {
+    assertThat(r.iterator().next(), is(12));
+  }
+
+  @Test public void iteratorEmpty() {
+    assertThat(l.iterator().hasNext(), is(false));
+  }
 }
