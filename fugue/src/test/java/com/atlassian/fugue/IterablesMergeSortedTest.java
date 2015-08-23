@@ -23,6 +23,8 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 import static com.atlassian.fugue.Iterables.mergeSorted;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.emptyIterableOf;
@@ -30,24 +32,24 @@ import static org.hamcrest.Matchers.is;
 
 public class IterablesMergeSortedTest {
   @Test public void mergingEmptyIterablesGivesAnEmptyIterable() {
-    Matcher<Iterable<String>> iterableMatcher = emptyIterableOf(String.class);
+    final Matcher<Iterable<String>> iterableMatcher = emptyIterableOf(String.class);
     assertThat(mergeSorted(Arrays.asList(new ArrayList<String>(), new LinkedList<String>())), is(iterableMatcher));
   }
 
   @Test public void mergingNonEmptyAndEmptyIterablesGivesTheMergedIterable() {
-    assertThat(mergeSorted(Arrays.asList(Arrays.asList("a"), Arrays.<String> asList())), contains("a"));
+    assertThat(mergeSorted(Arrays.asList(singletonList("a"), emptyList())), contains("a"));
   }
 
   @Test public void mergingEmptyAndNonEmptyIterablesGivesTheMergedIterable() {
-    assertThat(mergeSorted(Arrays.asList(Arrays.<String> asList(), Arrays.asList("a"))), contains("a"));
+    assertThat(mergeSorted(Arrays.asList(emptyList(), singletonList("a"))), contains("a"));
   }
 
   @Test public void mergingNonEmptyIterablesInOrderGivesMergedIterable() {
-    assertThat(mergeSorted(Arrays.asList(Arrays.asList("a"), Arrays.asList("b"))), contains("a", "b"));
+    assertThat(mergeSorted(Arrays.asList(singletonList("a"), singletonList("b"))), contains("a", "b"));
   }
 
   @Test public void mergingNonEmptyIterablesOutOfOrderGivesMergedIterable() {
-    assertThat(mergeSorted(Arrays.asList(Arrays.asList("b"), Arrays.asList("a"))), contains("a", "b"));
+    assertThat(mergeSorted(Arrays.asList(singletonList("b"), singletonList("a"))), contains("a", "b"));
   }
 
   @Test public void mergingNonEmptyIterablesOutOfOrderGivesMergedIterableInOrder() {

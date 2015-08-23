@@ -77,7 +77,7 @@ public class EitherRightBiasTest {
   @Test public void getOrErrorLeftMessage() {
     try {
       l.getOrError(Suppliers.ofInstance("Error message"));
-    } catch (Error e) {
+    } catch (final Error e) {
       assertThat(e.getMessage(), is("Error message"));
       return;
     }
@@ -164,8 +164,8 @@ public class EitherRightBiasTest {
     class Parent {}
     class Child extends Parent {}
 
-    Parent p = new Parent();
-    Parent pp = right(p).orElse(Suppliers.ofInstance(Either.<Integer, Child> right(new Child()))).getOrNull();
+    final Parent p = new Parent();
+    final Parent pp = right(p).orElse(Suppliers.ofInstance(Either.<Integer, Child> right(new Child()))).getOrNull();
     assertThat(pp, is(p));
   }
 

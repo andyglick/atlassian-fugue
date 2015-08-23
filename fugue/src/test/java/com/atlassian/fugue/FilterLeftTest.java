@@ -39,7 +39,7 @@ public class FilterLeftTest {
       Either.<Integer, String> left(22));
 
     final Iterator<Integer> lefts = filterLeft(it).iterator();
-    for (Either<Integer, String> i : it) {
+    for (final Either<Integer, String> i : it) {
       // calling get on a Maybe is ill advised, but this is a test - if get
       // returns null it's a sign that something
       // bigger has gone wrong

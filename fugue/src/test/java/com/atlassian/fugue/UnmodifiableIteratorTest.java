@@ -20,7 +20,7 @@ public class UnmodifiableIteratorTest {
     remove(unmodifiableIterator);
   }
 
-  @SuppressWarnings("deprecation") private void remove(Iterator<Integer> i) {
+  @SuppressWarnings("deprecation") private void remove(final Iterator<Integer> i) {
     i.remove();
   }
 }

@@ -26,13 +26,13 @@ import static org.hamcrest.Matchers.is;
 
 public class OptionCompositionTest {
   @Test public void composeLaw() {
-    Function<Integer, Integer> plusOne = input -> input + 1;
+    final Function<Integer, Integer> plusOne = input -> input + 1;
     assertThat(some(1).map(plusOne).map(toStringFunction()), is(some(1).map(Functions.compose(toStringFunction(), plusOne))));
   }
 
   @Test public void composeNull() {
-    Function<Integer, Integer> nasty = input -> null;
-    Function<Object, String> constant = Functions.constant("foo");
+    final Function<Integer, Integer> nasty = input -> null;
+    final Function<Object, String> constant = Functions.constant("foo");
     assertThat(some(1).map(nasty).map(constant), is(some(1).map(Functions.compose(constant, nasty))));
   }
 }

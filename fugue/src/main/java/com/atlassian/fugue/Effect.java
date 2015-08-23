@@ -38,7 +38,7 @@ public interface Effect<A> extends Consumer<A> {
    * @param a the input to use for performing the effect.
    * @since 3.0
    */
-  default void accept(A a) {
+  default void accept(final A a) {
     apply(a);
   }
 
@@ -47,7 +47,7 @@ public interface Effect<A> extends Consumer<A> {
    * 
    * @param <A> the type of thing to supply to the effect.
    */
-  public interface Applicant<A> {
+  interface Applicant<A> {
     /**
      * Perform the given side-effect for each contained element.
      * 

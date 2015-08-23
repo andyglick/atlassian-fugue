@@ -61,7 +61,7 @@ public class Functions {
    * @see <a href="//en.wikipedia.org/wiki/Function_composition">function
    * composition</a>
    */
-  public static <A, B, C> Function<A, C> compose(Function<? super B, ? extends C> g, Function<? super A, ? extends B> f) {
+  public static <A, B, C> Function<A, C> compose(final Function<? super B, ? extends C> g, final Function<? super A, ? extends B> f) {
     return new FunctionComposition<>(g, f);
   }
 
@@ -69,16 +69,16 @@ public class Functions {
     private final Function<? super B, ? extends C> g;
     private final Function<? super A, ? extends B> f;
 
-    FunctionComposition(Function<? super B, ? extends C> g, Function<? super A, ? extends B> f) {
+    FunctionComposition(final Function<? super B, ? extends C> g, final Function<? super A, ? extends B> f) {
       this.g = requireNonNull(g);
       this.f = requireNonNull(f);
     }
 
-    @Override public C apply(A a) {
+    @Override public C apply(final A a) {
       return g.apply(f.apply(a));
     }
 
-    @Override public boolean equals(Object obj) {
+    @Override public boolean equals(final Object obj) {
       if (obj instanceof FunctionComposition) {
         final FunctionComposition<?, ?, ?> that = (FunctionComposition<?, ?, ?>) obj;
         return f.equals(that.f) && g.equals(that.g);
@@ -180,7 +180,7 @@ public class Functions {
    */
   public static <A, B> Function<Function<A, B>, B> apply(final Supplier<A> lazyA) {
     return new Function<Function<A, B>, B>() {
-      @Override public B apply(Function<A, B> f) {
+      @Override public B apply(final Function<A, B> f) {
         return f.apply(lazyA.get());
       }
 
@@ -201,18 +201,18 @@ public class Functions {
    * otherwise a None
    * @since 1.2
    */
-  public static <A, B> Function<A, Option<B>> isInstanceOf(Class<B> cls) {
+  public static <A, B> Function<A, Option<B>> isInstanceOf(final Class<B> cls) {
     return new InstanceOf<>(cls);
   }
 
   static class InstanceOf<A, B> implements Function<A, Option<B>> {
     private final Class<B> cls;
 
-    InstanceOf(Class<B> cls) {
+    InstanceOf(final Class<B> cls) {
       this.cls = requireNonNull(cls);
     }
 
-    @Override public Option<B> apply(A a) {
+    @Override public Option<B> apply(final A a) {
       return (cls.isAssignableFrom(a.getClass())) ? Option.some(cls.cast(a)) : Option.<B> none();
     }
 
@@ -238,7 +238,7 @@ public class Functions {
    * the function.
    * @since 1.2
    */
-  public static <A, B> Function<A, Option<B>> partial(Predicate<? super A> p, Function<? super A, ? extends B> f) {
+  public static <A, B> Function<A, Option<B>> partial(final Predicate<? super A> p, final Function<? super A, ? extends B> f) {
     return new Partial<>(p, f);
   }
 
@@ -246,12 +246,12 @@ public class Functions {
     private final Predicate<? super A> p;
     private final Function<? super A, ? extends B> f;
 
-    Partial(Predicate<? super A> p, Function<? super A, ? extends B> f) {
+    Partial(final Predicate<? super A> p, final Function<? super A, ? extends B> f) {
       this.p = requireNonNull(p);
       this.f = requireNonNull(f);
     }
 
-    @Override public Option<B> apply(A a) {
+    @Override public Option<B> apply(final A a) {
       return (p.test(a)) ? option(f.apply(a)) : Option.<B> none();
     }
 
@@ -280,8 +280,8 @@ public class Functions {
    * @since 1.2
    */
 
-  public static <A, B, C> Function<A, Option<C>> composeOption(Function<? super B, ? extends Option<? extends C>> bc,
-    Function<? super A, ? extends Option<? extends B>> ab) {
+  public static <A, B, C> Function<A, Option<C>> composeOption(final Function<? super B, ? extends Option<? extends C>> bc,
+    final Function<? super A, ? extends Option<? extends B>> ab) {
     return new PartialComposer<>(ab, bc);
   }
 
@@ -289,12 +289,12 @@ public class Functions {
     private final Function<? super A, ? extends Option<? extends B>> ab;
     private final Function<? super B, ? extends Option<? extends C>> bc;
 
-    PartialComposer(Function<? super A, ? extends Option<? extends B>> ab, Function<? super B, ? extends Option<? extends C>> bc) {
+    PartialComposer(final Function<? super A, ? extends Option<? extends B>> ab, final Function<? super B, ? extends Option<? extends C>> bc) {
       this.ab = requireNonNull(ab);
       this.bc = requireNonNull(bc);
     }
 
-    @Override public Option<C> apply(A a) {
+    @Override public Option<C> apply(final A a) {
       return ab.apply(a).flatMap(bc);
     }
 
@@ -322,7 +322,7 @@ public class Functions {
   public static <A, B, C> BiFunction<A, B, C> toBiFunction(final Function<Pair<A, B>, C> fpair) {
     requireNonNull(fpair);
     return new BiFunction<A, B, C>() {
-      @Override public C apply(A a, B b) {
+      @Override public C apply(final A a, final B b) {
         return fpair.apply(Pair.pair(a, b));
       }
 
@@ -352,7 +352,7 @@ public class Functions {
   private static class CurriedFunction<A, B, C> implements Function<A, Function<B, C>> {
     private final BiFunction<A, B, C> f2;
 
-    CurriedFunction(BiFunction<A, B, C> f2) {
+    CurriedFunction(final BiFunction<A, B, C> f2) {
       this.f2 = f2;
     }
 
@@ -389,7 +389,7 @@ public class Functions {
   private static class FlippedFunction<A, B, C> implements Function<B, Function<A, C>> {
     private final Function<A, Function<B, C>> f2;
 
-    FlippedFunction(Function<A, Function<B, C>> f2) {
+    FlippedFunction(final Function<A, Function<B, C>> f2) {
       this.f2 = f2;
     }
 
@@ -416,7 +416,7 @@ public class Functions {
    * @return a function that converts any nulls into Options
    * @since 2.0
    */
-  public static <A, B> Function<A, Option<B>> mapNullToOption(Function<? super A, ? extends B> f) {
+  public static <A, B> Function<A, Option<B>> mapNullToOption(final Function<? super A, ? extends B> f) {
     return Functions.compose(Functions.<B> nullToOption(), f);
   }
 
@@ -451,7 +451,7 @@ public class Functions {
    *
    * @since 2.2
    */
-  public static <A, B> Function<A, B> weakMemoize(Function<A, B> f) {
+  public static <A, B> Function<A, B> weakMemoize(final Function<A, B> f) {
     return WeakMemoizer.weakMemoizer(f);
   }
 
@@ -501,7 +501,7 @@ public class Functions {
   private enum IdentityFunction implements Function<Object, Object> {
     INSTANCE;
 
-    @Override public Object apply(Object o) {
+    @Override public Object apply(final Object o) {
       return o;
     }
 
@@ -551,7 +551,7 @@ public class Functions {
    * @return result of calling Map#get returning defaultValue instead if the
    * result was null
    */
-  public static <A, B> Function<A, B> forMapWithDefault(final Map<A, B> map, B defaultValue) {
+  public static <A, B> Function<A, B> forMapWithDefault(final Map<A, B> map, final B defaultValue) {
     return forMap(map).andThen(o -> o.getOrElse(defaultValue));
   }
 
@@ -567,8 +567,8 @@ public class Functions {
    * one in sequence.
    * @since 1.2
    */
-  public static <A, B> Function<A, Option<B>> matches(Function<? super A, ? extends Option<? extends B>> f1,
-    Function<? super A, ? extends Option<? extends B>> f2) {
+  public static <A, B> Function<A, Option<B>> matches(final Function<? super A, ? extends Option<? extends B>> f1,
+    final Function<? super A, ? extends Option<? extends B>> f2) {
     return matcher(f1, f2);
   }
 
@@ -585,8 +585,8 @@ public class Functions {
    * one in sequence.
    * @since 1.2
    */
-  public static <A, B> Function<A, Option<B>> matches(Function<? super A, ? extends Option<? extends B>> f1,
-    Function<? super A, ? extends Option<? extends B>> f2, Function<? super A, ? extends Option<? extends B>> f3) {
+  public static <A, B> Function<A, Option<B>> matches(final Function<? super A, ? extends Option<? extends B>> f1,
+    final Function<? super A, ? extends Option<? extends B>> f2, final Function<? super A, ? extends Option<? extends B>> f3) {
     return matcher(f1, f2, f3);
   }
 
@@ -604,9 +604,9 @@ public class Functions {
    * one in sequence.
    * @since 1.2
    */
-  public static <A, B> Function<A, Option<B>> matches(Function<? super A, ? extends Option<? extends B>> f1,
-    Function<? super A, ? extends Option<? extends B>> f2, Function<? super A, ? extends Option<? extends B>> f3,
-    Function<? super A, ? extends Option<? extends B>> f4) {
+  public static <A, B> Function<A, Option<B>> matches(final Function<? super A, ? extends Option<? extends B>> f1,
+    final Function<? super A, ? extends Option<? extends B>> f2, final Function<? super A, ? extends Option<? extends B>> f3,
+    final Function<? super A, ? extends Option<? extends B>> f4) {
     return new Matcher<>(Arrays.<Function<? super A, ? extends Option<? extends B>>> asList(f1, f2, f3, f4));
   }
 
@@ -626,10 +626,10 @@ public class Functions {
    * one in sequence.
    * @since 1.2
    */
-  @SafeVarargs public static <A, B> Function<A, Option<B>> matches(Function<? super A, ? extends Option<? extends B>> f1,
-    Function<? super A, ? extends Option<? extends B>> f2, Function<? super A, ? extends Option<? extends B>> f3,
-    Function<? super A, ? extends Option<? extends B>> f4, Function<? super A, ? extends Option<? extends B>> f5,
-    Function<? super A, ? extends Option<? extends B>>... fs) {
+  @SafeVarargs public static <A, B> Function<A, Option<B>> matches(final Function<? super A, ? extends Option<? extends B>> f1,
+    final Function<? super A, ? extends Option<? extends B>> f2, final Function<? super A, ? extends Option<? extends B>> f3,
+    final Function<? super A, ? extends Option<? extends B>> f4, final Function<? super A, ? extends Option<? extends B>> f5,
+    final Function<? super A, ? extends Option<? extends B>>... fs) {
 
     @SuppressWarnings("unchecked")
     final Function<? super A, ? extends Option<? extends B>>[] matchingFunctions = new Function[5 + fs.length];
@@ -644,7 +644,7 @@ public class Functions {
   }
 
   /* utility copy function */
-  @SafeVarargs private static <A, B> Matcher<A, B> matcher(Function<? super A, ? extends Option<? extends B>>... fs) {
+  @SafeVarargs private static <A, B> Matcher<A, B> matcher(final Function<? super A, ? extends Option<? extends B>>... fs) {
     @SuppressWarnings("unchecked")
     final Function<? super A, ? extends Option<? extends B>>[] dest = new Function[fs.length];
 
@@ -661,7 +661,7 @@ public class Functions {
   static class Matcher<A, B> implements Function<A, Option<B>> {
     private final Iterable<Function<? super A, ? extends Option<? extends B>>> fs;
 
-    Matcher(Iterable<Function<? super A, ? extends Option<? extends B>>> fs) {
+    Matcher(final Iterable<Function<? super A, ? extends Option<? extends B>>> fs) {
       this.fs = requireNonNull(fs);
 
       if (!fs.iterator().hasNext()) {
@@ -669,7 +669,7 @@ public class Functions {
       }
     }
 
-    @Override public Option<B> apply(A a) {
+    @Override public Option<B> apply(final A a) {
       for (final Function<? super A, ? extends Option<? extends B>> f : fs) {
         @SuppressWarnings("unchecked")
         final Option<B> b = (Option<B>) f.apply(a);
@@ -711,7 +711,7 @@ public class Functions {
     }
 
     private final ConcurrentMap<A, MappedReference<A, B>> map;
-    private final ReferenceQueue<B> queue = new ReferenceQueue<B>();
+    private final ReferenceQueue<B> queue = new ReferenceQueue<>();
     private final Function<A, B> delegate;
 
     /**
@@ -719,7 +719,7 @@ public class Functions {
      *
      * @param delegate for creating the initial values.
      */
-    WeakMemoizer(Function<A, B> delegate) {
+    WeakMemoizer(final Function<A, B> delegate) {
       this.map = new ConcurrentHashMap<>();
       this.delegate = requireNonNull(delegate, "delegate");
     }

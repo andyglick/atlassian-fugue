@@ -25,19 +25,19 @@ import static org.junit.Assert.fail;
 
 public class LazyReferenceTest {
 
-  /**
-   * Used to pound the tests
-   *
-   * @throws Exception
-   */
-  // public static void main(final String[] args) throws Exception {
-  // final Iterables.LazyReferenceTest test = new Iterables.LazyReferenceTest();
-  // for (int i = 0; i < 10000; i++) {
-  // // test.concurrentCreate();
-  // // test.getInterruptibly();
-  // test.getNotInterruptable();
-  // }
-  // }
+//  /**
+//   * Used to pound the tests
+//   *
+//   * @throws Exception
+//   */
+//  public static void main(final String[] args) throws Exception {
+//    final Iterables.LazyReferenceTest test = new Iterables.LazyReferenceTest();
+//    for (int i = 0; i < 10000; i++) {
+//      // test.concurrentCreate();
+//      // test.getInterruptibly();
+//      test.getNotInterruptable();
+//    }
+//  }
   static final int WAIT = 10;
 
   static void pause(final int millis) {
@@ -100,8 +100,7 @@ public class LazyReferenceTest {
       });
     }
 
-    List<Future<Object>> futures = null;
-    futures = pool.invokeAll(tasks);
+    final List<Future<Object>> futures = pool.invokeAll(tasks);
 
     // Ensure the create() method was invoked once
     assertEquals(1, createCallCount.get());

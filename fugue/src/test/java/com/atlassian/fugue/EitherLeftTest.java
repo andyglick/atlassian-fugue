@@ -103,15 +103,15 @@ public class EitherLeftTest {
   }
 
   @Test public void upcastLeftOnLeft() {
-    Either<Integer, String> e = Either.left(1);
-    Either<Number, String> result = Eithers.<Number, Integer, String> upcastLeft(e);
-    Number expected = 1;
+    final Either<Integer, String> e = Either.left(1);
+    final Either<Number, String> result = Eithers.<Number, Integer, String> upcastLeft(e);
+    final Number expected = 1;
     assertThat(result.left().get(), is(expected));
   }
 
   @Test public void upcastLeftOnRight() {
-    Either<Integer, String> e = Either.right("a");
-    Either<Number, String> result = Eithers.<Number, Integer, String> upcastLeft(e);
+    final Either<Integer, String> e = Either.right("a");
+    final Either<Number, String> result = Eithers.<Number, Integer, String> upcastLeft(e);
     assertThat(result.getRight(), is("a"));
   }
 

@@ -62,23 +62,23 @@ public class ToEitherLeftOrRightTest {
   // Function and Supplier can be useful.
 
   @Test public void toRightFunctionUsedInFold() {
-    Either<String, Integer> either = divideByTwo(ORIGINAL_INT * 2).fold(toLeft(ORIGINAL_STRING, Integer.class), toRight(String.class, Integer.class));
+    final Either<String, Integer> either = divideByTwo(ORIGINAL_INT * 2).fold(toLeft(ORIGINAL_STRING, Integer.class), toRight(String.class, Integer.class));
     assertThat(either.right().get(), is(ORIGINAL_INT));
   }
 
   @Test public void toLeftSupplierUsedInFold() {
-    Either<String, Integer> either = divideByTwo(ORIGINAL_INT).fold(toLeft(ORIGINAL_STRING, Integer.class), toRight(String.class, Integer.class));
+    final Either<String, Integer> either = divideByTwo(ORIGINAL_INT).fold(toLeft(ORIGINAL_STRING, Integer.class), toRight(String.class, Integer.class));
     assertThat(either.left().get(), is(ORIGINAL_STRING));
   }
 
   @Test public void toLeftFunctionUsedInFold() {
-    Either<String, Integer> either = divideByTwo(ORIGINAL_INT * 2).fold(toRight(Integer.class, ORIGINAL_STRING), toLeft(Integer.class, String.class))
+    final Either<String, Integer> either = divideByTwo(ORIGINAL_INT * 2).fold(toRight(Integer.class, ORIGINAL_STRING), toLeft(Integer.class, String.class))
       .swap();
     assertThat(either.right().get(), is(ORIGINAL_INT));
   }
 
   @Test public void toRightSupplierUsedInFold() {
-    Either<String, Integer> either = divideByTwo(ORIGINAL_INT).fold(toRight(Integer.class, ORIGINAL_STRING), toLeft(Integer.class, String.class))
+    final Either<String, Integer> either = divideByTwo(ORIGINAL_INT).fold(toRight(Integer.class, ORIGINAL_STRING), toLeft(Integer.class, String.class))
       .swap();
     assertThat(either.left().get(), is(ORIGINAL_STRING));
   }

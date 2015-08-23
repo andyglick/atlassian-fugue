@@ -74,15 +74,15 @@ public class OptionStaticsTest {
   }
 
   @Test public void upcastSome() {
-    Option<Integer> some = some(1);
-    Option<Number> result = Options.<Number, Integer> upcast(some);
-    Number expected = 1;
+    final Option<Integer> some = some(1);
+    final Option<Number> result = Options.<Number, Integer> upcast(some);
+    final Number expected = 1;
     assertThat(result.get(), is(expected));
   }
 
   @Test public void upcastNone() {
-    Option<Integer> none = Option.none();
-    Option<Number> result = Options.<Number, Integer> upcast(none);
+    final Option<Integer> none = Option.none();
+    final Option<Number> result = Options.<Number, Integer> upcast(none);
     assertThat(result, is(sameInstance(Option.<Number> none())));
   }
 
@@ -99,7 +99,7 @@ public class OptionStaticsTest {
   }
 
   @Test public void liftFunctionNone() {
-    Function<Option<Boolean>, Option<String>> liftedBool2String = liftBool2StringFunction();
+    final Function<Option<Boolean>, Option<String>> liftedBool2String = liftBool2StringFunction();
     assertThat(liftedBool2String.apply(Option.<Boolean> none()), is(sameInstance(Option.<String> none())));
   }
 
@@ -120,29 +120,29 @@ public class OptionStaticsTest {
   }
 
   @Test public void lift2() {
-    BiFunction<Option<String>, Option<Integer>, Option<Option<Character>>> liftedCharAt = Options.lift2(UtilityFunctions.charAt);
+    final BiFunction<Option<String>, Option<Integer>, Option<Option<Character>>> liftedCharAt = Options.lift2(UtilityFunctions.charAt);
     Option<Option<Character>> b = Option.some(Option.some('b'));
     assertThat(liftedCharAt.apply(some("abc"), Option.some(1)), is(b));
   }
 
   @Test public void lift2FirstNone() {
-    BiFunction<Option<String>, Option<Integer>, Option<Option<Character>>> liftedCharAt = Options.lift2(UtilityFunctions.charAt);
+    final BiFunction<Option<String>, Option<Integer>, Option<Option<Character>>> liftedCharAt = Options.lift2(UtilityFunctions.charAt);
     assertThat(liftedCharAt.apply(Option.<String> none(), Option.some(1)), is(sameInstance(Option.<Option<Character>> none())));
   }
 
   @Test public void lift2SecondNone() {
-    BiFunction<Option<String>, Option<Integer>, Option<Option<Character>>> liftedCharAt = Options.lift2(UtilityFunctions.charAt);
+    final BiFunction<Option<String>, Option<Integer>, Option<Option<Character>>> liftedCharAt = Options.lift2(UtilityFunctions.charAt);
     assertThat(liftedCharAt.apply(some("abc"), Option.<Integer> none()), is(sameInstance(Option.<Option<Character>> none())));
   }
 
   @Test public void lift2Function() {
-    BiFunction<Option<String>, Option<Integer>, Option<Option<Character>>> liftedCharAt = liftCharAtFunction();
+    final BiFunction<Option<String>, Option<Integer>, Option<Option<Character>>> liftedCharAt = liftCharAtFunction();
     Option<Option<Character>> b = some(some('b'));
     assertThat(liftedCharAt.apply(some("abc"), some(1)), is(b));
   }
 
   @Test public void liftPredicate() {
-    Predicate<Option<Integer>> lifted = lift(Predicate.isEqual(3));
+    final Predicate<Option<Integer>> lifted = lift(Predicate.isEqual(3));
     assertThat(lifted.test(some(3)), is(true));
     assertThat(lifted.test(some(2)), is(false));
     assertThat(lifted.test(Option.<Integer> none()), is(false));

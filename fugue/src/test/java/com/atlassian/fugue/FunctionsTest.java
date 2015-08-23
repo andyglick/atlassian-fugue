@@ -137,7 +137,7 @@ public class FunctionsTest {
   }
 
   @Test(expected = IllegalArgumentException.class) public void countingPredicateWithNegative() {
-    final Predicate<Integer> p = countingPredicate(-1);
+    countingPredicate(-1);
   }
 
   @Test public void forMapWithDefaultWithValue() {

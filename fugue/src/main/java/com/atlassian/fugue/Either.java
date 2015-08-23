@@ -161,7 +161,7 @@ public abstract class Either<L, R> implements Serializable {
    * @return the contained value.
    * @since 2.3
    */
-  public final R getOrError(Supplier<String> msg) {
+  public final R getOrError(final Supplier<String> msg) {
     return right().getOrError(msg);
   }
 
@@ -176,7 +176,7 @@ public abstract class Either<L, R> implements Serializable {
    * @throws X the throwable the supplier creates if there is no value.
    * @since 2.3
    */
-  public final <X extends Throwable> R getOrThrow(Supplier<X> ifUndefined) throws X {
+  public final <X extends Throwable> R getOrThrow(final Supplier<X> ifUndefined) throws X {
     return right().getOrThrow(ifUndefined);
   }
 
@@ -270,7 +270,7 @@ public abstract class Either<L, R> implements Serializable {
     }
 
     @SuppressWarnings("unchecked")
-    Either<L, R> result = (Either<L, R>) orElse.get();
+    final Either<L, R> result = (Either<L, R>) orElse.get();
     return result;
   }
 
@@ -434,7 +434,7 @@ public abstract class Either<L, R> implements Serializable {
       return ifLeft.apply(value);
     }
 
-    @Override public <LL, RR> Either<LL, RR> bimap(Function<? super L, ? extends LL> ifLeft, Function<? super R, ? extends RR> ifRight) {
+    @Override public <LL, RR> Either<LL, RR> bimap(final Function<? super L, ? extends LL> ifLeft, final Function<? super R, ? extends RR> ifRight) {
       @SuppressWarnings("unchecked")
       final Either<LL, RR> map = (Either<LL, RR>) left().map(ifLeft);
       return map;
@@ -489,7 +489,7 @@ public abstract class Either<L, R> implements Serializable {
       return ifRight.apply(value);
     }
 
-    @Override public <LL, RR> Either<LL, RR> bimap(Function<? super L, ? extends LL> ifLeft, Function<? super R, ? extends RR> ifRight) {
+    @Override public <LL, RR> Either<LL, RR> bimap(final Function<? super L, ? extends LL> ifLeft, final Function<? super R, ? extends RR> ifRight) {
       @SuppressWarnings("unchecked")
       final Either<LL, RR> map = (Either<LL, RR>) right().map(ifRight);
       return map;
@@ -550,7 +550,7 @@ public abstract class Either<L, R> implements Serializable {
       return toOption().getOrError(err);
     }
 
-    @Override public <X extends Throwable> A getOrThrow(Supplier<X> ifUndefined) throws X {
+    @Override public <X extends Throwable> A getOrThrow(final Supplier<X> ifUndefined) throws X {
       return toOption().getOrThrow(ifUndefined);
     }
 
@@ -617,7 +617,7 @@ public abstract class Either<L, R> implements Serializable {
     public <X, RR extends R> Either<X, R> flatMap(final Function<? super L, Either<X, RR>> f) {
       if (isLeft()) {
         @SuppressWarnings("unchecked")
-        Either<X, R> result = (Either<X, R>) f.apply(get());
+        final Either<X, R> result = (Either<X, R>) f.apply(get());
         return result;
       } else {
         return this.toRight();
@@ -742,7 +742,7 @@ public abstract class Either<L, R> implements Serializable {
     public <X, LL extends L> Either<L, X> flatMap(final Function<? super R, Either<LL, X>> f) {
       if (isRight()) {
         @SuppressWarnings("unchecked")
-        Either<L, X> result = (Either<L, X>) f.apply(get());
+        final Either<L, X> result = (Either<L, X>) f.apply(get());
         return result;
       } else {
         return this.toLeft();
