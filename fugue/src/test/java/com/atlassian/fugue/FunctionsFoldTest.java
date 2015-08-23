@@ -97,7 +97,7 @@ public class FunctionsFoldTest {
     assertThat(fold(mult, 1, asList(1, 2, 3, 4, 5)), is((Number) 120));
   }
 
-    @Test public void f1FoldVarianceFirstArg() {
+  @Test public void f1FoldVarianceFirstArg() {
     final Function<Pair<Number, Integer>, Integer> mult = new Function<Pair<Number, Integer>, Integer>() {
       @Override public Integer apply(final Pair<Number, Integer> arg) {
         return arg.left().intValue() * arg.right();

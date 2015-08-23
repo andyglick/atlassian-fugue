@@ -137,7 +137,7 @@ public class OptionStaticsTest {
   }
 
   private Function<Option<Boolean>, Option<String>> liftBool2StringFunction() {
-    return Options.<Boolean, String>lift().apply(UtilityFunctions.bool2String);
+    return Options.<Boolean, String> lift().apply(UtilityFunctions.bool2String);
   }
 
   @Test public void ap() {
@@ -180,6 +180,6 @@ public class OptionStaticsTest {
   }
 
   private Function2<Option<String>, Option<Integer>, Option<Option<Character>>> liftCharAtFunction() {
-    return Options.<String, Integer, Option<Character>>lift2().apply(UtilityFunctions.charAt);
+    return Options.<String, Integer, Option<Character>> lift2().apply(UtilityFunctions.charAt);
   }
 }

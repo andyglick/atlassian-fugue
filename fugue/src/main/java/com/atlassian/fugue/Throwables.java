@@ -31,8 +31,7 @@ import com.google.common.base.Function;
  * @deprecated since 2.4, no need in Java7 with closeWithResources and
  * multi-catch
  */
-@Deprecated
-public final class Throwables {
+@Deprecated public final class Throwables {
   /**
    * Propagates {@code throwable} as-is if it is an instance of
    * {@link RuntimeException} or {@link Error}, or else as a last resort, wraps
@@ -59,7 +58,8 @@ public final class Throwables {
    * }
    * </pre>
    * 
-   * @param <R> the type of the Throwable to propagate, must be a RuntimeException
+   * @param <R> the type of the Throwable to propagate, must be a
+   * RuntimeException
    * @param throwable the Throwable to propagate
    * @param function the function to transform the throwable into a runtime
    * exception
@@ -68,8 +68,7 @@ public final class Throwables {
    * @deprecated since 2.4, no need in Java7 with closeWithResources and
    * multi-catch
    */
-  @Deprecated
-  public static <R extends RuntimeException> R propagate(Throwable throwable, Function<Throwable, R> function) {
+  @Deprecated public static <R extends RuntimeException> R propagate(Throwable throwable, Function<Throwable, R> function) {
     propagateIfPossible(checkNotNull(throwable));
     throw function.apply(throwable);
   }
@@ -108,7 +107,8 @@ public final class Throwables {
    * }
    * </pre>
    * 
-   * @param <R> the type of the Throwable to propagate, must be a RuntimeException
+   * @param <R> the type of the Throwable to propagate, must be a
+   * RuntimeException
    * @param throwable the Throwable to propagate
    * @param runtimeType the type of exception to use.
    * @return nothing will ever be returned; this return type is only for your
@@ -117,8 +117,7 @@ public final class Throwables {
    * @deprecated since 2.4, no need in Java7 with closeWithResources and
    * multi-catch
    */
-  @Deprecated
-  public static <R extends RuntimeException> R propagate(Throwable throwable, Class<R> runtimeType) {
+  @Deprecated public static <R extends RuntimeException> R propagate(Throwable throwable, Class<R> runtimeType) {
     return propagate(throwable, new ExceptionFunction<R>(checkNotNull(runtimeType)));
   }
 

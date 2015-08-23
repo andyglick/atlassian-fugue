@@ -128,29 +128,27 @@ public class EitherRightTest {
 
   @Test public void flatMapRightSubTypes() {
     class Type {}
-    class AnotherType extends Type{}
+    class AnotherType extends Type {}
 
     final AnotherType anotherType = new AnotherType();
     final Either<Boolean, AnotherType> r = Either.right(anotherType);
 
-    final Either<Boolean, AnotherType> either = Either.<Boolean, Type>right(new Type()).right()
+    final Either<Boolean, AnotherType> either = Either.<Boolean, Type> right(new Type()).right()
       .flatMap(new Function<Type, Either<Boolean, AnotherType>>() {
-        @Nullable
-        @Override
-        public Either<Boolean, AnotherType> apply(@Nullable final Type input) {
+        @Nullable @Override public Either<Boolean, AnotherType> apply(@Nullable final Type input) {
           return r;
         }
       });
 
     final Type type = either.right().get();
 
-    assertThat(type, Matchers.<Type>is(anotherType));
+    assertThat(type, Matchers.<Type> is(anotherType));
   }
 
   @Test public void flatMapRightWithUpcastAndSubtypes() {
     class Type {}
     class MyType extends Type {}
-    class AnotherType extends Type{}
+    class AnotherType extends Type {}
 
     final MyType myType = new MyType();
     final AnotherType anotherType = new AnotherType();
@@ -158,17 +156,15 @@ public class EitherRightTest {
     final Either<Boolean, MyType> r = Either.right(myType);
     final Either<Boolean, AnotherType> r2 = Either.right(anotherType);
 
-    final Either<Boolean, AnotherType> either = Eithers.<Boolean, Type, MyType>upcastRight(r).right()
+    final Either<Boolean, AnotherType> either = Eithers.<Boolean, Type, MyType> upcastRight(r).right()
       .flatMap(new Function<Type, Either<Boolean, AnotherType>>() {
-        @Nullable
-        @Override
-        public Either<Boolean, AnotherType> apply(@Nullable final Type input) {
+        @Nullable @Override public Either<Boolean, AnotherType> apply(@Nullable final Type input) {
           return r2;
         }
       });
 
     final Type errorType = either.right().get();
 
-    assertThat(errorType, Matchers.<Type>is(anotherType));
+    assertThat(errorType, Matchers.<Type> is(anotherType));
   }
 }

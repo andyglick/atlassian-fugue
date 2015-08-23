@@ -174,8 +174,7 @@ public class Iterables {
    * {@code collection}
    * @since 1.1
    */
-  public static <A, B> Iterable<B> flatMap(final Iterable<A> collection,
-    final Function<? super A, ? extends Iterable<? extends B>> f) {
+  public static <A, B> Iterable<B> flatMap(final Iterable<A> collection, final Function<? super A, ? extends Iterable<? extends B>> f) {
     return concat(transform(collection, f));
   }
 
@@ -874,7 +873,8 @@ public class Iterables {
    * 
    * @param <A> the type of the elements.
    * @param as the source iterable.
-   * @param a the supplier of elements to intersperse between the source elements.
+   * @param a the supplier of elements to intersperse between the source
+   * elements.
    * @return a new Iterable that intersperses the element between the source.
    * @since 2.3
    */

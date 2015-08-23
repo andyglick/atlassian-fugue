@@ -51,7 +51,7 @@ public class RetrySupplierTest {
   }
 
   @Test(expected = IllegalArgumentException.class) public void basicSupplierRequiresPositiveTries() {
-      new RetrySupplier<String>(supplier, 0).get();
+    new RetrySupplier<String>(supplier, 0).get();
   }
 
   @Test(expected = RuntimeException.class) public void basicSupplierRetry() {

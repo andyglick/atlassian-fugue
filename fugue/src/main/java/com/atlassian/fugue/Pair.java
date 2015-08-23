@@ -46,6 +46,7 @@ public final class Pair<A, B> implements Serializable {
 
   /**
    * Factory method for a Pair factory function.
+   * 
    * @param <A> the left value type
    * @param <B> the right value type
    * @return a function that constructs Pairs
