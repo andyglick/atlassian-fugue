@@ -17,7 +17,7 @@
     <groupId>com.atlassian.fugue</groupId>
     <artifactId>fugue-parent</artifactId>
     <packaging>pom</packaging>
-    <version>3.0.0-m007</version>
+    <version>3.0.0-m008-SNAPSHOT</version>
     <name>Functional Extensions Library</name>
 
     <licenses>
@@ -60,7 +60,7 @@
         <connection>scm:git:git@bitbucket.org:atlassian/fugue.git</connection>
         <developerConnection>scm:git:git@bitbucket.org:atlassian/fugue.git</developerConnection>
         <url>https://bitbucket.org/atlassian/fugue</url>
-      <tag>v3.0.0-m007</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <build>
