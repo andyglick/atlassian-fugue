@@ -21,7 +21,6 @@ Issues are tracked in the [fugue](https://bitbucket.org/atlassian/fugue/issues) 
 
 Add the Atlassian public repository:
 
-
     <repositories>
         ...
         <repository>
@@ -33,7 +32,6 @@ Add the Atlassian public repository:
 
 And then add fugue as a dependency to your pom.xml:
 
-
     <dependencies>
         ...
         <dependency>
@@ -43,6 +41,18 @@ And then add fugue as a dependency to your pom.xml:
         </dependency>
         ...
     </dependencies>
+    
+If you are using Gradle, add a new repository to your `repositories` section:
+
+    repositories {
+        maven {
+            url "https://maven.atlassian.com/content/groups/public/"
+        }
+    }
+    
+And then add fugue as a dependency to your `dependencies` section:
+
+    compile 'com.atlassian.fugue:fugue:2.5.0'
 
 ## Guava compatibility
 

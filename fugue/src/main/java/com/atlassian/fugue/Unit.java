@@ -25,8 +25,8 @@ public enum Unit {
   VALUE;
 
   /**
-   * Provide ability to statically import {@code Unit.UNIT} and then use {@code UNIT()}
-   * within your code, primarily for readability purposes.
+   * Provide ability to statically import {@code Unit.UNIT} and then use
+   * {@code UNIT()} within your code, primarily for readability purposes.
    *
    * @return The value for Unit, ie. {@link #VALUE}
    * @since 2.5

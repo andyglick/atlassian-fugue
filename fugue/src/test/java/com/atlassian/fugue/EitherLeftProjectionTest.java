@@ -105,11 +105,11 @@ public class EitherLeftProjectionTest {
   }
 
   @Test public void existsDefinedTrue() {
-    assertThat(l.left().exists(Predicates.<String>alwaysTrue()), is(true));
+    assertThat(l.left().exists(Predicates.<String> alwaysTrue()), is(true));
   }
 
   @Test public void existsDefinedFalse() {
-    assertThat(l.left().exists(Predicates.<String>alwaysFalse()), is(false));
+    assertThat(l.left().exists(Predicates.<String> alwaysFalse()), is(false));
   }
 
   @Test public void existsNotDefinedTrue() {
@@ -121,11 +121,11 @@ public class EitherLeftProjectionTest {
   }
 
   @Test public void forallDefinedTrue() {
-    assertThat(l.left().forall(Predicates.<String>alwaysTrue()), is(true));
+    assertThat(l.left().forall(Predicates.<String> alwaysTrue()), is(true));
   }
 
   @Test public void forallDefinedFalse() {
-    assertThat(l.left().forall(Predicates.<String>alwaysFalse()), is(false));
+    assertThat(l.left().forall(Predicates.<String> alwaysFalse()), is(false));
   }
 
   @Test public void forallNotDefinedTrue() {

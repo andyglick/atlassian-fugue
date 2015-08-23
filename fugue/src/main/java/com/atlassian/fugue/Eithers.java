@@ -60,8 +60,8 @@ public class Eithers {
    * 
    * @param <L> the LHS type
    * @param <R> the RHS type
-   * @param predicate if predicate is true, a Right will be returned if it is false,
-   * a Left will be returned containing the supplied left value.
+   * @param predicate if predicate is true, a Right will be returned if it is
+   * false, a Left will be returned containing the supplied left value.
    * @param left the LHS value
    * @param right the RHS value
    * @return an either with the appropriately selected value
@@ -108,8 +108,8 @@ public class Eithers {
   }
 
   /**
-   * Collect the left values if there are only lefts, otherwise return the
-   * first right encountered.
+   * Collect the left values if there are only lefts, otherwise return the first
+   * right encountered.
    * 
    * @param <L> the LHS type
    * @param <R> the RHS type
@@ -181,7 +181,8 @@ public class Eithers {
    * 
    * @param <L> the LHS type
    * @param <R> the RHS type
-   * @return the function returning a defined option for right-hand-sided eithers
+   * @return the function returning a defined option for right-hand-sided
+   * eithers
    */
   public static <L, R> Function<Either<L, R>, Option<R>> rightMapper() {
     return new Function<Either<L, R>, Option<R>>() {
