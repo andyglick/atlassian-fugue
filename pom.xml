@@ -66,6 +66,14 @@
     <build>
         <plugins>
             <plugin>
+              <groupId>net.revelc.code</groupId>
+              <artifactId>formatter-maven-plugin</artifactId>
+              <version>0.5.2</version>
+              <configuration>
+                <configFile>${project.basedir}/../src/etc/eclipse/formatter.xml</configFile>
+              </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
                 <!-- needed for the distribution management below -->
