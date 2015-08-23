@@ -4,11 +4,13 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
 
 import static com.atlassian.fugue.Either.left;
 import static com.atlassian.fugue.Either.right;
 import static com.atlassian.fugue.EitherRightProjectionTest.reverseToEither;
 import static com.atlassian.fugue.UtilityFunctions.addOne;
+import static com.atlassian.fugue.UtilityFunctions.reverse;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
@@ -211,5 +213,26 @@ public class EitherRightBiasTest {
     final ErrorType errorType = either.left().get();
 
     assertThat(errorType, Matchers.<ErrorType>is(anotherErrorType));
+  }
+
+
+  @Test public void applyDefinedRight() {
+    final Either<String, Function<Integer, String>> func = right(reverse.compose(Object::toString));
+    assertThat(r.ap(func).right().get(), is("21"));
+  }
+
+  @Test public void applyDefinedLeft() {
+    final Either<String, Function<Integer, String>> func = left("woo");
+    assertThat(r.ap(func).left().get(), is("woo"));
+  }
+
+  @Test public void applyNotDefinedRight() {
+    final Either<String, Function<Integer, String>> func = right(reverse.compose(Object::toString));
+    assertThat(l.ap(func).left().get(), is("heyaa!"));
+  }
+
+  @Test public void applyNotDefinedLeft() {
+    final Either<String, Function<Integer, String>> func = left("woo");
+    assertThat(l.ap(func).left().get(), is("woo"));
   }
 }
