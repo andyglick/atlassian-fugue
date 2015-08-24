@@ -4,6 +4,7 @@ import static com.atlassian.fugue.Either.left;
 import static com.atlassian.fugue.Either.right;
 import static com.atlassian.fugue.EitherRightProjectionTest.reverseToEither;
 import static com.atlassian.fugue.UtilityFunctions.addOne;
+import static com.atlassian.fugue.UtilityFunctions.reverse;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
@@ -248,4 +249,27 @@ public class EitherRightBiasTest {
     assertThat(l.sequence(e).left().get(), is("heyaa!"));
   }
 
+  @Test public void applyDefinedRight() {
+    final Either<Integer, String> r = right("heyaa!");
+    final Either<Integer, Function<String, String>> func = right(reverse);
+    assertThat(r.apply(func).right().get(), is("!aayeh"));
+  }
+
+  @Test public void applyDefinedLeft() {
+    final Either<Integer, String> r = right("heyaa!");
+    final Either<Integer, Function<String, String>> func = left(36);
+    assertThat(r.apply(func).left().get(), is(36));
+  }
+
+  @Test public void applyNotDefinedRight() {
+    final Either<Integer, String> l = left(12);
+    final Either<Integer, Function<String, String>> func = right(reverse);
+    assertThat(l.apply(func).left().get(), is(12));
+  }
+
+  @Test public void applyNotDefinedLeft() {
+    final Either<Integer, String> l = left(12);
+    final Either<Integer, Function<String, String>> func = left(36);
+    assertThat(l.apply(func).left().get(), is(36));
+  }
 }
