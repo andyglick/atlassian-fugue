@@ -8,7 +8,7 @@ This project attempts to adheres to [Semantic Versioning](http://semver.org/).
 - Added additional right-biased method to Either:
    * toOption
    * sequence
-   * iterator
+   * apply
                
 ## [2.5.0] - 2015-07-31
 ### Added
