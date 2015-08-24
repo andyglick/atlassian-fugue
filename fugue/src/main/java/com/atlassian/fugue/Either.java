@@ -393,7 +393,7 @@ public abstract class Either<L, R> implements Serializable {
   }
 
   /**
-   * Returns <code>Some</code> with the projections value if it is a right,
+   * Convert this Either to an Option. Returns <code>Some</code> with a value if it is a right,
    * otherwise <code>None</code>.
    *
    * @return The right projection's value in <code>Some</code> if it exists,
@@ -405,7 +405,7 @@ public abstract class Either<L, R> implements Serializable {
   }
 
   /**
-   * If this is a right, it will perform an anonymous bind.
+   * Will return the supplied Either if this one is right, otherwise this one if left.
    *
    * @param <X> the RHS type
    * @param e The value to bind with.
@@ -414,18 +414,6 @@ public abstract class Either<L, R> implements Serializable {
    */
   public <X> Either<L, X> sequence(final Either<L, X> e) {
     return right().sequence(e);
-  }
-
-  /**
-   * If this is a right, it will return an iterator of the contained value,
-   * otherwise an empty iterator
-   *
-   * @return an iterator over the contained value if is a right,
-   * or an empty one otherwise.
-   * @since 2.6
-   */
-  public Iterator<R> iterator() {
-    return right().iterator();
   }
 
   /**

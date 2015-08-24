@@ -248,11 +248,4 @@ public class EitherRightBiasTest {
     assertThat(l.sequence(e).left().get(), is("heyaa!"));
   }
 
-  @Test public void iteratorNotEmpty() {
-    assertThat(r.iterator().next(), is(12));
-  }
-
-  @Test public void iteratorEmpty() {
-    assertThat(l.iterator().hasNext(), is(false));
-  }
 }
