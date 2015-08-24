@@ -20,29 +20,28 @@ public class EitherRightBiasTest {
   private final Either<String, Integer> l = left("heyaa!");
   private final Either<String, Integer> r = right(12);
 
-  @Test
-  public void mapRight() {
+  @Test public void mapRight() {
     assertThat(Either.<String, Integer> right(3).map(addOne), is(Either.<String, Integer> right(4)));
   }
 
   @Test public void mapLeft() {
-    assertThat(Either.<String, Integer>left("foo").map(addOne), is(Either.<String, Integer>left("foo")));
+    assertThat(Either.<String, Integer> left("foo").map(addOne), is(Either.<String, Integer> left("foo")));
   }
 
   @Test public void flatMapRight() {
-    assertThat(Either.<Integer, String>right("!foo").flatMap(reverseToEither), is(Either.<Integer, String>right("oof!")));
+    assertThat(Either.<Integer, String> right("!foo").flatMap(reverseToEither), is(Either.<Integer, String> right("oof!")));
   }
 
   @Test public void flatMapLeft() {
-    assertThat(Either.<Integer, String>left(5).flatMap(reverseToEither), is(Either.<Integer, String>left(5)));
+    assertThat(Either.<Integer, String> left(5).flatMap(reverseToEither), is(Either.<Integer, String> left(5)));
   }
 
   @Test public void leftMapRight() {
-    assertThat(Either.<Integer, String> right("foo").leftMap(addOne), is(Either.<Integer, String>right("foo")));
+    assertThat(Either.<Integer, String> right("foo").leftMap(addOne), is(Either.<Integer, String> right("foo")));
   }
 
   @Test public void leftMapLeft() {
-    assertThat(Either.<Integer, String> left(3).leftMap(addOne), is(Either.<Integer, String>left(4)));
+    assertThat(Either.<Integer, String> left(3).leftMap(addOne), is(Either.<Integer, String> left(4)));
   }
 
   @Test public void getOrElseSupplierRight() {
@@ -80,7 +79,7 @@ public class EitherRightBiasTest {
   @Test public void getOrErrorLeftMessage() {
     try {
       l.getOrError(Suppliers.ofInstance("Error message"));
-    } catch (Error e) {
+    } catch (final Error e) {
       assertThat(e.getMessage(), is("Error message"));
       return;
     }
@@ -138,7 +137,7 @@ public class EitherRightBiasTest {
 
   @Test public void filterRight() {
     assertThat(r.filter(x -> x == 12), is(Option.some(r)));
-    assertThat(r.filter(x -> x == 11), Matchers.is(Option.<Either<String, Integer>>none()));
+    assertThat(r.filter(x -> x == 11), Matchers.is(Option.<Either<String, Integer>> none()));
   }
 
   @Test public void filterLeft() {
@@ -146,36 +145,34 @@ public class EitherRightBiasTest {
   }
 
   @Test public void orElseRightInstance() {
-    assertThat(r.orElse(Either.<String, Integer>right(44)), is(r));
+    assertThat(r.orElse(Either.<String, Integer> right(44)), is(r));
   }
 
   @Test public void orElseLeftInstance() {
     assertThat(l.orElse(Either.<String, Integer> right(44)), is(Either.<String, Integer> right(44)));
-    assertThat(l.orElse(Either.<String, Integer>left("left")), is(Either.<String, Integer>left("left")));
+    assertThat(l.orElse(Either.<String, Integer> left("left")), is(Either.<String, Integer> left("left")));
   }
 
   @Test public void orElseRightSupplier() {
-    assertThat(r.orElse(Suppliers.ofInstance(Either.<String, Integer>right(44))), is(r));
+    assertThat(r.orElse(Suppliers.ofInstance(Either.<String, Integer> right(44))), is(r));
   }
 
   @Test public void orElseLeftSupplier() {
-    assertThat(l.orElse(Suppliers.ofInstance(Either.<String, Integer>right(44))),
-      is(Either.<String, Integer> right(44)));
-    assertThat(l.orElse(Suppliers.ofInstance(Either.<String, Integer>left("left"))),
-      is(Either.<String, Integer> left("left")));
+    assertThat(l.orElse(Suppliers.ofInstance(Either.<String, Integer> right(44))), is(Either.<String, Integer> right(44)));
+    assertThat(l.orElse(Suppliers.ofInstance(Either.<String, Integer> left("left"))), is(Either.<String, Integer> left("left")));
   }
 
   @Test public void orElseChild() {
     class Parent {}
     class Child extends Parent {}
 
-    Parent p = new Parent();
-    Parent pp = right(p).orElse(Suppliers.ofInstance(Either.<Integer, Child> right(new Child()))).getOrNull();
+    final Parent p = new Parent();
+    final Parent pp = right(p).orElse(Suppliers.ofInstance(Either.<Integer, Child> right(new Child()))).getOrNull();
     assertThat(pp, is(p));
   }
 
   @Test public void valueOrRight() {
-    assertThat(r.valueOr(Functions.<String, Integer>constant(99)), is(12));
+    assertThat(r.valueOr(Functions.<String, Integer> constant(99)), is(12));
   }
 
   @Test public void valueOrLeft() {
@@ -184,35 +181,33 @@ public class EitherRightBiasTest {
 
   @Test public void flatMapSubTypesOnLeft() {
     class ErrorType {}
-    class AnotherErrorType extends ErrorType{}
+    class AnotherErrorType extends ErrorType {}
 
     final AnotherErrorType anotherErrorType = new AnotherErrorType();
     final Either<AnotherErrorType, Long> l = Either.left(anotherErrorType);
 
-    final Either<ErrorType, Long> longEither = Either.<ErrorType, Integer>right(1)
-      .flatMap(input -> l);
+    final Either<ErrorType, Long> longEither = Either.<ErrorType, Integer> right(1).flatMap(input -> l);
 
     final ErrorType errorType = longEither.left().get();
 
-    assertThat(errorType, Matchers.<ErrorType>is(anotherErrorType));
+    assertThat(errorType, Matchers.<ErrorType> is(anotherErrorType));
   }
 
   @Test public void flatMapWithUpcastAndSubtypesOnLeft() {
     class ErrorType {}
-    class MyErrorType extends ErrorType{}
-    class AnotherErrorType extends ErrorType{}
+    class MyErrorType extends ErrorType {}
+    class AnotherErrorType extends ErrorType {}
 
     final AnotherErrorType anotherErrorType = new AnotherErrorType();
 
     final Either<MyErrorType, Boolean> l = Either.right(true);
     final Either<AnotherErrorType, Long> l2 = Either.left(anotherErrorType);
 
-    final Either<ErrorType, Long> either = Eithers.<ErrorType, MyErrorType, Boolean>upcastLeft(l)
-      .flatMap(input -> l2);
+    final Either<ErrorType, Long> either = Eithers.<ErrorType, MyErrorType, Boolean> upcastLeft(l).flatMap(input -> l2);
 
     final ErrorType errorType = either.left().get();
 
-    assertThat(errorType, Matchers.<ErrorType>is(anotherErrorType));
+    assertThat(errorType, Matchers.<ErrorType> is(anotherErrorType));
   }
 
 

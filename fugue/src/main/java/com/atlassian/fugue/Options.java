@@ -61,7 +61,7 @@ public class Options {
    * @return an option of the super type
    * @since 2.0
    */
-  public static <AA, A extends AA> Option<AA> upcast(Option<A> o) {
+  public static <AA, A extends AA> Option<AA> upcast(final Option<A> o) {
     return o.map(Functions.<AA> identity());
   }
 
@@ -120,9 +120,8 @@ public class Options {
    * @return an option of B
    * @since 2.0
    */
-  public static <A, B> Option<B> ap(final Option<A> oa, Option<Function<A, B>> of) {
-    return of.fold(Option.<B> noneSupplier(),
-      Functions.compose(Functions.<Option<A>, Option<B>> apply(oa), Options.<A, B> lift()));
+  public static <A, B> Option<B> ap(final Option<A> oa, final Option<Function<A, B>> of) {
+    return of.fold(Option.<B> noneSupplier(), Functions.compose(Functions.<Option<A>, Option<B>> apply(oa), Options.<A, B> lift()));
   }
 
   /**
@@ -137,11 +136,11 @@ public class Options {
    * returns an option of type C
    * @since 2.0
    */
-  public static <A, B, C> BiFunction<Option<A>, Option<B>, Option<C>> lift2(BiFunction<A, B, C> f2) {
-    Function<A, Function<B, C>> curried = Functions.curried(f2);
+  public static <A, B, C> BiFunction<Option<A>, Option<B>, Option<C>> lift2(final BiFunction<A, B, C> f2) {
+    final Function<A, Function<B, C>> curried = Functions.curried(f2);
     final Function<Option<A>, Option<Function<B, C>>> lifted = lift(curried);
     return (oa, ob) -> {
-      Option<Function<B, C>> ofbc = lifted.apply(oa);
+      final Option<Function<B, C>> ofbc = lifted.apply(oa);
       return Options.ap(ob, ofbc);
     };
   }
@@ -187,7 +186,6 @@ public class Options {
     return map(filterNone(options), Maybe::get);
   }
 
-
   /**
    * Function for wrapping values in a Some or None.
    *
@@ -203,10 +201,11 @@ public class Options {
    * Turn a null producing function into one that returns an option instead.
    *
    * @param nullProducing the function that may return null
-   * @return a function that turns nulls into None, and wraps non-null values in Some.
+   * @return a function that turns nulls into None, and wraps non-null values in
+   * Some.
    * @since 3.0
    */
-  public static <A, B> Function<A, Option<B>> nullSafe(Function<A, B> nullProducing) {
+  public static <A, B> Function<A, Option<B>> nullSafe(final Function<A, B> nullProducing) {
     return nullProducing.andThen(toOption());
   }
 }

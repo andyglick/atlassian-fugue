@@ -100,7 +100,7 @@ public class Iterables {
    * @return an Iterable across the underlying elements
    * @since 2.3
    */
-  @SafeVarargs public static <A> Iterable<A> iterable(A... as) {
+  @SafeVarargs public static <A> Iterable<A> iterable(final A... as) {
     return unmodifiableCollection(asList(as));
   }
 
@@ -218,7 +218,7 @@ public class Iterables {
    * @return the collected iterable
    * @since 2.2
    */
-  public static <A, B> Iterable<B> collect(Iterable<? extends A> from, Function<? super A, Option<B>> partial) {
+  public static <A, B> Iterable<B> collect(final Iterable<? extends A> from, final Function<? super A, Option<B>> partial) {
     return new CollectingIterable<>(from, partial);
   }
 
@@ -232,7 +232,7 @@ public class Iterables {
    * not.
    * @since 1.2
    */
-  public static <A> Pair<Iterable<A>, Iterable<A>> partition(Iterable<A> iterable, Predicate<? super A> p) {
+  public static <A> Pair<Iterable<A>, Iterable<A>> partition(final Iterable<A> iterable, final Predicate<? super A> p) {
     return pair(filter(iterable, p), filter(iterable, p.negate()));
   }
 
@@ -544,7 +544,7 @@ public class Iterables {
     private final Iterable<? extends A> delegate;
     private final Function<? super A, Option<B>> partial;
 
-    CollectingIterable(Iterable<? extends A> delegate, Function<? super A, Option<B>> partial) {
+    CollectingIterable(final Iterable<? extends A> delegate, final Function<? super A, Option<B>> partial) {
       this.delegate = requireNonNull(delegate);
       this.partial = requireNonNull(partial);
     }
@@ -612,7 +612,7 @@ public class Iterables {
    * @return a new Iterable that intersperses the element between the source.
    * @since 2.3
    */
-  public static <A> Iterable<A> intersperse(final Iterable<? extends A> as, A a) {
+  public static <A> Iterable<A> intersperse(final Iterable<? extends A> as, final A a) {
     return intersperse(as, ofInstance(a));
   }
 
@@ -626,7 +626,7 @@ public class Iterables {
    * @return a new Iterable that intersperses the element between the source.
    * @since 2.3
    */
-  public static <A> Iterable<A> intersperse(final Iterable<? extends A> as, Supplier<A> a) {
+  public static <A> Iterable<A> intersperse(final Iterable<? extends A> as, final Supplier<A> a) {
     return new Intersperse<>(as, a);
   }
 
@@ -634,7 +634,7 @@ public class Iterables {
     private final Iterable<? extends A> as;
     private final Supplier<A> a;
 
-    Intersperse(Iterable<? extends A> as, Supplier<A> a) {
+    Intersperse(final Iterable<? extends A> as, final Supplier<A> a) {
       this.as = as;
       this.a = a;
     }
@@ -669,7 +669,7 @@ public class Iterables {
    *
    * @since 3.0
    */
-  public static <A> int size(Iterable<A> as) {
+  public static <A> int size(final Iterable<A> as) {
     if (as instanceof Collection) {
       return ((Collection<?>) as).size();
     } else {
@@ -719,7 +719,7 @@ public class Iterables {
     private final Iterable<? extends A> as;
     private final Function<? super A, ? extends B> f;
 
-    Mapped(Iterable<? extends A> as, Function<? super A, ? extends B> f) {
+    Mapped(final Iterable<? extends A> as, final Function<? super A, ? extends B> f) {
       this.as = as;
       this.f = f;
     }
@@ -758,7 +758,7 @@ public class Iterables {
     private final Iterable<? extends A> as;
     private final Predicate<? super A> p;
 
-    Filter(Iterable<? extends A> as, Predicate<? super A> p) {
+    Filter(final Iterable<? extends A> as, final Predicate<? super A> p) {
       this.as = as;
       this.p = p;
     }
@@ -797,14 +797,14 @@ public class Iterables {
    *
    * @since 3.0
    */
-  public static <A> Iterable<A> join(Iterable<? extends Iterable<? extends A>> ias) {
+  public static <A> Iterable<A> join(final Iterable<? extends Iterable<? extends A>> ias) {
     return new Join<>(ias);
   }
 
   static final class Join<A> extends IterableToString<A> {
     private final Iterable<? extends Iterable<? extends A>> ias;
 
-    public Join(Iterable<? extends Iterable<? extends A>> ias) {
+    public Join(final Iterable<? extends Iterable<? extends A>> ias) {
       this.ias = ias;
     }
 
@@ -844,7 +844,7 @@ public class Iterables {
    *
    * @since 3.0
    */
-  @SafeVarargs public static <A> Iterable<A> concat(Iterable<? extends A>... as) {
+  @SafeVarargs public static <A> Iterable<A> concat(final Iterable<? extends A>... as) {
     return as.length > 0 ? join(Arrays.asList(as)) : emptyIterable();
   }
 
@@ -1024,7 +1024,8 @@ public class Iterables {
    *
    * @since 3.0
    */
-  public static <A> boolean addAll(Collection<A> collectionToModify, Iterable<? extends A> elementsToAdd) {
+  @SuppressWarnings("unchecked")
+  public static <A> boolean addAll(final Collection<A> collectionToModify, final Iterable<? extends A> elementsToAdd) {
     if (elementsToAdd instanceof Collection) {
       return collectionToModify.addAll((Collection<? extends A>) elementsToAdd);
     }

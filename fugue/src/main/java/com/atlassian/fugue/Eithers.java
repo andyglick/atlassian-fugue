@@ -148,7 +148,7 @@ public class Eithers {
   }
 
   public static <L, R> Supplier<Either<L, R>> toLeft(final L l) {
-    return compose(Eithers.<L, R>toLeft(), ofInstance(l));
+    return compose(Eithers.<L, R> toLeft(), ofInstance(l));
   }
 
   // allows static import
@@ -166,7 +166,7 @@ public class Eithers {
   }
 
   public static <L, R> Supplier<Either<L, R>> toRight(final R r) {
-    return compose(Eithers.<L, R>toRight(), ofInstance(r));
+    return compose(Eithers.<L, R> toRight(), ofInstance(r));
   }
 
   // allows static import
@@ -185,7 +185,7 @@ public class Eithers {
    * @return an either of left type LL and right type R
    * @since 2.0
    */
-  public static <LL, L extends LL, R> Either<LL, R> upcastLeft(Either<L, R> e) {
+  public static <LL, L extends LL, R> Either<LL, R> upcastLeft(final Either<L, R> e) {
     return e.left().map(Functions.<LL> identity());
   }
 
@@ -200,7 +200,7 @@ public class Eithers {
    * @return an either of left type L and right type RR
    * @since 2.0
    */
-  public static <L, RR, R extends RR> Either<L, RR> upcastRight(Either<L, R> e) {
+  public static <L, RR, R extends RR> Either<L, RR> upcastRight(final Either<L, R> e) {
     return e.right().map(Functions.<RR> identity());
   }
 
@@ -213,8 +213,8 @@ public class Eithers {
    * @param it iterable of eithers to filter and transform from
    * @return the left values contained in the contents of it
    */
-  public static <L, R> Iterable<L> filterLeft(Iterable<Either<L, R>> it) {
-    return collect(it, Eithers.<L, R>leftMapper());
+  public static <L, R> Iterable<L> filterLeft(final Iterable<Either<L, R>> it) {
+    return collect(it, Eithers.<L, R> leftMapper());
   }
 
   /**
@@ -226,8 +226,8 @@ public class Eithers {
    * @param it iterable of eithers to filter and transform from
    * @return the right values contained in the contents of it
    */
-  public static <L, R> Iterable<R> filterRight(Iterable<Either<L, R>> it) {
-    return Options.flatten(map(it, Eithers.<L, R>rightMapper()));
+  public static <L, R> Iterable<R> filterRight(final Iterable<Either<L, R>> it) {
+    return Options.flatten(map(it, Eithers.<L, R> rightMapper()));
   }
 
   /**
@@ -240,7 +240,7 @@ public class Eithers {
    * @return either the iterable of right values, or the first left encountered.
    */
   public static <L, R> Either<L, Iterable<R>> sequenceRight(final Iterable<Either<L, R>> eithers) {
-    ArrayList<R> rs = new ArrayList<>();
+    final ArrayList<R> rs = new ArrayList<>();
     for (final Either<L, R> e : eithers) {
       if (e.isLeft()) {
         return e.left().<Iterable<R>> as();
@@ -260,7 +260,7 @@ public class Eithers {
    * @return either the iterable of left values, or the first right encountered.
    */
   public static <L, R> Either<Iterable<L>, R> sequenceLeft(final Iterable<Either<L, R>> eithers) {
-    ArrayList<L> ls = new ArrayList<>();
+    final ArrayList<L> ls = new ArrayList<>();
     for (final Either<L, R> e : eithers) {
       if (e.isRight()) {
         return e.right().<Iterable<L>> as();

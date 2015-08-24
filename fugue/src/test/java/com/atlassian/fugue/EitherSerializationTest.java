@@ -12,12 +12,12 @@ import static org.junit.Assert.assertThat;
 
 public class EitherSerializationTest {
   @Test public void serializeLeft() throws IOException {
-    Either<Integer, String> e = Either.left(1);
+    final Either<Integer, String> e = Either.left(1);
     assertThat(Serializer.<Either<Integer, String>> toObject(toBytes(e)), equalTo(e));
   }
 
   @Test public void serializeRight() throws IOException {
-    Either<String, Integer> e = Either.right(1);
+    final Either<String, Integer> e = Either.right(1);
     assertThat(Serializer.<Either<String, Integer>> toObject(toBytes(e)), equalTo(e));
   }
 

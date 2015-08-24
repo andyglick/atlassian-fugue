@@ -30,12 +30,13 @@ import static com.atlassian.fugue.Iterables.all;
 import static com.atlassian.fugue.Iterables.any;
 import static com.atlassian.fugue.Iterables.emptyIterable;
 import static com.atlassian.fugue.Iterables.findFirst;
-import static com.atlassian.fugue.Iterables.map;
 import static com.atlassian.fugue.Iterables.join;
+import static com.atlassian.fugue.Iterables.map;
 import static com.atlassian.fugue.Iterables.partition;
 import static com.atlassian.fugue.Iterables.rangeTo;
 import static com.atlassian.fugue.Iterables.rangeUntil;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
@@ -69,15 +70,15 @@ public class IterablesTest {
   }
 
   @Test public void findFirstEmpty() {
-    assertThat(findFirst(Arrays.<Integer>asList(), grepOne), is(Option.<Integer>none()));
+    assertThat(findFirst(emptyList(), grepOne), is(Option.<Integer> none()));
   }
 
   @Test public void findFirstAbsent() {
-    assertThat(findFirst(asList(2), grepOne), is(none));
+    assertThat(findFirst(singletonList(2), grepOne), is(none));
   }
 
   @Test public void findFirstSingle() {
-    assertThat(findFirst(asList(1), grepOne), is(Option.some(1)));
+    assertThat(findFirst(singletonList(1), grepOne), is(Option.some(1)));
   }
 
   @Test public void findFirstWhenNotFirstElement() {
@@ -154,7 +155,7 @@ public class IterablesTest {
   }
 
   @Test public void partitionSimple() {
-    Pair<Iterable<Integer>, Iterable<Integer>> part = partition(asList(1, 2, 3, 4), i -> i > 2);
+    final Pair<Iterable<Integer>, Iterable<Integer>> part = partition(asList(1, 2, 3, 4), i -> i > 2);
     assertThat(part.left(), contains(3, 4));
     assertThat(part.right(), contains(1, 2));
   }
@@ -169,20 +170,20 @@ public class IterablesTest {
   }
 
   @Test public void findFirstFunctionFails() {
-    assertThat(findFirst(Predicate.isEqual(3)).apply(asList(1, 2, 4)), is(Option.<Integer>none()));
+    assertThat(findFirst(Predicate.isEqual(3)).apply(asList(1, 2, 4)), is(Option.<Integer> none()));
   }
 
   @Test(expected = InvocationTargetException.class) public void nonInstantiable() throws Exception {
-    Eithers.getOrThrow(UtilityFunctions.<Iterables>defaultCtor().apply(Iterables.class));
+    Eithers.getOrThrow(UtilityFunctions.<Iterables> defaultCtor().apply(Iterables.class));
   }
 
   @Test public void revMap() {
-    Iterable<Function<Integer, Integer>> fs = asList(from -> from + 1, from -> from + 2, from -> from * from);
+    final Iterable<Function<Integer, Integer>> fs = asList(from -> from + 1, from -> from + 2, from -> from * from);
     assertThat(Iterables.revMap(fs, 3), contains(4, 5, 9));
   }
 
   @Test public void flattenCollapses() {
-    Iterable<Iterable<Integer>> iterables = asList(singletonList(1), singletonList(2));
+    final Iterable<Iterable<Integer>> iterables = asList(singletonList(1), singletonList(2));
     assertThat(join(iterables), contains(1, 2));
   }
 
@@ -195,7 +196,7 @@ public class IterablesTest {
   }
 
   @Test public void findAnyEmpty() {
-    assertThat(any(Collections.<Integer>emptyList(), ii -> ii < 0), is(false));
+    assertThat(any(Collections.<Integer> emptyList(), ii -> ii < 0), is(false));
   }
 
   @Test public void findAllMatching() {
@@ -207,7 +208,7 @@ public class IterablesTest {
   }
 
   @Test public void findAllEmpty() {
-    assertThat(all(Collections.<Integer>emptyList(), ii -> ii < 0), is(true));
+    assertThat(all(Collections.<Integer> emptyList(), ii -> ii < 0), is(true));
   }
 
   @Test public void mapChangesIterable() {

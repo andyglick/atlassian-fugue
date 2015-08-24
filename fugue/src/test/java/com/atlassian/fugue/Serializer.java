@@ -7,19 +7,19 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 class Serializer {
-  static <A> byte[] toBytes(A a) throws IOException {
-    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+  static <A> byte[] toBytes(final A a) throws IOException {
+    final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     new ObjectOutputStream(bytes).writeObject(a);
     return bytes.toByteArray();
   }
 
-  static <A> A toObject(byte[] bs) throws IOException {
-    ByteArrayInputStream bytes = new ByteArrayInputStream(bs);
+  static <A> A toObject(final byte[] bs) throws IOException {
+    final ByteArrayInputStream bytes = new ByteArrayInputStream(bs);
     try {
       @SuppressWarnings("unchecked")
-      A result = (A) new ObjectInputStream(bytes).readObject();
+      final A result = (A) new ObjectInputStream(bytes).readObject();
       return result;
-    } catch (ClassNotFoundException e) {
+    } catch (final ClassNotFoundException e) {
       throw new RuntimeException(e);
     }
   }

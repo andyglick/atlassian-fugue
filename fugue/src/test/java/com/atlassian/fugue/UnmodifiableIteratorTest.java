@@ -6,23 +6,21 @@ import java.util.Iterator;
 
 public class UnmodifiableIteratorTest {
 
-  @Test(expected=UnsupportedOperationException.class) public void testRemove() {
+  @Test(expected = UnsupportedOperationException.class) public void testRemove() {
     final Iterators.Unmodifiable<Integer> unmodifiableIterator = new Iterators.Unmodifiable<Integer>() {
-      @Override
-      public boolean hasNext() {
+      @Override public boolean hasNext() {
         return false;
       }
 
-      @Override
-      public Integer next() {
+      @Override public Integer next() {
         return null;
       }
     };
 
     remove(unmodifiableIterator);
   }
-  @SuppressWarnings("deprecation")
-  private void remove(Iterator<Integer> i){
+
+  @SuppressWarnings("deprecation") private void remove(final Iterator<Integer> i) {
     i.remove();
   }
 }

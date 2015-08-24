@@ -12,7 +12,7 @@ import static org.junit.Assert.assertThat;
 
 public class PairSerializationTest {
   @Test public void serialize() throws IOException {
-    Pair<Integer, Integer> pair = Pair.pair(1, 2);
+    final Pair<Integer, Integer> pair = Pair.pair(1, 2);
     assertThat(Serializer.<Pair<Integer, Integer>> toObject(toBytes(pair)), equalTo(pair));
   }
 

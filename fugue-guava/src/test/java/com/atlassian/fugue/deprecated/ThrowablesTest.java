@@ -85,13 +85,11 @@ import static org.mockito.Mockito.verifyZeroInteractions;
     }
   }
 
-  @SuppressWarnings("deprecation")
-  private  <R extends RuntimeException> void propogate(final Throwable t, final Function<Throwable, R> f){
+  @SuppressWarnings("deprecation") private <R extends RuntimeException> void propogate(final Throwable t, final Function<Throwable, R> f) {
     throw Throwables.propagate(t, f);
   }
 
-  @SuppressWarnings("deprecation")
-  private <R extends RuntimeException> void propogate(final Throwable t, Class<R> c){
+  @SuppressWarnings("deprecation") private <R extends RuntimeException> void propogate(final Throwable t, Class<R> c) {
     throw Throwables.propagate(t, c);
   }
 }

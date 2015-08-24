@@ -37,8 +37,8 @@ public class IterableVarianceTest {
   }
 
   // replaces ImmutableList.copyOf
-  private List<String> copyOf(IterablesTest.CharSplitter strings) {
-    List<String> copy = new ArrayList<>();
+  private List<String> copyOf(final IterablesTest.CharSplitter strings) {
+    final List<String> copy = new ArrayList<>();
     for (String s : strings) {
       copy.add(s);
     }
