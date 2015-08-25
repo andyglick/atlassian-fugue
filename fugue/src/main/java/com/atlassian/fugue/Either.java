@@ -417,11 +417,13 @@ public abstract class Either<L, R> implements Serializable {
   }
 
   /**
-   * Function application on this projection's value.
+   * Function application if this is a Right.
+   *
+   * It will apply the value contained in the Right, and return either a right containing
+   * function to produce a new type X or a left
    *
    * @param <X> the RHS type
-   * @param either The either of the function to apply on this projection's
-   * value.
+   * @param either The either of the function to apply if this is a Right.
    * @return The result of function application within either.
    * @since 2.6
    */
