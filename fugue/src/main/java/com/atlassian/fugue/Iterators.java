@@ -31,14 +31,16 @@ class Iterators {
 
   /**
    * Adds all the elements of the iterator to the collectionToModify
+   * 
    * @param collectionToModify collection to add element to, must not be null
    * @param iterator source of elements to add, must not be null
    * @param <A> element type
-   * @return true if any of the elements from iterator were not also in collectionToModify
+   * @return true if any of the elements from iterator were not also in
+   * collectionToModify
    *
    * @since 3.0
    */
-  static <A> boolean addAll(Collection<A> collectionToModify, Iterator<? extends A> iterator) {
+  static <A> boolean addAll(final Collection<A> collectionToModify, final Iterator<? extends A> iterator) {
     requireNonNull(collectionToModify);
     requireNonNull(iterator);
     boolean wasModified = false;
@@ -49,19 +51,24 @@ class Iterators {
   }
 
   /**
-   * Wrap an iterator to add support for the peek operation
+   * Wrap an iterator to add support for the peek operation. Do not maintain a
+   * reference to the iterator passed in as a parameter. Iterators are mutable
+   * by nature and this function makes no promises about how or when the input
+   * iterator will be mutated.
+   *
    * @param iterator iterator that may not support peek, must not be null
    * @param <A> element type
-   * @return iterator that can return the next element without removing it from the iterator
+   * @return an iterator for which {@code peek} will return Iterator#next
+   * without removing the value from the iterator
    *
    * @since 3.0
    */
-  static <A> Iterators.Peeking<A> peekingIterator(java.util.Iterator<? extends A> iterator) {
+  static <A> Iterators.Peeking<A> peekingIterator(final Iterator<? extends A> iterator) {
     if (iterator instanceof PeekingImpl) {
       // Safe to cast <? extends T> to <T> because PeekingImpl only uses T
       // covariantly (and cannot be subclassed to add non-covariant uses).
       @SuppressWarnings("unchecked")
-      PeekingImpl<A> peeking = (PeekingImpl<A>) iterator;
+      final PeekingImpl<A> peeking = (PeekingImpl<A>) iterator;
       return peeking;
     }
     return new PeekingImpl<>(iterator);
@@ -76,7 +83,7 @@ class Iterators {
     private boolean hasPeeked;
     private A peekedElement;
 
-    public PeekingImpl(java.util.Iterator<? extends A> iterator) {
+    public PeekingImpl(final Iterator<? extends A> iterator) {
       this.iterator = requireNonNull(iterator);
     }
 
@@ -88,7 +95,7 @@ class Iterators {
       if (!hasPeeked) {
         return iterator.next();
       }
-      A result = peekedElement;
+      final A result = peekedElement;
       hasPeeked = false;
       peekedElement = null;
       return result;
@@ -112,6 +119,7 @@ class Iterators {
 
   /**
    * Iterator that returns a single element
+   * 
    * @param a element to return
    * @param <A> element type
    * @return iterator returning only a
@@ -143,6 +151,7 @@ class Iterators {
 
   /**
    * Iterator with no values inside
+   * 
    * @param <A> element type
    * @return empty iterator
    *
@@ -167,7 +176,6 @@ class Iterators {
       throw new UnsupportedOperationException("Cannot call remove on this iterator");
     }
   }
-
 
   //
   // Implementation classes
@@ -196,14 +204,13 @@ class Iterators {
   /**
    * A template implementation of the {@code Iterator} interface, so clients can
    * more easily implement Iterator for some patterns of iteration.
-   *q
    * <P>
    * An example is an iterator that skips over null elements in a backing
    * iterator. This could be implemented as:
    *
    * <pre>
    * {@code
-   *
+   * 
    *   public static Iterator<String> filterNulls(final Iterator<String> in) {
    *     return new AbstractIterator<String>() {
    *       protected String computeNext() {
@@ -224,6 +231,7 @@ class Iterators {
    *
    * <P>
    * This class is a re-implentation of the Guava AbstractIterator class.
+   * 
    * @since 3.0
    */
   static abstract class Abstract<A> extends Unmodifiable<A> {
@@ -242,14 +250,14 @@ class Iterators {
      * The next element.
      * <P>
      * <b>Note:</b> the implementation must call {@link #endOfData()} when there
-     * are no elements left in the iteration. Failure to do so could result in an
-     * infinite loop.
+     * are no elements left in the iteration. Failure to do so could result in
+     * an infinite loop.
      */
     protected abstract A computeNext();
 
     /**
-     * Implementations of {@link #computeNext} <b>must</b> invoke this method when
-     * there are no elements left in the iteration.
+     * Implementations of {@link #computeNext} <b>must</b> invoke this method
+     * when there are no elements left in the iteration.
      *
      * @return {@code null}; a convenience so your {@code computeNext}
      * implementation can use the simple statement {@code return endOfData();}

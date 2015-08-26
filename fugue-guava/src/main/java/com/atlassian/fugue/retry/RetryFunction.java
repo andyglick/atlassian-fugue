@@ -91,7 +91,6 @@ public class RetryFunction<F, T> implements Function<F, T> {
    * @return the result of the wrapped Function's get method
    */
   @Override public T apply(F parameter) {
-    return new RetrySupplier<>(Suppliers.compose(function, Suppliers.ofInstance(parameter)), tries, handler,
-      beforeRetry).get();
+    return new RetrySupplier<>(Suppliers.compose(function, Suppliers.ofInstance(parameter)), tries, handler, beforeRetry).get();
   }
 }

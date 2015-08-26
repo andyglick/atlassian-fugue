@@ -18,6 +18,7 @@ package com.atlassian.fugue;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
@@ -25,7 +26,7 @@ import java.util.function.Predicate;
 
 import static com.atlassian.fugue.Iterables.filter;
 import static com.atlassian.fugue.Iterables.memoize;
-import static com.atlassian.fugue.Iterables.transform;
+import static com.atlassian.fugue.Iterables.map;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
@@ -34,7 +35,7 @@ import static org.hamcrest.Matchers.is;
 @SuppressWarnings("unused") public class IterablesMemoizeTest {
   @Test public void assertThatFunctionTransformingSingletonIterableIsOnlyCalledOnce() {
     final CountingFunction<Integer, String> toString = counting(Object::toString);
-    final Iterable<String> memoized = memoize(transform(Arrays.asList(1), toString::apply));
+    final Iterable<String> memoized = memoize(map(Collections.singletonList(1), toString::apply));
 
     // iterate over it a few times
     for (final String ignore : memoized) {}
@@ -45,7 +46,7 @@ import static org.hamcrest.Matchers.is;
 
   @Test public void assertThatFunctionTransformingMultiElementIterableIsOnlyCalledOncePerElement() {
     final CountingFunction<Integer, String> toString = counting(Object::toString);
-    final Iterable<String> memoized = memoize(transform(Arrays.asList(1, 2, 3, 4), toString::apply));
+    final Iterable<String> memoized = memoize(map(Arrays.asList(1, 2, 3, 4), toString::apply));
 
     // iterate over it a few times
     for (final String ignore : memoized) {}
@@ -55,20 +56,20 @@ import static org.hamcrest.Matchers.is;
   }
 
   @Test public void assertThatMemoizedTransformedIterableHasSameElementsAsOriginalIterable() {
-    CountingFunction<Integer, String> counting = counting(Object::toString);
-    assertThat(memoize(transform(Arrays.asList(1, 2, 3, 4), counting::apply)), contains("1", "2", "3", "4"));
+    final CountingFunction<Integer, String> counting = counting(Object::toString);
+    assertThat(memoize(map(Arrays.asList(1, 2, 3, 4), counting::apply)), contains("1", "2", "3", "4"));
   }
 
   @Test public void assertThatMemoizedTransformedIterableHasSameElementsAsOriginalIterableOnSecondIteration() {
-    CountingFunction<Integer, String> counting = counting(Object::toString);
-    final Iterable<String> memoized = memoize(transform(Arrays.asList(1, 2, 3, 4), counting::apply));
+    final CountingFunction<Integer, String> counting = counting(Object::toString);
+    final Iterable<String> memoized = memoize(map(Arrays.asList(1, 2, 3, 4), counting::apply));
     for (final String ignore : memoized) {}
     assertThat(memoized, contains("1", "2", "3", "4"));
   }
 
   @Test public void assertThatPredicateUsedWhenFilteringIterableIsOnlyCalledOncePerElement() {
     final CountingPredicate<Integer> even = counting(even());
-    Iterable<Integer> filtered = filter(Arrays.asList(1, 2, 3, 4), even::test);
+    final Iterable<Integer> filtered = filter(Arrays.asList(1, 2, 3, 4), even::test);
     final Iterable<Integer> memoized = memoize(filtered);
 
     // iterate over it a few times
@@ -80,13 +81,13 @@ import static org.hamcrest.Matchers.is;
 
   @Test public void assertThatMemoizedFilteredIterableHasSameElementsAsOriginalIterableMinusFilteredElements() {
     final CountingPredicate<Integer> even = counting(even());
-    Iterable<Integer> filtered = filter(Arrays.asList(1, 2, 3, 4), even::test);
+    final Iterable<Integer> filtered = filter(Arrays.asList(1, 2, 3, 4), even::test);
     assertThat(memoize(filtered), contains(2, 4));
   }
 
   @Test public void assertThatMemoizedFilteredIterableHasSameElementsAsOriginalIterableMinusFitleredElementsOnSecondIteration() {
     final CountingPredicate<Integer> even = counting(even());
-    Iterable<Integer> filtered = filter(Arrays.asList(1, 2, 3, 4), even::test);
+    final Iterable<Integer> filtered = filter(Arrays.asList(1, 2, 3, 4), even::test);
     final Iterable<Integer> memoized = memoize(filtered);
 
     for (final Integer ignore : memoized) {}
@@ -95,16 +96,16 @@ import static org.hamcrest.Matchers.is;
   }
 
   @Test public void assertThatIteratingHalfWayThroughMemoizedIterableAndThenIteratingCompletelyHasSameElementsOriginalIterable() {
-    final Iterable<String> memoized = memoize(transform(Arrays.asList(1, 2, 3, 4), Object::toString));
-    Iterator<String> memIt = memoized.iterator();
+    final Iterable<String> memoized = memoize(map(Arrays.asList(1, 2, 3, 4), Object::toString));
+    final Iterator<String> memIt = memoized.iterator();
     memIt.next();
     memIt.next();
     assertThat(memoized, contains("1", "2", "3", "4"));
   }
 
   @Test public void assertToString() {
-    final Iterable<String> memoized = memoize(transform(Arrays.asList(1, 2, 3, 4), Object::toString));
-    Iterator<String> memIt = memoized.iterator();
+    final Iterable<String> memoized = memoize(map(Arrays.asList(1, 2, 3, 4), Object::toString));
+    final Iterator<String> memIt = memoized.iterator();
     memIt.next();
     memIt.next();
     assertThat(memoized.toString(), is("[1, 2, 3, 4]"));

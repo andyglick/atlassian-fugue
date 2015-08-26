@@ -36,7 +36,7 @@ import java.util.concurrent.locks.Condition;
  * {@link Condition#signalAll()} is not supported and if there are multiple
  * waiters then the particular thread that is released is arbitrary.
  */
-//@ThreadSafe
+// @ThreadSafe
 public class BooleanLatch implements ReusableLatch {
   /**
    * Synchronization control For BooleanLatch. Uses AQS state to represent

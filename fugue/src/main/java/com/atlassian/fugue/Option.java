@@ -131,12 +131,13 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   }
 
   /**
-   * Factory method for {@link Option} instances from {@link Optional} instances.
+   * Factory method for {@link Option} instances from {@link Optional}
+   * instances.
    *
    * @param <A> the contained type
    * @return a Some if {@link Optional#isPresent()} or a None otherwise.
    */
-  public static <A> Option<A> fromOptional(Optional<A> optional) {
+  public static <A> Option<A> fromOptional(final Optional<A> optional) {
     return option(optional.orElse(null));
   }
 
@@ -167,11 +168,11 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   //
 
   @Override public final <B extends A> A getOrElse(final B other) {
-    return getOr(Suppliers.<A>ofInstance(other));
+    return getOr(Suppliers.<A> ofInstance(other));
   }
 
   @Override public final A getOr(final Supplier<? extends A> supplier) {
-    return fold(supplier, Functions.<A>identity());
+    return fold(supplier, Functions.<A> identity());
   }
 
   @Deprecated @Override public final A getOrElse(final Supplier<? extends A> supplier) {
@@ -204,7 +205,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   public final Option<A> orElse(final Supplier<? extends Option<? extends A>> orElse) {
     @SuppressWarnings("unchecked")
     // safe covariant cast
-    Option<A> result = (Option<A>) fold(orElse, Options.toOption());
+    final Option<A> result = (Option<A>) fold(orElse, Options.toOption());
     return result;
   }
 
@@ -256,7 +257,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   public final <B> Option<B> flatMap(final Function<? super A, ? extends Option<? extends B>> f) {
     requireNonNull(f);
     @SuppressWarnings("unchecked")
-    Option<B> result = (Option<B>) fold(Option.<B> noneSupplier(), f);
+    final Option<B> result = (Option<B>) fold(Option.<B> noneSupplier(), f);
     return result;
   }
 
@@ -304,8 +305,9 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   }
 
   /**
-   * Create an {@link Optional} from this option.
-   * Will throw a {@link NullPointerException} if this option is defined and contains a null value.
+   * Create an {@link Optional} from this option. Will throw a
+   * {@link NullPointerException} if this option is defined and contains a null
+   * value.
    *
    * @return {@link Optional#of(Object)} with the value if defined and not null,
    * {@link Optional#empty()} if not defined.
@@ -362,7 +364,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
       throw new AssertionError(err.get());
     }
 
-    @Override public <X extends Throwable> Object getOrThrow(Supplier<X> ifUndefined) throws X {
+    @Override public <X extends Throwable> Object getOrThrow(final Supplier<X> ifUndefined) throws X {
       throw ifUndefined.get();
     }
 
@@ -408,7 +410,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
       return get();
     }
 
-    @Override public <X extends Throwable> A getOrThrow(Supplier<X> ifUndefined) throws X {
+    @Override public <X extends Throwable> A getOrThrow(final Supplier<X> ifUndefined) throws X {
       return get();
     }
 

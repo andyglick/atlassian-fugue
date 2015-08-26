@@ -30,29 +30,29 @@ public class EitherVarianceTest {
   private final Either<String, Integer> r = right(12);
 
   @Test public void filterLeft() {
-    Option<Either<String, Object>> filtered = l.left().filter(x -> true);
+    final Option<Either<String, Object>> filtered = l.left().filter(x -> true);
     assertThat(filtered.isDefined(), is(true));
     assertThat(filtered.get().left().isDefined(), is(true));
   }
 
   @Test public void filterRight() {
-    Option<Either<Object, Integer>> filtered = r.right().filter(x -> true);
+    final Option<Either<Object, Integer>> filtered = r.right().filter(x -> true);
     assertThat(filtered.isDefined(), is(true));
     assertThat(filtered.get().right().isDefined(), is(true));
   }
 
   @Test public void forAll() {
-    Predicate<Number> alwaysTrue = x -> true;
+    final Predicate<Number> alwaysTrue = x -> true;
     assertThat(r.right().forall(alwaysTrue), equalTo(true));
   }
 
   @Test public void exist() {
-    Predicate<CharSequence> alwaysTrue = x -> true;
+    final Predicate<CharSequence> alwaysTrue = x -> true;
     assertThat(l.left().exists(alwaysTrue), equalTo(true));
   }
 
   @Test public void forEach() {
-    Count<Number> e = new Count<>();
+    final Count<Number> e = new Count<>();
     r.right().foreach(e);
     assertThat(e.count(), equalTo(1));
   }

@@ -27,8 +27,8 @@ import static org.hamcrest.Matchers.is;
 public class SuppliersTest {
 
   @Test public void ofInstance() {
-    Integer instance = 29;
-    Supplier<Integer> integerSupplier = Suppliers.ofInstance(instance);
+    final Integer instance = 29;
+    final Supplier<Integer> integerSupplier = Suppliers.ofInstance(instance);
 
     assertThat(integerSupplier.get(), is(29));
 
@@ -38,7 +38,7 @@ public class SuppliersTest {
   }
 
   @Test public void alwaysTrue() {
-    Supplier<Boolean> alwaysTrue = Suppliers.alwaysTrue();
+    final Supplier<Boolean> alwaysTrue = Suppliers.alwaysTrue();
 
     assertThat(alwaysTrue.get(), is(true));
     assertThat(alwaysTrue.get(), is(true));
@@ -46,7 +46,7 @@ public class SuppliersTest {
   }
 
   @Test public void alwaysFalse() {
-    Supplier<Boolean> alwaysFalse = Suppliers.alwaysFalse();
+    final Supplier<Boolean> alwaysFalse = Suppliers.alwaysFalse();
 
     assertThat(alwaysFalse.get(), is(false));
     assertThat(alwaysFalse.get(), is(false));
@@ -54,9 +54,9 @@ public class SuppliersTest {
   }
 
   @Test public void alwaysNull() {
-    Supplier<Object> alwaysNull = Suppliers.alwaysNull();
+    final Supplier<Object> alwaysNull = Suppliers.alwaysNull();
 
-    Object nully = null;
+    final Object nully = null;
     assertThat(alwaysNull.get(), is(nully));
     assertThat(alwaysNull.get(), is(nully));
     assertThat(alwaysNull.get(), is(nully));

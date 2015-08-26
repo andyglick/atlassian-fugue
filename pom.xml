@@ -17,7 +17,7 @@
     <groupId>com.atlassian.fugue</groupId>
     <artifactId>fugue-parent</artifactId>
     <packaging>pom</packaging>
-    <version>3.0.0-m007-SNAPSHOT</version>
+    <version>3.0.0-m008-SNAPSHOT</version>
     <name>Functional Extensions Library</name>
 
     <licenses>
@@ -45,6 +45,7 @@
         <jsr305.version>3.0.0</jsr305.version>
         <guava.osgi.version>16.0.1</guava.osgi.version>
         <slf4j-api.version>1.6.0</slf4j-api.version>
+        <fugue.osgi.import.version>3.0.0</fugue.osgi.import.version>
     </properties>
 
     <issueManagement>
@@ -59,11 +60,35 @@
         <connection>scm:git:git@bitbucket.org:atlassian/fugue.git</connection>
         <developerConnection>scm:git:git@bitbucket.org:atlassian/fugue.git</developerConnection>
         <url>https://bitbucket.org/atlassian/fugue</url>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>net.revelc.code</groupId>
+                <artifactId>formatter-maven-plugin</artifactId>
+                <version>0.5.2</version>
+                <configuration>
+                    <configFile>${project.basedir}/../src/etc/eclipse/formatter.xml</configFile>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.scalariform</groupId>
+                <artifactId>scalariform-maven-plugin</artifactId>
+                <version>0.1.4</version>
+                <executions>
+                    <execution>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <preserveDanglingCloseParenthesis>true</preserveDanglingCloseParenthesis>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>

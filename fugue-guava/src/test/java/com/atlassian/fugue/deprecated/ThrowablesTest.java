@@ -32,9 +32,9 @@ import static org.mockito.Mockito.verifyZeroInteractions;
   @SuppressWarnings("deprecation") @Test public void testPropagateWithFunctionForRuntimeException() throws Exception {
     final Exception original = new RuntimeException();
     try {
-      Throwables.propagate(original, function);
+      propogate(original, function);
       Assert.fail("Should have thrown an exception");
-    } catch (Exception e) {
+    } catch (final Exception e) {
       Assert.assertSame(original, e);
     }
 
@@ -47,9 +47,9 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 
     final Throwable original = new Exception();
     try {
-      Throwables.propagate(original, function);
+      propogate(original, function);
       Assert.fail("Should have thrown an exception");
-    } catch (Exception e) {
+    } catch (final Exception e) {
       Assert.assertSame(runtime, e);
     }
 
@@ -59,9 +59,9 @@ import static org.mockito.Mockito.verifyZeroInteractions;
   @SuppressWarnings("deprecation") @Test public void testPropagateWithTypeForRuntimeException() throws Exception {
     final Exception original = new RuntimeException();
     try {
-      Throwables.propagate(original, MyRuntimeException.class);
+      propogate(original, MyRuntimeException.class);
       Assert.fail("Should have thrown an exception");
-    } catch (Exception e) {
+    } catch (final Exception e) {
       Assert.assertSame(original, e);
     }
   }
@@ -69,9 +69,9 @@ import static org.mockito.Mockito.verifyZeroInteractions;
   @SuppressWarnings("deprecation") @Test public void testPropagateWithTypeForNonRuntimeException() throws Exception {
     final Exception original = new Exception();
     try {
-      Throwables.propagate(original, MyRuntimeException.class);
+      propogate(original, MyRuntimeException.class);
       Assert.fail("Should have thrown an exception");
-    } catch (Exception e) {
+    } catch (final Exception e) {
       Assert.assertTrue(e instanceof MyRuntimeException);
       Assert.assertSame(original, e.getCause());
     }
@@ -80,8 +80,16 @@ import static org.mockito.Mockito.verifyZeroInteractions;
   static final class MyRuntimeException extends RuntimeException {
     private static final long serialVersionUID = 5698445063323657007L;
 
-    public MyRuntimeException(Throwable throwable) {
+    public MyRuntimeException(final Throwable throwable) {
       super(throwable);
     }
+  }
+
+  @SuppressWarnings("deprecation") private <R extends RuntimeException> void propogate(final Throwable t, final Function<Throwable, R> f) {
+    throw Throwables.propagate(t, f);
+  }
+
+  @SuppressWarnings("deprecation") private <R extends RuntimeException> void propogate(final Throwable t, Class<R> c) {
+    throw Throwables.propagate(t, c);
   }
 }

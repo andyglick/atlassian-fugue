@@ -7,14 +7,22 @@ This project attempts to adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Added getOr(Supplier<A>) to the Maybe interface as a replacement for the now deprecated getOrElse(Supplier<A>).
 - Iterables.size returning the size of the input iterable (generally in O(n))
-- Iterables.transform returning a new iterable with the input function applied
+- Iterables.map create a new iterable by applying a function to each element
+- Iterables.transform forwarding function calling map to help migration
 - Iterables.filter returning a new iterable containing only those elements for which the predicate returns true
-- Iterables.flatten transforms a nested collection of iterables into a single iterable
+- Iterables.join transforms a nested iterable of iterables into a single iterable
 - Iterables.addAll adds all of the input collection into the passed iterable
+- Iterables.cycle returns an infinite iterable that cycles through the input elements (does not support removing elements)
+- Iterables.makeString pretty prints the contents of an iterable
+- Iterables.concat creates a single iterable containing all of the input iterables values
+- Iterables.takeWhile creates a new iterable that contains only the begin elements of the input iterable
+- Iterables.dropWhile creates a new iterable that skips the beginning elements of the input iterable
 - Options.nullSafe transforms a null producing function into one returning an option
 - Options.toOption returns a function that builds an option
 - Option.fromOptional and Option.toOptional for interoperability with java.util.Optional
 - Functions.contant returns a function that always produces a constant return value
+- Functions.forMap returns a function that performs a map lookup returning an Option
+- Functions.forMapWithDefault returns a function that performs a map lookup returning a default value when it fails
 - Suppliers.memoize and Suppliers.weakMemoize provide call-by-need evaluation strategies
 
 ### Changed
@@ -27,11 +35,14 @@ They will be removed in 4.0.
 - Iterables.mergeSorted now takes a Comparator instead of a Guava Ordering instance
 - All copies of com.google.common.base.Function/Supplier/Predicate have been replaced with the equivalent classes
 from Java 8
+- Either.apply renamed to ap to improve consitancy of apply methods
+- ScalaConverters._ now convert between Scala types and Java 8 types (Guava converters are no longer available)
 
 ### Deprecated
 - Deprecated getOrElse(Supplier<A>) to be replaced with {@link #getElse(Supplier)} because 
 Java 8 type inference cannot disambiguate between an overloaded method taking a generic A and
 the same method taking a Supplier<A>. It will be removed in 4.0.
+- Iterables.transform exists to ease migration by reimplementing the guava equivalent
 
 ### Removed
 - Either.merge, Either.cond, Either.getOrThrow, Either.sequenceRight/Left were deprecated in 1.2. They are now removed.
@@ -41,6 +52,7 @@ slf4j and jsr305.
 - Internal usages of Preconditions.checkState have been removed. Methods returning IllegalArguementExceptions may no longer
 return the same message string inside the exception.
 - Option.find and Option.filterNone were deprecated in 1.1 and are now removed. Find their replacements in Options.
+- Dependency on maven.atlassian.com. You no longer need to include that repository
 
 ## [2.5.0] - 2015-07-31
 ### Added

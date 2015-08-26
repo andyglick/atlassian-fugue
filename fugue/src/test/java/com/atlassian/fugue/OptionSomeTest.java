@@ -159,7 +159,7 @@ public class OptionSomeTest {
   }
 
   @Test public void superTypesPermittedOnMap() {
-    ArrayList<Integer> list = new ArrayList<>(2);
+    final ArrayList<Integer> list = new ArrayList<>(2);
     Collections.addAll(list, 1, 2);
     final Option<ArrayList<Integer>> option = option(list);
     final Option<Set<Number>> set = option.map(new Function<List<Integer>, Set<Number>>() {
