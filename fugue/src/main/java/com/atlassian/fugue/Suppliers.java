@@ -118,7 +118,7 @@ public class Suppliers {
    * The returned {@link Supplier} is thread-safe
    *
    * @param <A>      the type
-   * @param supplier the supplier to  memoize
+   * @param supplier the supplier to memoize
    * @return the memoizing supplier
    */
   public static <A> Supplier<A> memoize(final Supplier<A> supplier) {
@@ -184,7 +184,7 @@ public class Suppliers {
           a = value == null ? null : value.get();
           if (a == null) {
             a = delegate.get();
-            value = = new WeakReference<A>(a);
+            value = new WeakReference<A>(a);
           }
         }
       }
