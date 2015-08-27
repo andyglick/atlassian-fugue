@@ -184,8 +184,7 @@ public class Suppliers {
           a = value == null ? null : value.get();
           if (a == null) {
             a = delegate.get();
-            final WeakReference<A> tmp = new WeakReference<A>(a);
-            value = tmp;
+            value = = new WeakReference<A>(a);
           }
         }
       }
