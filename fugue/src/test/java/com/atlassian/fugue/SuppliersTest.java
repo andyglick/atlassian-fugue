@@ -18,6 +18,7 @@ package com.atlassian.fugue;
 import org.junit.Test;
 
 import java.util.NoSuchElementException;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -76,4 +77,23 @@ public class SuppliersTest {
   @Test public void fromFunctionString() {
     assertThat(Suppliers.fromFunction(UtilityFunctions.reverse, "collywobble").get(), is("elbbowylloc"));
   }
+
+  @Test public void memoize() {
+    AtomicInteger intRef = new AtomicInteger(1);
+    Supplier<Integer> memoize = Suppliers.memoize(() -> intRef.get());
+
+    assertThat(memoize.get(), is(1));
+    intRef.set(2);
+    assertThat(memoize.get(), is(1));
+  }
+
+  @Test public void weakMemoize() {
+    AtomicInteger intRef = new AtomicInteger(Integer.valueOf(1));
+    Supplier<Integer> weakMemoized = Suppliers.weakMemoize(() -> intRef.get());
+
+    assertThat(weakMemoized.get(), is(1));
+    intRef.set(Integer.valueOf(2));
+    assertThat(weakMemoized.get(), is(1));
+  }
+
 }

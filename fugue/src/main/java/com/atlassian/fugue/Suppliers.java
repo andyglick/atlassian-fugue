@@ -15,19 +15,21 @@
  */
 package com.atlassian.fugue;
 
+import java.lang.ref.WeakReference;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
  * Provide utility functions for the class of functions that supply a return
  * value when invoked.
- * 
+ *
  * @since 1.0
  */
 public class Suppliers {
   /**
    * Creates a {@link Supplier} of a constant value.
-   * 
+   *
    * @param <A> the type
    * @param a the constant value to supply
    * @return a supplier that always supplies {@code instance}.
@@ -53,7 +55,7 @@ public class Suppliers {
 
   /**
    * Supplies true.
-   * 
+   *
    * @return a supplier that always supplies {@code true}.
    */
   public static Supplier<Boolean> alwaysTrue() {
@@ -62,7 +64,7 @@ public class Suppliers {
 
   /**
    * Supplies false.
-   * 
+   *
    * @return a supplier that always supplies {@code false}.
    */
   public static Supplier<Boolean> alwaysFalse() {
@@ -71,7 +73,7 @@ public class Suppliers {
 
   /**
    * Always returns null. Not a very good idea.
-   * 
+   *
    * @param <A> the type
    * @return a supplier that always supplies {@code null}.
    */
@@ -82,12 +84,12 @@ public class Suppliers {
   /**
    * Turns an Option into a supplier, but throws an exception if undefined. Not
    * a very good idea.
-   * 
+   *
    * @param <A> the type
    * @param option the option to attempt to get values from
    * @return a {@link Supplier} that always calls {@link Option#get()}, which
    * throws an Exception if the option is None
-   * 
+   *
    * @since 2.0
    */
   public static <A> Supplier<A> fromOption(final Option<A> option) {
@@ -97,16 +99,96 @@ public class Suppliers {
   /**
    * Constantly applies the input value to the supplied function, and returns
    * the result.
-   * 
+   *
    * @param <A> the input type
    * @param <B> the result type
    * @param f the function
    * @param a the value
    * @return a {@link Supplier} that always calls {@link Function#apply(Object)}
-   * 
+   *
    * @since 2.2
    */
   public static <A, B> Supplier<B> fromFunction(final Function<? super A, ? extends B> f, final A a) {
     return () -> f.apply(a);
+  }
+
+  /**
+   * A supplier that memoize the value return by another {@link Supplier},
+   * whose {@link Supplier#get()} method is guaranteed to be call at most once.
+   * The returned {@link Supplier} is thread-safe
+   *
+   * @param <A>      the type
+   * @param supplier the supplier to memoize
+   * @return the memoizing supplier
+   */
+  public static <A> Supplier<A> memoize(final Supplier<A> supplier) {
+    return supplier instanceof MemoizingSupplier ? supplier : new MemoizingSupplier<>(Objects.requireNonNull(supplier));
+  }
+
+  /**
+   * A supplier that weakly memoize the value return by another {@link Supplier},
+   * The returned {@link Supplier} is thread-safe
+   *
+   * @param <A>      the type
+   * @param supplier the supplier to memoize
+   * @return the weakly memoizing supplier
+   */
+  public static <A> Supplier<A> weakMemoize(final Supplier<A> supplier) {
+    return supplier instanceof WeakMemoizingSupplier || supplier instanceof MemoizingSupplier ?
+      supplier :
+      new WeakMemoizingSupplier<>(Objects.requireNonNull(supplier));
+  }
+
+  private static final class MemoizingSupplier<A> implements Supplier<A> {
+
+    private volatile Supplier<A> delegate;
+
+    private A a;
+
+    MemoizingSupplier(final Supplier<A> delegate) {
+      this.delegate = delegate;
+    }
+
+    @Override public A get() {
+      // double Checked Locking
+      if (delegate != null) {
+        synchronized (this) {
+          if (delegate != null) {
+            final A res;
+            this.a = res = delegate.get();
+            delegate = null;
+            return res;
+          }
+        }
+      }
+      return a;
+    }
+  }
+
+  private static final class WeakMemoizingSupplier<A> implements Supplier<A> {
+
+    private final Supplier<A> delegate;
+
+    // Contains a the value from delegate.
+    private volatile WeakReference<A> value;
+
+    WeakMemoizingSupplier(final Supplier<A> delegate) {
+      this.delegate = delegate;
+    }
+
+    @Override public A get() {
+      A a = value == null ? null : value.get();
+      // double Checked Locking
+      if (a == null) {
+        synchronized (this) {
+          a = value == null ? null : value.get();
+          if (a == null) {
+            a = delegate.get();
+            value = new WeakReference<A>(a);
+          }
+        }
+      }
+      return a;
+    }
   }
 }
