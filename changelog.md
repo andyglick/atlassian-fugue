@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 This project attempts to adheres to [Semantic Versioning](http://semver.org/).
 
-## [2.6.0] - [unreleased]
+## [2.6.0] - 2015-08-31
 ### Added
 - Added additional right-biased method to Either:
    * toOption
