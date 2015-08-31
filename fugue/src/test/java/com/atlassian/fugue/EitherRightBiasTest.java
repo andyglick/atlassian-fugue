@@ -137,29 +137,29 @@ public class EitherRightBiasTest {
 
   @Test public void filterRight() {
     assertThat(r.filter(x -> x == 12), is(Option.some(r)));
-    assertThat(r.filter(x -> x == 11), Matchers.is(Option.<Either<String, Integer>> none()));
+    assertThat(r.filter(x -> x == 11), Matchers.is(Option.<Either<String, Integer>>none()));
   }
 
   @Test public void filterLeft() {
-    assertThat(l.filter(x -> x == 12), Matchers.is(Option.<Either<String, Integer>> none()));
+    assertThat(l.filter(x -> x == 12), Matchers.is(Option.<Either<String, Integer>>none()));
   }
 
   @Test public void orElseRightInstance() {
-    assertThat(r.orElse(Either.<String, Integer> right(44)), is(r));
+    assertThat(r.orElse(Either.<String, Integer>right(44)), is(r));
   }
 
   @Test public void orElseLeftInstance() {
-    assertThat(l.orElse(Either.<String, Integer> right(44)), is(Either.<String, Integer> right(44)));
-    assertThat(l.orElse(Either.<String, Integer> left("left")), is(Either.<String, Integer> left("left")));
+    assertThat(l.orElse(Either.<String, Integer>right(44)), is(Either.<String, Integer>right(44)));
+    assertThat(l.orElse(Either.<String, Integer>left("left")), is(Either.<String, Integer> left("left")));
   }
 
   @Test public void orElseRightSupplier() {
-    assertThat(r.orElse(Suppliers.ofInstance(Either.<String, Integer> right(44))), is(r));
+    assertThat(r.orElse(Suppliers.ofInstance(Either.<String, Integer>right(44))), is(r));
   }
 
   @Test public void orElseLeftSupplier() {
     assertThat(l.orElse(Suppliers.ofInstance(Either.<String, Integer> right(44))), is(Either.<String, Integer> right(44)));
-    assertThat(l.orElse(Suppliers.ofInstance(Either.<String, Integer> left("left"))), is(Either.<String, Integer> left("left")));
+    assertThat(l.orElse(Suppliers.ofInstance(Either.<String, Integer>left("left"))), is(Either.<String, Integer>left("left")));
   }
 
   @Test public void orElseChild() {
@@ -172,11 +172,11 @@ public class EitherRightBiasTest {
   }
 
   @Test public void valueOrRight() {
-    assertThat(r.valueOr(Functions.<String, Integer> constant(99)), is(12));
+    assertThat(r.valueOr(Functions.<String, Integer>constant(99)), is(12));
   }
 
   @Test public void valueOrLeft() {
-    assertThat(l.valueOr(Functions.<String, Integer> constant(99)), is(99));
+    assertThat(l.valueOr(Functions.<String, Integer>constant(99)), is(99));
   }
 
   @Test public void flatMapSubTypesOnLeft() {
@@ -210,24 +210,69 @@ public class EitherRightBiasTest {
     assertThat(errorType, Matchers.<ErrorType> is(anotherErrorType));
   }
 
+  @Test public void toOptionRight() {
+    assertThat(r.toOption(), is(Option.some(12)));
+  }
 
-  @Test public void applyDefinedRight() {
+  @Test public void toOptionLeft() {
+    assertThat(l.toOption(), Matchers.is(Option.<Integer>none()));
+  }
+
+  @Test public void sequenceDefined() {
+    final Either<String, Integer> e = right(98);
+    assertThat(r.sequence(e).right().get(), is(98));
+  }
+
+  @Test public void sequenceNotDefined() {
+    final Either<String, Integer> e = left("bar");
+    assertThat(l.sequence(e).left().get(), is("heyaa!"));
+  }
+
+  @Test public void apDefinedRight() {
     final Either<String, Function<Integer, String>> func = right(reverse.compose(Object::toString));
     assertThat(r.ap(func).right().get(), is("21"));
   }
 
-  @Test public void applyDefinedLeft() {
+  @Test public void apDefinedLeft() {
     final Either<String, Function<Integer, String>> func = left("woo");
     assertThat(r.ap(func).left().get(), is("woo"));
   }
 
-  @Test public void applyNotDefinedRight() {
+  @Test public void apNotDefinedRight() {
     final Either<String, Function<Integer, String>> func = right(reverse.compose(Object::toString));
     assertThat(l.ap(func).left().get(), is("heyaa!"));
   }
 
-  @Test public void applyNotDefinedLeft() {
+  @Test public void apNotDefinedLeft() {
     final Either<String, Function<Integer, String>> func = left("woo");
     assertThat(l.ap(func).left().get(), is("woo"));
+  }
+
+  @Test
+  public void applyDefinedRight() {
+    final Either<Integer, String> r = right("heyaa!");
+    final Either<Integer, Function<String, String>> func = right(reverse);
+    assertThat(r.apply(func).right().get(), is("!aayeh"));
+  }
+
+  @Test
+  public void applyDefinedLeft() {
+    final Either<Integer, String> r = right("heyaa!");
+    final Either<Integer, Function<String, String>> func = left(36);
+    assertThat(r.apply(func).left().get(), is(36));
+  }
+
+  @Test
+  public void applyNotDefinedRight() {
+    final Either<Integer, String> l = left(12);
+    final Either<Integer, Function<String, String>> func = right(reverse);
+    assertThat(l.apply(func).left().get(), is(12));
+  }
+
+  @Test
+  public void applyNotDefinedLeft() {
+    final Either<Integer, String> l = left(12);
+    final Either<Integer, Function<String, String>> func = left(36);
+    assertThat(l.apply(func).left().get(), is(36));
   }
 }

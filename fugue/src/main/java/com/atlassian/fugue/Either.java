@@ -306,16 +306,42 @@ public abstract class Either<L, R> implements Serializable {
   }
 
   /**
-   * Map the given function across the left hand side value if it is one.
+   * Convert this Either to an Option. Returns <code>Some</code> with a value if it is a right,
+   * otherwise <code>None</code>.
    *
-   * @param <X> the LHS type
-   * @param f The function to map.
-   * @return A new either value after mapping with the function applied if this
-   * is a Left.
-   * @since 2.2
+   * @return The right projection's value in <code>Some</code> if it exists,
+   * otherwise <code>None</code>.
+   * @since 2.6
    */
-  public final <X> Either<X, R> leftMap(final Function<? super L, X> f) {
-    return left().map(f);
+  public final Option<R> toOption() {
+    return right().toOption();
+  }
+
+  /**
+   * Will return the supplied Either if this one is right, otherwise this one if left.
+   *
+   * @param <X> the RHS type
+   * @param e The value to bind with.
+   * @return An either after binding through this projection.
+   * @since 2.6
+   */
+  public <X> Either<L, X> sequence(final Either<L, X> e) {
+    return right().sequence(e);
+  }
+
+  /**
+   * Given a right containing a function from the right type {@code <R>} to a new type  {@code <X>} apply that
+   * function to the value inside this either. When any of the input values are left return
+   * that left value.
+   *
+   * @param <X> the RHS type
+   * @param either The either of the function to apply if this is a Right.
+   * @return The result of function application within either.
+   * @since 2.6
+   * @deprecated since 3.0 see {@link #ap}
+   */
+  public <X> Either<L, X> apply(final Either<L, Function<R, X>> either) {
+    return ap(either);
   }
 
   /**
@@ -330,6 +356,19 @@ public abstract class Either<L, R> implements Serializable {
    */
   public <X> Either<L, X> ap(final Either<L, Function<R, X>> either) {
     return either.right().flatMap(this::map);
+  }
+
+  /**
+   * Map the given function across the left hand side value if it is one.
+   *
+   * @param <X> the LHS type
+   * @param f The function to map.
+   * @return A new either value after mapping with the function applied if this
+   * is a Left.
+   * @since 2.2
+   */
+  public final <X> Either<X, R> leftMap(final Function<? super L, X> f) {
+    return left().map(f);
   }
 
   //
