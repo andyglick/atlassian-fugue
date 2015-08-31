@@ -417,7 +417,7 @@ public abstract class Either<L, R> implements Serializable {
   }
 
   /**
-   * Given a right containing a function from the right type <R> to a new type <X> apply that
+   * Given a right containing a function from the right type {@code <R>} to a new type  {@code <X>} apply that
    * function to the value inside this either. When any of the input values are left return
    * that left value.
    *
