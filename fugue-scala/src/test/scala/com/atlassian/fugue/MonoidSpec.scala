@@ -17,23 +17,28 @@
 package com.atlassian.fugue
 
 import com.atlassian.fugue.Monoid._
-import com.atlassian.fugue.Semigroup.semigroup
 import com.atlassian.fugue.law.IsEq._
 import com.atlassian.fugue.law.MonoidTests
 import org.scalacheck.Prop._
 import org.scalacheck.{Arbitrary, Properties}
 
-import com.atlassian.fugue.converters.ScalaConverters._
-
 
 class MonoidSpec extends TestSuite {
-  val intMonoid = monoid(semigroup(((i1: Int) => (i2: Int) => i1 + i2).toJava), 0.toJava)
+  val intMonoid = new Monoid[Int] {
+    def append(a1: Int, a2: Int) = a1 + a2
+
+    def zero() = 0
+  }
 
   test("Monoid laws") {
     check(MonoidTests(intMonoid))
   }
 
-  val stringMonoid = monoid(semigroup(((s1: String) => (s2: String) => s1 + s2).toJava), "")
+  val stringMonoid = new Monoid[String] {
+    def append(a1: String, a2: String) = a1 + a2
+
+    def zero = ""
+  }
 
   test("Monoids derived methods") {
     check(derivedMethodsTests(stringMonoid))
@@ -45,9 +50,9 @@ class MonoidSpec extends TestSuite {
 
   def derivedMethodsTests[A: Arbitrary](monoid: Monoid[A]) = new Properties("derived methods") {
 
-    property("dual is also a monoid") = MonoidTests(Monoid.dual(intMonoid))
+    property("dual is also a monoid") = MonoidTests(Monoid.dual(monoid))
 
-    property("intersperse is consistent with sum") = forAll((a: A, aa: java.util.List[A]) => isEq(monoid.sum(Iterables.intersperse(aa, a)), Monoid.intersperse(monoid, aa, a)))
+    property("intersperse is consistent with sum") = forAll((a: A, aa: java.util.List[A]) => isEq(monoid.sum(Iterables.intersperse(aa, a)), monoid.intersperse(aa, a)))
 
   }
 

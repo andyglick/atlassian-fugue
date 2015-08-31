@@ -16,6 +16,8 @@
 
 package com.atlassian.fugue.law;
 
+import com.atlassian.fugue.Functions;
+import com.atlassian.fugue.Iterables;
 import com.atlassian.fugue.Semigroup;
 
 import static com.atlassian.fugue.law.IsEq.isEq;
@@ -23,16 +25,24 @@ import static com.atlassian.fugue.law.IsEq.isEq;
 /**
  * Laws for a semigroup
  */
-public interface SemigroupLaws<A> {
+public final class SemigroupLaws<A> {
 
-  Semigroup<A> semigroup();
+  private final Semigroup<A> semigroup;
 
-  default IsEq<A> semigroupAssociative(A x, A y, A z) {
-    return isEq(semigroup().append(semigroup().append(x, y), z), semigroup().append(x, semigroup().append(y, z)));
+  public SemigroupLaws(Semigroup<A> semigroup) {
+    this.semigroup = semigroup;
   }
 
-  static <A> SemigroupLaws<A> semigroupLaws(Semigroup<A> semigroup) {
-    return () -> semigroup;
+  public IsEq<A> semigroupAssociative(A x, A y, A z) {
+    return isEq(semigroup.append(semigroup.append(x, y), z), semigroup.append(x, semigroup.append(y, z)));
+  }
+
+  public IsEq<A> sumNelEqualFold(A head, Iterable<A> tail) {
+    return isEq(semigroup.sumNel(head, tail), Functions.fold(semigroup::append, head, tail));
+  }
+
+  public IsEq<A> multiply1pEqualRepeatedAppend(int n, A a) {
+    return isEq(semigroup.multiply1p(n, a), semigroup.sumNel(a, Iterables.take(n, Iterables.cycle(a))));
   }
 
 }

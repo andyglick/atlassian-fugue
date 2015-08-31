@@ -16,10 +16,7 @@
 
 package com.atlassian.fugue;
 
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
-
-import static com.atlassian.fugue.Functions.fold;
+import static com.atlassian.fugue.Pair.pair;
 
 /**
  * A Semigroup is an algebraic structure consisting of an associative binary operation across the values of a given type (the Semigroup type argument).
@@ -27,10 +24,13 @@ import static com.atlassian.fugue.Functions.fold;
  * <ul>
  * <li><em>Associativity</em>; forall  x y z. append(append(x, y), z) == append(x, append(y, z))</li>
  * </ul>
+ * Methods {@link #sumNel(Object, Iterable)} and {@link #multiply1p(int, Object)} can be overriden for performance reason, especially if
+ * {@link #sumNel(Object, Iterable)} can be implemented to not require evaluation of the whole iterable.
  *
- * @since 3.0
+ * @see Monoid
+ * @since 3.1
  */
-@FunctionalInterface public interface Semigroup<A> extends BinaryOperator<A> {
+public interface Semigroup<A> {
 
   /**
    * Combine the two given arguments.
@@ -49,7 +49,13 @@ import static com.atlassian.fugue.Functions.fold;
    * @return the sum of all elements.
    */
   default A sumNel(A head, Iterable<A> tail) {
-    return fold(this, head, tail);
+
+    A currentValue = head;
+    for (final A a : tail) {
+      currentValue = append(currentValue, a);
+    }
+    return currentValue;
+
   }
 
   /**
@@ -62,9 +68,10 @@ import static com.atlassian.fugue.Functions.fold;
    * @return <code>a</code> summed <code>n</code> times. If <code>n <= 0</code>, returns <code>zero()</code>
    */
   default A multiply1p(int n, A a) {
-    if (n<=0) {
+    if (n <= 0) {
       return a;
     }
+
     A xTmp = a;
     int yTmp = n;
     A zTmp = a;
@@ -81,29 +88,18 @@ import static com.atlassian.fugue.Functions.fold;
   }
 
   /**
-   * Apply method to conform to the {@link BinaryOperator} interface.
-   *
-   * @deprecated use {@link #append(Object, Object)} directly
-   */
-  @Override @Deprecated default A apply(final A a1, final A a2) {
-    return append(a1, a2);
-  }
-
-  /**
-   * Construct a semigroup from a curried associative binary operator
-   *
-   * @param binaryOperator a curried binary operator
-   * @return The semigroup yielding from the operator.
-   */
-  static <A> Semigroup<A> semigroup(Function<A, Function<A, A>> binaryOperator) {
-    return (a1, a2) -> binaryOperator.apply(a1).apply(a2);
-  }
-
-  /**
    * Composes a semigroup with another.
    */
   static <A, B> Semigroup<Pair<A, B>> compose(Semigroup<A> sa, Semigroup<B> sb) {
-    return (ab1, ab2) -> Pair.pair(sa.append(ab1.left(), ab2.left()), sb.append(ab1.right(), ab2.right()));
+    return new Semigroup<Pair<A, B>>() {
+      @Override public Pair<A, B> append(Pair<A, B> ab1, Pair<A, B> ab2) {
+        return pair(sa.append(ab1.left(), ab2.left()), sb.append(ab1.right(), ab2.right()));
+      }
+
+      @Override public Pair<A, B> multiply1p(int n, Pair<A, B> ab) {
+        return pair(sa.multiply1p(n, ab.left()), sb.multiply1p(n, ab.right()));
+      }
+    };
   }
 
   /**
@@ -113,7 +109,15 @@ import static com.atlassian.fugue.Functions.fold;
    * @return a semigroup appending in reverse order
    */
   static <A> Semigroup<A> dual(Semigroup<A> semigroup) {
-    return (a1, a2) -> semigroup.append(a2, a1);
+    return new Semigroup<A>() {
+      @Override public A append(A a1, A a2) {
+        return semigroup.append(a2, a1);
+      }
+
+      @Override public A multiply1p(int n, A a) {
+        return semigroup.multiply1p(n, a);
+      }
+    };
   }
 
 }

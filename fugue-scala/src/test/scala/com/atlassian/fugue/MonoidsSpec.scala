@@ -37,11 +37,6 @@ class MonoidsSpec extends TestSuite {
     check(MonoidTests(intMultiplication))
   }
 
-  test("doubleAddition") {
-    doubleAddition.append(2.0, 3.0) shouldEqual 5.0
-    // check(MonoidTests(doubleAddition)) fail because double addition is not associative due to rounding error
-  }
-
   test("bigintAddition") {
     bigintAddition.append(BigInteger.valueOf(2), BigInteger.valueOf(3)) shouldEqual BigInteger.valueOf(5)
     check(MonoidTests(bigintAddition))
@@ -109,15 +104,16 @@ class MonoidsSpec extends TestSuite {
   }
 
   test("option") {
-    option(Semigroups.intAddition).append(Option.some(1), Option.some(2)) shouldEqual Option.some(3)
-    check(MonoidTests(option(Semigroups.intAddition)))
+    option(Semigroups.intMaximum).append(Option.some(1), Option.some(2)) shouldEqual Option.some(2)
+    option(Semigroups.intMaximum).append(Option.some(3), Option.some(2)) shouldEqual Option.some(3)
+    check(MonoidTests(option(Semigroups.intMaximum)))
   }
 
   test("either") {
-    val m = either(Semigroups.intAddition, string)
+    val m = either(Semigroups.intMaximum, string)
 
     m.append(right("a"), right("b")) shouldEqual right("ab")
-    m.append(Either.left(1), Either.left(2)) shouldEqual Either.left(3)
+    m.append(Either.left(1), Either.left(2)) shouldEqual Either.left(2)
     check(MonoidTests(m))
   }
 

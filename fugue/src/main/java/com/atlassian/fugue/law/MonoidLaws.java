@@ -16,32 +16,41 @@
 
 package com.atlassian.fugue.law;
 
+import com.atlassian.fugue.Functions;
+import com.atlassian.fugue.Iterables;
 import com.atlassian.fugue.Monoid;
-import com.atlassian.fugue.Semigroup;
 
 import static com.atlassian.fugue.law.IsEq.isEq;
 
 /**
  * Laws for a monoid
  */
-public interface MonoidLaws<A> extends SemigroupLaws<A> {
+public final class MonoidLaws<A> {
 
-  Monoid<A> monoid();
+  private final Monoid<A> monoid;
 
-  @Override default Semigroup<A> semigroup() {
-    return monoid();
+  public MonoidLaws(Monoid<A> monoid) {
+    this.monoid = monoid;
   }
 
-  default IsEq<A> monoidLeftIdentity(A x) {
-    return isEq(x, monoid().append(monoid().zero(), x));
+  public IsEq<A> semigroupAssociative(A x, A y, A z) {
+    return isEq(monoid.append(monoid.append(x, y), z), monoid.append(x, monoid.append(y, z)));
   }
 
-  default IsEq<A> monoidRightIdentity(A x) {
-    return isEq(x, monoid().append(x, monoid().zero()));
+  public IsEq<A> monoidLeftIdentity(A x) {
+    return isEq(x, monoid.append(monoid.zero(), x));
   }
 
-  static <A> MonoidLaws<A> monoidLaws(Monoid<A> monoid) {
-    return () -> monoid;
+  public IsEq<A> monoidRightIdentity(A x) {
+    return isEq(x, monoid.append(x, monoid.zero()));
+  }
+
+  public IsEq<A> sumEqualFold(Iterable<A> as) {
+    return isEq(monoid.sum(as), Functions.fold(monoid::append, monoid.zero(), as));
+  }
+
+  public IsEq<A> multiplyEqualRepeatedAppend(int n, A a) {
+    return isEq(monoid.multiply(n, a), monoid.sum(Iterables.take(n, Iterables.cycle(a))));
   }
 
 }
