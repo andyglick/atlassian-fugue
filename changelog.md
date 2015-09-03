@@ -27,6 +27,7 @@ This project attempts to adheres to [Semantic Versioning](http://semver.org/).
 - Functions.contant returns a function that always produces a constant return value
 - Functions.forMap returns a function that performs a map lookup returning an Option
 - Functions.forMapWithDefault returns a function that performs a map lookup returning a default value when it fails
+- Suppliers.memoize and Suppliers.weakMemoize provide call-by-need evaluation strategies
 
 ### Changed
 - Throwables and Function2 have been moved to fugue-guava package and the com.atlassian.fugue.deprecated package.
@@ -56,6 +57,13 @@ slf4j and jsr305.
 return the same message string inside the exception.
 - Option.find and Option.filterNone were deprecated in 1.1 and are now removed. Find their replacements in Options.
 - Dependency on maven.atlassian.com. You no longer need to include that repository
+
+## [2.6.0] - 2015-08-31
+### Added
+- Added additional right-biased method to Either:
+   * toOption
+   * sequence
+   * apply
 
 ## [2.5.0] - 2015-07-31
 ### Added

@@ -15,8 +15,8 @@
  */
 package com.atlassian.fugue.converters
 
-import java.lang.{Boolean => JBool, Byte => JByte, Double => JDouble, Float => JFloat, Long => JLong, Short => JShort}
-import java.util.function.{Function => JFunction, BiFunction => JFunction2, BinaryOperator => JBinaryOperator, Supplier => JSuppiler, Predicate => JPredicate}
+import java.lang.{ Boolean => JBool, Byte => JByte, Double => JDouble, Float => JFloat, Long => JLong, Short => JShort }
+import java.util.function.{ Function => JFunction, BiFunction => JFunction2, BinaryOperator => JBinaryOperator, Supplier => JSuppiler, Predicate => JPredicate }
 
 import annotation.implicitNotFound
 
@@ -32,7 +32,7 @@ import com.atlassian.fugue
  *
  * Also note that a `Function[Pair[A, B], C]` converts to an `((A, B)) => C` – note the inner parens,
  * it converts to a tupled (1 arg that is a tuple) function. You can turn that into an
- * `(A, B) => C` with `scala.Function.untupled _`
+ * `(A, B) => C` with `scala.Function.untupled _'
  *
  * Note: The class was moved from package com.atlassian.fugue to com.atlassian.fugue.converters in 2.4, where
  * 'toScala', 'toJava' has been replaced by 'toScala', 'toJava'
@@ -128,6 +128,7 @@ trait LowerPriorityConverters extends LowestPriorityConverters {
 }
 
 trait LowestPriorityConverters {
+  import Iso._
 
   implicit def AnyRefIso[A <: AnyRef] =
     Iso.id[A]
@@ -175,5 +176,4 @@ object Iso {
     }
 
   def same[A, B](implicit asB: A =:= B, asA: B =:= A) = Iso(asB)(asA)
-
 }

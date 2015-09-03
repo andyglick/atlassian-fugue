@@ -82,7 +82,7 @@ public class RetryFunctionTest {
     verifyNoMoreInteractions(function);
   }
 
-  @Test(expected=IllegalArgumentException.class) public void cannotSupplyNegativeRetries(){
+  @Test(expected = IllegalArgumentException.class) public void cannotSupplyNegativeRetries() {
     new RetryFunction<>(function, -1);
   }
 }

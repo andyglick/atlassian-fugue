@@ -9,19 +9,19 @@ public class OptionFunctionsTest {
 
   private Integer NULL = null;
 
-  @Test public void nullSafeIdentityOnNull(){
+  @Test public void nullSafeIdentityOnNull() {
     assertThat(Options.nullSafe(i -> i).apply(NULL).isEmpty(), is(true));
   }
 
-  @Test public void nullSafeIdentityOnValue(){
+  @Test public void nullSafeIdentityOnValue() {
     assertThat(Options.nullSafe(i -> i).apply(1).isEmpty(), is(false));
   }
 
-  @Test public void toOptionWithNull(){
-    assertThat(Options.toOption().apply(NULL).isEmpty(),is(true));
+  @Test public void toOptionWithNull() {
+    assertThat(Options.toOption().apply(NULL).isEmpty(), is(true));
   }
 
-  @Test public void toOptionWithValue(){
-    assertThat(Options.toOption().apply(1).isEmpty(),is(false));
+  @Test public void toOptionWithValue() {
+    assertThat(Options.toOption().apply(1).isEmpty(), is(false));
   }
 }

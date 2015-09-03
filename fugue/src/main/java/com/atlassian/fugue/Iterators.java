@@ -31,10 +31,12 @@ class Iterators {
 
   /**
    * Adds all the elements of the iterator to the collectionToModify
+   * 
    * @param collectionToModify collection to add element to, must not be null
    * @param iterator source of elements to add, must not be null
    * @param <A> element type
-   * @return true if any of the elements from iterator were not also in collectionToModify
+   * @return true if any of the elements from iterator were not also in
+   * collectionToModify
    *
    * @since 3.0
    */
@@ -117,6 +119,7 @@ class Iterators {
 
   /**
    * Iterator that returns a single element
+   * 
    * @param a element to return
    * @param <A> element type
    * @return iterator returning only a
@@ -148,6 +151,7 @@ class Iterators {
 
   /**
    * Iterator with no values inside
+   * 
    * @param <A> element type
    * @return empty iterator
    *
@@ -172,7 +176,6 @@ class Iterators {
       throw new UnsupportedOperationException("Cannot call remove on this iterator");
     }
   }
-
 
   //
   // Implementation classes
@@ -201,14 +204,13 @@ class Iterators {
   /**
    * A template implementation of the {@code Iterator} interface, so clients can
    * more easily implement Iterator for some patterns of iteration.
-   *q
    * <P>
    * An example is an iterator that skips over null elements in a backing
    * iterator. This could be implemented as:
    *
    * <pre>
    * {@code
-   *
+   * 
    *   public static Iterator<String> filterNulls(final Iterator<String> in) {
    *     return new AbstractIterator<String>() {
    *       protected String computeNext() {
@@ -229,6 +231,7 @@ class Iterators {
    *
    * <P>
    * This class is a re-implentation of the Guava AbstractIterator class.
+   * 
    * @since 3.0
    */
   static abstract class Abstract<A> extends Unmodifiable<A> {
@@ -247,14 +250,14 @@ class Iterators {
      * The next element.
      * <P>
      * <b>Note:</b> the implementation must call {@link #endOfData()} when there
-     * are no elements left in the iteration. Failure to do so could result in an
-     * infinite loop.
+     * are no elements left in the iteration. Failure to do so could result in
+     * an infinite loop.
      */
     protected abstract A computeNext();
 
     /**
-     * Implementations of {@link #computeNext} <b>must</b> invoke this method when
-     * there are no elements left in the iteration.
+     * Implementations of {@link #computeNext} <b>must</b> invoke this method
+     * when there are no elements left in the iteration.
      *
      * @return {@code null}; a convenience so your {@code computeNext}
      * implementation can use the simple statement {@code return endOfData();}

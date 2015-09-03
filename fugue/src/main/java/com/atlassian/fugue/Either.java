@@ -46,10 +46,10 @@ import static java.util.Objects.requireNonNull;
  * the contained objects are mutable then equals and hashcode methods should not
  * be relied on.
  * <p>
- * Since 2.2, there have been some right-biased methods added. With 2.3 the available
- * right-biased methods has increased. The purpose of these is that you can do something
- * like {@code either.map(...)} directly, which is identical to calling
- * {@code either.right().map(...)}.
+ * Since 2.2, there have been some right-biased methods added. With 2.3 the
+ * available right-biased methods has increased. The purpose of these is that
+ * you can do something like {@code either.map(...)} directly, which is
+ * identical to calling {@code either.right().map(...)}.
  * 
  * @since 1.0
  */
@@ -161,7 +161,7 @@ public abstract class Either<L, R> implements Serializable {
    * @return the contained value.
    * @since 2.3
    */
-  public final R getOrError(Supplier<String> msg) {
+  public final R getOrError(final Supplier<String> msg) {
     return right().getOrError(msg);
   }
 
@@ -176,7 +176,7 @@ public abstract class Either<L, R> implements Serializable {
    * @throws X the throwable the supplier creates if there is no value.
    * @since 2.3
    */
-  public final <X extends Throwable> R getOrThrow(Supplier<X> ifUndefined) throws X {
+  public final <X extends Throwable> R getOrThrow(final Supplier<X> ifUndefined) throws X {
     return right().getOrThrow(ifUndefined);
   }
 
@@ -270,7 +270,7 @@ public abstract class Either<L, R> implements Serializable {
     }
 
     @SuppressWarnings("unchecked")
-    Either<L, R> result = (Either<L, R>) orElse.get();
+    final Either<L, R> result = (Either<L, R>) orElse.get();
     return result;
   }
 
@@ -306,18 +306,43 @@ public abstract class Either<L, R> implements Serializable {
   }
 
   /**
-   * Map the given function across the left hand side value if it is one.
+   * Convert this Either to an Option. Returns <code>Some</code> with a value if it is a right,
+   * otherwise <code>None</code>.
    *
-   * @param <X> the LHS type
-   * @param f The function to map.
-   * @return A new either value after mapping with the function applied if this
-   * is a Left.
-   * @since 2.2
+   * @return The right projection's value in <code>Some</code> if it exists,
+   * otherwise <code>None</code>.
+   * @since 2.6
    */
-  public final <X> Either<X, R> leftMap(final Function<? super L, X> f) {
-    return left().map(f);
+  public final Option<R> toOption() {
+    return right().toOption();
   }
 
+  /**
+   * Will return the supplied Either if this one is right, otherwise this one if left.
+   *
+   * @param <X> the RHS type
+   * @param e The value to bind with.
+   * @return An either after binding through this projection.
+   * @since 2.6
+   */
+  public <X> Either<L, X> sequence(final Either<L, X> e) {
+    return right().sequence(e);
+  }
+
+  /**
+   * Given a right containing a function from the right type {@code <R>} to a new type  {@code <X>} apply that
+   * function to the value inside this either. When any of the input values are left return
+   * that left value.
+   *
+   * @param <X> the RHS type
+   * @param either The either of the function to apply if this is a Right.
+   * @return The result of function application within either.
+   * @since 2.6
+   * @deprecated since 3.0 see {@link #ap}
+   */
+  public <X> Either<L, X> apply(final Either<L, Function<R, X>> either) {
+    return ap(either);
+  }
 
   /**
    * Function application on this projection's value.
@@ -331,6 +356,19 @@ public abstract class Either<L, R> implements Serializable {
    */
   public <X> Either<L, X> ap(final Either<L, Function<R, X>> either) {
     return either.right().flatMap(this::map);
+  }
+
+  /**
+   * Map the given function across the left hand side value if it is one.
+   *
+   * @param <X> the LHS type
+   * @param f The function to map.
+   * @return A new either value after mapping with the function applied if this
+   * is a Left.
+   * @since 2.2
+   */
+  public final <X> Either<X, R> leftMap(final Function<? super L, X> f) {
+    return left().map(f);
   }
 
   //
@@ -385,8 +423,7 @@ public abstract class Either<L, R> implements Serializable {
    * applied.
    * @since 2.2
    */
-  public abstract <LL, RR> Either<LL, RR> bimap(final Function<? super L, ? extends LL> ifLeft,
-    final Function<? super R, ? extends RR> ifRight);
+  public abstract <LL, RR> Either<LL, RR> bimap(final Function<? super L, ? extends LL> ifLeft, final Function<? super R, ? extends RR> ifRight);
 
   //
   // internal only, should not be accessed from outside this class
@@ -436,8 +473,7 @@ public abstract class Either<L, R> implements Serializable {
       return ifLeft.apply(value);
     }
 
-    @Override public <LL, RR> Either<LL, RR> bimap(Function<? super L, ? extends LL> ifLeft,
-      Function<? super R, ? extends RR> ifRight) {
+    @Override public <LL, RR> Either<LL, RR> bimap(final Function<? super L, ? extends LL> ifLeft, final Function<? super R, ? extends RR> ifRight) {
       @SuppressWarnings("unchecked")
       final Either<LL, RR> map = (Either<LL, RR>) left().map(ifLeft);
       return map;
@@ -492,8 +528,7 @@ public abstract class Either<L, R> implements Serializable {
       return ifRight.apply(value);
     }
 
-    @Override public <LL, RR> Either<LL, RR> bimap(Function<? super L, ? extends LL> ifLeft,
-      Function<? super R, ? extends RR> ifRight) {
+    @Override public <LL, RR> Either<LL, RR> bimap(final Function<? super L, ? extends LL> ifLeft, final Function<? super R, ? extends RR> ifRight) {
       @SuppressWarnings("unchecked")
       final Either<LL, RR> map = (Either<LL, RR>) right().map(ifRight);
       return map;
@@ -554,7 +589,7 @@ public abstract class Either<L, R> implements Serializable {
       return toOption().getOrError(err);
     }
 
-    @Override public <X extends Throwable> A getOrThrow(Supplier<X> ifUndefined) throws X {
+    @Override public <X extends Throwable> A getOrThrow(final Supplier<X> ifUndefined) throws X {
       return toOption().getOrThrow(ifUndefined);
     }
 
@@ -620,7 +655,8 @@ public abstract class Either<L, R> implements Serializable {
      */
     public <X, RR extends R> Either<X, R> flatMap(final Function<? super L, Either<X, RR>> f) {
       if (isLeft()) {
-        @SuppressWarnings("unchecked") Either<X, R> result = (Either<X, R>) f.apply(get());
+        @SuppressWarnings("unchecked")
+        final Either<X, R> result = (Either<X, R>) f.apply(get());
         return result;
       } else {
         return this.toRight();
@@ -683,11 +719,10 @@ public abstract class Either<L, R> implements Serializable {
      * value.
      * @return The result of function application within either.
      *
-     * @deprecated since 3.0 
+     * @deprecated since 3.0
      * @see #ap ap
      */
-    @Deprecated
-    public <X> Either<X, R> apply(final Either<Function<L, X>, R> either) {
+    @Deprecated public <X> Either<X, R> apply(final Either<Function<L, X>, R> either) {
       return ap(either);
     }
 
@@ -745,7 +780,8 @@ public abstract class Either<L, R> implements Serializable {
      */
     public <X, LL extends L> Either<L, X> flatMap(final Function<? super R, Either<LL, X>> f) {
       if (isRight()) {
-        @SuppressWarnings("unchecked") Either<L, X> result = (Either<L, X>) f.apply(get());
+        @SuppressWarnings("unchecked")
+        final Either<L, X> result = (Either<L, X>) f.apply(get());
         return result;
       } else {
         return this.toLeft();
@@ -764,7 +800,7 @@ public abstract class Either<L, R> implements Serializable {
      * @return An either after binding through this projection.
      */
     public <X> Either<L, X> sequence(final Either<L, X> e) {
-      return flatMap(Functions.<R, Either<L, X>>constant(e));
+      return flatMap(Functions.<R, Either<L, X>> constant(e));
     }
 
     /**
@@ -785,7 +821,6 @@ public abstract class Either<L, R> implements Serializable {
       }
       return none();
     }
-
 
     /**
      * Function application on this projection's value.
@@ -811,11 +846,9 @@ public abstract class Either<L, R> implements Serializable {
      *
      * @deprecated since 3.0 see ap
      */
-    @Deprecated
-    public <X> Either<L, X> apply(final Either<L, Function<R, X>> either) {
+    @Deprecated public <X> Either<L, X> apply(final Either<L, Function<R, X>> either) {
       return ap(either);
     }
-
 
     /**
      * Coerces our left type as X. Dangerous, isRight() must be true
