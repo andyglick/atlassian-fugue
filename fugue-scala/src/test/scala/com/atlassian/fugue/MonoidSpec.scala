@@ -20,8 +20,7 @@ import com.atlassian.fugue.Monoid._
 import com.atlassian.fugue.law.IsEq._
 import com.atlassian.fugue.law.MonoidTests
 import org.scalacheck.Prop._
-import org.scalacheck.{Arbitrary, Properties}
-
+import org.scalacheck.{ Arbitrary, Properties }
 
 class MonoidSpec extends TestSuite {
   val intMonoid = new Monoid[Int] {

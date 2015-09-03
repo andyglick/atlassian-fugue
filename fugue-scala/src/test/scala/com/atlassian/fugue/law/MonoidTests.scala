@@ -18,7 +18,7 @@ package com.atlassian.fugue.law
 
 import com.atlassian.fugue.Monoid
 import org.scalacheck.Prop._
-import org.scalacheck.{Arbitrary, Properties}
+import org.scalacheck.{ Arbitrary, Properties }
 
 import scala.collection.JavaConversions._
 

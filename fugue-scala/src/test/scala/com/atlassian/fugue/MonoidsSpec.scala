@@ -18,12 +18,11 @@ package com.atlassian.fugue
 
 import java.math.BigInteger
 import java.util.Arrays.asList
-import java.util.stream.{Collectors, StreamSupport}
+import java.util.stream.{ Collectors, StreamSupport }
 
 import com.atlassian.fugue.Either.right
 import com.atlassian.fugue.Monoids._
 import com.atlassian.fugue.law.MonoidTests
-
 
 class MonoidsSpec extends TestSuite {
 

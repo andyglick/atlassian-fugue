@@ -2,17 +2,15 @@ package com.atlassian.fugue
 
 import java.math.BigInteger
 
-import com.atlassian.fugue.Either.{left, right}
-import com.atlassian.fugue.Option.{none, some}
+import com.atlassian.fugue.Either.{ left, right }
+import com.atlassian.fugue.Option.{ none, some }
 import com.atlassian.fugue.Pair.pair
 import org.scalacheck.Arbitrary._
-import org.scalacheck.{Arbitrary, Gen}
+import org.scalacheck.{ Arbitrary, Gen }
 
 import scala.collection.JavaConversions._
 
-
 trait TestInstances {
-
 
   // Arbitrary instances
 

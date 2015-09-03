@@ -116,7 +116,7 @@ object ScalaConverters extends LowerPriorityConverters {
 
 trait LowerPriorityConverters extends LowestPriorityConverters {
   import Iso.<~>
-  import ScalaConverters.{ToJavaSyntax, ToScalaSyntax}
+  import ScalaConverters.{ ToJavaSyntax, ToScalaSyntax }
 
   implicit def Function2Iso[A, AA, B, BB, C, CC](implicit ia: A <~> AA, ib: B <~> BB, ic: C <~> CC): <~>[JFunction2[A, B, C], (AA, BB) => CC] =
     Iso[JFunction2[A, B, C], (AA, BB) => CC] {

@@ -16,12 +16,11 @@
 
 package com.atlassian.fugue
 
-import java.math.{BigDecimal, BigInteger}
+import java.math.{ BigDecimal, BigInteger }
 import java.util.Comparator
 
 import com.atlassian.fugue.Semigroups._
 import com.atlassian.fugue.law.SemigroupTests
-
 
 class SemigroupsSpec extends TestSuite {
 
@@ -50,7 +49,6 @@ class SemigroupsSpec extends TestSuite {
   test("intMinimum via comparable") {
     check(SemigroupTests(min[Integer]()))
   }
-
 
   test("longMaximum") {
     longMaximum.append(1L, 2L) shouldEqual 2L

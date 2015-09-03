@@ -21,7 +21,7 @@ import java.util.function.BinaryOperator
 import com.atlassian.fugue.Semigroup
 import com.atlassian.fugue.law.IsEq._
 import org.scalacheck.Prop._
-import org.scalacheck.{Arbitrary, Properties}
+import org.scalacheck.{ Arbitrary, Properties }
 
 import scala.collection.JavaConversions._
 import scala.collection.mutable.ListBuffer
