@@ -35,7 +35,7 @@ And then add fugue as a dependency to your pom.xml:
     <dependencies>
         ...
         <dependency>
-            <groupId>com.atlassian.fugue</groupId>
+            <groupId>io.atlassian.fugue</groupId>
             <artifactId>fugue</artifactId>
             <version>2.6.0</version>
         </dependency>
@@ -52,7 +52,7 @@ If you are using Gradle, add a new repository to your `repositories` section:
     
 And then add fugue as a dependency to your `dependencies` section:
 
-    compile 'com.atlassian.fugue:fugue:2.6.0'
+    compile 'io.atlassian.fugue:fugue:2.6.0'
 
 ## Guava compatibility
 
@@ -70,7 +70,7 @@ other way you can use `.toScala`.
 
 To enable this syntax you need to add the following to your scope:
 
-    import com.atlassian.fugue.converters.ScalaConverters._
+    import io.atlassian.fugue.converters.ScalaConverters._
 
 ## Contributors
 

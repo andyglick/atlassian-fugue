@@ -13,17 +13,17 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package com.atlassian.fugue.extras;
+package io.atlassian.fugue.extras;
 
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import com.atlassian.fugue.Functions;
-import com.atlassian.fugue.Option;
-import com.atlassian.fugue.Options;
-import com.atlassian.fugue.Iterables;
+import io.atlassian.fugue.Functions;
+import io.atlassian.fugue.Option;
+import io.atlassian.fugue.Options;
+import io.atlassian.fugue.Iterables;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 

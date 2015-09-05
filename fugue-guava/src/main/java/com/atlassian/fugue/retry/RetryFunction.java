@@ -13,9 +13,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package com.atlassian.fugue.retry;
+package io.atlassian.fugue.retry;
 
-import com.atlassian.fugue.Suppliers;
+import io.atlassian.fugue.Suppliers;
 
 import java.util.function.Function;
 

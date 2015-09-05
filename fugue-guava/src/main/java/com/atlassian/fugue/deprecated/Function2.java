@@ -13,7 +13,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package com.atlassian.fugue.deprecated;
+package io.atlassian.fugue.deprecated;
+
+import java.util.function.BiFunction;
 
 /**
  * Represents a function that takes two parameters.
@@ -24,7 +26,7 @@ package com.atlassian.fugue.deprecated;
  * @since 1.0
  * @deprecated since 2.4 use BiFunction instead
  */
-@Deprecated public interface Function2<A, B, C> {
+@Deprecated public interface Function2<A, B, C> extends BiFunction<A, B, C> {
   /**
    * Returns the results of applying this function to the supplied arguments.
    * Like Guava's Function, this method is <em>generally expected</em>, but not
