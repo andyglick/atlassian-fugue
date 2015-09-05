@@ -1,7 +1,7 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-This project attempts to adheres to [Semantic Versioning](http://semver.org/).
+This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 
 ## [3.0.0] - [unreleased]
 ### Added
