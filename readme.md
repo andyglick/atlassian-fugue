@@ -19,7 +19,7 @@ Issues are tracked in the [fugue](https://bitbucket.org/atlassian/fugue/issues) 
 
 ## Change log
 
-This project attempts to adhere to semantic versioning. Changes are documented in `changelog.md`
+Changes are documented in `changelog.md`. 
 
 ## Getting fugue
 
