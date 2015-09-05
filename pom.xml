@@ -14,7 +14,7 @@
         <version>3.0.91</version>
     </parent>
 
-    <groupId>com.atlassian.fugue</groupId>
+    <groupId>io.atlassian.fugue</groupId>
     <artifactId>fugue-parent</artifactId>
     <packaging>pom</packaging>
     <version>3.0.0-m008-SNAPSHOT</version>

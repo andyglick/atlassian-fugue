@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package com.atlassian.fugue.extras;
+package io.atlassian.fugue.extras;
 
 import java.util.Map;
 import java.util.Map.Entry;

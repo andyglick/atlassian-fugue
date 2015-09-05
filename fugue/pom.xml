@@ -9,7 +9,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.atlassian.fugue</groupId>
+        <groupId>io.atlassian.fugue</groupId>
         <artifactId>fugue-parent</artifactId>
         <version>3.0.0-m008-SNAPSHOT</version>
     </parent>

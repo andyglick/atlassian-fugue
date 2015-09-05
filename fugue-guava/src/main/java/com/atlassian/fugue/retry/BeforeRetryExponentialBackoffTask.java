@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package com.atlassian.fugue.retry;
+package io.atlassian.fugue.retry;
 
 /**
  * A backoff task for use in a retry -function, -supplier, or -task. This should

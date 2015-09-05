@@ -34,7 +34,7 @@ import io.atlassian.fugue
  * it converts to a tupled (1 arg that is a tuple) function. You can turn that into an
  * `(A, B) => C` with `scala.Function.untupled _'
  *
- * Note: The class was moved from package com.atlassian.fugue to com.atlassian.fugue.converters in 2.4, where
+ * Note: The class was moved from package io.atlassian.fugue to io.atlassian.fugue.converters in 2.4, where
  * 'toScala', 'toJava' has been replaced by 'toScala', 'toJava'
  *
  * @since 2.2
