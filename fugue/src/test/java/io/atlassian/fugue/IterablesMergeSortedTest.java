@@ -23,6 +23,8 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 import static io.atlassian.fugue.Iterables.mergeSorted;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.emptyIterableOf;
