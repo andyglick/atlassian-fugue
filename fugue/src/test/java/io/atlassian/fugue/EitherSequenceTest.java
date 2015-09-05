@@ -35,8 +35,8 @@ import static org.junit.Assert.assertThat;
   }
 
   @Test public void sequenceRightWithLeft() {
-    final Iterable<Either<String, Integer>> eithers = build(Build.<String, Integer> r(1),
-      Build.<String, Integer> l("2"), Build.<String, Integer> r(3));
+    final Iterable<Either<String, Integer>> eithers = build(Build.<String, Integer> r(1), Build.<String, Integer> l("2"),
+      Build.<String, Integer> r(3));
     assertThat(sequenceRight(eithers), is(Build.<String, Iterable<Integer>> l("2")));
   }
 
@@ -46,8 +46,8 @@ import static org.junit.Assert.assertThat;
   }
 
   @Test public void sequenceLeftWithRight() {
-    final Iterable<Either<String, Integer>> eithers = build(Build.<String, Integer> l("1"),
-      Build.<String, Integer> r(2), Build.<String, Integer> l("3"));
+    final Iterable<Either<String, Integer>> eithers = build(Build.<String, Integer> l("1"), Build.<String, Integer> r(2),
+      Build.<String, Integer> l("3"));
     assertThat(sequenceLeft(eithers), is(Build.<Iterable<String>, Integer> r(2)));
   }
 

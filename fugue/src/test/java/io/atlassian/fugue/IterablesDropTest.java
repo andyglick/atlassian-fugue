@@ -73,15 +73,15 @@ public class IterablesDropTest {
     drop(-1, emptyList());
   }
 
-  @Test public void dropWhileTest(){
+  @Test public void dropWhileTest() {
     assertThat(dropWhile(asList(1, 2, 3, 4), i -> i < 2), contains(2, 3, 4));
   }
 
-  @Test public void dropWhileAll(){
+  @Test public void dropWhileAll() {
     assertThat(dropWhile(asList(1, 2, 3, 4), i -> true), emptyIterable());
   }
 
-  @Test public void dropWhileNone(){
+  @Test public void dropWhileNone() {
     assertThat(dropWhile(asList(1, 2, 3, 4), i -> false), contains(1, 2, 3, 4));
   }
 
@@ -97,7 +97,7 @@ public class IterablesDropTest {
     dropWhile(Iterables.emptyIterable(), null);
   }
 
-  @Test public void dropWhileNotAfter(){
+  @Test public void dropWhileNotAfter() {
     assertThat(dropWhile(asList(1, 2, 3, 4, 1, 2), i -> i < 2), contains(2, 3, 4, 1, 2));
   }
 }

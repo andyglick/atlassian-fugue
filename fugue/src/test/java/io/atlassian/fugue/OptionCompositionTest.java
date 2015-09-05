@@ -27,8 +27,7 @@ import static org.hamcrest.Matchers.is;
 public class OptionCompositionTest {
   @Test public void composeLaw() {
     Function<Integer, Integer> plusOne = input -> input + 1;
-    assertThat(some(1).map(plusOne).map(toStringFunction()),
-      is(some(1).map(Functions.compose(toStringFunction(), plusOne))));
+    assertThat(some(1).map(plusOne).map(toStringFunction()), is(some(1).map(Functions.compose(toStringFunction(), plusOne))));
   }
 
   @Test public void composeNull() {

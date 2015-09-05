@@ -26,8 +26,7 @@ import java.util.function.BiFunction;
  * @since 1.0
  * @deprecated since 2.4 use BiFunction instead
  */
-@Deprecated
-public interface Function2<A, B, C> extends BiFunction<A, B, C> {
+@Deprecated public interface Function2<A, B, C> extends BiFunction<A, B, C> {
   /**
    * Returns the results of applying this function to the supplied arguments.
    * Like Guava's Function, this method is <em>generally expected</em>, but not
@@ -41,6 +40,5 @@ public interface Function2<A, B, C> extends BiFunction<A, B, C> {
    * @return the result, should not be null
    * @deprecated since 2.4 use BiFunction instead
    */
-  @Deprecated
-  C apply(A arg1, B arg2);
+  @Deprecated C apply(A arg1, B arg2);
 }

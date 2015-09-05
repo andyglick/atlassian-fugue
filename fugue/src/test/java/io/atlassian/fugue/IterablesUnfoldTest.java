@@ -23,7 +23,8 @@ import org.junit.Test;
 import java.util.function.Function;
 
 public class IterablesUnfoldTest {
-  private static final Function<Integer, Option<Pair<String, Integer>>> F = i -> (i > 4) ? Option.<Pair<String, Integer>> none() : Option.some(Pair.pair(i.toString(), i + 1));
+  private static final Function<Integer, Option<Pair<String, Integer>>> F = i -> (i > 4) ? Option.<Pair<String, Integer>> none() : Option.some(Pair
+    .pair(i.toString(), i + 1));
 
   @Test public void unfold() {
     assertThat(Iterables.unfold(F, 1), contains("1", "2", "3", "4"));

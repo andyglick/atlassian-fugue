@@ -131,7 +131,8 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   }
 
   /**
-   * Factory method for {@link Option} instances from {@link Optional} instances.
+   * Factory method for {@link Option} instances from {@link Optional}
+   * instances.
    *
    * @param <A> the contained type
    * @return a Some if {@link Optional#isPresent()} or a None otherwise.
@@ -167,11 +168,11 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   //
 
   @Override public final <B extends A> A getOrElse(final B other) {
-    return getOr(Suppliers.<A>ofInstance(other));
+    return getOr(Suppliers.<A> ofInstance(other));
   }
 
   @Override public final A getOr(final Supplier<? extends A> supplier) {
-    return fold(supplier, Functions.<A>identity());
+    return fold(supplier, Functions.<A> identity());
   }
 
   @Deprecated @Override public final A getOrElse(final Supplier<? extends A> supplier) {
@@ -304,8 +305,9 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   }
 
   /**
-   * Create an {@link Optional} from this option.
-   * Will throw a {@link NullPointerException} if this option is defined and contains a null value.
+   * Create an {@link Optional} from this option. Will throw a
+   * {@link NullPointerException} if this option is defined and contains a null
+   * value.
    *
    * @return {@link Optional#of(Object)} with the value if defined and not null,
    * {@link Optional#empty()} if not defined.

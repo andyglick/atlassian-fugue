@@ -58,8 +58,7 @@ public interface Maybe<A> extends Iterable<A>, Effect.Applicant<A> {
 
   /**
    * Get the value {@link #isDefined() if defined} or call the supplier and
-   * return its value if not.
-   * Replaces {@link #getOrElse(Supplier)}.
+   * return its value if not. Replaces {@link #getOrElse(Supplier)}.
    *
    * Get the value {@link #isDefined() if defined} or call the supplier and
    * return its value if not.
@@ -146,8 +145,8 @@ public interface Maybe<A> extends Iterable<A>, Effect.Applicant<A> {
    * Returns <code>true</code> {@link #isEmpty() if empty} or the result of the
    * application of the given function to the value.
    * 
-   * @param p The predicate function to test on the contained value, must not
-   * be null
+   * @param p The predicate function to test on the contained value, must not be
+   * null
    * @return <code>true</code> if no value or returns the result of the
    * application of the given function to the value.
    */

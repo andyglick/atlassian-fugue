@@ -18,8 +18,7 @@ public class PairsTest {
     final Iterable<Integer> ints = Arrays.asList(1, 2, 3);
     final Iterable<String> strings = Arrays.asList("1", "2", "3", "4");
     @SuppressWarnings("unchecked")
-    final Matcher<Iterable<? extends Pair<Integer, String>>> contains = contains(pair(1, "1"), pair(2, "2"),
-      pair(3, "3"));
+    final Matcher<Iterable<? extends Pair<Integer, String>>> contains = contains(pair(1, "1"), pair(2, "2"), pair(3, "3"));
     assertThat(zip(ints, strings), contains);
   }
 
@@ -42,7 +41,6 @@ public class PairsTest {
     final Pair<Iterable<Integer>, Iterable<String>> ls = unzip(pairs);
     assertThat(ls.left(), contains(1, 2, 3, 4));
   }
-
 
   @Test public void unzipRight() {
     final Iterable<Pair<Integer, String>> pairs = Arrays.asList(pair(1, "1"), pair(2, "2"), pair(3, "3"), pair(4, "4"));

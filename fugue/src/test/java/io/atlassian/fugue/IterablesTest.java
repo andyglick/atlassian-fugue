@@ -69,7 +69,7 @@ public class IterablesTest {
   }
 
   @Test public void findFirstEmpty() {
-    assertThat(findFirst(Arrays.<Integer>asList(), grepOne), is(Option.<Integer>none()));
+    assertThat(findFirst(Arrays.<Integer> asList(), grepOne), is(Option.<Integer> none()));
   }
 
   @Test public void findFirstAbsent() {
@@ -169,11 +169,11 @@ public class IterablesTest {
   }
 
   @Test public void findFirstFunctionFails() {
-    assertThat(findFirst(Predicate.isEqual(3)).apply(asList(1, 2, 4)), is(Option.<Integer>none()));
+    assertThat(findFirst(Predicate.isEqual(3)).apply(asList(1, 2, 4)), is(Option.<Integer> none()));
   }
 
   @Test(expected = InvocationTargetException.class) public void nonInstantiable() throws Exception {
-    Eithers.getOrThrow(UtilityFunctions.<Iterables>defaultCtor().apply(Iterables.class));
+    Eithers.getOrThrow(UtilityFunctions.<Iterables> defaultCtor().apply(Iterables.class));
   }
 
   @Test public void revMap() {
@@ -195,7 +195,7 @@ public class IterablesTest {
   }
 
   @Test public void findAnyEmpty() {
-    assertThat(any(Collections.<Integer>emptyList(), ii -> ii < 0), is(false));
+    assertThat(any(Collections.<Integer> emptyList(), ii -> ii < 0), is(false));
   }
 
   @Test public void findAllMatching() {
@@ -207,7 +207,7 @@ public class IterablesTest {
   }
 
   @Test public void findAllEmpty() {
-    assertThat(all(Collections.<Integer>emptyList(), ii -> ii < 0), is(true));
+    assertThat(all(Collections.<Integer> emptyList(), ii -> ii < 0), is(true));
   }
 
   @Test public void mapChangesIterable() {

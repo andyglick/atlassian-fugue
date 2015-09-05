@@ -36,8 +36,7 @@ public class IterablesZipTest {
   }
 
   @SuppressWarnings("unchecked") @Test public void zipFromLongerLastList() {
-    assertThat(zip(asList(4, 3, 2, 1), asList(6, 2, 5, 4, 5, 6)),
-      genericContains(pair(4, 6), pair(3, 2), pair(2, 5), pair(1, 4)));
+    assertThat(zip(asList(4, 3, 2, 1), asList(6, 2, 5, 4, 5, 6)), genericContains(pair(4, 6), pair(3, 2), pair(2, 5), pair(1, 4)));
   }
 
   @Test public void zipWithFrom() {
@@ -46,14 +45,11 @@ public class IterablesZipTest {
 
   @Test public void testZipWithIndex() {
     @SuppressWarnings("unchecked")
-    final Matcher<Iterable<? extends Pair<String, Integer>>> containsPairs = contains(pair("a", 0), pair("b", 1),
-      pair("c", 2));
+    final Matcher<Iterable<? extends Pair<String, Integer>>> containsPairs = contains(pair("a", 0), pair("b", 1), pair("c", 2));
     assertThat(zipWithIndex(asList("a", "b", "c")), containsPairs);
   }
 
-  @SuppressWarnings("unchecked")
-  @SafeVarargs
-  private final <A> Matcher<Iterable<? extends A>> genericContains(final A... as){
+  @SuppressWarnings("unchecked") @SafeVarargs private final <A> Matcher<Iterable<? extends A>> genericContains(final A... as) {
     return contains(as);
   }
 }

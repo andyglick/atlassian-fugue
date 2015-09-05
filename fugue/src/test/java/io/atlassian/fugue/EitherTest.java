@@ -48,7 +48,7 @@ public class EitherTest {
   }
 
   @Test public void leftMerge() {
-    assertThat(merge(Either.<String, String>left("Ponies.")), is("Ponies."));
+    assertThat(merge(Either.<String, String> left("Ponies.")), is("Ponies."));
   }
 
   @Test public void rightMerge() {
@@ -78,7 +78,8 @@ public class EitherTest {
   @Test public void hashCodeMirrorItegerMax() {
     assertThat(left(Integer.MAX_VALUE).hashCode(), is(~(right(Integer.MAX_VALUE).hashCode())));
   }
+
   @Test public void hashCodeMirrorItegerZero() {
-    assertThat(left(0).hashCode(),is(~(right(0).hashCode())));
+    assertThat(left(0).hashCode(), is(~(right(0).hashCode())));
   }
 }

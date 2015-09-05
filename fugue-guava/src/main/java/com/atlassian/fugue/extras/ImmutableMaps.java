@@ -264,7 +264,7 @@ public class ImmutableMaps {
     return collect(from, input -> {
       Option<K2> ok = keyPartial.apply(input.getKey());
       Option<V2> ov = valuePartial.apply(input.getValue());
-      return Options.lift2(ImmutableMaps.<K2, V2>mapEntry()).apply(ok, ov);
+      return Options.lift2(ImmutableMaps.<K2, V2> mapEntry()).apply(ok, ov);
     });
   }
 

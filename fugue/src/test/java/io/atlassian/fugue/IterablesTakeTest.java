@@ -40,11 +40,11 @@ public class IterablesTakeTest {
   }
 
   @Test public void takeNoneFromList() {
-    assertThat(take(0, asList(1, 2, 3, 4)), Matchers.<Integer>emptyIterable());
+    assertThat(take(0, asList(1, 2, 3, 4)), Matchers.<Integer> emptyIterable());
   }
 
   @Test public void takeNoneFromNonList() {
-    assertThat(take(0, asIterable(1, 2, 3, 4)), Matchers.<Integer>emptyIterable());
+    assertThat(take(0, asIterable(1, 2, 3, 4)), Matchers.<Integer> emptyIterable());
   }
 
   @Test public void takeAllFromList() {
@@ -88,19 +88,18 @@ public class IterablesTakeTest {
   }
 
   @SafeVarargs static <A> Iterable<A> asIterable(final A... as) {
-    return map(asList(as), Functions.<A>identity()::apply);
+    return map(asList(as), Functions.<A> identity()::apply);
   }
 
-
-  @Test public void takeWhileTest(){
+  @Test public void takeWhileTest() {
     assertThat(takeWhile(asList(1, 2, 3, 4), i -> i < 2), contains(1));
   }
 
-  @Test public void takeWhileAll(){
+  @Test public void takeWhileAll() {
     assertThat(takeWhile(asList(1, 2, 3, 4), i -> true), contains(1, 2, 3, 4));
   }
 
-  @Test public void takeWhileNone(){
+  @Test public void takeWhileNone() {
     assertThat(takeWhile(asList(1, 2, 3, 4), i -> false), emptyIterable());
   }
 

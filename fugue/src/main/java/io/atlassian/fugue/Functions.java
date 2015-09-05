@@ -31,6 +31,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static io.atlassian.fugue.Option.option;
+
 /**
  * Utility methods for Functions
  * <P>
@@ -137,8 +138,7 @@ public class Functions {
    *
    * @since 1.1
    */
-  public static <F, S, T extends S> T fold(final Function<Pair<S, F>, T> f, final T zero,
-    final Iterable<? extends F> elements) {
+  public static <F, S, T extends S> T fold(final Function<Pair<S, F>, T> f, final T zero, final Iterable<? extends F> elements) {
     return fold(toBiFunction(f), zero, elements);
   }
 
@@ -289,8 +289,7 @@ public class Functions {
     private final Function<? super A, ? extends Option<? extends B>> ab;
     private final Function<? super B, ? extends Option<? extends C>> bc;
 
-    PartialComposer(Function<? super A, ? extends Option<? extends B>> ab,
-      Function<? super B, ? extends Option<? extends C>> bc) {
+    PartialComposer(Function<? super A, ? extends Option<? extends B>> ab, Function<? super B, ? extends Option<? extends C>> bc) {
       this.ab = requireNonNull(ab);
       this.bc = requireNonNull(bc);
     }
@@ -418,7 +417,7 @@ public class Functions {
    * @since 2.0
    */
   public static <A, B> Function<A, Option<B>> mapNullToOption(Function<? super A, ? extends B> f) {
-    return Functions.compose(Functions.<B>nullToOption(), f);
+    return Functions.compose(Functions.<B> nullToOption(), f);
   }
 
   /**
@@ -526,15 +525,16 @@ public class Functions {
   /**
    * Create a function that performs a map lookup returning None for null
    *
-   * If you do not need a nondefaulted return result using a method reference is preferred
-   * {@literal map::get}
+   * If you do not need a nondefaulted return result using a method reference is
+   * preferred {@literal map::get}
+   * 
    * @param map map to use for lookup
    * @param <A> map key type
    * @param <B> map value type
    * @return result of calling Map#get replacing null with none
    * @see Functions#forMapWithDefault to supply a default value for none
    */
-  public static <A,B> Function<A, Option<B>> forMap(final Map<A, B> map){
+  public static <A, B> Function<A, Option<B>> forMap(final Map<A, B> map) {
     return a -> option(map.get(a));
   }
 
@@ -542,17 +542,18 @@ public class Functions {
    * Create a function that performs a map lookup supplying a default value when
    * a Map#get returns null
    *
-   * If you do not need a defaulted return result using a method reference is preferred
-   * {@literal map::get}
+   * If you do not need a defaulted return result using a method reference is
+   * preferred {@literal map::get}
+   * 
    * @param map map to use for lookup
    * @param <A> map key type
    * @param <B> map value type
-   * @return result of calling Map#get returning defaultValue instead if the result was null
+   * @return result of calling Map#get returning defaultValue instead if the
+   * result was null
    */
-  public static <A,B> Function<A, B> forMapWithDefault(final Map<A, B> map, B defaultValue){
+  public static <A, B> Function<A, B> forMapWithDefault(final Map<A, B> map, B defaultValue) {
     return forMap(map).andThen(o -> o.getOrElse(defaultValue));
   }
-
 
   /**
    * Creates a stack of matcher functions and returns the first result that
@@ -625,10 +626,10 @@ public class Functions {
    * one in sequence.
    * @since 1.2
    */
-  @SafeVarargs public static <A, B> Function<A, Option<B>> matches(
-    Function<? super A, ? extends Option<? extends B>> f1, Function<? super A, ? extends Option<? extends B>> f2,
-    Function<? super A, ? extends Option<? extends B>> f3, Function<? super A, ? extends Option<? extends B>> f4,
-    Function<? super A, ? extends Option<? extends B>> f5, Function<? super A, ? extends Option<? extends B>>... fs) {
+  @SafeVarargs public static <A, B> Function<A, Option<B>> matches(Function<? super A, ? extends Option<? extends B>> f1,
+    Function<? super A, ? extends Option<? extends B>> f2, Function<? super A, ? extends Option<? extends B>> f3,
+    Function<? super A, ? extends Option<? extends B>> f4, Function<? super A, ? extends Option<? extends B>> f5,
+    Function<? super A, ? extends Option<? extends B>>... fs) {
 
     @SuppressWarnings("unchecked")
     final Function<? super A, ? extends Option<? extends B>>[] matchingFunctions = new Function[5 + fs.length];

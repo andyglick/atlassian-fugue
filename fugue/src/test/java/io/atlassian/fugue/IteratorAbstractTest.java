@@ -12,32 +12,27 @@ public class IteratorAbstractTest {
 
   public <A> Iterator<A> newIterator(Supplier<A> s) {
     return new Iterators.Abstract<A>() {
-      @Override
-      protected A computeNext() {
+      @Override protected A computeNext() {
         return s.get();
       }
     };
   }
 
-  @Test(expected = IllegalStateException.class)
-  public void testComputeNextThrows() {
+  @Test(expected = IllegalStateException.class) public void testComputeNextThrows() {
     Iterator<Object> objectIterator = newIterator(() -> {
       throw new RuntimeException();
     });
     try {
       objectIterator.next();
-    } catch (RuntimeException ignored) {
-    }
+    } catch (RuntimeException ignored) {}
     objectIterator.next();
   }
 
-  @Test
-  public void testEndOfData() {
+  @Test public void testEndOfData() {
     Iterator<String> stopingIterator = new Iterators.Abstract<String>() {
       boolean secondTime = false;
 
-      @Override
-      protected String computeNext() {
+      @Override protected String computeNext() {
         if (!secondTime) {
           secondTime = true;
           return "first";
@@ -50,14 +45,12 @@ public class IteratorAbstractTest {
     assertThat(stopingIterator.hasNext(), is(false));
   }
 
-  @Test
-  public void testHasNext() {
+  @Test public void testHasNext() {
     Iterator<Integer> integerIterator = newIterator(() -> 1);
     assertThat(integerIterator.hasNext(), is(true));
   }
 
-  @Test
-  public void testNext() {
+  @Test public void testNext() {
     Iterator<Integer> integerIterator = newIterator(() -> 1);
     assertThat(integerIterator.next(), is(1));
   }

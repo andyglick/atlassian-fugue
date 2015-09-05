@@ -25,8 +25,7 @@ import static org.junit.Assert.assertThat;
 public class FunctionMapNullToOptionTest {
 
   @Test public void testLiftingNull() {
-    assertThat(Functions.mapNullToOption(FunctionMapNullToOptionTest.<String, String> nullProducer()).apply("ignored"),
-      is(Option.<String> none()));
+    assertThat(Functions.mapNullToOption(FunctionMapNullToOptionTest.<String, String> nullProducer()).apply("ignored"), is(Option.<String> none()));
   }
 
   @Test public void testLiftingNotNull() {

@@ -45,15 +45,14 @@ public class UtilityFunctions {
 
   public static Function<String, String> reverse = from -> new StringBuilder(from).reverse().toString();
 
-  public static BiFunction<String, Integer, Option<Character>> charAt = (s, i) -> s != null && i != null && i >= 0
-    && i < s.length() ? Option.some(s.charAt(i)) : Option.<Character> none();
+  public static BiFunction<String, Integer, Option<Character>> charAt = (s, i) -> s != null && i != null && i >= 0 && i < s.length() ? Option.some(s
+    .charAt(i)) : Option.<Character> none();
 
-  public static Function<Pair<String, Integer>, Option<String>> leftOfString = pair -> pair != null
-    && pair.left() != null && pair.right() != null && pair.right() >= 0 && pair.right() <= pair.left().length() ? Option
-    .some(pair.left().substring(0, pair.right())) : Option.<String> none();
+  public static Function<Pair<String, Integer>, Option<String>> leftOfString = pair -> pair != null && pair.left() != null && pair.right() != null
+    && pair.right() >= 0 && pair.right() <= pair.left().length() ? Option.some(pair.left().substring(0, pair.right())) : Option.<String> none();
 
-  public static Function<String, Function<Integer, Boolean>> hasMinLength = text -> min -> (text == null ? "" : text)
-    .length() >= (min == null ? 0 : min);
+  public static Function<String, Function<Integer, Boolean>> hasMinLength = text -> min -> (text == null ? "" : text).length() >= (min == null ? 0
+    : min);
 
   public static Function<Object, String> toStringFunction() {
     return Object::toString;

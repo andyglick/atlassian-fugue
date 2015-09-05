@@ -40,8 +40,7 @@ public class IteratorsTest {
     assertThat(integerIterator.hasNext(), is(false));
   }
 
-
-  @Test(expected=UnsupportedOperationException.class) public void iteratingTwiceFails() throws Exception {
+  @Test(expected = UnsupportedOperationException.class) public void iteratingTwiceFails() throws Exception {
     final Iterator<Integer> integerIterator = singletonIterator(1);
     assertThat(integerIterator.next(), is(1));
     assertThat(integerIterator.hasNext(), is(false));

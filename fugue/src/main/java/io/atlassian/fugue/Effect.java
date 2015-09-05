@@ -41,7 +41,7 @@ public interface Effect<A> extends Consumer<A> {
   default void accept(A a) {
     apply(a);
   }
-  
+
   /**
    * A thing upon which side-effects may be applied.
    * 

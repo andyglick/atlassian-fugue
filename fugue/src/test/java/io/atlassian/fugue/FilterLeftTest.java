@@ -28,15 +28,15 @@ import static org.junit.Assert.assertFalse;
 
 public class FilterLeftTest {
   @Test public void rightOnlyFiltersLeftToEmpty() {
-    final List<Either<Integer, String>> it = Arrays.asList(Either.<Integer, String> right("one"),
-      Either.<Integer, String> right("three"), Either.<Integer, String> right("2"));
+    final List<Either<Integer, String>> it = Arrays.asList(Either.<Integer, String> right("one"), Either.<Integer, String> right("three"),
+      Either.<Integer, String> right("2"));
 
     assertFalse(filterLeft(it).iterator().hasNext());
   }
 
   @Test public void leftOnlyFiltersLeftToSameContents() {
-    final List<Either<Integer, String>> it = Arrays.asList(Either.<Integer, String> left(1),
-      Either.<Integer, String> left(333), Either.<Integer, String> left(22));
+    final List<Either<Integer, String>> it = Arrays.asList(Either.<Integer, String> left(1), Either.<Integer, String> left(333),
+      Either.<Integer, String> left(22));
 
     final Iterator<Integer> lefts = filterLeft(it).iterator();
     for (Either<Integer, String> i : it) {
@@ -48,9 +48,8 @@ public class FilterLeftTest {
   }
 
   @Test public void mixedEithersFiltersLeftToExpectedContents() {
-    final List<Either<Integer, String>> it = Arrays.asList(Either.<Integer, String> left(1),
-      Either.<Integer, String> right("three"), Either.<Integer, String> right("fore"),
-      Either.<Integer, String> left(22));
+    final List<Either<Integer, String>> it = Arrays.asList(Either.<Integer, String> left(1), Either.<Integer, String> right("three"),
+      Either.<Integer, String> right("fore"), Either.<Integer, String> left(22));
 
     final Iterator<Integer> iterator = filterLeft(it).iterator();
     assertEquals(new Integer(1), iterator.next());
