@@ -24,7 +24,7 @@ import java.util.function.Consumer;
  * 
  * @since 1.0
  */
-public interface Effect<A> extends Consumer<A> {
+@FunctionalInterface public interface Effect<A> extends Consumer<A> {
   /**
    * Perform the side-effect.
    * 
@@ -47,7 +47,7 @@ public interface Effect<A> extends Consumer<A> {
    * 
    * @param <A> the type of thing to supply to the effect.
    */
-  interface Applicant<A> {
+  @FunctionalInterface interface Applicant<A> {
     /**
      * Perform the given side-effect for each contained element.
      * 
