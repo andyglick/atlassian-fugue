@@ -10,8 +10,8 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.atlassian.pom</groupId>
-        <artifactId>public-pom</artifactId>
-        <version>3.0.91</version>
+        <artifactId>central-pom</artifactId>
+        <version>4.0.3</version>
     </parent>
 
     <groupId>io.atlassian.fugue</groupId>
@@ -69,6 +69,14 @@
                 <groupId>net.revelc.code</groupId>
                 <artifactId>formatter-maven-plugin</artifactId>
                 <version>0.5.2</version>
+                <executions>
+                    <execution>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
                     <configFile>${project.basedir}/../src/etc/eclipse/formatter.xml</configFile>
                 </configuration>
@@ -88,12 +96,6 @@
                 <configuration>
                     <preserveDanglingCloseParenthesis>true</preserveDanglingCloseParenthesis>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-                <!-- needed for the distribution management below -->
-                <version>3.3</version>
             </plugin>
             <plugin>
                 <groupId>com.atlassian.maven.plugins</groupId>
