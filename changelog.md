@@ -24,6 +24,7 @@ This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 - Functions.forMap returns a function that performs a map lookup returning an Option
 - Functions.forMapWithDefault returns a function that performs a map lookup returning a default value when it fails
 - Suppliers.memoize and Suppliers.weakMemoize provide call-by-need evaluation strategies
+- Functional interface annotation to Effect interface
 
 ### Changed
 - The root package has change from com to io to facilitate compatibility with previous versions of Fugue. 
@@ -46,6 +47,7 @@ the same method taking a Supplier<A>. It will be removed in 4.0.
 - Iterables.transform exists to ease migration by reimplementing the guava equivalent
 
 ### Removed
+- Dependency on the Guava library.
 - Either.merge, Either.cond, Either.getOrThrow, Either.sequenceRight/Left were deprecated in 1.2. They are now removed.
 All of those methods were moved to the Eithers class.
 - All transitive dependencies have been removed from the fugue module. This include com.tlassian.util.concurrent, guava,q

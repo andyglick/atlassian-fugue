@@ -3,11 +3,9 @@
 ## Functional Extensions
 
 Java 8 along with the inclusion of functional interfaces standardised the basic function
-interfaces. Google's guava project is a solid utility library providing many useful
-interfaces and utilities, and it is a very commonly added dependency for most projects.
-Unfortunately, they have a strong NIH syndrome and are somewhat half-pregnant when it
-comes to functional-programming. This library attempts to round out some
-of the deficiencies that a functional programmer finds when using Java 8 or Guava.
+interfaces. Unfortunately, they have a strong NIH syndrome and are somewhat half-pregnant
+when it comes to functional-programming. This library attempts to round out some
+of the deficiencies that a functional programmer finds when using Java 8.
 
 In particular it provides Option and Either types as well as a Pair.
 
