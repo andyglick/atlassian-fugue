@@ -2,10 +2,9 @@
 
 ## Functional Extensions
 
-Java 8 along with the inclusion of functional interfaces standardised the basic function
-interfaces. Unfortunately, they have a strong NIH syndrome and are somewhat half-pregnant
-when it comes to functional-programming. This library attempts to round out some
-of the deficiencies that a functional programmer finds when using Java 8.
+Java 8 has standardised some of the basic function interfaces, but does not include quite a few more tools
+that a functional programmer may expect to be available. This library attempts to fill in some of the
+gaps when using Java 8.
 
 In particular it provides Option and Either types as well as a Pair.
 
