@@ -2,69 +2,49 @@
 
 ## Functional Extensions
 
-Google's guava project is a solid utility library providing many useful interfaces
-and utilities, and it is a very commonly added dependency for most projects.
-Unfortunately, they have a strong NIH syndrome and are somewhat half-pregnant
-when it comes to functional-programming. This library attempts to round out some 
-of the deficiencies that a functional programmer finds when using Guava.
+Java 8 has standardised some of the basic function interfaces, but does not include quite a few more tools
+that a functional programmer may expect to be available. This library attempts to fill in some of the
+gaps when using Java 8.
 
-In particular it provides Option and Either types similar to the Scala library
-as well as a Pair.
+In particular it provides Option and Either types as well as a Pair.
 
-There also additional helper classes for common Function and Supplier operations.
+There also additional helper classes for common Function, Supplier, and Iterable operations.
 
 ## Issue Tracking
 
 Issues are tracked in the [fugue](https://bitbucket.org/atlassian/fugue/issues) project on bitbucket.
 
+## Change log
+
+Changes are documented in `changelog.md`. 
+
 ## Getting fugue
 
-Add the Atlassian public repository:
-
-    <repositories>
-        ...
-        <repository>
-          <id>atlassian-public</id>
-          <url>https://maven.atlassian.com/content/groups/public/</url>
-        </repository>
-        ...
-    </repositories>
-
-And then add fugue as a dependency to your pom.xml:
+Add fugue as a dependency to your pom.xml:
 
     <dependencies>
         ...
         <dependency>
             <groupId>io.atlassian.fugue</groupId>
             <artifactId>fugue</artifactId>
-            <version>2.6.0</version>
+            <version>3.0.0</version>
         </dependency>
         ...
     </dependencies>
     
-If you are using Gradle, add a new repository to your `repositories` section:
+For Gradle add fugue as a dependency to your `dependencies` section:
 
-    repositories {
-        maven {
-            url "https://maven.atlassian.com/content/groups/public/"
-        }
-    }
-    
-And then add fugue as a dependency to your `dependencies` section:
-
-    compile 'io.atlassian.fugue:fugue:2.6.0'
+    compile 'io.atlassian.fugue:fugue:3.0.0'
 
 ## Guava compatibility
 
-This library mostly only depends on core Guava functionality and should be compatible with
-very old versions of Guava, and certainly with the newest versions. However, the tests may 
-rely on API that is only available in later versions (at the time of writing a minimum of 
-14.0 was needed to run the tests).
+In the past Guava was a core dependency. That dependency has been removed in favor of a new module
+`fugue-guava`. Code requiring direct interaction with Guava types can be found there.
 
-## Scala Integration
+## Scala integration
 
-From 2.2 there is a fugue-scala module that adds some helper methods in Scala to convert common 
-Fugue and Guava classes into their Scala equivalents and vice-versa. For instance, to convert a 
+From 2.2 there is a `fugue-scala` module that adds some helper methods in Scala to convert common 
+Fugue and Guava classes into their Scala equivalents and vice-versa. For instance, to convert a
 scala function `f` to a Java `Function<A, B>` there is syntax `.toJava` available and to go the
 other way you can use `.toScala`.
 
@@ -80,7 +60,11 @@ rules in:
     src/etc/eclipse/formatter.xml
 
 This can be applied by running maven-formatter-plugin for Java and maven-scalariform-plugin for
-Scala
+Scala:
 
     mvn formatter:format
     mvn scalariform:format
+
+Source code should must be accompanied by a tests covering new functionality. Run tests with:
+
+    mvn verify

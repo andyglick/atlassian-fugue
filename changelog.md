@@ -1,9 +1,9 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-This project attempts to adheres to [Semantic Versioning](http://semver.org/).
+This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 
-## [3.0.0] - [unreleased]
+## [3.0.0]
 ### Added
 - Added getOr(Supplier<A>) to the Maybe interface as a replacement for the now deprecated getOrElse(Supplier<A>).
 - Iterables.size returning the size of the input iterable (generally in O(n))
@@ -24,6 +24,7 @@ This project attempts to adheres to [Semantic Versioning](http://semver.org/).
 - Functions.forMap returns a function that performs a map lookup returning an Option
 - Functions.forMapWithDefault returns a function that performs a map lookup returning a default value when it fails
 - Suppliers.memoize and Suppliers.weakMemoize provide call-by-need evaluation strategies
+- Functional interface annotation to Effect interface
 
 ### Changed
 - The root package has change from com to io to facilitate compatibility with previous versions of Fugue. 
@@ -46,6 +47,7 @@ the same method taking a Supplier<A>. It will be removed in 4.0.
 - Iterables.transform exists to ease migration by reimplementing the guava equivalent
 
 ### Removed
+- Dependency on the Guava library.
 - Either.merge, Either.cond, Either.getOrThrow, Either.sequenceRight/Left were deprecated in 1.2. They are now removed.
 All of those methods were moved to the Eithers class.
 - All transitive dependencies have been removed from the fugue module. This include com.tlassian.util.concurrent, guava,q
