@@ -54,6 +54,18 @@ And then add fugue as a dependency to your `dependencies` section:
 
     compile 'com.atlassian.fugue:fugue:2.6.0'
 
+## Building fugue
+
+To build and install to local Maven repo, run from project root folder:
+
+    $ mvn clean install
+
+To generate javadocs:
+
+    $ mvn clean install javadoc:javadoc
+
+This will generate javadocs for each project module in ```<module-dir>/target/site/apidocs/```.
+
 ## Guava compatibility
 
 This library mostly only depends on core Guava functionality and should be compatible with
