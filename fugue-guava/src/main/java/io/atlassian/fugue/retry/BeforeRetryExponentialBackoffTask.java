@@ -19,14 +19,19 @@ package io.atlassian.fugue.retry;
  * A backoff task for use in a retry -function, -supplier, or -task. This should
  * be used as the beforeRetry hook. Upon each execution, the amount of time to
  * wait before retrying the function call is doubled.
- * 
+ *
  * This class maintains an internal state; we recommend creating a new instance
  * for each use.
+ *
  */
 public class BeforeRetryExponentialBackoffTask implements Runnable {
   private long backoff;
 
   /**
+   * <p>
+   * Constructor for BeforeRetryExponentialBackoffTask.
+   * </p>
+   *
    * @param backoffMillis the amount of time to wait, in milliseconds before
    * retrying the first time. This is doubled for each subsequent retry. This
    * parameter must be above zero.

@@ -23,9 +23,9 @@ import static com.google.common.base.Throwables.propagateIfPossible;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Static utility methods pertaining to instances of {@link Throwable} not
- * provided by Guava.
- * 
+ * Static utility methods pertaining to instances of {@link java.lang.Throwable}
+ * not provided by Guava.
+ *
  * @since 1.2
  * @deprecated since 2.4, no need in Java7 with closeWithResources and
  * multi-catch
@@ -33,14 +33,14 @@ import static java.util.Objects.requireNonNull;
 @Deprecated public final class Throwables {
   /**
    * Propagates {@code throwable} as-is if it is an instance of
-   * {@link RuntimeException} or {@link Error}, or else as a last resort, wraps
-   * it in a {@code RuntimeException} provided by the function and then
-   * propagates.
+   * {@link java.lang.RuntimeException} or {@link java.lang.Error}, or else as a
+   * last resort, wraps it in a {@code RuntimeException} provided by the
+   * function and then propagates.
    * <p>
    * This method always throws an exception. The {@code RuntimeException} return
    * type is only for client code to make Java type system happy in case a
    * return value is required by the enclosing method. Example usage:
-   * 
+   *
    * <pre>
    * T doSomething() {
    *   try {
@@ -56,9 +56,7 @@ import static java.util.Objects.requireNonNull;
    *   }
    * }
    * </pre>
-   * 
-   * @param <R> the type of the Throwable to propagate, must be a
-   * RuntimeException
+   *
    * @param throwable the Throwable to propagate
    * @param function the function to transform the throwable into a runtime
    * exception
@@ -74,9 +72,9 @@ import static java.util.Objects.requireNonNull;
 
   /**
    * Propagates {@code throwable} as-is if it is an instance of
-   * {@link RuntimeException} or {@link Error}, or else as a last resort, wraps
-   * it in the {@code RuntimeException} specified by the {@code runtimeType}
-   * parameter provided and then propagates.
+   * {@link java.lang.RuntimeException} or {@link java.lang.Error}, or else as a
+   * last resort, wraps it in the {@code RuntimeException} specified by the
+   * {@code runtimeType} parameter provided and then propagates.
    * <p>
    * This method always throws an exception. The {@code RuntimeException} return
    * type is only for client code to make Java type system happy in case a
@@ -91,9 +89,9 @@ import static java.util.Objects.requireNonNull;
    * exception match those criteria, you might want to look at using
    * {@link #propagate(Throwable, Function)}.
    * <p>
-   * 
+   *
    * Example usage:
-   * 
+   *
    * <pre>
    * T doSomething() {
    *   try {
@@ -105,9 +103,7 @@ import static java.util.Objects.requireNonNull;
    *   }
    * }
    * </pre>
-   * 
-   * @param <R> the type of the Throwable to propagate, must be a
-   * RuntimeException
+   *
    * @param throwable the Throwable to propagate
    * @param runtimeType the type of exception to use.
    * @return nothing will ever be returned; this return type is only for your

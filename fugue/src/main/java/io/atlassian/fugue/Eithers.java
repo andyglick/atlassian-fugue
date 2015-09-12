@@ -28,7 +28,7 @@ import static io.atlassian.fugue.Suppliers.ofInstance;
 
 /**
  * Utility functions for Eithers.
- * 
+ *
  * @since 1.2
  */
 public class Eithers {
@@ -43,7 +43,7 @@ public class Eithers {
    * Extracts an object from an Either, regardless of the side in which it is
    * stored, provided both sides contain the same type. This method will never
    * return null.
-   * 
+   *
    * @param <T> the type for both the LHS and the RHS
    * @param either use whichever side holds the value to return
    * @return the value from whichever side holds it
@@ -59,7 +59,7 @@ public class Eithers {
    * Creates an Either based on a boolean expression. If predicate is true, a
    * Right will be returned containing the supplied right value; if it is false,
    * a Left will be returned containing the supplied left value.
-   * 
+   *
    * @param <L> the LHS type
    * @param <R> the RHS type
    * @param predicate if predicate is true, a Right will be returned if it is
@@ -75,8 +75,7 @@ public class Eithers {
   /**
    * Simplifies extracting a value or throwing a checked exception from an
    * Either.
-   * 
-   * @param <X> the exception type
+   *
    * @param <A> the value type
    * @param either to extract from
    * @return the value from the RHS
@@ -91,7 +90,7 @@ public class Eithers {
 
   /**
    * A predicate that tests if the supplied either is a left.
-   * 
+   *
    * @param <L> the LHS type
    * @param <R> the RHS type
    * @return the predicate testing left-hand-sidedness
@@ -102,7 +101,7 @@ public class Eithers {
 
   /**
    * A predicate that tests if the supplied either is a right.
-   * 
+   *
    * @param <L> the LHS type
    * @param <R> the RHS type
    * @return the predicate testing right-hand-sidedness
@@ -113,9 +112,10 @@ public class Eithers {
 
   /**
    * A function that maps an either to an option of its left type. The Function
-   * will return a defined {@link Option} containing the either's left value if
-   * {Either#isLeft()} is true, an undefined {@link Option} otherwise.
-   * 
+   * will return a defined {@link io.atlassian.fugue.Option} containing the
+   * either's left value if {Either#isLeft()} is true, an undefined
+   * {@link io.atlassian.fugue.Option} otherwise.
+   *
    * @param <L> the LHS type
    * @param <R> the RHS type
    * @return the function returning a defined option for left-hand-sided eithers
@@ -126,9 +126,10 @@ public class Eithers {
 
   /**
    * A function that maps an either to an option of its right type. The Function
-   * will return a defined {@link Option} containing the either's right value if
-   * {Either#isRight()} is true, an undefined {@link Option} otherwise.
-   * 
+   * will return a defined {@link io.atlassian.fugue.Option} containing the
+   * either's right value if {Either#isRight()} is true, an undefined
+   * {@link io.atlassian.fugue.Option} otherwise.
+   *
    * @param <L> the LHS type
    * @param <R> the RHS type
    * @return the function returning a defined option for right-hand-sided
@@ -138,38 +139,116 @@ public class Eithers {
     return either -> either.right().toOption();
   }
 
+  /**
+   * Function to convert from an value to a
+   * {@link io.atlassian.fugue.Either.Left} containing that value.
+   *
+   * @param <L> left type.
+   * @param <R> right type.
+   * @return a {@link java.util.function.Function} returning a
+   * {@link io.atlassian.fugue.Either.Left}.
+   */
   public static <L, R> Function<L, Either<L, R>> toLeft() {
     return Either::left;
   }
 
-  // allows static import
+  /**
+   * Function to convert from a value to a
+   * {@link io.atlassian.fugue.Either.Left} containing that value. Allows
+   * hinting the correct types.
+   *
+   * @param leftType expected left type.
+   * @param rightType expected right type.
+   * @param <L> left type.
+   * @param <R> right type.
+   * @return a {@link java.util.function.Function} returning a
+   * {@link io.atlassian.fugue.Either.Left}.
+   */
   public static <L, R> Function<L, Either<L, R>> toLeft(final Class<L> leftType, final Class<R> rightType) {
     return Eithers.toLeft();
   }
 
+  /**
+   * Supplier returning a {@link io.atlassian.fugue.Either.Left}.
+   *
+   * @param l value to return inside the left.
+   * @param <L> left type.
+   * @param <R> right type.
+   * @return a {@link java.util.function.Supplier} returning a
+   * {@link io.atlassian.fugue.Either.Left}..
+   */
   public static <L, R> Supplier<Either<L, R>> toLeft(final L l) {
     return compose(Eithers.<L, R> toLeft(), ofInstance(l));
   }
 
-  // allows static import
+  /**
+   * Supplier returning a {@link io.atlassian.fugue.Either.Left}. Allows hinting
+   * the correct right type.
+   *
+   * @param l value to return inside the left.
+   * @param rightType type hint for the right type of the either.
+   * @param <L> left type.
+   * @param <R> right type.
+   * @return a {@link java.util.function.Supplier} returning a
+   * {@link io.atlassian.fugue.Either.Left}.
+   */
   public static <L, R> Supplier<Either<L, R>> toLeft(final L l, final Class<R> rightType) {
     return Eithers.toLeft(l);
   }
 
+  /**
+   * Function to convert from an value to a
+   * {@link io.atlassian.fugue.Either.Right}. Allows hinting the correct types.
+   *
+   * @param <L> left type.
+   * @param <R> right type.
+   * @return a {@link java.util.function.Function} returning a
+   * {@link io.atlassian.fugue.Either.Right}.
+   */
   public static <L, R> Function<R, Either<L, R>> toRight() {
     return Either::right;
   }
 
-  // allows static import
+  /**
+   * Function to convert from a value to a
+   * {@link io.atlassian.fugue.Either.Right} containing that value. Allows
+   * hinting the correct types.
+   *
+   * @param leftType expected left type.
+   * @param rightType expected right type.
+   * @param <L> left type.
+   * @param <R> right type.
+   * @return a {@link java.util.function.Function} returning a
+   * {@link io.atlassian.fugue.Either.Right}.
+   */
   public static <L, R> Function<R, Either<L, R>> toRight(final Class<L> leftType, final Class<R> rightType) {
     return Eithers.toRight();
   }
 
+  /**
+   * Supplier returning a {@link io.atlassian.fugue.Either.Right}.
+   *
+   * @param r value to return inside the right.
+   * @param <L> left type.
+   * @param <R> right type.
+   * @return a {@link java.util.function.Supplier} returning a
+   * {@link io.atlassian.fugue.Either.Right}..
+   */
   public static <L, R> Supplier<Either<L, R>> toRight(final R r) {
     return compose(Eithers.<L, R> toRight(), ofInstance(r));
   }
 
-  // allows static import
+  /**
+   * Supplier returning a {@link io.atlassian.fugue.Either.Right}. Allows
+   * hinting the correct right type.
+   *
+   * @param r value to return inside the right.
+   * @param leftType type hint for the left type of the either.
+   * @param <L> left type.
+   * @param <R> right type.
+   * @return a {@link java.util.function.Supplier} returning a
+   * {@link io.atlassian.fugue.Either.Right}.
+   */
   public static <L, R> Supplier<Either<L, R>> toRight(final Class<L> leftType, final R r) {
     return Eithers.toRight(r);
   }
@@ -177,10 +256,9 @@ public class Eithers {
   /**
    * Upcasts an {@link Either either} of left type L to an either of left type
    * LL, which is a super type of L, keeping the right type unchanged.
-   * 
+   *
    * @param e the source either
    * @param <LL> the super type of the contained left type
-   * @param <L> the contained left type
    * @param <R> the contained right type
    * @return an either of left type LL and right type R
    * @since 2.0
@@ -192,11 +270,10 @@ public class Eithers {
   /**
    * Upcasts an {@link Either either} of right type R to an either of right type
    * RR, which is a super type of R, keeping the left type unchanged.
-   * 
+   *
    * @param e the source either
    * @param <L> the contained left type
    * @param <RR> the super type of the contained right type
-   * @param <R> the contained right type
    * @return an either of left type L and right type RR
    * @since 2.0
    */
@@ -205,8 +282,8 @@ public class Eithers {
   }
 
   /**
-   * Takes an {@link Iterable} of {@link Either eithers}, and collects the left
-   * values of every either which has a left value
+   * Takes an {@link java.lang.Iterable} of {@link Either eithers}, and collects
+   * the left values of every either which has a left value
    *
    * @param <L> the LHS type
    * @param <R> the RHS type
@@ -218,8 +295,8 @@ public class Eithers {
   }
 
   /**
-   * Takes an {@link Iterable} of {@link Either eithers}, and collects the right
-   * values of every either which has a left value
+   * Takes an {@link java.lang.Iterable} of {@link Either eithers}, and collects
+   * the right values of every either which has a left value
    *
    * @param <L> the LHS type
    * @param <R> the RHS type

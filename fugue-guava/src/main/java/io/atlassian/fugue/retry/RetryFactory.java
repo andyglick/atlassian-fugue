@@ -22,8 +22,9 @@ import java.util.function.Supplier;
  * Provides factory methods for RetryFunction, RetryTask, and RetrySupplier.
  * These classes can be used when a task is known to fail on occasion and no
  * other workaround is known.
- * 
+ *
  * This class is not instantiable.
+ *
  */
 public class RetryFactory {
   private RetryFactory() {
@@ -33,7 +34,7 @@ public class RetryFactory {
   /**
    * Decorates a runnable so that it retries a number of times before being
    * allowed to fail.
-   * 
+   *
    * @param task which will be wrapped for retrial. It should be idempotent on
    * failure.
    * @param tries the number of times to re-attempt the call
@@ -47,7 +48,7 @@ public class RetryFactory {
   /**
    * Decorates a runnable so that it retries a number of times before being
    * allowed to fail.
-   * 
+   *
    * @param task which will be wrapped for retrial. It should be idempotent on
    * failure.
    * @param tries the number of times to re-attempt the call
@@ -62,7 +63,7 @@ public class RetryFactory {
   /**
    * Decorates a runnable so that it retries a number of times before being
    * allowed to fail, backing off exponentially in time.
-   * 
+   *
    * @param task which will be wrapped for retrial. It should be idempotent on
    * failure.
    * @param tries the number of times to re-attempt the call
@@ -78,7 +79,7 @@ public class RetryFactory {
   /**
    * Decorates a supplier so that it retries a number of times before being
    * allowed to fail.
-   * 
+   *
    * @param supplier which will be wrapped for retrial. It should be idempotent
    * on failure.
    * @param tries the number of times to re-attempt the call
@@ -93,7 +94,7 @@ public class RetryFactory {
   /**
    * Decorates a supplier so that it retries a number of times before being
    * allowed to fail.
-   * 
+   *
    * @param supplier which will be wrapped for retrial. It should be idempotent
    * on failure.
    * @param tries the number of times to re-attempt the call
@@ -109,7 +110,7 @@ public class RetryFactory {
   /**
    * Decorates a supplier so that it retries a number of times before being
    * allowed to fail, backing-off in time exponentially.
-   * 
+   *
    * @param <A> The type of the object returned by supplier
    * @param supplier which will be wrapped for retrial. It should be idempotent
    * on failure.
@@ -126,7 +127,7 @@ public class RetryFactory {
   /**
    * Decorates a function so that it retries a number of times before being
    * allowed to fail.
-   * 
+   *
    * @param <A> the type of the parameter the function accepts
    * @param <B> the type of the result of the function's apply method
    * @param function which will be wrapped for retrial. It should be idempotent
@@ -142,7 +143,7 @@ public class RetryFactory {
   /**
    * Decorates a function so that it retries a number of times before being
    * allowed to fail.
-   * 
+   *
    * @param <A> the type of the parameter the function accepts
    * @param <B> the type of the result of the function's apply method
    * @param function which will be wrapped for retrial. It should be idempotent
@@ -159,7 +160,7 @@ public class RetryFactory {
   /**
    * Decorates a function so that it retries a number of times before being
    * allowed to fail.
-   * 
+   *
    * @param function which will be wrapped for retrial. It should be idempotent
    * on failure.
    * @param tries the number of times to re-attempt the call

@@ -22,8 +22,9 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Provides some standard implementations of various exception actions.
- * 
+ *
  * This class is not instantiable.
+ *
  */
 public class ExceptionHandlers {
   private static final Logger log = LoggerFactory.getLogger(ExceptionHandlers.class);
@@ -33,20 +34,26 @@ public class ExceptionHandlers {
   }
 
   /**
-   * Retrieves an {@link ExceptionHandler} which will log exceptions passed in.
-   * 
+   * Retrieves an {@link io.atlassian.fugue.retry.ExceptionHandler} which will
+   * log exceptions passed in.
+   *
    * @param logger the Logger to which exceptions will be logged; if it is null,
    * a default Logger will be used. The default logger is the logger for the
    * ExceptionHandlers class, but may change in future.
-   * @return an {@link ExceptionHandler} which will log (at WARN level)
-   * exceptions passed in
+   * @return an {@link io.atlassian.fugue.retry.ExceptionHandler} which will log
+   * (at WARN level) exceptions passed in
    */
   public static ExceptionHandler loggingExceptionHandler(Logger logger) {
     return new LoggingExceptionHandler(logger == null ? log : logger);
   }
 
   /**
-   * @return an {@link ExceptionHandler} which does nothing
+   * <p>
+   * ignoreExceptionHandler.
+   * </p>
+   *
+   * @return an {@link io.atlassian.fugue.retry.ExceptionHandler} which does
+   * nothing
    */
   public static ExceptionHandler ignoreExceptionHandler() {
     return new IgnoreExceptionHandler();
@@ -55,7 +62,7 @@ public class ExceptionHandlers {
   /**
    * Chain a series of ExceptionHandlers together to be executed subsequently;
    * if one throws an exception, subsequent handlers will not be executed.
-   * 
+   *
    * @param handlers the chain of {@link ExceptionHandler handlers} to chain
    * @return an ExceptionHandler composing the supplied handlers
    */

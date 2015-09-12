@@ -25,7 +25,7 @@ import static java.util.Objects.requireNonNull;
  * A Function which wraps the apply method of another Function and attempts it
  * up to a fixed number of times. This class can be used when a task is known to
  * be prone to occasional failure and other workarounds are not known.
- * 
+ *
  * @param <F> The type of the parameter the Function accepts
  * @param <T> The type of the result the Function yields upon application
  * @see RetrySupplier for a Supplier implementation
@@ -41,7 +41,7 @@ public class RetryFunction<F, T> implements Function<F, T> {
   /**
    * An instance that does nothing before retrying and ignores exceptions that
    * occur.
-   * 
+   *
    * @param function which fetches the result, must not be null
    * @param tries the numbe rof times to attempt to get a result, must be
    * positive
@@ -52,7 +52,7 @@ public class RetryFunction<F, T> implements Function<F, T> {
 
   /**
    * An instance that does nothing before retrying.
-   * 
+   *
    * @param function which fetches the result, must not be null
    * @param tries the number of times to attempt to get a result, must be
    * positive
@@ -64,6 +64,10 @@ public class RetryFunction<F, T> implements Function<F, T> {
   }
 
   /**
+   * <p>
+   * Constructor for RetryFunction.
+   * </p>
+   *
    * @param function which fetches the result, must not be null
    * @param tries the number of times to attempt to get a result, must be
    * positive
@@ -83,12 +87,12 @@ public class RetryFunction<F, T> implements Function<F, T> {
   }
 
   /**
+   * {@inheritDoc}
+   *
    * Attempt to apply <i>parameter</i> to the wrapped Function <i>tries</i>
    * number of times. Any exceptions thrown will be ignored until the number of
    * attempts is reached. If the number of attempts is reached without a
    * successful result, the most recent exception to be thrown will be rethrown.
-   * 
-   * @return the result of the wrapped Function's get method
    */
   @Override public T apply(F parameter) {
     return new RetrySupplier<>(Suppliers.compose(function, Suppliers.ofInstance(parameter)), tries, handler, beforeRetry).get();

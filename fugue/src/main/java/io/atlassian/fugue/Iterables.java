@@ -126,13 +126,13 @@ public class Iterables {
   /**
    * Partial application of the predicate argument to
    * {@link #findFirst(Iterable, Predicate)} returning a function that takes an
-   * {@link Iterable} as its argument
+   * {@link java.lang.Iterable} as its argument
    *
    * @param <A> the type
    * @param predicate the predicate to use to determine if an element is
    * eligible to be returned
-   * @return a Function that takes an {@link Iterable} as its argument, and
-   * returns the first element that satisfies the predicate
+   * @return a Function that takes an {@link java.lang.Iterable} as its
+   * argument, and returns the first element that satisfies the predicate
    * @since 2.2
    */
   public static <A> Function<Iterable<A>, Option<A>> findFirst(final Predicate<? super A> predicate) {
@@ -325,7 +325,6 @@ public class Iterables {
    * @param bs right values
    * @return an {@link Iterable iterable} of pairs, only as long as the shortest
    * input iterable.
-   *
    * @since 1.2
    */
   public static <A, B> Iterable<Pair<A, B>> zip(final Iterable<A> as, final Iterable<B> bs) {
@@ -666,7 +665,6 @@ public class Iterables {
    * @param as iterable to compute the size of
    * @param <A> element type
    * @return number of elements in the iterable
-   *
    * @since 3.0
    */
   public static <A> int size(final Iterable<A> as) {
@@ -747,7 +745,6 @@ public class Iterables {
    * @param <A> element type
    * @return new iterable containing only those elements for which p#test
    * returns true
-   *
    * @since 3.0
    */
   public static <A> Iterable<A> filter(final Iterable<A> as, final Predicate<? super A> p) {
@@ -794,7 +791,6 @@ public class Iterables {
    * @param <A> element type
    * @return single level iterable with all the elements of the original
    * iterables
-   *
    * @since 3.0
    */
   public static <A> Iterable<A> join(final Iterable<? extends Iterable<? extends A>> ias) {
@@ -841,7 +837,6 @@ public class Iterables {
    * @param as any number of iterables containing A
    * @param <A> super type of contained by all input iterables
    * @return new iterable containing all the elements of the input iterables
-   *
    * @since 3.0
    */
   @SafeVarargs public static <A> Iterable<A> concat(final Iterable<? extends A>... as) {
@@ -989,7 +984,6 @@ public class Iterables {
    * Merge a number of already sorted collections of elements into a single
    * collection of elements, using the elements natural ordering.
    *
-   * @param <A> type of the elements
    * @param xss collection of already sorted collections, must not be null and
    * must not return null
    * @return {@code xss} merged in a sorted order
@@ -1021,7 +1015,6 @@ public class Iterables {
    * @param elementsToAdd source of addtional elements
    * @param <A> element type
    * @return true if the collectionToModify was changed
-   *
    * @since 3.0
    */
   @SuppressWarnings("unchecked") public static <A> boolean addAll(final Collection<A> collectionToModify, final Iterable<? extends A> elementsToAdd) {
@@ -1088,7 +1081,6 @@ public class Iterables {
    * @param as input values to cycle through
    * @param <A> returned elements
    * @return an infinite iterable containing the original elements
-   *
    * @since 3.0
    */
   @SafeVarargs public static <A> Iterable<A> cycle(final A... as) {
@@ -1107,7 +1099,6 @@ public class Iterables {
    * @param as input values to cycle through must not be null
    * @param <A> returned elements
    * @return an infinite iterable containing the original elements
-   *
    * @since 3.0
    */
   public static <A> Iterable<A> cycle(final Iterable<? extends A> as) {
@@ -1162,7 +1153,6 @@ public class Iterables {
    * @param maxLength limit the length of the resulting string
    * @param <A> type of the elements in the iterable
    * @return a pretty printed copy of the input iterable
-   *
    * @since 3.0
    */
   public static <A> String makeString(final Iterable<? extends A> as, final String start, final String sep, final String end, final int maxLength) {
@@ -1205,7 +1195,6 @@ public class Iterables {
    * @return a pretty printed copy of the input iterable
    * @see #makeString(Iterable, String, String, String, int) pretty print
    * iterable with a custom length
-   *
    * @since 3.0
    */
   public static <A> String makeString(final Iterable<? extends A> as, final String start, final String sep, final String end) {

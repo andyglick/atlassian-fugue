@@ -36,7 +36,8 @@ import static io.atlassian.fugue.Option.option;
  * Utility methods for Functions
  * <P>
  * Note that this class defines Partial Functions to be functions that return an
- * {@link Option} of the result type, and has some methods for creating them.
+ * {@link io.atlassian.fugue.Option} of the result type, and has some methods
+ * for creating them.
  *
  * @since 1.1
  */
@@ -108,9 +109,7 @@ public class Functions {
    * @param zero the starting point for the function
    * @param elements the series of which each element will be accumulated into a
    * result
-   *
    * @return the result of accumulating the application of f to all elements
-   *
    * @since 1.1
    */
   public static <F, T> T fold(final BiFunction<? super T, F, T> f, final T zero, final Iterable<? extends F> elements) {
@@ -128,14 +127,11 @@ public class Functions {
    *
    * @param <F> the element type
    * @param <S> the accumulator function input type
-   * @param <T> the final result type
    * @param f the function to apply to all elements
    * @param zero the starting point for the function
    * @param elements the series of which each element will be accumulated into a
    * result
-   *
    * @return the result of accumulating the application of f to all elements
-   *
    * @since 1.1
    */
   public static <F, S, T extends S> T fold(final Function<Pair<S, F>, T> f, final T zero, final Iterable<? extends F> elements) {
@@ -150,7 +146,6 @@ public class Functions {
    * @param arg the argument that will be applied to any input functions
    * @return a function that takes a function from A to B , applies the arg and
    * returns the result
-   *
    * @since 1.1
    */
   public static <A, B> Function<Function<A, B>, B> apply(final A arg) {
@@ -175,7 +170,6 @@ public class Functions {
    * @param <B> the result type of the function
    * @return a function that takes a function from A to B, applies the argument
    * from the supplier and returns the result
-   *
    * @since 2.0
    */
   public static <A, B> Function<Function<A, B>, B> apply(final Supplier<A> lazyA) {
@@ -228,7 +222,8 @@ public class Functions {
   }
 
   /**
-   * Create a PartialFunction from a {@link Predicate} and a {@link Function}.
+   * Create a PartialFunction from a {@link java.util.function.Predicate} and a
+   * {@link java.util.function.Function}.
    *
    * @param <A> the input type
    * @param <B> the output type
@@ -279,7 +274,6 @@ public class Functions {
    * @return a PartialFunction that flatMaps g on to the result of applying f.
    * @since 1.2
    */
-
   public static <A, B, C> Function<A, Option<C>> composeOption(final Function<? super B, ? extends Option<? extends C>> bc,
     final Function<? super A, ? extends Option<? extends B>> ab) {
     return new PartialComposer<>(ab, bc);
@@ -448,7 +442,6 @@ public class Functions {
    * @param f the function who's output will be memoized, must not be null
    * @return a function that memoizes the results of the function using the
    * input as a weak key
-   *
    * @since 2.2
    */
   public static <A, B> Function<A, B> weakMemoize(final Function<A, B> f) {
@@ -490,7 +483,9 @@ public class Functions {
   }
 
   /**
-   * Returns the identity function.
+   * Returns the identity function. Consider using {@link Function#identity()}
+   *
+   * @return a {@link java.util.function.Function} that retruns it's input.
    */
   @SuppressWarnings("unchecked") public static <A> Function<A, A> identity() {
     // cast a singleton Function<Object, Object> to a more useful type
@@ -527,7 +522,7 @@ public class Functions {
    *
    * If you do not need a nondefaulted return result using a method reference is
    * preferred {@literal map::get}
-   * 
+   *
    * @param map map to use for lookup
    * @param <A> map key type
    * @param <B> map value type
@@ -544,12 +539,13 @@ public class Functions {
    *
    * If you do not need a defaulted return result using a method reference is
    * preferred {@literal map::get}
-   * 
+   *
    * @param map map to use for lookup
    * @param <A> map key type
    * @param <B> map value type
    * @return result of calling Map#get returning defaultValue instead if the
    * result was null
+   * @param defaultValue a B to use when the map returns null from Map#get.
    */
   public static <A, B> Function<A, B> forMapWithDefault(final Map<A, B> map, final B defaultValue) {
     return forMap(map).andThen(o -> o.getOrElse(defaultValue));

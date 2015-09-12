@@ -23,7 +23,7 @@ import static java.util.Objects.requireNonNull;
  * A Supplier which wraps the apply method of another Supplier and attempts it
  * up to a fixed number of times. This class can be used when a task is known to
  * be prone to occasional failure and other workarounds are not known.
- * 
+ *
  * @param <T> The type of the result the Supplier yields upon application
  * @see RetryFunction for a Function implementation
  * @see RetryFactory for some factory methods
@@ -38,7 +38,7 @@ public class RetrySupplier<T> implements Supplier<T> {
   /**
    * An instance that does nothing before retrying and ignores exceptions that
    * occur.
-   * 
+   *
    * @param supplier which fetches the result, must not be null
    * @param tries the number of times to attempt to get a result, must be
    * positive
@@ -49,7 +49,7 @@ public class RetrySupplier<T> implements Supplier<T> {
 
   /**
    * An instance that does nothing before retrying.
-   * 
+   *
    * @param supplier which fetches the result, must not be null
    * @param tries the number of times to attempt to get a result, must be
    * positive
@@ -61,6 +61,10 @@ public class RetrySupplier<T> implements Supplier<T> {
   }
 
   /**
+   * <p>
+   * Constructor for RetrySupplier.
+   * </p>
+   *
    * @param supplier which fetches the result, must not be null
    * @param tries the number of times to attempt to get a result, must be
    * positive
@@ -82,12 +86,12 @@ public class RetrySupplier<T> implements Supplier<T> {
   }
 
   /**
+   * {@inheritDoc}
+   *
    * Attempt to get a result <i>tries</i> number of times. Any exceptions thrown
    * will be ignored until the number of attempts is reached. If the number of
    * attempts is reached without a successful result, the most recent exception
    * to be thrown will be rethrown.
-   * 
-   * @return the result of the wrapped Supplier's get method
    */
   @Override public T get() {
     RuntimeException ex = null;

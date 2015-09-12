@@ -151,10 +151,9 @@ class Iterators {
 
   /**
    * Iterator with no values inside
-   * 
+   *
    * @param <A> element type
    * @return empty iterator
-   *
    * @since 3.0
    */
   @SuppressWarnings("unchecked") public static <A> Iterator<A> emptyIterator() {

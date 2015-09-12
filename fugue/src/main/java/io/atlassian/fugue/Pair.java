@@ -23,7 +23,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Represents a pair of objects.
- * 
+ *
  * @since 1.0
  */
 public final class Pair<A, B> implements Serializable {
@@ -33,7 +33,7 @@ public final class Pair<A, B> implements Serializable {
 
   /**
    * Factory method for static Pair growth.
-   * 
+   *
    * @param <A> the left value type
    * @param <B> the right value type
    * @param left value, cannot be null
@@ -46,7 +46,7 @@ public final class Pair<A, B> implements Serializable {
 
   /**
    * Factory method for a Pair factory function.
-   * 
+   *
    * @param <A> the left value type
    * @param <B> the right value type
    * @return a function that constructs Pairs
@@ -57,9 +57,10 @@ public final class Pair<A, B> implements Serializable {
 
   /**
    * Function for accessing the left value of {@link Pair pairs}.
-   * 
+   *
    * @param <A> the left value type
-   * @return a Function that given a {@link Pair} returns the left side value
+   * @return a Function that given a {@link io.atlassian.fugue.Pair} returns the
+   * left side value
    * @since 1.1
    */
   public static <A> Function<Pair<A, ?>, A> leftValue() {
@@ -68,9 +69,10 @@ public final class Pair<A, B> implements Serializable {
 
   /**
    * Function for accessing the right value of {@link Pair pairs}.
-   * 
+   *
    * @param <B> the right value type
-   * @return a Function that given a {@link Pair} returns the right side value
+   * @return a Function that given a {@link io.atlassian.fugue.Pair} returns the
+   * right side value
    * @since 1.1
    */
   public static <B> Function<Pair<?, B>, B> rightValue() {
@@ -100,6 +102,8 @@ public final class Pair<A, B> implements Serializable {
   private final B right;
 
   /**
+   * Constructor for Pair.
+   *
    * @param left value, cannot be null
    * @param right value, cannot be null
    */
@@ -108,18 +112,30 @@ public final class Pair<A, B> implements Serializable {
     this.right = requireNonNull(right, "Right parameter must not be null.");
   }
 
+  /**
+   * Accessor method for the left value of the pair.
+   *
+   * @return a A object.
+   */
   public A left() {
     return left;
   }
 
+  /**
+   * Accessor method for the right value of the pair.q
+   *
+   * @return a B object.
+   */
   public B right() {
     return right;
   }
 
+  /** {@inheritDoc} */
   @Override public String toString() {
     return "Pair(" + left + ", " + right + ")";
   }
 
+  /** {@inheritDoc} */
   @Override public boolean equals(final Object o) {
     if (o == null) {
       return false;
@@ -135,6 +151,7 @@ public final class Pair<A, B> implements Serializable {
     return left.equals(that.left) && right.equals(that.right);
   }
 
+  /** {@inheritDoc} */
   @Override public int hashCode() {
     final int lh = left.hashCode();
     final int rh = right.hashCode();

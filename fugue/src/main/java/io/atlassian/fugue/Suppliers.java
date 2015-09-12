@@ -28,7 +28,7 @@ import java.util.function.Supplier;
  */
 public class Suppliers {
   /**
-   * Creates a {@link Supplier} of a constant value.
+   * Creates a {@link java.util.function.Supplier} of a constant value.
    *
    * @param <A> the type
    * @param a the constant value to supply
@@ -39,15 +39,16 @@ public class Suppliers {
   }
 
   /**
-   * Create a new {@link Supplier} by transforming the result calling the first
-   * {@link Supplier}
+   * Create a new {@link java.util.function.Supplier} by transforming the result
+   * calling the first {@link java.util.function.Supplier}
    *
-   * @param transform function to transform the result of a {@link Supplier} of
-   * A's to B's
-   * @param first a {@link Supplier} of A's
-   * @param <A> return type of the {@link Supplier} to transform
-   * @param <B> return type of the new {@link Supplier}
-   * @return a new {@link Supplier} returning B's
+   * @param transform function to transform the result of a
+   * {@link java.util.function.Supplier} of A's to B's
+   * @param first a {@link java.util.function.Supplier} of A's
+   * @param <A> return type of the {@link java.util.function.Supplier} to
+   * transform
+   * @param <B> return type of the new {@link java.util.function.Supplier}
+   * @return a new {@link java.util.function.Supplier} returning B's
    */
   public static <A, B> Supplier<B> compose(final Function<? super A, B> transform, final Supplier<A> first) {
     return () -> transform.apply(first.get());
@@ -87,9 +88,9 @@ public class Suppliers {
    *
    * @param <A> the type
    * @param option the option to attempt to get values from
-   * @return a {@link Supplier} that always calls {@link Option#get()}, which
-   * throws an Exception if the option is None
-   *
+   * @return a {@link java.util.function.Supplier} that always calls
+   * {@link io.atlassian.fugue.Option#get()}, which throws an Exception if the
+   * option is None
    * @since 2.0
    */
   public static <A> Supplier<A> fromOption(final Option<A> option) {
@@ -104,8 +105,8 @@ public class Suppliers {
    * @param <B> the result type
    * @param f the function
    * @param a the value
-   * @return a {@link Supplier} that always calls {@link Function#apply(Object)}
-   *
+   * @return a {@link java.util.function.Supplier} that always calls
+   * {@link java.util.function.Function#apply(Object)}
    * @since 2.2
    */
   public static <A, B> Supplier<B> fromFunction(final Function<? super A, ? extends B> f, final A a) {
@@ -113,9 +114,11 @@ public class Suppliers {
   }
 
   /**
-   * A supplier that memoize the value return by another {@link Supplier}, whose
-   * {@link Supplier#get()} method is guaranteed to be call at most once. The
-   * returned {@link Supplier} is thread-safe
+   * A supplier that memoize the value return by another
+   * {@link java.util.function.Supplier}, whose
+   * {@link java.util.function.Supplier#get()} method is guaranteed to be call
+   * at most once. The returned {@link java.util.function.Supplier} is
+   * thread-safe
    *
    * @param <A> the type
    * @param supplier the supplier to memoize
@@ -126,8 +129,9 @@ public class Suppliers {
   }
 
   /**
-   * A supplier that weakly memoize the value return by another {@link Supplier}
-   * , The returned {@link Supplier} is thread-safe
+   * A supplier that weakly memoize the value return by another
+   * {@link java.util.function.Supplier} , The returned
+   * {@link java.util.function.Supplier} is thread-safe
    *
    * @param <A> the type
    * @param supplier the supplier to memoize

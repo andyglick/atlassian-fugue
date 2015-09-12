@@ -48,22 +48,22 @@ import static java.util.Objects.requireNonNull;
  * href=http://en.wikipedia.org/wiki/Functor>Functor composition law</a>. Note
  * however, that this should be rare as functions that return <code>null</code>
  * is a bad idea anyway. <b>Note</b> that if a function returns null to indicate
- * optionality, it can be {@link Options#lift(Function) lifted} into a partial
- * function and then {@link #flatMap(Function) flat mapped} instead.
+ * optionality, it can be {@link io.atlassian.fugue.Options#lift(Function)
+ * lifted} into a partial function and then {@link #flatMap(Function) flat
+ * mapped} instead.
  * <p>
  * Note: while this class is public and abstract it does not expose a
  * constructor as only the concrete internal subclasses are designed to be used.
- * 
+ *
  * @param <A> the value type the option contains
- * 
  * @since 1.0
  */
 public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   private static final long serialVersionUID = 7849097310208471377L;
 
   /**
-   * Factory method for {@link Option} instances.
-   * 
+   * Factory method for {@link io.atlassian.fugue.Option} instances.
+   *
    * @param <A> the contained type
    * @param a the value to hold
    * @return a Some if the parameter is not null or a None if it is
@@ -74,11 +74,11 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
 
   /**
    * Factory method for Some instances.
-   * 
+   *
    * @param <A> the contained type
    * @param value the value to hold, must not be null
    * @return a Some if the parameter is not null
-   * @throws NullPointerException if the parameter is null
+   * @throws java.lang.NullPointerException if the parameter is null
    */
   public static <A> Option<A> some(final A value) {
     requireNonNull(value);
@@ -87,7 +87,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
 
   /**
    * Factory method for None instances.
-   * 
+   *
    * @param <A> the held type
    * @return a None
    */
@@ -100,7 +100,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   /**
    * Factory method for None instances where the type token is handy. Allows
    * calling in-line where the type inferencer would otherwise complain.
-   * 
+   *
    * @param <A> the contained type
    * @param type token of the right type, unused, only here for the type
    * inferencer
@@ -112,9 +112,10 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
 
   /**
    * Predicate for filtering defined options only.
-   * 
+   *
    * @param <A> the contained type
-   * @return a {@link Predicate} that returns true only for defined options
+   * @return a {@link java.util.function.Predicate} that returns true only for
+   * defined options
    */
   public static <A> Predicate<Option<A>> defined() {
     return Maybe::isDefined;
@@ -122,20 +123,22 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
 
   /**
    * Supplies None as required. Useful as the zero value for folds.
-   * 
+   *
    * @param <A> the contained type
-   * @return a {@link Supplier} of None instances
+   * @return a {@link java.util.function.Supplier} of None instances
    */
   public static <A> Supplier<Option<A>> noneSupplier() {
     return ofInstance(Option.<A> none());
   }
 
   /**
-   * Factory method for {@link Option} instances from {@link Optional}
-   * instances.
+   * Factory method for {@link io.atlassian.fugue.Option} instances from
+   * {@link java.util.Optional} instances.
    *
    * @param <A> the contained type
-   * @return a Some if {@link Optional#isPresent()} or a None otherwise.
+   * @return a Some if {@link java.util.Optional#isPresent()} or a None
+   * otherwise.
+   * @param optional a {@link java.util.Optional} object.
    */
   public static <A> Option<A> fromOptional(final Optional<A> optional) {
     return option(optional.orElse(null));
@@ -155,7 +158,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   /**
    * If this is a some value apply the some function, otherwise get the None
    * value.
-   * 
+   *
    * @param <B> the result type
    * @param none the supplier of the None type
    * @param some the function to apply if this is a Some
@@ -167,25 +170,29 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   // implementing Maybe
   //
 
+  /** {@inheritDoc} */
   @Override public final <B extends A> A getOrElse(final B other) {
     return getOr(Suppliers.<A> ofInstance(other));
   }
 
+  /** {@inheritDoc} */
   @Override public final A getOr(final Supplier<? extends A> supplier) {
     return fold(supplier, Functions.<A> identity());
   }
 
+  /** {@inheritDoc} */
   @Deprecated @Override public final A getOrElse(final Supplier<? extends A> supplier) {
     return fold(supplier, Functions.<A> identity());
   }
 
+  /** {@inheritDoc} */
   @Override public final A getOrNull() {
     return fold(Suppliers.<A> alwaysNull(), Functions.<A> identity());
   }
 
   /**
    * If this is a some, return the same some. Otherwise, return {@code orElse}.
-   * 
+   *
    * @param orElse option to return if this is none
    * @return this or {@code orElse}
    * @since 1.1
@@ -197,7 +204,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   /**
    * If this is a some, return the same some. Otherwise, return value supplied
    * by {@code orElse}.
-   * 
+   *
    * @param orElse supplier which provides the option to return if this is none
    * @return this or value supplied by {@code orElse}
    * @since 1.1
@@ -209,20 +216,24 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
     return result;
   }
 
+  /** {@inheritDoc} */
   @Override public final boolean exists(final Predicate<? super A> p) {
     requireNonNull(p);
     return isDefined() && p.test(get());
   }
 
+  /** {@inheritDoc} */
   @Override public boolean forall(final Predicate<? super A> p) {
     requireNonNull(p);
     return isEmpty() || p.test(get());
   }
 
+  /** {@inheritDoc} */
   @Override public final boolean isEmpty() {
     return !isDefined();
   }
 
+  /** {@inheritDoc} */
   @Override public final Iterator<A> iterator() {
     return fold(ofInstance(Iterators.<A> emptyIterator()), Iterators::<A> singletonIterator);
   }
@@ -235,7 +246,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    * Apply {@code f} to the value if defined.
    * <p>
    * Transforms to an option of the result type.
-   * 
+   *
    * @param <B> return type of {@code f}
    * @param f function to apply to wrapped value
    * @return new wrapped value
@@ -249,7 +260,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    * Apply {@code f} to the value if defined.
    * <p>
    * Transforms to an option of the result type.
-   * 
+   *
    * @param <B> return type of {@code f}
    * @param f function to apply to wrapped value
    * @return value returned from {@code f}
@@ -262,10 +273,10 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   }
 
   /**
-   * Returns this {@link Option} if it is nonempty <strong>and</strong> applying
-   * the predicate to this option's value returns true. Otherwise, return
-   * {@link #none()}.
-   * 
+   * Returns this {@link io.atlassian.fugue.Option} if it is nonempty
+   * <strong>and</strong> applying the predicate to this option's value returns
+   * true. Otherwise, return {@link #none()}.
+   *
    * @param p the predicate to test
    * @return this option, or none
    */
@@ -277,12 +288,11 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   /**
    * Creates an Either from this Option. Puts the contained value in a right if
    * {@link #isDefined()} otherwise puts the supplier's value in a left.
-   * 
+   *
    * @param <X> the left type
    * @param left the Supplier to evaluate and return if this is empty
    * @return the content of this option if defined as a right, or the supplier's
    * content as a left if not
-   * 
    * @see Option#toLeft
    */
   public final <X> Either<X, A> toRight(final Supplier<X> left) {
@@ -292,12 +302,11 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   /**
    * Creates an Either from this Option. Puts the contained value in a left if
    * {@link #isDefined()} otherwise puts the supplier's value in a right.
-   * 
+   *
    * @param <X> the right type
    * @param right the Supplier to evaluate and return if this is empty
    * @return the content of this option if defined as a left, or the supplier's
    * content as a right if not defined.
-   * 
    * @see Option#toRight
    */
   public final <X> Either<A, X> toLeft(final Supplier<X> right) {
@@ -305,19 +314,21 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   }
 
   /**
-   * Create an {@link Optional} from this option. Will throw a
-   * {@link NullPointerException} if this option is defined and contains a null
-   * value.
+   * Create an {@link java.util.Optional} from this option. Will throw a
+   * {@link java.lang.NullPointerException} if this option is defined and
+   * contains a null value.
    *
-   * @return {@link Optional#of(Object)} with the value if defined and not null,
-   * {@link Optional#empty()} if not defined.
+   * @return {@link java.util.Optional#of(Object)} with the value if defined and
+   * not null, {@link java.util.Optional#empty()} if not defined.
    */
   public abstract Optional<A> toOptional();
 
+  /** {@inheritDoc} */
   @Override public final int hashCode() {
     return fold(NONE_HASH, SOME_HASH);
   }
 
+  /** {@inheritDoc} */
   @Override public final boolean equals(final Object obj) {
     if (this == obj) {
       return true;
@@ -329,6 +340,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
     return other.fold(isDefined() ? Suppliers.alwaysFalse() : Suppliers.alwaysTrue(), valuesEqual());
   }
 
+  /** {@inheritDoc} */
   @Override public final String toString() {
     return fold(NONE_STRING, SOME_STRING);
   }

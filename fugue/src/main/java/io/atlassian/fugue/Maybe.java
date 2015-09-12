@@ -32,15 +32,14 @@ import java.util.function.Supplier;
  * <li>{@literal <B> Maybe<B> flatMap(Function<? super A, Maybe<B>>}
  * <li>{@literal Maybe<A> filter(Predicate<? super A>)}
  * </ul>
- * 
+ *
  * @param <A> the contained type
- * 
  * @since 1.0
  */
 public interface Maybe<A> extends Iterable<A>, Effect.Applicant<A> {
   /**
    * Get the value if defined. Throw an exception otherwise.
-   * 
+   *
    * @return the wrapped value
    * @throws NoSuchElementException if this is a none
    */
@@ -48,8 +47,7 @@ public interface Maybe<A> extends Iterable<A>, Effect.Applicant<A> {
 
   /**
    * Get the value if defined, otherwise returns {@code other}.
-   * 
-   * @param <B> the destination type
+   *
    * @param other value to return if this {@link #isEmpty() is empty}
    * @return wrapped value if this {@link #isDefined() is defined}, otherwise
    * returns {@code other}
@@ -86,7 +84,7 @@ public interface Maybe<A> extends Iterable<A>, Effect.Applicant<A> {
    * <p>
    * Although the use of null is discouraged, code written to use these must
    * often interface with code that expects and returns nulls.
-   * 
+   *
    * @return the value or null if not defined
    */
   A getOrNull();
@@ -95,7 +93,7 @@ public interface Maybe<A> extends Iterable<A>, Effect.Applicant<A> {
    * Get the value or throws an error with the supplied message if not defined.
    * <p>
    * Used when absolutely sure this {@link #isDefined() is defined}.
-   * 
+   *
    * @param msg the message for the error.
    * @return the contained value.
    */
@@ -105,8 +103,7 @@ public interface Maybe<A> extends Iterable<A>, Effect.Applicant<A> {
    * Get the value or throws the supplied throwable if not defined.
    * <p>
    * Used when absolutely sure this {@link #isDefined() is defined}.
-   * 
-   * @param <X> the type of the {@link Throwable} that could be thrown.
+   *
    * @param ifUndefined the supplier of the throwable.
    * @throws X the throwable the supplier creates if there is no value.
    * @return the contained value.
@@ -115,11 +112,15 @@ public interface Maybe<A> extends Iterable<A>, Effect.Applicant<A> {
   <X extends Throwable> A getOrThrow(Supplier<X> ifUndefined) throws X;
 
   /**
+   * If the type contains a value return true.
+   *
    * @return {@code true} if this holds a value, {@code false} otherwise.
    */
   boolean isDefined();
 
   /**
+   * If the type does not contain a value return true.
+   *
    * @return {@code true} if this does not hold a value, {@code false}
    * otherwise.
    */
@@ -128,7 +129,7 @@ public interface Maybe<A> extends Iterable<A>, Effect.Applicant<A> {
   /**
    * Whether this is {@link #isDefined() is defined} <strong>and</strong>
    * applying the predicate to the contained value returns true.
-   * 
+   *
    * @param p the predicate to test, must not be null
    * @return {@code true} if defined and the predicate returns true for the
    * contained value, {@code false} otherwise.
@@ -136,6 +137,9 @@ public interface Maybe<A> extends Iterable<A>, Effect.Applicant<A> {
   boolean exists(final Predicate<? super A> p);
 
   /**
+   * Return an iterator for this type. In most cases this takes the form of an
+   * iterator returning zero or one values.
+   *
    * @return an iterator over the contained value {@link #isDefined() if
    * defined}, or an empty one otherwise.
    */
@@ -144,7 +148,7 @@ public interface Maybe<A> extends Iterable<A>, Effect.Applicant<A> {
   /**
    * Returns <code>true</code> {@link #isEmpty() if empty} or the result of the
    * application of the given function to the value.
-   * 
+   *
    * @param p The predicate function to test on the contained value, must not be
    * null
    * @return <code>true</code> if no value or returns the result of the

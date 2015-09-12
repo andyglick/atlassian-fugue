@@ -19,5 +19,10 @@ package io.atlassian.fugue.retry;
  * Runnable that does nothing.
  */
 class NoOp implements Runnable {
+  /**
+   * <p>
+   * run.
+   * </p>
+   */
   public void run() {}
 }

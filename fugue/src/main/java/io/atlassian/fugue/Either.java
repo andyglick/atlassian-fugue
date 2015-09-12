@@ -50,7 +50,7 @@ import static java.util.Objects.requireNonNull;
  * available right-biased methods has increased. The purpose of these is that
  * you can do something like {@code either.map(...)} directly, which is
  * identical to calling {@code either.right().map(...)}.
- * 
+ *
  * @since 1.0
  */
 public abstract class Either<L, R> implements Serializable {
@@ -61,6 +61,10 @@ public abstract class Either<L, R> implements Serializable {
   //
 
   /**
+   * <p>
+   * left.
+   * </p>
+   *
    * @param <L> the LHS type
    * @param <R> the RHS type
    * @param left the value to be stored, must not be null
@@ -73,6 +77,10 @@ public abstract class Either<L, R> implements Serializable {
   }
 
   /**
+   * <p>
+   * right.
+   * </p>
+   *
    * @param <L> the LHS type
    * @param <R> the RHS type
    * @param right the value to be stored, must not be null
@@ -129,7 +137,6 @@ public abstract class Either<L, R> implements Serializable {
   /**
    * Get the value if it is a right, otherwise returns {@code other}.
    *
-   * @param <X> the destination type
    * @param other value to return if this is a left
    * @return wrapped value if this is a right, otherwise returns {@code other}
    * @since 2.3
@@ -170,7 +177,6 @@ public abstract class Either<L, R> implements Serializable {
    * <p>
    * Used when absolutely sure this is a right.
    *
-   * @param <X> the type of the {@link Throwable} that could be thrown.
    * @param ifUndefined the supplier of the throwable.
    * @return the contained value.
    * @throws X the throwable the supplier creates if there is no value.
@@ -197,7 +203,6 @@ public abstract class Either<L, R> implements Serializable {
    * Binds the given function across the right hand side value if it is one.
    *
    * @param <X> the RHS type
-   * @param <LL> The existing LHS or a subtype
    * @param f the function to bind.
    * @return A new either value after binding with the function applied if this
    * is a Right.
@@ -352,7 +357,6 @@ public abstract class Either<L, R> implements Serializable {
    * @param either The either of the function to apply on this projection's
    * value.
    * @return The result of function application within either.
-   *
    * @since 3.0
    */
   public <X> Either<L, X> ap(final Either<L, Function<R, X>> either) {
