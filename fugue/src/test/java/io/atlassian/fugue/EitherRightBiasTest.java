@@ -121,7 +121,7 @@ public class EitherRightBiasTest {
     final AtomicBoolean called = new AtomicBoolean(false);
     final Effect<Integer> effect = integer -> called.set(true);
 
-    r.foreach(effect);
+    r.forEach(effect);
 
     assertThat(called.get(), is(true));
   }
@@ -130,7 +130,7 @@ public class EitherRightBiasTest {
     final AtomicBoolean called = new AtomicBoolean(false);
     final Effect<Integer> effect = integer -> called.set(true);
 
-    l.foreach(effect);
+    l.forEach(effect);
 
     assertThat(called.get(), is(false));
   }

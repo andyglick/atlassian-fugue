@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file.
 
 This project attempts to adhere to [Semantic Versioning](http://semver.org/).
+## [3.1.0]
+### Added
+- Either.forEach(Consumer<T>)
+- Option.forEach(Consumer<T>)
+
+### Deprecated
+- Effect.Applicant.foreach and all its implementations
 
 ## [3.1.0]
 ### Added

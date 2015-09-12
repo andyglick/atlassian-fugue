@@ -19,9 +19,9 @@ package io.atlassian.fugue;
  * Simply counts how many times it was applied.
  */
 class Count<A> implements Effect<A> {
-  static <A> int countEach(final Effect.Applicant<A> a) {
+  static <A> int countEach(final Iterable<A> a) {
     final Count<A> counter = new Count<>();
-    a.foreach(counter);
+    a.forEach(counter);
     return counter.count();
   }
 
