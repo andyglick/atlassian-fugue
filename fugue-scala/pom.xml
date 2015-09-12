@@ -20,7 +20,7 @@
 
     <properties>
         <scala.version>2.10.5</scala.version>
-        <scala-maven-plugin.version>3.2.0</scala-maven-plugin.version>
+        <scala-maven-plugin.version>3.2.2</scala-maven-plugin.version>
     </properties>
 
     <build>
@@ -81,5 +81,21 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>
+                <version>${scala-maven-plugin.version}</version>
+                <configuration>
+                    <jvmArgs>
+                        <jvmArg>-Xms64m</jvmArg>
+                        <jvmArg>-Xmx1024m</jvmArg>
+                    </jvmArgs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
 
 </project>
