@@ -73,7 +73,7 @@ Supplier, and Predicate
 you need to import io.atlassian.fugue.Iterables by it's FQN
 * Find io.atlassian.fugue.retry.*, ImmutableMaps, Function2, and Throwables in the fugue-guava module
 * Replace usages of asScala/asJava with toScala/toJava
-* When coversion between a JDK and a Guava functional interface is required use of a method reference 
+* When conversion between a JDK and a Guava functional interface is required use of a method reference 
 on the abstract method is recommended
 * See the `changelog.md` for further changes
 
