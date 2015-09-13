@@ -63,7 +63,7 @@ missing functionality to the Guava Iterables class in a complementary rather tha
 fashion. This required one of the two Iterables classes to be imported by it's fully qualified
 name when both were needed in a single source file. Immutable maps have been moved to the
 fugue-guava module along with the com.atlassian.retry package, Throwables, and the Function2
-interface. The Scala type conversion code has be migrated from using, and clashing on, asScala
+interface. The Scala type conversion code has been migrated from using, and clashing on, asScala
 to toScala. Many of the previously existing deprecations have been removed.
 
 * Replace com.google.common.base.Function with java.util.function.Function for each of: Function, 
@@ -73,6 +73,8 @@ Supplier, and Predicate
 you need to import io.atlassian.fugue.Iterables by it's FQN
 * Find io.atlassian.fugue.retry.*, ImmutableMaps, Function2, and Throwables in the fugue-guava module
 * Replace usages of asScala/asJava with toScala/toJava
+* When coversion between a JDK and a Guava functional interface is required use of a method reference 
+on the abstract method is recommended
 * See the `changelog.md` for further changes
 
 ## Contributors
