@@ -11,7 +11,7 @@
     <parent>
         <artifactId>fugue-parent</artifactId>
         <groupId>com.atlassian.fugue</groupId>
-        <version>3.0.0-m007-SNAPSHOT</version>
+        <version>3.0.0-m008-SNAPSHOT</version>
     </parent>
 
     <artifactId>fugue-scala</artifactId>
@@ -19,7 +19,11 @@
     <name>Functional Extensions Scala Inter-Ops</name>
 
     <properties>
-        <scala.version>2.10.5</scala.version>
+        <scala.version>2.11.7</scala.version>
+        <scala-maven-plugin.version>3.2.2</scala-maven-plugin.version>
+        <scalacheck.version>1.12.4</scalacheck.version>
+        <scalatest.version>3.0.0-M7</scalatest.version>
+        <fugue.version>${project.version}</fugue.version>
     </properties>
 
     <build>
@@ -27,7 +31,7 @@
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>${scala-maven-plugin.version}</version>
                 <executions>
                     <execution>
                         <goals>
@@ -38,7 +42,37 @@
                 </executions>
                 <configuration>
                     <scalaVersion>${scala.version}</scalaVersion>
+                    <args>
+                        <!-- to avoid 'error: File name too long' in Linux/ecryptfs file system -->
+                        <arg>-Xmax-classfile-name</arg>
+                        <arg>143</arg>
+                        <arg>-unchecked</arg>
+                        <arg>-deprecation</arg>
+                        <arg>-feature</arg>
+                        <arg>-language:_</arg>
+                        <arg>-target:jvm-1.${maven.compiler.target}</arg>
+                        <arg>-Xfatal-warnings</arg>
+                    </args>
                 </configuration>
+            </plugin>
+            <!-- enable scalatest -->
+            <plugin>
+                <groupId>org.scalatest</groupId>
+                <artifactId>scalatest-maven-plugin</artifactId>
+                <version>1.0</version>
+                <configuration>
+                    <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
+                    <junitxml>.</junitxml>
+                    <filereports>WDF TestSuite.txt</filereports>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>test</id>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -48,13 +82,25 @@
             <groupId>com.atlassian.fugue</groupId>
             <artifactId>fugue</artifactId>
             <scope>provided</scope>
-            <version>${project.version}</version>
+            <version>${fugue.version}</version>
         </dependency>
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
             <scope>provided</scope>
             <version>${scala.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scalacheck</groupId>
+            <artifactId>scalacheck_2.11</artifactId>
+            <version>${scalacheck.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest_2.11</artifactId>
+            <version>${scalatest.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <!-- Test deps -->

@@ -18,18 +18,11 @@ package com.atlassian.fugue
 
 import java.math.BigInteger
 import java.util.Arrays.asList
-import java.util.stream.{Collectors, StreamSupport}
+import java.util.stream.{ Collectors, StreamSupport }
 
 import com.atlassian.fugue.Either.right
 import com.atlassian.fugue.Monoids._
-import com.atlassian.fugue.law.IsEq._
 import com.atlassian.fugue.law.MonoidTests
-import org.scalacheck.Prop._
-import org.scalacheck.{Arbitrary, Properties}
-
-import scala.collection.JavaConversions._
-import scala.collection.mutable.ListBuffer
-
 
 class MonoidsSpec extends TestSuite {
 
@@ -41,11 +34,6 @@ class MonoidsSpec extends TestSuite {
   test("intMultiplication") {
     intMultiplication.append(2, 3) shouldEqual 6
     check(MonoidTests(intMultiplication))
-  }
-
-  test("doubleAddition") {
-    doubleAddition.append(2.0, 3.0) shouldEqual 5.0
-    // check(MonoidTests(doubleAddition)) fail because double addition is not associative due to rounding error
   }
 
   test("bigintAddition") {
@@ -115,15 +103,16 @@ class MonoidsSpec extends TestSuite {
   }
 
   test("option") {
-    option(Semigroups.intAddition).append(Option.some(1), Option.some(2)) shouldEqual Option.some(3)
-    check(MonoidTests(option(Semigroups.intAddition)))
+    option(Semigroups.intMaximum).append(Option.some(1), Option.some(2)) shouldEqual Option.some(2)
+    option(Semigroups.intMaximum).append(Option.some(3), Option.some(2)) shouldEqual Option.some(3)
+    check(MonoidTests(option(Semigroups.intMaximum)))
   }
 
   test("either") {
-    val m = either(Semigroups.intAddition, string)
+    val m = either(Semigroups.intMaximum, string)
 
     m.append(right("a"), right("b")) shouldEqual right("ab")
-    m.append(Either.left(1), Either.left(2)) shouldEqual Either.left(3)
+    m.append(Either.left(1), Either.left(2)) shouldEqual Either.left(2)
     check(MonoidTests(m))
   }
 

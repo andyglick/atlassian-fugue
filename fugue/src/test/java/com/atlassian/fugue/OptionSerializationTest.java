@@ -12,12 +12,12 @@ import static org.junit.Assert.assertThat;
 
 public class OptionSerializationTest {
   @Test public void serializeSome() throws IOException {
-    Option<Integer> opt = Option.some(1);
+    final Option<Integer> opt = Option.some(1);
     assertThat(Serializer.<Option<Integer>> toObject(toBytes(opt)), equalTo(opt));
   }
 
   @Test public void serializeNone() throws IOException {
-    Option<Integer> opt = Option.none();
+    final Option<Integer> opt = Option.none();
     assertThat(Serializer.<Option<Integer>> toObject(toBytes(opt)), equalTo(opt));
   }
 

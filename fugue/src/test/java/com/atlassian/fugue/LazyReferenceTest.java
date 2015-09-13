@@ -25,19 +25,19 @@ import static org.junit.Assert.fail;
 
 public class LazyReferenceTest {
 
-  /**
-   * Used to pound the tests
-   *
-   * @throws Exception
-   */
-  // public static void main(final String[] args) throws Exception {
-  // final Iterables.LazyReferenceTest test = new Iterables.LazyReferenceTest();
-  // for (int i = 0; i < 10000; i++) {
-  // // test.concurrentCreate();
-  // // test.getInterruptibly();
-  // test.getNotInterruptable();
-  // }
-  // }
+//  /**
+//   * Used to pound the tests
+//   *
+//   * @throws Exception
+//   */
+//  public static void main(final String[] args) throws Exception {
+//    final Iterables.LazyReferenceTest test = new Iterables.LazyReferenceTest();
+//    for (int i = 0; i < 10000; i++) {
+//      // test.concurrentCreate();
+//      // test.getInterruptibly();
+//      test.getNotInterruptable();
+//    }
+//  }
   static final int WAIT = 10;
 
   static void pause(final int millis) {
@@ -54,8 +54,7 @@ public class LazyReferenceTest {
     pause(WAIT);
   }
 
-  @Test
-  public void concurrentCreate() throws Exception {
+  @Test public void concurrentCreate() throws Exception {
     final int nThreads = 40;
     final Object[] results = new Object[nThreads];
     final AtomicInteger createCallCount = new AtomicInteger(0);
@@ -90,9 +89,9 @@ public class LazyReferenceTest {
       final int j = i;
       tasks.add(() -> {
         /*
-         * Put in a latch to synchronize all threads and try to get them to
-         * call ref.get() at the same time (to increase concurrency and make
-         * this test more useful)
+         * Put in a latch to synchronize all threads and try to get them to call
+         * ref.get() at the same time (to increase concurrency and make this
+         * test more useful)
          */
         latch.countDown();
         latch.await();
@@ -101,8 +100,7 @@ public class LazyReferenceTest {
       });
     }
 
-    List<Future<Object>> futures = null;
-    futures = pool.invokeAll(tasks);
+    final List<Future<Object>> futures = pool.invokeAll(tasks);
 
     // Ensure the create() method was invoked once
     assertEquals(1, createCallCount.get());

@@ -15,8 +15,8 @@
  */
 package com.atlassian.fugue.converters
 
-import java.lang.{Boolean => JBool, Byte => JByte, Double => JDouble, Float => JFloat, Long => JLong, Short => JShort}
-import java.util.function.{Function => JFunction, BiFunction => JFunction2, Supplier => JSuppiler, Predicate => JPredicate}
+import java.lang.{ Boolean => JBool, Byte => JByte, Double => JDouble, Float => JFloat, Long => JLong, Short => JShort }
+import java.util.function.{ Function => JFunction, BiFunction => JFunction2, BinaryOperator => JBinaryOperator, Supplier => JSuppiler, Predicate => JPredicate }
 
 import annotation.implicitNotFound
 
@@ -39,7 +39,7 @@ import com.atlassian.fugue
  *
  * @since 2.2
  */
-object ScalaConverters extends LowPriorityConverters {
+object ScalaConverters extends LowerPriorityConverters {
   import Iso.<~>
 
   implicit class ToJavaSyntax[A](val a: A) extends AnyVal {
@@ -75,11 +75,11 @@ object ScalaConverters extends LowPriorityConverters {
       f => new JFunction[A, B] { def apply(a: A): B = f(a.toScala).toJava }
     }
 
-  implicit def Function2Iso[A, AA, B, BB, C, CC](implicit ia: A <~> AA, ib: B <~> BB, ic: C <~> CC): <~>[JFunction2[A, B, C], (AA, BB) => CC] =
-    Iso[JFunction2[A, B, C], (AA, BB) => CC] {
+  implicit def JBinaryOperatorIso[A, AA](implicit ia: A <~> AA): <~>[JBinaryOperator[A], (AA, AA) => AA] =
+    Iso[JBinaryOperator[A], (AA, AA) => AA] {
       f => { case (a, b) => f(a.toJava, b.toJava).toScala }
     } {
-      f => new JFunction2[A, B, C] { def apply(a: A, b: B): C = f(a.toScala, b.toScala).toJava }
+      f => new JBinaryOperator[A] { def apply(a1: A, a2: A): A = f(a1.toScala, a2.toScala).toJava }
     }
 
   implicit def PredicateIso[A, AA](implicit eva: A <~> AA): <~>[JPredicate[A], (AA) => Boolean] =
@@ -112,10 +112,22 @@ object ScalaConverters extends LowPriorityConverters {
     } {
       case (a, b) => fugue.Pair.pair(a.toJava, b.toJava)
     }
+}
+
+trait LowerPriorityConverters extends LowestPriorityConverters {
+  import Iso.<~>
+  import ScalaConverters.{ ToJavaSyntax, ToScalaSyntax }
+
+  implicit def Function2Iso[A, AA, B, BB, C, CC](implicit ia: A <~> AA, ib: B <~> BB, ic: C <~> CC): <~>[JFunction2[A, B, C], (AA, BB) => CC] =
+    Iso[JFunction2[A, B, C], (AA, BB) => CC] {
+      f => { case (a, b) => f(a.toJava, b.toJava).toScala }
+    } {
+      f => new JFunction2[A, B, C] { def apply(a: A, b: B): C = f(a.toScala, b.toScala).toJava }
+    }
 
 }
 
-trait LowPriorityConverters {
+trait LowestPriorityConverters {
   import Iso._
 
   implicit def AnyRefIso[A <: AnyRef] =

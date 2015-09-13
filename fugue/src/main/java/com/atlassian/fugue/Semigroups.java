@@ -18,37 +18,19 @@ package com.atlassian.fugue;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 import java.util.function.Function;
 
 import static com.atlassian.fugue.Either.left;
 import static com.atlassian.fugue.Either.right;
-import static com.atlassian.fugue.Iterables.join;
-import static java.util.Arrays.asList;
 
 /**
  * {@link Semigroup} instances.
  *
- * @since 3.0
+ * @see Monoids
+ * @since 3.1
  */
 public final class Semigroups {
-
-  /**
-   * A semigroup that adds integers.
-   */
-  public static final Semigroup<Integer> intAddition = (i1, i2) -> i1 + i2;
-
-  /**
-   * A semigroup that adds doubles.
-   */
-  public static final Semigroup<Double> doubleAddition = (d1, d2) -> d1 + d2;
-
-  /**
-   * A semigroup that multiplies integers.
-   */
-  public static final Semigroup<Integer> intMultiplication = (i1, i2) -> i1 * i2;
 
   /**
    * A semigroup that yields the maximum of integers.
@@ -59,16 +41,6 @@ public final class Semigroups {
    * A semigroup that yields the minimum of integers.
    */
   public static final Semigroup<Integer> intMinimum = Math::min;
-
-  /**
-   * A semigroup that adds big integers.
-   */
-  public static final Semigroup<BigInteger> bigintAddition = BigInteger::add;
-
-  /**
-   * A semigroup that multiplies big integers.
-   */
-  public static final Semigroup<BigInteger> bigintMultiplication = BigInteger::multiply;
 
   /**
    * A semigroup that yields the maximum of big integers.
@@ -91,16 +63,6 @@ public final class Semigroups {
   public static final Semigroup<BigDecimal> bigDecimalMinimum = BigDecimal::min;
 
   /**
-   * A semigroup that adds longs.
-   */
-  public static final Semigroup<Long> longAddition = (x, y) -> x + y;
-
-  /**
-   * A semigroup that multiplies longs.
-   */
-  public static final Semigroup<Long> longMultiplication = (x, y) -> x * y;
-
-  /**
    * A semigroup that yields the maximum of longs.
    */
   public static final Semigroup<Long> longMaximum = Math::max;
@@ -109,31 +71,6 @@ public final class Semigroups {
    * A semigroup that yields the minimum of longs.
    */
   public static final Semigroup<Long> longMinimum = Math::min;
-
-  /**
-   * A semigroup that ORs booleans.
-   */
-  public static final Semigroup<Boolean> disjunction = (b1, b2) -> b1 || b2;
-
-  /**
-   * A semigroup that XORs booleans.
-   */
-  public static final Semigroup<Boolean> exclusiveDisjunction = (p, q) -> (p ^ q);
-
-  /**
-   * A semigroup that ANDs booleans.
-   */
-  public static final Semigroup<Boolean> conjunction = (b1, b2) -> b1 && b2;
-
-  /**
-   * A semigroup that appends strings.
-   */
-  public static final Semigroup<String> string = String::concat;
-
-  /**
-   * A semigroup for the Unit value.
-   */
-  public static final Semigroup<Unit> unit = (u1, u2) -> Unit.VALUE;
 
   private Semigroups() {
   }
@@ -192,57 +129,6 @@ public final class Semigroups {
    */
   public static <A extends Comparable<A>> Semigroup<A> min() {
     return (a1, a2) -> a1.compareTo(a2) > 0 ? a2 : a1;
-  }
-
-  /**
-   * A semigroup for lists.
-   *
-   * @return A semigroup for lists.
-   */
-  public static <A> Semigroup<List<A>> list() {
-    return (l1, l2) -> {
-      final List<A> sumList;
-      if (l1.isEmpty()) {
-        sumList = l2;
-
-      } else if (l2.isEmpty()) {
-        sumList = l1;
-
-      } else {
-        sumList = new ArrayList<>(l1.size() + l2.size());
-        sumList.addAll(l1);
-        sumList.addAll(l2);
-      }
-      return sumList;
-    };
-  }
-
-  /**
-   * A semigroup for iterables.
-   *
-   * @return A semigroup for iterables.
-   */
-  public static <A> Semigroup<Iterable<A>> iterable() {
-    return (l1, l2) -> join(asList(l1, l2));
-  }
-
-  /**
-   * A semigroup for option values (that take the first defined value).
-   * *
-   *
-   * @return A semigroup for option values (that take the first defined value).
-   */
-  public static <A> Semigroup<Option<A>> firstOption() {
-    return (a1, a2) -> a1.isDefined() ? a1 : a2;
-  }
-
-  /**
-   * A semigroup for option values that take the last defined value.
-   *
-   * @return A semigroup for option values that take the last defined value.
-   */
-  public static <A> Semigroup<Option<A>> lastOption() {
-    return (a1, a2) -> a2.isDefined() ? a2 : a1;
   }
 
   /**

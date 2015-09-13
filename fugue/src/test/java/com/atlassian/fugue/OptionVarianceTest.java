@@ -35,61 +35,61 @@ public class OptionVarianceTest {
   class Child extends Parent {}
 
   @Test public void flatMap() {
-    Option<Parent> some = some(new Parent());
-    Function<Grand, Option<Child>> f = p -> some(new Child());
-    Option<Parent> mapped = some.<Parent> flatMap(f);
+    final Option<Parent> some = some(new Parent());
+    final Function<Grand, Option<Child>> f = p -> some(new Child());
+    final Option<Parent> mapped = some.<Parent> flatMap(f);
     assertThat(mapped.get(), notNullValue());
   }
 
   @Test public void map() {
-    Option<Parent> some = some(new Parent());
-    Function<Grand, Child> f = p -> new Child();
-    Option<Parent> mapped = some.<Parent> map(f);
+    final Option<Parent> some = some(new Parent());
+    final Function<Grand, Child> f = p -> new Child();
+    final Option<Parent> mapped = some.<Parent> map(f);
     assertThat(mapped.get(), notNullValue());
   }
 
   @Test public void orElse() {
-    Option<Parent> some = some(new Parent());
-    Supplier<Option<Child>> f = () -> some(new Child());
-    Option<Parent> mapped = some.orElse(f);
+    final Option<Parent> some = some(new Parent());
+    final Supplier<Option<Child>> f = () -> some(new Child());
+    final Option<Parent> mapped = some.orElse(f);
     assertThat(mapped.get(), notNullValue());
   }
 
   @Test public void or() {
-    Option<Parent> some = some(new Parent());
-    Option<Child> opt = some(new Child());
-    Option<Parent> mapped = some.orElse(opt);
+    final Option<Parent> some = some(new Parent());
+    final Option<Child> opt = some(new Child());
+    final Option<Parent> mapped = some.orElse(opt);
     assertThat(mapped.get(), notNullValue());
   }
 
   @Test public void getOrElseSupplier() {
-    Option<Parent> some = some(new Parent());
-    Supplier<Child> f = Child::new;
-    Parent mapped = some.getOr(f);
+    final Option<Parent> some = some(new Parent());
+    final Supplier<Child> f = Child::new;
+    final Parent mapped = some.getOr(f);
     assertThat(mapped, notNullValue());
   }
 
   @Test public void getOrElse() {
-    Option<Parent> some = some(new Parent());
-    Option<Child> opt = some(new Child());
-    Option<Parent> mapped = some.orElse(opt);
+    final Option<Parent> some = some(new Parent());
+    final Option<Child> opt = some(new Child());
+    final Option<Parent> mapped = some.orElse(opt);
     assertThat(mapped.get(), notNullValue());
   }
 
   @Test public void forAll() {
-    Option<Parent> some = some(new Parent());
-    Predicate<Grand> alwaysTrue = x -> true;
+    final Option<Parent> some = some(new Parent());
+    final Predicate<Grand> alwaysTrue = x -> true;
     assertThat(some.forall(alwaysTrue), equalTo(true));
   }
 
   @Test public void exist() {
-    Option<Parent> some = some(new Parent());
-    Predicate<Grand> alwaysTrue = x -> true;
+    final Option<Parent> some = some(new Parent());
+    final Predicate<Grand> alwaysTrue = x -> true;
     assertThat(some.exists(alwaysTrue), equalTo(true));
   }
 
   @Test public void forEach() {
-    Maybe<Child> some = some(new Child());
+    final Maybe<Child> some = some(new Child());
     Count<Grand> e = new Count<>();
     some.foreach(e);
     assertThat(e.count(), equalTo(1));

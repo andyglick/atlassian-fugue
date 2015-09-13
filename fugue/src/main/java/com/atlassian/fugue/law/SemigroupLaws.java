@@ -16,32 +16,33 @@
 
 package com.atlassian.fugue.law;
 
-import com.atlassian.fugue.Monoid;
+import com.atlassian.fugue.Functions;
+import com.atlassian.fugue.Iterables;
 import com.atlassian.fugue.Semigroup;
 
 import static com.atlassian.fugue.law.IsEq.isEq;
 
 /**
- * Laws for a monoid
+ * Laws for a semigroup
  */
-public interface MonoidLaws<A> extends SemigroupLaws<A> {
+public final class SemigroupLaws<A> {
 
-  Monoid<A> monoid();
+  private final Semigroup<A> semigroup;
 
-  @Override default Semigroup<A> semigroup() {
-    return monoid();
+  public SemigroupLaws(Semigroup<A> semigroup) {
+    this.semigroup = semigroup;
   }
 
-  default IsEq<A> monoidLeftIdentity(A x) {
-    return isEq(x, monoid().append(monoid().zero(), x));
+  public IsEq<A> semigroupAssociative(A x, A y, A z) {
+    return isEq(semigroup.append(semigroup.append(x, y), z), semigroup.append(x, semigroup.append(y, z)));
   }
 
-  default IsEq<A> monoidRightIdentity(A x) {
-    return isEq(x, monoid().append(x, monoid().zero()));
+  public IsEq<A> sumNelEqualFold(A head, Iterable<A> tail) {
+    return isEq(semigroup.sumNel(head, tail), Functions.fold(semigroup::append, head, tail));
   }
 
-  static <A> MonoidLaws<A> monoidLaws(Monoid<A> monoid) {
-    return () -> monoid;
+  public IsEq<A> multiply1pEqualRepeatedAppend(int n, A a) {
+    return isEq(semigroup.multiply1p(n, a), semigroup.sumNel(a, Iterables.take(n, Iterables.cycle(a))));
   }
 
 }

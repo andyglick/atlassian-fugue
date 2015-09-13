@@ -58,8 +58,8 @@ public class FunctionComposeTest {
   }
 
   @Test public void referenceEqualityOfComposition() {
-    Function<Integer, Integer> intFunc = (a) -> a + 1;
-    Function<Integer, Double> intDouble = (a) -> a + 1.0;
+    final Function<Integer, Integer> intFunc = (a) -> a + 1;
+    final Function<Integer, Double> intDouble = (a) -> a + 1.0;
     assertTrue(compose(intDouble, intFunc).equals(compose(intDouble, intFunc)));
   }
 }

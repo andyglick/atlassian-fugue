@@ -68,14 +68,12 @@ public class ExceptionHandlersTest {
   @Test public void loggingExceptionHandlerNull() {
     ExceptionHandler exceptionHandler = ExceptionHandlers.loggingExceptionHandler(null);
 
-    assertThat(exceptionHandler.getClass(),
-      Matchers.<Class<? extends ExceptionHandler>> is(ExceptionHandlers.LoggingExceptionHandler.class));
-    assertThat(((ExceptionHandlers.LoggingExceptionHandler) exceptionHandler).logger(),
-      equalTo(ExceptionHandlers.logger()));
+    assertThat(exceptionHandler.getClass(), Matchers.<Class<? extends ExceptionHandler>> is(ExceptionHandlers.LoggingExceptionHandler.class));
+    assertThat(((ExceptionHandlers.LoggingExceptionHandler) exceptionHandler).logger(), equalTo(ExceptionHandlers.logger()));
   }
 
-  @Test(expected = InvocationTargetException.class) public void nonInstantiable() throws NoSuchMethodException,
-    InvocationTargetException, IllegalAccessException, InstantiationException {
+  @Test(expected = InvocationTargetException.class) public void nonInstantiable() throws NoSuchMethodException, InvocationTargetException,
+    IllegalAccessException, InstantiationException {
     Constructor<ExceptionHandlers> declaredConstructor = ExceptionHandlers.class.getDeclaredConstructor();
     declaredConstructor.setAccessible(true);
     declaredConstructor.newInstance();

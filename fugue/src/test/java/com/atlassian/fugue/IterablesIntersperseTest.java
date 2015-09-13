@@ -31,7 +31,7 @@ public class IterablesIntersperseTest {
   }
 
   @Test public void interspersedSupplier() {
-    Supplier<Integer> count = new Supplier<Integer>() {
+    final Supplier<Integer> count = new Supplier<Integer>() {
       int count = 0;
 
       @Override public Integer get() {

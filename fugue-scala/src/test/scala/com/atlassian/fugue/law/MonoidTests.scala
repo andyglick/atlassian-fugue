@@ -17,29 +17,26 @@
 package com.atlassian.fugue.law
 
 import com.atlassian.fugue.Monoid
-import com.atlassian.fugue.law.IsEq._
-import com.atlassian.fugue.law.MonoidLaws.monoidLaws
 import org.scalacheck.Prop._
-import org.scalacheck.{Arbitrary, Properties}
+import org.scalacheck.{ Arbitrary, Properties }
 
 import scala.collection.JavaConversions._
-import scala.collection.mutable.ListBuffer
 
 object MonoidTests {
 
   def apply[A: Arbitrary](monoid: Monoid[A]) = new Properties("monoid") {
 
-    val laws = monoidLaws(monoid)
+    val laws = new MonoidLaws(monoid)
 
-    property("semigroup") = SemigroupTests(monoid)
+    property("append is associative") = forAll((x: A, y: A, z: A) => laws.semigroupAssociative(x, y, z))
 
     property("left identity") = forAll((x: A) => laws.monoidLeftIdentity(x))
 
     property("right identity") = forAll((x: A) => laws.monoidRightIdentity(x))
 
-    property("sum is equivalent to foldr") = forAll((aa: List[A]) => isEq(aa.fold(monoid.zero())((a1, a2) => monoid.append(a1, a2)), monoid.sum(aa)))
+    property("sum is equivalent to fold") = forAll((aa: List[A]) => laws.sumEqualFold(aa))
 
-    property("multiply is consistent with sum") = sizedProp(n => forAll((a: A) => isEq(monoid.sum(asJavaIterable(ListBuffer.fill(n)(a))), monoid.multiply(n, a))))
+    property("multiply is consistent with sum") = sizedProp(n => forAll((a: A) => laws.multiplyEqualRepeatedAppend(n, a)))
 
   }
 

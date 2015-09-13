@@ -25,7 +25,7 @@ import static org.junit.Assert.assertThat;
 public class IterablesCollectTest {
 
   @Test public void collectIterableFindsRightType() {
-    Iterable<Integer> collected = Iterables.collect(Arrays.asList("a", 11), Functions.isInstanceOf(Integer.class));
+    final Iterable<Integer> collected = Iterables.collect(Arrays.asList("a", 11), Functions.isInstanceOf(Integer.class));
     assertThat(collected, contains(11));
   }
 }

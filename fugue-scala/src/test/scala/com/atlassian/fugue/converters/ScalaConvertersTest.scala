@@ -16,12 +16,12 @@
 package com.atlassian.fugue.converters
 
 import java.util.Date
-import java.util.function.{BiFunction => JFunction2, Function => JFunction, Predicate => JPredicate, Supplier => JSupplier}
+import java.util.function.{ BiFunction => JFunction2, Function => JFunction, Predicate => JPredicate, Supplier => JSupplier }
 
 import com.atlassian.fugue
 import com.atlassian.fugue.Suppliers
 import org.hamcrest.Matchers.is
-import org.junit.Assert.{assertThat, assertTrue}
+import org.junit.Assert.{ assertThat, assertTrue }
 import org.junit.Test
 
 import scala.util.control.Exception.catching

@@ -21,11 +21,13 @@ import org.junit.Test;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import static com.atlassian.fugue.Iterables.take;
 import static com.atlassian.fugue.Iterables.map;
+import static com.atlassian.fugue.Iterables.take;
+import static com.atlassian.fugue.Iterables.takeWhile;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.emptyIterable;
 import static org.junit.Assert.assertThat;
 
 public class IterablesTakeTest {
@@ -38,11 +40,11 @@ public class IterablesTakeTest {
   }
 
   @Test public void takeNoneFromList() {
-    assertThat(take(0, asList(1, 2, 3, 4)), Matchers.<Integer>emptyIterable());
+    assertThat(take(0, asList(1, 2, 3, 4)), Matchers.<Integer> emptyIterable());
   }
 
   @Test public void takeNoneFromNonList() {
-    assertThat(take(0, asIterable(1, 2, 3, 4)), Matchers.<Integer>emptyIterable());
+    assertThat(take(0, asIterable(1, 2, 3, 4)), Matchers.<Integer> emptyIterable());
   }
 
   @Test public void takeAllFromList() {
@@ -86,6 +88,30 @@ public class IterablesTakeTest {
   }
 
   @SafeVarargs static <A> Iterable<A> asIterable(final A... as) {
-    return map(asList(as), Functions.<A>identity()::apply);
+    return map(asList(as), Functions.<A> identity()::apply);
+  }
+
+  @Test public void takeWhileTest() {
+    assertThat(takeWhile(asList(1, 2, 3, 4), i -> i < 2), contains(1));
+  }
+
+  @Test public void takeWhileAll() {
+    assertThat(takeWhile(asList(1, 2, 3, 4), i -> true), contains(1, 2, 3, 4));
+  }
+
+  @Test public void takeWhileNone() {
+    assertThat(takeWhile(asList(1, 2, 3, 4), i -> false), emptyIterable());
+  }
+
+  @Test(expected = NullPointerException.class) public void takeWhileNull() {
+    takeWhile(null, null);
+  }
+
+  @Test(expected = NullPointerException.class) public void takeWhileNullWithPredicate() {
+    takeWhile(null, x -> true);
+  }
+
+  @Test(expected = NullPointerException.class) public void takeWhileNullPredicate() {
+    takeWhile(Iterables.emptyIterable(), null);
   }
 }

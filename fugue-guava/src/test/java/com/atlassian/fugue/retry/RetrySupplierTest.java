@@ -85,8 +85,8 @@ public class RetrySupplierTest {
   }
 
   @Test public void supplierEarlyExit() {
-    when(supplier.get()).thenThrow(new RuntimeException("First attempt")).thenReturn(RESULT)
-      .thenThrow(new RuntimeException("Third attempt")).thenThrow(new RuntimeException("Fourth attempt"));
+    when(supplier.get()).thenThrow(new RuntimeException("First attempt")).thenReturn(RESULT).thenThrow(new RuntimeException("Third attempt"))
+      .thenThrow(new RuntimeException("Fourth attempt"));
 
     final String result = new RetrySupplier<>(supplier, ATTEMPTS).get();
     assertThat(result, equalTo(RESULT));

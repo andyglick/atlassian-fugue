@@ -18,6 +18,7 @@ package com.atlassian.fugue;
 import org.junit.Test;
 
 import java.util.NoSuchElementException;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -26,8 +27,8 @@ import static org.hamcrest.Matchers.is;
 public class SuppliersTest {
 
   @Test public void ofInstance() {
-    Integer instance = 29;
-    Supplier<Integer> integerSupplier = Suppliers.ofInstance(instance);
+    final Integer instance = 29;
+    final Supplier<Integer> integerSupplier = Suppliers.ofInstance(instance);
 
     assertThat(integerSupplier.get(), is(29));
 
@@ -37,7 +38,7 @@ public class SuppliersTest {
   }
 
   @Test public void alwaysTrue() {
-    Supplier<Boolean> alwaysTrue = Suppliers.alwaysTrue();
+    final Supplier<Boolean> alwaysTrue = Suppliers.alwaysTrue();
 
     assertThat(alwaysTrue.get(), is(true));
     assertThat(alwaysTrue.get(), is(true));
@@ -45,7 +46,7 @@ public class SuppliersTest {
   }
 
   @Test public void alwaysFalse() {
-    Supplier<Boolean> alwaysFalse = Suppliers.alwaysFalse();
+    final Supplier<Boolean> alwaysFalse = Suppliers.alwaysFalse();
 
     assertThat(alwaysFalse.get(), is(false));
     assertThat(alwaysFalse.get(), is(false));
@@ -53,9 +54,9 @@ public class SuppliersTest {
   }
 
   @Test public void alwaysNull() {
-    Supplier<Object> alwaysNull = Suppliers.alwaysNull();
+    final Supplier<Object> alwaysNull = Suppliers.alwaysNull();
 
-    Object nully = null;
+    final Object nully = null;
     assertThat(alwaysNull.get(), is(nully));
     assertThat(alwaysNull.get(), is(nully));
     assertThat(alwaysNull.get(), is(nully));
@@ -76,4 +77,23 @@ public class SuppliersTest {
   @Test public void fromFunctionString() {
     assertThat(Suppliers.fromFunction(UtilityFunctions.reverse, "collywobble").get(), is("elbbowylloc"));
   }
+
+  @Test public void memoize() {
+    AtomicInteger intRef = new AtomicInteger(1);
+    Supplier<Integer> memoize = Suppliers.memoize(() -> intRef.get());
+
+    assertThat(memoize.get(), is(1));
+    intRef.set(2);
+    assertThat(memoize.get(), is(1));
+  }
+
+  @Test public void weakMemoize() {
+    AtomicInteger intRef = new AtomicInteger(Integer.valueOf(1));
+    Supplier<Integer> weakMemoized = Suppliers.weakMemoize(() -> intRef.get());
+
+    assertThat(weakMemoized.get(), is(1));
+    intRef.set(Integer.valueOf(2));
+    assertThat(weakMemoized.get(), is(1));
+  }
+
 }

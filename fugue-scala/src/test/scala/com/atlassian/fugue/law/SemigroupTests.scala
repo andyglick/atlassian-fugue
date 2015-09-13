@@ -20,21 +20,24 @@ import java.util.function.BinaryOperator
 
 import com.atlassian.fugue.Semigroup
 import com.atlassian.fugue.law.IsEq._
-import com.atlassian.fugue.law.SemigroupLaws.semigroupLaws
 import org.scalacheck.Prop._
-import org.scalacheck.{Arbitrary, Properties}
+import org.scalacheck.{ Arbitrary, Properties }
+
+import scala.collection.JavaConversions._
+import scala.collection.mutable.ListBuffer
 
 object SemigroupTests {
 
   def apply[A: Arbitrary](semigroup: Semigroup[A]) = new Properties("Semigroup") {
 
-    val laws = semigroupLaws(semigroup)
+    val laws = new SemigroupLaws(semigroup)
 
     property("append is associative") = forAll((x: A, y: A, z: A) => laws.semigroupAssociative(x, y, z))
 
-    val asBinaryOp = semigroup.asInstanceOf[BinaryOperator[A]]
+    property("sumNel is equivalent to fold") = forAll((a: A, aa: List[A]) => laws.sumNelEqualFold(a, aa))
 
-    property("apply is same as append") = forAll((a1: A, a2: A) => isEq(asBinaryOp.apply(a1, a2), semigroup.append(a1, a2)))
+    property("multiply1p is consistent with sumNel") = sizedProp(n => forAll((a: A) => laws.multiply1pEqualRepeatedAppend(n, a)))
+
   }
 
 }
