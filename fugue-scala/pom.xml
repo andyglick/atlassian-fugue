@@ -10,8 +10,8 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>fugue-parent</artifactId>
-        <groupId>com.atlassian.fugue</groupId>
-        <version>3.0.0-m008-SNAPSHOT</version>
+        <groupId>io.atlassian.fugue</groupId>
+        <version>3.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>fugue-scala</artifactId>
@@ -37,6 +37,18 @@
                         <goals>
                             <goal>compile</goal>
                             <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>doc-jar</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>add-source</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -79,7 +91,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.atlassian.fugue</groupId>
+            <groupId>io.atlassian.fugue</groupId>
             <artifactId>fugue</artifactId>
             <scope>provided</scope>
             <version>${fugue.version}</version>
@@ -120,5 +132,21 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>
+                <version>${scala-maven-plugin.version}</version>
+                <configuration>
+                    <jvmArgs>
+                        <jvmArg>-Xms64m</jvmArg>
+                        <jvmArg>-Xmx1024m</jvmArg>
+                    </jvmArgs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
 
 </project>
