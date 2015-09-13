@@ -10,8 +10,8 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>fugue-parent</artifactId>
-        <groupId>com.atlassian.fugue</groupId>
-        <version>3.0.0-m008-SNAPSHOT</version>
+        <groupId>io.atlassian.fugue</groupId>
+        <version>3.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>fugue-guava</artifactId>
@@ -37,9 +37,9 @@
                 <configuration>
                     <instructions>
                         <Export-Package>
-                            com.atlassian.fugue.deprecated.*;version="${fugue.osgi.import.version}",
-                            com.atlassian.fugue.extras.*;version="${fugue.osgi.import.version}",
-                            com.atlassian.fugue.retry.*;version="${fugue.osgi.import.version}"
+                            io.atlassian.fugue.deprecated.*;version="${fugue.osgi.import.version}",
+                            io.atlassian.fugue.extras.*;version="${fugue.osgi.import.version}",
+                            io.atlassian.fugue.retry.*;version="${fugue.osgi.import.version}"
                         </Export-Package>
                         <Import-Package>
                             *
@@ -65,7 +65,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.atlassian.fugue</groupId>
+            <groupId>io.atlassian.fugue</groupId>
             <artifactId>fugue</artifactId>
             <scope>provided</scope>
             <version>${project.version}</version>

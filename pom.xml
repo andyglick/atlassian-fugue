@@ -10,14 +10,14 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.atlassian.pom</groupId>
-        <artifactId>public-pom</artifactId>
-        <version>3.0.91</version>
+        <artifactId>central-pom</artifactId>
+        <version>4.0.4</version>
     </parent>
 
-    <groupId>com.atlassian.fugue</groupId>
+    <groupId>io.atlassian.fugue</groupId>
     <artifactId>fugue-parent</artifactId>
     <packaging>pom</packaging>
-    <version>3.0.0-m008-SNAPSHOT</version>
+    <version>3.0.1-SNAPSHOT</version>
     <name>Functional Extensions Library</name>
 
     <licenses>
@@ -38,6 +38,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+        <maven.javadoc.plugin.version>2.10.3</maven.javadoc.plugin.version>
         <clover.version>4.0.4</clover.version>
         <mockito-core.version>1.8.4</mockito-core.version>
         <junit.version>4.12</junit.version>
@@ -69,6 +70,14 @@
                 <groupId>net.revelc.code</groupId>
                 <artifactId>formatter-maven-plugin</artifactId>
                 <version>0.5.2</version>
+                <executions>
+                    <execution>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
                     <configFile>${project.basedir}/../src/etc/eclipse/formatter.xml</configFile>
                 </configuration>
@@ -88,12 +97,6 @@
                 <configuration>
                     <preserveDanglingCloseParenthesis>true</preserveDanglingCloseParenthesis>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-                <!-- needed for the distribution management below -->
-                <version>3.3</version>
             </plugin>
             <plugin>
                 <groupId>com.atlassian.maven.plugins</groupId>
