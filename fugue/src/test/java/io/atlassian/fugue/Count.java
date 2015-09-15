@@ -18,7 +18,7 @@ package io.atlassian.fugue;
 /**
  * Simply counts how many times it was applied.
  */
-class Count<A> implements Effect<A> {
+@SuppressWarnings("deprecation") class Count<A> implements Effect<A> {
   static <A> int countEach(final Iterable<A> a) {
     final Count<A> counter = new Count<>();
     a.forEach(counter);

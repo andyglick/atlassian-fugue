@@ -119,6 +119,7 @@ public class EitherRightBiasTest {
 
   @Test public void foreachRight() {
     final AtomicBoolean called = new AtomicBoolean(false);
+    @SuppressWarnings("deprecation")
     final Effect<Integer> effect = integer -> called.set(true);
 
     r.forEach(effect);
@@ -128,6 +129,7 @@ public class EitherRightBiasTest {
 
   @Test public void foreachLeft() {
     final AtomicBoolean called = new AtomicBoolean(false);
+    @SuppressWarnings("deprecation")
     final Effect<Integer> effect = integer -> called.set(true);
 
     l.forEach(effect);

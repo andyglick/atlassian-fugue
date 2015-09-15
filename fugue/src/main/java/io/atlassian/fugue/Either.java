@@ -247,7 +247,7 @@ public abstract class Either<L, R> implements Serializable {
    * @since 2.3
    * @deprecated use {@link #forEach(Consumer)} instead
    */
-  public final void foreach(final Effect<? super R> effect) {
+  @Deprecated public final void foreach(final Effect<? super R> effect) {
     right().foreach(effect);
   }
 
