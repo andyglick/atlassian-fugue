@@ -14,24 +14,27 @@
    limitations under the License.
  */
 
-package com.atlassian.fugue;
+package io.atlassian.fugue;
 
-import static com.atlassian.fugue.Iterables.concat;
-import static com.atlassian.fugue.Pair.pair;
+import static io.atlassian.fugue.Iterables.concat;
+import static io.atlassian.fugue.Pair.pair;
 import static java.util.Collections.singletonList;
 
 /**
- * A Monoid is an algebraic structure consisting of an associative binary operation across the values of a given type (a monoid is a {@link Semigroup})
- * and an identity element for this operation.
- * Implementations must follow the monoidal laws:
+ * A Monoid is an algebraic structure consisting of an associative binary
+ * operation across the values of a given type (a monoid is a {@link Semigroup})
+ * and an identity element for this operation. Implementations must follow the
+ * monoidal laws:
  * <ul>
  * <li><em>Left Identity</em>; forall x. append(zero(), x) == x</li>
  * <li><em>Right Identity</em>; forall x. append(x, zero()) == x</li>
- * <li><em>Associativity</em>; forall  x y z. append(append(x, y), z) == append(x, append(y, z))</li>
+ * <li><em>Associativity</em>; forall x y z. append(append(x, y), z) ==
+ * append(x, append(y, z))</li>
  * </ul>
- * Methods {@link #sum(Iterable)} and {@link #multiply(int, Object)} can be overriden for performance reason, especially if
- * {@link #sum(Iterable)} can be implemented to not require evaluation of the whole iterable.
- * All other default methods should not be overriden.
+ * Methods {@link #sum(Iterable)} and {@link #multiply(int, Object)} can be
+ * overriden for performance reason, especially if {@link #sum(Iterable)} can be
+ * implemented to not require evaluation of the whole iterable. All other
+ * default methods should not be overriden.
  *
  * @see Semigroup
  * @since 3.1
@@ -57,12 +60,14 @@ public interface Monoid<A> extends Semigroup<A> {
 
   /**
    * Returns a value summed <code>n</code> times (<code>a + a + ... + a</code>).
-   * The default definition uses peasant multiplication, exploiting associativity to only
-   * require `O(log n)` uses of {@link #append(Object, Object)}.
+   * The default definition uses peasant multiplication, exploiting
+   * associativity to only require `O(log n)` uses of
+   * {@link #append(Object, Object)}.
    *
    * @param n multiplier
    * @param a the value to be reapeatly summed
-   * @return <code>a</code> summed <code>n</code> times. If <code>n <= 0</code>, returns <code>zero()</code>
+   * @return <code>a</code> summed <code>n</code> times. If <code>n <= 0</code>,
+   * returns <code>zero()</code>
    */
   default A multiply(final int n, final A a) {
     return (n <= 0) ? zero() : Semigroup.super.multiply1p(n - 1, a);
@@ -71,10 +76,11 @@ public interface Monoid<A> extends Semigroup<A> {
   // Derived methods: should not be overriden:
 
   /**
-   * Intersperses the given value between each two elements of the collection, and sums the result.
+   * Intersperses the given value between each two elements of the collection,
+   * and sums the result.
    *
    * @param as An iterable of values.
-   * @param a  The value to intersperse between values of the given iterable.
+   * @param a The value to intersperse between values of the given iterable.
    * @return The sum of the given values and the interspersed value.
    */
   default A intersperse(final Iterable<? extends A> as, final A a) {

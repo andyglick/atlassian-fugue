@@ -1,10 +1,10 @@
-package com.atlassian.fugue
+package io.atlassian.fugue
 
 import java.math.BigInteger
 
-import com.atlassian.fugue.Either.{ left, right }
-import com.atlassian.fugue.Option.{ none, some }
-import com.atlassian.fugue.Pair.pair
+import io.atlassian.fugue.Either.{ left, right }
+import io.atlassian.fugue.Option.{ none, some }
+import io.atlassian.fugue.Pair.pair
 import org.scalacheck.Arbitrary._
 import org.scalacheck.{ Arbitrary, Gen }
 
@@ -31,7 +31,7 @@ trait TestInstances {
 
   implicit val booleanArbitrary: Arbitrary[java.lang.Boolean] = Arbitrary(arbitrary[Boolean] map (_.booleanValue()))
 
-  implicit val unitArbitrary: Arbitrary[Unit] = Arbitrary(Gen.const(Unit.VALUE))
+  implicit val unitArbitrary: Arbitrary[Unit] = Arbitrary(Gen.const(Unit.Unit()))
 
   implicit def eitherArbitrary[A: Arbitrary, B: Arbitrary]: Arbitrary[Either[A, B]] =
     Arbitrary(arbitrary[scala.Either[A, B]] map (e => e.fold(left(_), right(_))))

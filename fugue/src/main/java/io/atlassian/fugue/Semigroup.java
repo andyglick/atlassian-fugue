@@ -14,18 +14,22 @@
    limitations under the License.
  */
 
-package com.atlassian.fugue;
+package io.atlassian.fugue;
 
-import static com.atlassian.fugue.Pair.pair;
+import static io.atlassian.fugue.Pair.pair;
 
 /**
- * A Semigroup is an algebraic structure consisting of an associative binary operation across the values of a given type (the Semigroup type argument).
+ * A Semigroup is an algebraic structure consisting of an associative binary
+ * operation across the values of a given type (the Semigroup type argument).
  * Implementations must satisfy the law of associativity:
  * <ul>
- * <li><em>Associativity</em>; forall  x y z. append(append(x, y), z) == append(x, append(y, z))</li>
+ * <li><em>Associativity</em>; forall x y z. append(append(x, y), z) ==
+ * append(x, append(y, z))</li>
  * </ul>
- * Methods {@link #sumNel(Object, Iterable)} and {@link #multiply1p(int, Object)} can be overriden for performance reason, especially if
- * {@link #sumNel(Object, Iterable)} can be implemented to not require evaluation of the whole iterable.
+ * Methods {@link #sumNel(Object, Iterable)} and
+ * {@link #multiply1p(int, Object)} can be overriden for performance reason,
+ * especially if {@link #sumNel(Object, Iterable)} can be implemented to not
+ * require evaluation of the whole iterable.
  *
  * @see Monoid
  * @since 3.1
@@ -59,13 +63,15 @@ public interface Semigroup<A> {
   }
 
   /**
-   * Returns a value summed <code>n + 1</code> times (<code>a + a + ... + a</code>)
-   * The default definition uses peasant multiplication, exploiting associativity to only
-   * require `O(log n)` uses of {@link #append(Object, Object)}.
+   * Returns a value summed <code>n + 1</code> times (
+   * <code>a + a + ... + a</code>) The default definition uses peasant
+   * multiplication, exploiting associativity to only require `O(log n)` uses of
+   * {@link #append(Object, Object)}.
    *
    * @param n multiplier
    * @param a the value to be reapeatly summed n + 1 times
-   * @return <code>a</code> summed <code>n</code> times. If <code>n <= 0</code>, returns <code>zero()</code>
+   * @return <code>a</code> summed <code>n</code> times. If <code>n <= 0</code>,
+   * returns <code>zero()</code>
    */
   default A multiply1p(int n, A a) {
     if (n <= 0) {

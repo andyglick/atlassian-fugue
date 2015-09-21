@@ -14,7 +14,7 @@
    limitations under the License.
  */
 
-package com.atlassian.fugue
+package io.atlassian.fugue
 
 import org.scalacheck.Prop
 import org.scalacheck.Prop._

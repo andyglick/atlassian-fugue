@@ -14,29 +14,29 @@
    limitations under the License.
  */
 
-package com.atlassian.fugue.law
+package io.atlassian.fugue.law
 
-import java.util.function.BinaryOperator
-
-import com.atlassian.fugue.Semigroup
-import com.atlassian.fugue.law.IsEq._
+import io.atlassian.fugue.Monoid
 import org.scalacheck.Prop._
 import org.scalacheck.{ Arbitrary, Properties }
 
 import scala.collection.JavaConversions._
-import scala.collection.mutable.ListBuffer
 
-object SemigroupTests {
+object MonoidTests {
 
-  def apply[A: Arbitrary](semigroup: Semigroup[A]) = new Properties("Semigroup") {
+  def apply[A: Arbitrary](monoid: Monoid[A]) = new Properties("monoid") {
 
-    val laws = new SemigroupLaws(semigroup)
+    val laws = new MonoidLaws(monoid)
 
     property("append is associative") = forAll((x: A, y: A, z: A) => laws.semigroupAssociative(x, y, z))
 
-    property("sumNel is equivalent to fold") = forAll((a: A, aa: List[A]) => laws.sumNelEqualFold(a, aa))
+    property("left identity") = forAll((x: A) => laws.monoidLeftIdentity(x))
 
-    property("multiply1p is consistent with sumNel") = sizedProp(n => forAll((a: A) => laws.multiply1pEqualRepeatedAppend(n, a)))
+    property("right identity") = forAll((x: A) => laws.monoidRightIdentity(x))
+
+    property("sum is equivalent to fold") = forAll((aa: List[A]) => laws.sumEqualFold(aa))
+
+    property("multiply is consistent with sum") = sizedProp(n => forAll((a: A) => laws.multiplyEqualRepeatedAppend(n, a)))
 
   }
 

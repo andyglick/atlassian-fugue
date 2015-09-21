@@ -14,20 +14,20 @@
    limitations under the License.
  */
 
-package com.atlassian.fugue;
+package io.atlassian.fugue;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import static com.atlassian.fugue.Either.left;
-import static com.atlassian.fugue.Either.right;
-import static com.atlassian.fugue.Iterables.*;
-import static com.atlassian.fugue.Option.none;
-import static com.atlassian.fugue.Option.some;
-import static com.atlassian.fugue.Options.filterNone;
-import static com.atlassian.fugue.Unit.Unit;
+import static io.atlassian.fugue.Either.left;
+import static io.atlassian.fugue.Either.right;
+import static io.atlassian.fugue.Iterables.*;
+import static io.atlassian.fugue.Option.none;
+import static io.atlassian.fugue.Option.some;
+import static io.atlassian.fugue.Options.filterNone;
+import static io.atlassian.fugue.Unit.Unit;
 import static java.util.Collections.emptyList;
 
 /**
@@ -229,8 +229,7 @@ public final class Monoids {
     }
   };
 
-  private Monoids() {
-  }
+  private Monoids() {}
 
   /**
    * A monoid for functions.
@@ -249,7 +248,7 @@ public final class Monoids {
       }
 
       @Override public Function<A, B> sum(Iterable<Function<A, B>> fs) {
-        return a -> mb.sum(map(fs, Functions.<A, B>apply(a)));
+        return a -> mb.sum(map(fs, Functions.<A, B> apply(a)));
       }
 
       @Override public Function<A, B> multiply(int n, Function<A, B> f) {
@@ -363,7 +362,7 @@ public final class Monoids {
 
       @Override public Option<A> sum(Iterable<Option<A>> os) {
         Iterable<A> memoized = Iterables.memoize(Options.flatten(os));
-        return first(memoized).fold(() -> Option.<A>none(), a -> some(semigroup.sumNel(a, drop(1, memoized))));
+        return first(memoized).fold(() -> Option.<A> none(), a -> some(semigroup.sumNel(a, drop(1, memoized))));
       }
 
       @Override public Option<A> multiply(int n, Option<A> as) {
@@ -373,8 +372,8 @@ public final class Monoids {
   }
 
   /**
-   * A monoid Sums up values inside either {@see Semigroups#either}.
-   * Monoid of right values provide the identity element of the resulting monoid.
+   * A monoid Sums up values inside either {@see Semigroups#either}. Monoid of
+   * right values provide the identity element of the resulting monoid.
    *
    * @param lS semigroup for left values
    * @param rM monoid for right values.
@@ -385,8 +384,8 @@ public final class Monoids {
     return new Monoid<Either<L, R>>() {
 
       @Override public Either<L, R> append(Either<L, R> e1, Either<L, R> e2) {
-        return e1.<Either<L, R>>fold(l1 -> e2.<Either<L, R>>fold(l2 -> left(lS.append(l1, l2)), r2 -> e1),
-          r1 -> e2.<Either<L, R>>fold(l2 -> e2, r2 -> right(rM.append(r1, r2))));
+        return e1.<Either<L, R>> fold(l1 -> e2.<Either<L, R>> fold(l2 -> left(lS.append(l1, l2)), r2 -> e1),
+          r1 -> e2.<Either<L, R>> fold(l2 -> e2, r2 -> right(rM.append(r1, r2))));
       }
 
       @Override public Either<L, R> zero() {

@@ -14,13 +14,14 @@
    limitations under the License.
  */
 
-package com.atlassian.fugue.law;
+package io.atlassian.fugue.law;
 
-import com.atlassian.fugue.Functions;
-import com.atlassian.fugue.Iterables;
-import com.atlassian.fugue.Semigroup;
+import io.atlassian.fugue.Functions;
+import io.atlassian.fugue.Iterables;
+import io.atlassian.fugue.Semigroup;
+import io.atlassian.fugue.Semigroup;
 
-import static com.atlassian.fugue.law.IsEq.isEq;
+import static io.atlassian.fugue.law.IsEq.isEq;
 
 /**
  * Laws for a semigroup
@@ -34,15 +35,15 @@ public final class SemigroupLaws<A> {
   }
 
   public IsEq<A> semigroupAssociative(A x, A y, A z) {
-    return isEq(semigroup.append(semigroup.append(x, y), z), semigroup.append(x, semigroup.append(y, z)));
+    return IsEq.isEq(semigroup.append(semigroup.append(x, y), z), semigroup.append(x, semigroup.append(y, z)));
   }
 
   public IsEq<A> sumNelEqualFold(A head, Iterable<A> tail) {
-    return isEq(semigroup.sumNel(head, tail), Functions.fold(semigroup::append, head, tail));
+    return IsEq.isEq(semigroup.sumNel(head, tail), Functions.fold(semigroup::append, head, tail));
   }
 
   public IsEq<A> multiply1pEqualRepeatedAppend(int n, A a) {
-    return isEq(semigroup.multiply1p(n, a), semigroup.sumNel(a, Iterables.take(n, Iterables.cycle(a))));
+    return IsEq.isEq(semigroup.multiply1p(n, a), semigroup.sumNel(a, Iterables.take(n, Iterables.cycle(a))));
   }
 
 }

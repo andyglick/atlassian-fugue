@@ -14,13 +14,13 @@
    limitations under the License.
  */
 
-package com.atlassian.fugue
+package io.atlassian.fugue
 
 import java.math.{ BigDecimal, BigInteger }
 import java.util.Comparator
 
-import com.atlassian.fugue.Semigroups._
-import com.atlassian.fugue.law.SemigroupTests
+import Semigroups._
+import io.atlassian.fugue.law.SemigroupTests
 
 class SemigroupsSpec extends TestSuite {
 

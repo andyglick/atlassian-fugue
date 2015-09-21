@@ -1,4 +1,4 @@
-package com.atlassian.fugue
+package io.atlassian.fugue
 
 import org.scalatest.prop.Checkers
 import org.scalatest.{ FunSuite, Matchers }

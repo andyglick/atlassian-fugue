@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package com.atlassian.fugue.law;
+package io.atlassian.fugue.law;
 
 import java.util.function.BiFunction;
 

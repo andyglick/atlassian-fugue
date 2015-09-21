@@ -14,15 +14,15 @@
    limitations under the License.
  */
 
-package com.atlassian.fugue;
+package io.atlassian.fugue;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Comparator;
 import java.util.function.Function;
 
-import static com.atlassian.fugue.Either.left;
-import static com.atlassian.fugue.Either.right;
+import static io.atlassian.fugue.Either.left;
+import static io.atlassian.fugue.Either.right;
 
 /**
  * {@link Semigroup} instances.
@@ -72,8 +72,7 @@ public final class Semigroups {
    */
   public static final Semigroup<Long> longMinimum = Math::min;
 
-  private Semigroups() {
-  }
+  private Semigroups() {}
 
   public static <A> Semigroup<A> first() {
     return (x, y) -> x;
@@ -132,7 +131,8 @@ public final class Semigroups {
   }
 
   /**
-   * Sums up values inside either, if both are left or right. Returns first left otherwise.
+   * Sums up values inside either, if both are left or right. Returns first left
+   * otherwise.
    * <ul>
    * <li>right(v1) + right(v2) → right(v1 + v2)</li>
    * <li>right(v1) + -left(v2) → left(v2)</li>
@@ -145,8 +145,8 @@ public final class Semigroups {
    * @return A semigroup that Sums up values inside either.
    */
   public static <L, R> Semigroup<Either<L, R>> either(Semigroup<L> lS, Semigroup<R> rS) {
-    return (e1, e2) -> e1.<Either<L, R>>fold(l1 -> e2.<Either<L, R>>fold(l2 -> left(lS.append(l1, l2)), r2 -> e1),
-      r1 -> e2.<Either<L, R>>fold(l2 -> e2, r2 -> right(rS.append(r1, r2))));
+    return (e1, e2) -> e1.<Either<L, R>> fold(l1 -> e2.<Either<L, R>> fold(l2 -> left(lS.append(l1, l2)), r2 -> e1),
+      r1 -> e2.<Either<L, R>> fold(l2 -> e2, r2 -> right(rS.append(r1, r2))));
   }
 
 }

@@ -14,11 +14,12 @@
    limitations under the License.
  */
 
-package com.atlassian.fugue
+package io.atlassian.fugue
 
-import com.atlassian.fugue.Monoid._
-import com.atlassian.fugue.law.IsEq._
-import com.atlassian.fugue.law.MonoidTests
+import Monoid._
+import io.atlassian.fugue.law.{ IsEq, MonoidTests }
+import IsEq._
+import io.atlassian.fugue.law.MonoidTests
 import org.scalacheck.Prop._
 import org.scalacheck.{ Arbitrary, Properties }
 

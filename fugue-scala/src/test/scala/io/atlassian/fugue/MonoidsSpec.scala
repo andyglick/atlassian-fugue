@@ -14,15 +14,16 @@
    limitations under the License.
  */
 
-package com.atlassian.fugue
+package io.atlassian.fugue
 
 import java.math.BigInteger
 import java.util.Arrays.asList
 import java.util.stream.{ Collectors, StreamSupport }
 
-import com.atlassian.fugue.Either.right
-import com.atlassian.fugue.Monoids._
-import com.atlassian.fugue.law.MonoidTests
+import io.atlassian.fugue.Either.right
+import Monoids._
+import io.atlassian.fugue.Option.some
+import io.atlassian.fugue.law.MonoidTests
 
 class MonoidsSpec extends TestSuite {
 
@@ -93,18 +94,18 @@ class MonoidsSpec extends TestSuite {
   }
 
   test("firstOption") {
-    firstOption[String]().append(Option.some("a"), Option.some("b")) shouldEqual Option.some("a")
+    firstOption[String]().append(some("a"), some("b")) shouldEqual some("a")
     check(MonoidTests(firstOption[Integer]()))
   }
 
   test("lastOption") {
-    lastOption[String]().append(Option.some("a"), Option.some("b")) shouldEqual Option.some("b")
+    lastOption[String]().append(some("a"), some("b")) shouldEqual some("b")
     check(MonoidTests(lastOption[Integer]()))
   }
 
   test("option") {
-    option(Semigroups.intMaximum).append(Option.some(1), Option.some(2)) shouldEqual Option.some(2)
-    option(Semigroups.intMaximum).append(Option.some(3), Option.some(2)) shouldEqual Option.some(3)
+    option(Semigroups.intMaximum).append(some(1), some(2)) shouldEqual some(2)
+    option(Semigroups.intMaximum).append(some(3), some(2)) shouldEqual some(3)
     check(MonoidTests(option(Semigroups.intMaximum)))
   }
 
