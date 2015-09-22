@@ -36,6 +36,18 @@ For Gradle add fugue as a dependency to your `dependencies` section:
 
     compile 'io.atlassian.fugue:fugue:3.0.0'
 
+## Building fugue
+
+To build and install to local Maven repo, run from project root folder:
+
+    $ mvn clean install
+
+To generate javadocs:
+
+    $ mvn clean install javadoc:javadoc
+
+This will generate javadocs for each project module in ```<module-dir>/target/site/apidocs/```.
+
 ## Guava compatibility
 
 In the past Guava was a core dependency. That dependency has been removed in favor of a new module
