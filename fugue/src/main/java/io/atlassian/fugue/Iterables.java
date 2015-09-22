@@ -49,6 +49,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
+import java.util.stream.StreamSupport;
 
 /**
  * Contains static utility methods that operate on or return objects of type
@@ -224,20 +225,21 @@ public class Iterables {
   }
 
   /**
-   * Uses a {@link Collector} to collect an {@link Iterable}. See <a href=
-   * "https://docs.oracle.com/javase/8/docs/api/java/util/stream/Collector.html"
-   * >Java Collector's javadocs</a> for more details about Java8's Collectors.
-   * 
+   * Uses a {@link Collector} to collect/reduce an {@link Iterable}.
+   *
    * @param elements the iterable to run the Collector on. Can not be null.
    * @param collector the {@link Collector}. Can not be null.
    * @param <T> the type of elements in the original {@link Iterable}
    * @return the result of the reduction, using the given {@link Collector}
+   * @see <a href=
+   * "https://docs.oracle.com/javase/8/docs/api/java/util/stream/Collector.html"
+   * >Java Collector's javadocs</a> for more details on how to use Collectors.
    * @since 3.1
    */
   public static <T, A, R> R collect(final Iterable<T> elements, final Collector<T, A, R> collector) {
-    java.util.Objects.requireNonNull(elements, "elements");
-    java.util.Objects.requireNonNull(collector, "collector");
-    return java.util.stream.StreamSupport.stream(elements.spliterator(), false).collect(collector);
+    requireNonNull(elements, "elements is null.");
+    requireNonNull(collector, "collector is null.");
+    return StreamSupport.stream(elements.spliterator(), false).collect(collector);
   }
 
   /**
