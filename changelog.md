@@ -5,6 +5,7 @@ This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 
 ## [3.0.0]
 ### Added
+- JDK 1.8 is now the require minimum Java version
 - Added getOr(Supplier<A>) to the Maybe interface as a replacement for the now deprecated getOrElse(Supplier<A>).
 - Iterables.size returning the size of the input iterable (generally in O(n))
 - Iterables.map create a new iterable by applying a function to each element
