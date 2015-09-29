@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 This project attempts to adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.6.1] - 2015-10-17
+### Removed
+- Deprecation on Funciton2. Fugue 2.x will maintain compatibility with JDK 1.6
+
 ## [2.6.0] - 2015-08-31
 ### Added
 - Added additional right-biased method to Either:
