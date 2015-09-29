@@ -64,6 +64,10 @@ To enable this syntax you need to add the following to your scope:
 
     import io.atlassian.fugue.converters.ScalaConverters._
 
+## Android
+
+Please use 2.x releases for projects requiring JDK 1.6. The latest release 2.x release is v2.6.1.
+
 ## Migrating from Fugue v2.x to v3.x
 
 See `changelog.md` for a list of changes. The root package changed from com to io to allow a
