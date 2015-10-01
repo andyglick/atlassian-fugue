@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -380,7 +381,9 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
       throw ifUndefined.get();
     }
 
-    @Override public void foreach(final Effect<? super Object> effect) {}
+    @Deprecated @Override public void foreach(final Effect<? super Object> effect) {}
+
+    @Override public void forEach(final Consumer<? super Object> effect) {}
 
     @Override public Optional<Object> toOptional() {
       return Optional.empty();
@@ -426,8 +429,12 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
       return get();
     }
 
-    @Override public void foreach(final Effect<? super A> effect) {
+    @Deprecated @Override public void foreach(final Effect<? super A> effect) {
       effect.apply(value);
+    }
+
+    @Override public void forEach(final Consumer<? super A> effect) {
+      effect.accept(value);
     }
 
     @Override public Optional<A> toOptional() {
