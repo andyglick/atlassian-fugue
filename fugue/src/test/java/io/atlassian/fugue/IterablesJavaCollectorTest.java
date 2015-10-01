@@ -19,6 +19,7 @@ import org.junit.Test;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collector;
 
 import static io.atlassian.fugue.Iterables.collect;
 import static java.util.Arrays.asList;
@@ -29,10 +30,11 @@ import static org.junit.Assert.*;
 
 public class IterablesJavaCollectorTest {
 
-  @Test public void collectIterableWithJavaCollector() {
+  @Test public void collectStringIterableAsIntegerList() {
     final Iterable<String> from = asList("3", "2", "1", "4", "5");
 
     final List<Integer> collectedAsIntList = collect(from, mapping(Integer::parseInt, toList()));
+
     assertNotNull(collectedAsIntList);
     assertEquals(5, collectedAsIntList.size());
     assertEquals((Integer) 3, collectedAsIntList.get(0));
@@ -40,11 +42,21 @@ public class IterablesJavaCollectorTest {
     assertEquals((Integer) 1, collectedAsIntList.get(2));
     assertEquals((Integer) 4, collectedAsIntList.get(3));
     assertEquals((Integer) 5, collectedAsIntList.get(4));
+  }
+
+  @Test public void collectStringIterableAsIntegerAverage() {
+    final Iterable<String> from = asList("3", "2", "1", "4", "5");
 
     final Double average = collect(from, averagingInt(Integer::parseInt));
+
     assertEquals((Double) 3.0, average);
+  }
+
+  @Test public void groupStringIterableIntoIntegerLists() {
+    final Iterable<String> from = asList("3", "2", "1", "4", "5");
 
     final Map<Boolean, List<Integer>> grouped = collect(from, mapping(Integer::valueOf, groupingBy(integer -> integer <= 3)));
+
     assertNotNull(grouped);
     assertEquals(2, grouped.size());
     assertTrue(grouped.containsKey(true));
@@ -60,31 +72,54 @@ public class IterablesJavaCollectorTest {
     assertTrue(grouped.get(false).contains(5));
   }
 
-  @Test public void collectEmptyIterables() {
+  @Test public void emptyStringIterableToIntegerListMustResultInEmptyList() {
     final Iterable<String> from = emptyList();
+
     final List<Integer> collectedAsIntList = collect(from, mapping(Integer::parseInt, toList()));
+
     assertNotNull(collectedAsIntList);
     assertEquals(0, collectedAsIntList.size());
+  }
+
+  @Test public void collectEmptyStringAsIntegerAverageMustResultInZero() {
+    final Iterable<String> from = emptyList();
 
     final Double average = collect(from, averagingInt(Integer::parseInt));
+
     assertEquals((double) 0, average, 0);
+  }
+
+  @Test public void groupEmptyStringIterableIntoIntegerListsMustResultInEmptyList() {
+    final Iterable<String> from = emptyList();
 
     final Map<Boolean, List<Integer>> grouped = collect(from, mapping(Integer::valueOf, groupingBy(integer -> integer <= 3)));
+
     assertNotNull(grouped);
     assertEquals(0, grouped.size());
   }
 
-  @Test public void collectIterableWithSizeOne() {
+  @Test public void stringIterableWithSizeOneToIntegerList() {
     final Iterable<String> from = singletonList("123");
 
     final List<Integer> collectedAsIntList = collect(from, mapping(Integer::parseInt, toList()));
+
     assertNotNull(collectedAsIntList);
     assertEquals(1, collectedAsIntList.size());
+  }
+
+  @Test public void stringIterableWithSizeOneToIntegerAverage() {
+    final Iterable<String> from = singletonList("123");
 
     final Double average = collect(from, averagingInt(Integer::parseInt));
+
     assertEquals((double) 123, average, 0);
+  }
+
+  @Test public void groupStringIterableWithSizeOneToIntegerLists() {
+    final Iterable<String> from = singletonList("123");
 
     final Map<Boolean, List<Integer>> grouped = collect(from, mapping(Integer::valueOf, groupingBy(integer -> integer <= 3)));
+
     assertNotNull(grouped);
     assertEquals(1, grouped.size());
     assertTrue(grouped.containsKey(false));
@@ -93,11 +128,23 @@ public class IterablesJavaCollectorTest {
     assertTrue(grouped.get(false).contains(123));
   }
 
-  @Test(expected = RuntimeException.class) public void collectorThrowsRuntimeException() {
+  @Test(expected = JavaCollectorRuntimeException.class) public void collectorThrowsRuntimeException() {
     final Iterable<String> from = asList("3", "2", "1", "4", "5");
 
     collect(from, mapping(s -> {
-      throw new RuntimeException("oops!");
+      throw new JavaCollectorRuntimeException();
     }, toList()));
   }
+
+  @Test(expected = NullPointerException.class) @SuppressWarnings("unchecked") public void nullCollectorMustResultInNPE() {
+    final Iterable<String> from = asList("3", "2", "1", "4", "5");
+
+    collect(from, (Collector) null);
+  }
+
+  @Test(expected = NullPointerException.class) public void nullIterableMustResultInNPE() {
+    collect(null, toList());
+  }
+
+  private static class JavaCollectorRuntimeException extends RuntimeException {}
 }
