@@ -3,7 +3,9 @@ All notable changes to this project will be documented in this file.
 
 This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 
-## [3.1.0] - [unreleased]
+## [3.1.0]
+### Added
+- Iterables.collect(Iterable, java.util.stream.Collector) to reduce an Iterable using a Java8 Collector
 
 ## [3.0.0]
 ### Added
