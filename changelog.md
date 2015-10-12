@@ -6,9 +6,17 @@ This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 ## [3.1.0] - [unreleased]
 ### Added
 - Monoid and Semigroup abstractions
+- Iterables.collect(Iterable, java.util.stream.Collector) to reduce an Iterable using a Java8 Collector
+- Either.forEach(Consumer<T>)
+- Option.forEach(Consumer<T>)
+- The Applicant interface (standalone) with one method: forEach(java.util.function.Consumer)
+
+### Deprecated
+- Effect.Applicant.foreach and all its implementations
 
 ## [3.0.0]
 ### Added
+- JDK 1.8 is now the require minimum Java version
 - Added getOr(Supplier<A>) to the Maybe interface as a replacement for the now deprecated getOrElse(Supplier<A>).
 - Iterables.size returning the size of the input iterable (generally in O(n))
 - Iterables.map create a new iterable by applying a function to each element
@@ -60,6 +68,10 @@ slf4j and jsr305.
 return the same message string inside the exception.
 - Option.find and Option.filterNone were deprecated in 1.1 and are now removed. Find their replacements in Options.
 - Dependency on maven.atlassian.com. You no longer need to include that repository
+
+## [2.6.1] - 2015-10-17
+### Removed
+- Deprecation on Funciton2. Fugue 2.x will maintain compatibility with JDK 1.6
 
 ## [2.6.0] - 2015-08-31
 ### Added

@@ -36,7 +36,7 @@ import java.util.function.Supplier;
  * @param <A> the contained type
  * @since 1.0
  */
-public interface Maybe<A> extends Iterable<A>, Effect.Applicant<A> {
+@SuppressWarnings("deprecation") public interface Maybe<A> extends Iterable<A>, Effect.Applicant<A> {
   /**
    * Get the value if defined. Throw an exception otherwise.
    *

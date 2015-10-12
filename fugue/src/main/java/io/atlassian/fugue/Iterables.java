@@ -48,6 +48,8 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collector;
+import java.util.stream.StreamSupport;
 
 /**
  * Contains static utility methods that operate on or return objects of type
@@ -220,6 +222,24 @@ public class Iterables {
    */
   public static <A, B> Iterable<B> collect(final Iterable<? extends A> from, final Function<? super A, Option<B>> partial) {
     return new CollectingIterable<>(from, partial);
+  }
+
+  /**
+   * Uses a {@link Collector} to collect/reduce an {@link Iterable}.
+   *
+   * @param elements the iterable to run the Collector on. Can not be null.
+   * @param collector the {@link Collector}. Can not be null.
+   * @param <T> the type of elements in the original {@link Iterable}
+   * @return the result of the reduction, using the given {@link Collector}
+   * @see <a href=
+   * "https://docs.oracle.com/javase/8/docs/api/java/util/stream/Collector.html"
+   * >Java Collector's javadocs</a> for more details on how to use Collectors.
+   * @since 3.1
+   */
+  public static <T, A, R> R collect(final Iterable<T> elements, final Collector<T, A, R> collector) {
+    requireNonNull(elements, "elements is null.");
+    requireNonNull(collector, "collector is null.");
+    return StreamSupport.stream(elements.spliterator(), false).collect(collector);
   }
 
   /**

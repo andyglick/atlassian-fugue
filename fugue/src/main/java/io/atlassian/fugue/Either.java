@@ -18,6 +18,7 @@ package io.atlassian.fugue;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -244,9 +245,21 @@ public abstract class Either<L, R> implements Serializable {
    * @param effect the input to use for performing the effect on contained
    * value.
    * @since 2.3
+   * @deprecated use {@link #forEach(Consumer)} instead
    */
-  public final void foreach(final Effect<? super R> effect) {
+  @Deprecated public final void foreach(final Effect<? super R> effect) {
     right().foreach(effect);
+  }
+
+  /**
+   * Perform the given side-effect for the contained element if it is a right
+   *
+   * @param effect the input to use for performing the effect on contained
+   * value.
+   * @since 3.1
+   */
+  public final void forEach(final Consumer<? super R> effect) {
+    right().forEach(effect);
   }
 
   /**
@@ -610,9 +623,15 @@ public abstract class Either<L, R> implements Serializable {
       return isDefined() ? get() : x;
     }
 
-    @Override public final void foreach(final Effect<? super A> f) {
+    @Deprecated @Override public final void foreach(final Effect<? super A> f) {
       if (isDefined()) {
         f.apply(get());
+      }
+    }
+
+    @Override public final void forEach(final Consumer<? super A> f) {
+      if (isDefined()) {
+        f.accept(get());
       }
     }
   }

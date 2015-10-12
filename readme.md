@@ -36,6 +36,18 @@ For Gradle add fugue as a dependency to your `dependencies` section:
 
     compile 'io.atlassian.fugue:fugue:3.0.0'
 
+## Building fugue
+
+To build and install to local Maven repo, run from project root folder:
+
+    $ mvn clean install
+
+To generate javadocs:
+
+    $ mvn clean install javadoc:javadoc
+
+This will generate javadocs for each project module in ```<module-dir>/target/site/apidocs/```.
+
 ## Guava compatibility
 
 In the past Guava was a core dependency. That dependency has been removed in favor of a new module
@@ -51,6 +63,35 @@ other way you can use `.toScala`.
 To enable this syntax you need to add the following to your scope:
 
     import io.atlassian.fugue.converters.ScalaConverters._
+
+## Android
+
+Please use 2.x releases for projects requiring JDK 1.6. The latest release 2.x release is v2.6.1.
+
+## Migrating from Fugue v2.x to v3.x
+
+See `changelog.md` for a list of changes. The root package changed from com to io to allow a
+more gradual inclusion of the breaking changes introduced between v2 and v3. All the functional 
+interfaces that came from Guava in v2 have been replaced with their equivalents in the Java 8
+util.functions package. Replacing instances of com.google.common.base.Function with
+java.util.function.Function will address that change. The Fugue Iterables class in v2 added some
+missing functionality to the Guava Iterables class in a complementary rather than replacement 
+fashion. This required one of the two Iterables classes to be imported by it's fully qualified
+name when both were needed in a single source file. Immutable maps have been moved to the
+fugue-guava module along with the com.atlassian.retry package, Throwables, and the Function2
+interface. The Scala type conversion code has been migrated from using, and clashing on, asScala
+to toScala. Many of the previously existing deprecations have been removed.
+
+* Replace com.google.common.base.Function with java.util.function.Function for each of: Function, 
+Supplier, and Predicate
+* Replace com.atlassian.fugue.Function2 with java.util.function.BiFunction
+* See `changelog.md` for new implementations of functions on Iterables to reduce the places where
+you need to import io.atlassian.fugue.Iterables by it's FQN
+* Find io.atlassian.fugue.retry.*, ImmutableMaps, Function2, and Throwables in the fugue-guava module
+* Replace usages of asScala/asJava with toScala/toJava
+* When conversion between a JDK and a Guava functional interface is required use of a method reference 
+on the abstract method is recommended
+* See the `changelog.md` for further changes
 
 ## Contributors
 

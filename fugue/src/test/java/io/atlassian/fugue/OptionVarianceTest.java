@@ -91,7 +91,7 @@ public class OptionVarianceTest {
   @Test public void forEach() {
     final Maybe<Child> some = some(new Child());
     Count<Grand> e = new Count<>();
-    some.foreach(e);
+    some.forEach(e);
     assertThat(e.count(), equalTo(1));
   }
 }

@@ -53,7 +53,7 @@ public class EitherVarianceTest {
 
   @Test public void forEach() {
     final Count<Number> e = new Count<>();
-    r.right().foreach(e);
+    r.right().forEach(e);
     assertThat(e.count(), equalTo(1));
   }
 }
