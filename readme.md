@@ -109,3 +109,10 @@ Scala:
 Source code should must be accompanied by a tests covering new functionality. Run tests with:
 
     mvn verify
+
+For test coverage and other Clover checks:
+
+    mvn clean clover2:setup test clover2:aggregate clover2:clover
+
+Note that you need a Clover license to run the above command. For more details about running Clover 
+see [Clover Maven Plugin's User Guide](https://confluence.atlassian.com/display/CLOVER/Clover-for-Maven+2+and+3+User's+Guide).
