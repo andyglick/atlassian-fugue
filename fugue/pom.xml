@@ -18,6 +18,10 @@
     <packaging>jar</packaging>
     <name>Functional Extensions</name>
 
+    <properties>
+        <scala.version>2.11.7</scala.version>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
