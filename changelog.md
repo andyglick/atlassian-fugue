@@ -5,6 +5,7 @@ This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 
 ## [3.1.0] - [unreleased]
 ### Added
+- Monoid and Semigroup abstractions
 - Iterables.collect(Iterable, java.util.stream.Collector) to reduce an Iterable using a Java8 Collector
 - Either.forEach(Consumer<T>)
 - Option.forEach(Consumer<T>)
