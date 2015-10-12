@@ -55,7 +55,7 @@ public interface Monoid<A> extends Semigroup<A> {
    * @return The sum of the given values.
    */
   default A sum(final Iterable<A> as) {
-    return Semigroup.super.sumNel(zero(), as);
+    return Semigroup.super.sumNonEmpty(zero(), as);
   }
 
   /**
@@ -87,7 +87,7 @@ public interface Monoid<A> extends Semigroup<A> {
     return sum(Iterables.intersperse(as, a));
   }
 
-  @Override default A sumNel(A head, Iterable<A> tail) {
+  @Override default A sumNonEmpty(A head, Iterable<A> tail) {
     return sum(concat(singletonList(head), tail));
   }
 

@@ -362,7 +362,7 @@ public final class Monoids {
 
       @Override public Option<A> sum(Iterable<Option<A>> os) {
         Iterable<A> memoized = Iterables.memoize(Options.flatten(os));
-        return first(memoized).fold(() -> Option.<A> none(), a -> some(semigroup.sumNel(a, drop(1, memoized))));
+        return first(memoized).fold(() -> Option.<A> none(), a -> some(semigroup.sumNonEmpty(a, drop(1, memoized))));
       }
 
       @Override public Option<A> multiply(int n, Option<A> as) {

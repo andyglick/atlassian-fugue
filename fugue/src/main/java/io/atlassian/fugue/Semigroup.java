@@ -26,10 +26,10 @@ import static io.atlassian.fugue.Pair.pair;
  * <li><em>Associativity</em>; forall x y z. append(append(x, y), z) ==
  * append(x, append(y, z))</li>
  * </ul>
- * Methods {@link #sumNel(Object, Iterable)} and
+ * Methods {@link #sumNonEmpty(Object, Iterable)} and
  * {@link #multiply1p(int, Object)} can be overriden for performance reason,
- * especially if {@link #sumNel(Object, Iterable)} can be implemented to not
- * require evaluation of the whole iterable.
+ * especially if {@link #sumNonEmpty(Object, Iterable)} can be implemented to
+ * not require evaluation of the whole iterable.
  *
  * @see Monoid
  * @since 3.1
@@ -46,13 +46,13 @@ public interface Semigroup<A> {
   A append(final A a1, final A a2);
 
   /**
-   * Reduce a 'non-empty list' with {@link #append(Object, Object)}
+   * Reduce a 'non-empty' Iterable with {@link #append(Object, Object)}
    *
-   * @param head the head of the non-empty
-   * @param tail the tail of non-empty
+   * @param head the head of the 'non-empty' Iterable
+   * @param tail the tail (maybe an empty Iterable).
    * @return the sum of all elements.
    */
-  default A sumNel(A head, Iterable<A> tail) {
+  default A sumNonEmpty(A head, Iterable<A> tail) {
 
     A currentValue = head;
     for (final A a : tail) {

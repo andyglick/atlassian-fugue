@@ -33,7 +33,7 @@ object SemigroupTests {
 
     property("append is associative") = forAll((x: A, y: A, z: A) => laws.semigroupAssociative(x, y, z))
 
-    property("sumNel is equivalent to fold") = forAll((a: A, aa: List[A]) => laws.sumNelEqualFold(a, aa))
+    property("sumNel is equivalent to fold") = forAll((a: A, aa: List[A]) => laws.sumNonEmptyEqualFold(a, aa))
 
     property("multiply1p is consistent with sumNel") = sizedProp(n => forAll((a: A) => laws.multiply1pEqualRepeatedAppend(n, a)))
 
