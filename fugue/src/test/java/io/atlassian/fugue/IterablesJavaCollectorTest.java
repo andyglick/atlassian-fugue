@@ -139,7 +139,7 @@ public class IterablesJavaCollectorTest {
   @Test(expected = NullPointerException.class) @SuppressWarnings("unchecked") public void nullCollectorMustResultInNPE() {
     final Iterable<String> from = asList("3", "2", "1", "4", "5");
 
-    collect(from, (Collector) null);
+    collect(from, (Collector<String, Iterable<String>, Iterable<String>>) null);
   }
 
   @Test(expected = NullPointerException.class) public void nullIterableMustResultInNPE() {
