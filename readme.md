@@ -106,13 +106,19 @@ Scala:
     mvn formatter:format
     mvn scalariform:format
 
-Source code should must be accompanied by a tests covering new functionality. Run tests with:
+Source code should must be accompanied by tests covering new functionality. Run tests with:
 
     mvn verify
 
-For test coverage and other Clover checks:
+For test coverage and other Clover checks run with the ```clover.all``` profile enabled (highly recommended):
 
-    mvn clean clover2:setup test clover2:aggregate clover2:clover
+    mvn verify -Pclover.all
 
-Note that you need a Clover license to run the above command. For more details about running Clover 
-see [Clover Maven Plugin's User Guide](https://confluence.atlassian.com/display/CLOVER/Clover-for-Maven+2+and+3+User's+Guide).
+*An open source Clover license is provided in the source code. If you are having any issues with the 
+provided license (e.g. it has expired), please raise an issue and a member of the team will renew it.*
+
+**Note:** It is not recommended to install/deploy classes that are instrumented. As a result, it is not 
+recommended to run ```mvn install``` or ```mvn deploy``` with ```-Pclover.all```. It is better to separate 
+the builds for verification and install/deploy.
+
+For more details read the [Clover documentation](https://confluence.atlassian.com/display/CLOVER/Basic+usage).
