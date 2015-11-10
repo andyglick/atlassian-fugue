@@ -70,8 +70,8 @@ public interface Semigroup<A> {
    *
    * @param n multiplier
    * @param a the value to be reapeatly summed n + 1 times
-   * @return <code>a</code> summed <code>n</code> times. If <code>n <= 0</code>,
-   * returns <code>zero()</code>
+   * @return {@code a} summed {@code n} times. If {@code n <= 0}, returns
+   * {@code zero()}
    */
   default A multiply1p(int n, A a) {
     if (n <= 0) {
@@ -111,7 +111,7 @@ public interface Semigroup<A> {
   /**
    * Return the dual Semigroup of a semigroup
    *
-   * @param semigroup
+   * @param semigroup base semigroup to create the dual from
    * @return a semigroup appending in reverse order
    */
   static <A> Semigroup<A> dual(Semigroup<A> semigroup) {

@@ -66,8 +66,8 @@ public interface Monoid<A> extends Semigroup<A> {
    *
    * @param n multiplier
    * @param a the value to be reapeatly summed
-   * @return <code>a</code> summed <code>n</code> times. If <code>n <= 0</code>,
-   * returns <code>zero()</code>
+   * @return {@code a} summed {@code n} times. If {@code n <= 0}, returns
+   * {@code zero()}
    */
   default A multiply(final int n, final A a) {
     return (n <= 0) ? zero() : Semigroup.super.multiply1p(n - 1, a);
@@ -132,5 +132,4 @@ public interface Monoid<A> extends Semigroup<A> {
       }
     };
   }
-
 }

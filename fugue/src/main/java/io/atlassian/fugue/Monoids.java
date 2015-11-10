@@ -372,7 +372,7 @@ public final class Monoids {
   }
 
   /**
-   * A monoid Sums up values inside either {@see Semigroups#either}. Monoid of
+   * A monoid Sums up values inside either {@link Semigroups#either}. Monoid of
    * right values provide the identity element of the resulting monoid.
    *
    * @param lS semigroup for left values
