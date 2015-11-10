@@ -19,6 +19,7 @@ import java.util.function.BiFunction;
 
 /**
  * Represents two values of the same type that are expected to be equal.
+ *
  */
 public final class IsEq<A> {
 
@@ -26,16 +27,31 @@ public final class IsEq<A> {
 
   private final A rhs;
 
-  public IsEq(A lhs, A rhs) {
+  /**
+   * Build an equality instance
+   *
+   * @param lhs first value to compare
+   * @param rhs second value to compare
+   */
+  public IsEq(final A lhs, final A rhs) {
     this.lhs = lhs;
     this.rhs = rhs;
   }
 
-  public <R> R match(BiFunction<A, A, R> cases) {
+  /**
+   * Function to use for comparison of two equal elements
+   *
+   * @param cases a {@link java.util.function.BiFunction} taking two values of this equality class
+   * @param <R> result type
+   * @return a R object.
+   */
+  public <R> R match(final BiFunction<A, A, R> cases) {
     return cases.apply(lhs, rhs);
   }
 
   /**
+   * Access the left element
+   *
    * @return left hand side,
    */
   public A lhs() {
@@ -43,13 +59,23 @@ public final class IsEq<A> {
   }
 
   /**
+   * Access the right element
+   *
    * @return right hand side,
    */
   public A rhs() {
     return rhs;
   }
 
-  public static <A> IsEq<A> isEq(A lhs, A rhs) {
+  /**
+   * Two equal elements
+   *
+   * @param lhs an A
+   * @param rhs an A
+   * @param <A> equality type
+   * @return a {@link io.atlassian.fugue.law.IsEq} instance
+   */
+  public static <A> IsEq<A> isEq(final A lhs, final A rhs) {
     return new IsEq<>(lhs, rhs);
   }
 }

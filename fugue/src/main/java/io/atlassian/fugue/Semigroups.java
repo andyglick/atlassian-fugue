@@ -25,7 +25,7 @@ import static io.atlassian.fugue.Either.left;
 import static io.atlassian.fugue.Either.right;
 
 /**
- * {@link Semigroup} instances.
+ * {@link io.atlassian.fugue.Semigroup} instances.
  *
  * @see Monoids
  * @since 3.1
@@ -74,10 +74,22 @@ public final class Semigroups {
 
   private Semigroups() {}
 
+  /**
+   * Return the first value, ignore the second
+   *
+   * @param <A> result type
+   * @return a {@link io.atlassian.fugue.Semigroup} that ignores the second input
+   */
   public static <A> Semigroup<A> first() {
     return (x, y) -> x;
   }
 
+  /**
+   * Return the last value, ignore the first
+   *
+   * @param <A> result type
+   * @return a {@link io.atlassian.fugue.Semigroup} that ignores the first input
+   */
   public static <A> Semigroup<A> last() {
     return (x, y) -> y;
   }
@@ -87,6 +99,8 @@ public final class Semigroups {
    *
    * @param sb The semigroup for the codomain.
    * @return A semigroup for functions.
+   * @param <A> input type
+   * @param <B> composable output type
    */
   public static <A, B> Semigroup<Function<A, B>> function(final Semigroup<B> sb) {
     return (a1, a2) -> a -> sb.append(a1.apply(a), a2.apply(a));
@@ -97,6 +111,7 @@ public final class Semigroups {
    *
    * @param comparator the comparator used to define the max of two value.
    * @return A max semigroup.
+   * @param <A> result type
    */
   public static <A> Semigroup<A> max(final Comparator<A> comparator) {
     return (a1, a2) -> comparator.compare(a1, a2) < 0 ? a2 : a1;
@@ -107,6 +122,7 @@ public final class Semigroups {
    *
    * @param comparator the comparator used to define the min of two value.
    * @return A min semigroup.
+   * @param <A> result type
    */
   public static <A> Semigroup<A> min(final Comparator<A> comparator) {
     return (a1, a2) -> comparator.compare(a1, a2) > 0 ? a2 : a1;
@@ -116,6 +132,7 @@ public final class Semigroups {
    * A semigroup that yields the maximum of comparable values.
    *
    * @return A max semigroup.
+   * @param <A> result type
    */
   public static <A extends Comparable<A>> Semigroup<A> max() {
     return (a1, a2) -> a1.compareTo(a2) < 0 ? a2 : a1;
@@ -125,6 +142,7 @@ public final class Semigroups {
    * A semigroup that yields the minimum of comparable values.
    *
    * @return A min semigroup.
+   * @param <A> result type
    */
   public static <A extends Comparable<A>> Semigroup<A> min() {
     return (a1, a2) -> a1.compareTo(a2) > 0 ? a2 : a1;
@@ -140,11 +158,13 @@ public final class Semigroups {
    * <li>left(v1) + left(v2) → left(v1 + v2)</li>
    * </ul>
    *
+   * @param <L> left type
+   * @param <R> right type
    * @param lS Semigroup for left values
    * @param rS Semigroup for right values
    * @return A semigroup that Sums up values inside either.
    */
-  public static <L, R> Semigroup<Either<L, R>> either(Semigroup<L> lS, Semigroup<R> rS) {
+  public static <L, R> Semigroup<Either<L, R>> either(final Semigroup<L> lS, final Semigroup<R> rS) {
     return (e1, e2) -> e1.<Either<L, R>> fold(l1 -> e2.<Either<L, R>> fold(l2 -> left(lS.append(l1, l2)), r2 -> e1),
       r1 -> e2.<Either<L, R>> fold(l2 -> e2, r2 -> right(rS.append(r1, r2))));
   }

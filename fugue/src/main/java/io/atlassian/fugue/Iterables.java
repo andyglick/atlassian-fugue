@@ -225,12 +225,14 @@ public class Iterables {
   }
 
   /**
-   * Uses a {@link Collector} to collect/reduce an {@link Iterable}.
+   * Uses a {@link java.util.stream.Collector} to collect/reduce an {@link java.lang.Iterable}.
    *
    * @param elements the iterable to run the Collector on. Can not be null.
-   * @param collector the {@link Collector}. Can not be null.
-   * @param <T> the type of elements in the original {@link Iterable}
-   * @return the result of the reduction, using the given {@link Collector}
+   * @param collector the {@link java.util.stream.Collector}. Can not be null.
+   * @param <T> the type of elements in the original {@link java.lang.Iterable}
+   * @param <A> accumulator type
+   * @param <R> return type
+   * @return the result of the reduction, using the given {@link java.util.stream.Collector}
    * @see Collector javadocs for more details on how to use Collectors.
    * @since 3.1
    */
@@ -1002,6 +1004,7 @@ public class Iterables {
    * Merge a number of already sorted collections of elements into a single
    * collection of elements, using the elements natural ordering.
    *
+   * @param <A> collection type
    * @param xss collection of already sorted collections, must not be null and
    * must not return null
    * @return {@code xss} merged in a sorted order

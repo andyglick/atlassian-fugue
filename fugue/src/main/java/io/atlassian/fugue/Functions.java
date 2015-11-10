@@ -127,6 +127,7 @@ public class Functions {
    *
    * @param <F> the element type
    * @param <S> the accumulator function input type
+   * @param <T> the return result type
    * @param f the function to apply to all elements
    * @param zero the starting point for the function
    * @param elements the series of which each element will be accumulated into a
@@ -483,9 +484,10 @@ public class Functions {
   }
 
   /**
-   * Returns the identity function. Consider using {@link Function#identity()}
+   * Returns the identity function. Consider using {@link java.util.function.Function#identity()}
    *
    * @return a {@link java.util.function.Function} that retruns it's input.
+   * @param <A> a A object.
    */
   @SuppressWarnings("unchecked") public static <A> Function<A, A> identity() {
     // cast a singleton Function<Object, Object> to a more useful type

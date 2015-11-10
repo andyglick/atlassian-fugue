@@ -48,6 +48,7 @@ import java.util.function.Supplier;
   /**
    * Get the value if defined, otherwise returns {@code other}.
    *
+   * @param <B> default value type
    * @param other value to return if this {@link #isEmpty() is empty}
    * @return wrapped value if this {@link #isDefined() is defined}, otherwise
    * returns {@code other}
@@ -104,6 +105,7 @@ import java.util.function.Supplier;
    * <p>
    * Used when absolutely sure this {@link #isDefined() is defined}.
    *
+   * @param <X> exception type
    * @param ifUndefined the supplier of the throwable.
    * @throws X the throwable the supplier creates if there is no value.
    * @return the contained value.

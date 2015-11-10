@@ -138,6 +138,7 @@ public abstract class Either<L, R> implements Serializable {
   /**
    * Get the value if it is a right, otherwise returns {@code other}.
    *
+   * @param <X> default type
    * @param other value to return if this is a left
    * @return wrapped value if this is a right, otherwise returns {@code other}
    * @since 2.3
@@ -178,6 +179,7 @@ public abstract class Either<L, R> implements Serializable {
    * <p>
    * Used when absolutely sure this is a right.
    *
+   * @param <X> exception type
    * @param ifUndefined the supplier of the throwable.
    * @return the contained value.
    * @throws X the throwable the supplier creates if there is no value.
@@ -204,6 +206,7 @@ public abstract class Either<L, R> implements Serializable {
    * Binds the given function across the right hand side value if it is one.
    *
    * @param <X> the RHS type
+   * @param <LL> result type
    * @param f the function to bind.
    * @return A new either value after binding with the function applied if this
    * is a Right.
@@ -263,7 +266,7 @@ public abstract class Either<L, R> implements Serializable {
   }
 
   /**
-   * /** If this is a right, return the same right. Otherwise, return
+   * If this is a right, return the same right. Otherwise, return
    * {@code orElse}.
    *
    * @param orElse either to return if this is left

@@ -77,6 +77,7 @@ public class Eithers {
    * Either.
    *
    * @param <A> the value type
+   * @param <X> the exception type
    * @param either to extract from
    * @return the value from the RHS
    * @throws X the exception on the LHS
@@ -258,6 +259,7 @@ public class Eithers {
    * LL, which is a super type of L, keeping the right type unchanged.
    *
    * @param e the source either
+   * @param <L> the base type to upcast
    * @param <LL> the super type of the contained left type
    * @param <R> the contained right type
    * @return an either of left type LL and right type R
@@ -273,6 +275,7 @@ public class Eithers {
    *
    * @param e the source either
    * @param <L> the contained left type
+   * @param <R> the base type to upcast
    * @param <RR> the super type of the contained right type
    * @return an either of left type L and right type RR
    * @since 2.0

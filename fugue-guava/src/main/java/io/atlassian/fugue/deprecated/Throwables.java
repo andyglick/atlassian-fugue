@@ -64,6 +64,7 @@ import static java.util.Objects.requireNonNull;
    * convenience, as illustrated in the example above
    * @deprecated since 2.4, no need in Java7 with closeWithResources and
    * multi-catch
+   * @param <R> exception type
    */
   @Deprecated public static <R extends RuntimeException> R propagate(Throwable throwable, Function<Throwable, R> function) {
     propagateIfPossible(requireNonNull(throwable));
@@ -111,6 +112,7 @@ import static java.util.Objects.requireNonNull;
    * @see #propagate(Throwable, Function)
    * @deprecated since 2.4, no need in Java7 with closeWithResources and
    * multi-catch
+   * @param <R> exception type
    */
   @Deprecated public static <R extends RuntimeException> R propagate(Throwable throwable, Class<R> runtimeType) {
     return propagate(throwable, new ExceptionFunction<>(requireNonNull(runtimeType)));
