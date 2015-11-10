@@ -78,7 +78,8 @@ public final class Semigroups {
    * Return the first value, ignore the second
    *
    * @param <A> result type
-   * @return a {@link io.atlassian.fugue.Semigroup} that ignores the second input
+   * @return a {@link io.atlassian.fugue.Semigroup} that ignores the second
+   * input
    */
   public static <A> Semigroup<A> first() {
     return (x, y) -> x;

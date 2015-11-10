@@ -41,7 +41,8 @@ public final class IsEq<A> {
   /**
    * Function to use for comparison of two equal elements
    *
-   * @param cases a {@link java.util.function.BiFunction} taking two values of this equality class
+   * @param cases a {@link java.util.function.BiFunction} taking two values of
+   * this equality class
    * @param <R> result type
    * @return a R object.
    */

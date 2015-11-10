@@ -484,7 +484,8 @@ public class Functions {
   }
 
   /**
-   * Returns the identity function. Consider using {@link java.util.function.Function#identity()}
+   * Returns the identity function. Consider using
+   * {@link java.util.function.Function#identity()}
    *
    * @return a {@link java.util.function.Function} that retruns it's input.
    * @param <A> a A object.

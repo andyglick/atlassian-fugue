@@ -9,10 +9,11 @@ import java.util.function.Consumer;
  */
 @FunctionalInterface public interface Applicant<A> {
   /**
-   * Perform the given {@link java.util.function.Consumer} (side-effect) for each contained
-   * element.
+   * Perform the given {@link java.util.function.Consumer} (side-effect) for
+   * each contained element.
    *
-   * @param consumer the {@link java.util.function.Consumer} to apply on each element
+   * @param consumer the {@link java.util.function.Consumer} to apply on each
+   * element
    */
   void forEach(Consumer<? super A> consumer);
 }

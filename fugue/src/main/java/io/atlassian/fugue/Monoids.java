@@ -370,7 +370,7 @@ public final class Monoids {
 
       @Override public Option<A> sum(final Iterable<Option<A>> os) {
         final Iterable<A> memoized = Iterables.memoize(Options.flatten(os));
-        return first(memoized).fold(Option::<A>none, a -> some(semigroup.sumNonEmpty(a, drop(1, memoized))));
+        return first(memoized).fold(Option::<A> none, a -> some(semigroup.sumNonEmpty(a, drop(1, memoized))));
       }
 
       @Override public Option<A> multiply(final int n, final Option<A> as) {
@@ -380,8 +380,9 @@ public final class Monoids {
   }
 
   /**
-   * A monoid Sums up values inside either {@link io.atlassian.fugue.Semigroups#either}. Monoid of
-   * right values provide the identity element of the resulting monoid.
+   * A monoid Sums up values inside either
+   * {@link io.atlassian.fugue.Semigroups#either}. Monoid of right values
+   * provide the identity element of the resulting monoid.
    *
    * @param <L> desired left type
    * @param <R> desired right type

@@ -266,8 +266,8 @@ public abstract class Either<L, R> implements Serializable {
   }
 
   /**
-   * If this is a right, return the same right. Otherwise, return
-   * {@code orElse}.
+   * If this is a right, return the same right. Otherwise, return {@code orElse}
+   * .
    *
    * @param orElse either to return if this is left
    * @return this or {@code orElse}

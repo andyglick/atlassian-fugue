@@ -225,14 +225,16 @@ public class Iterables {
   }
 
   /**
-   * Uses a {@link java.util.stream.Collector} to collect/reduce an {@link java.lang.Iterable}.
+   * Uses a {@link java.util.stream.Collector} to collect/reduce an
+   * {@link java.lang.Iterable}.
    *
    * @param elements the iterable to run the Collector on. Can not be null.
    * @param collector the {@link java.util.stream.Collector}. Can not be null.
    * @param <T> the type of elements in the original {@link java.lang.Iterable}
    * @param <A> accumulator type
    * @param <R> return type
-   * @return the result of the reduction, using the given {@link java.util.stream.Collector}
+   * @return the result of the reduction, using the given
+   * {@link java.util.stream.Collector}
    * @see Collector javadocs for more details on how to use Collectors.
    * @since 3.1
    */
