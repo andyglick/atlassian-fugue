@@ -46,7 +46,7 @@
         <jsr305.version>3.0.0</jsr305.version>
         <guava.osgi.version>16.0.1</guava.osgi.version>
         <slf4j-api.version>1.6.0</slf4j-api.version>
-        <fugue.osgi.import.version>3.0.0</fugue.osgi.import.version>
+        <fugue.osgi.import.version>3.1.0</fugue.osgi.import.version>
     </properties>
 
     <issueManagement>
