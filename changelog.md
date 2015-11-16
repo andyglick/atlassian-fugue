@@ -3,7 +3,9 @@ All notable changes to this project will be documented in this file.
 
 This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 
-## [3.1.0] - [unreleased]
+## [3.2.0] - [unreleased]
+
+## [3.1.0]
 ### Added
 - Monoid and Semigroup abstractions
 - Iterables.collect(Iterable, java.util.stream.Collector) to reduce an Iterable using a Java8 Collector
