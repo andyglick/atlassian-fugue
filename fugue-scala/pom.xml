@@ -23,7 +23,6 @@
         <scala-maven-plugin.version>3.2.2</scala-maven-plugin.version>
         <scalacheck.version>1.12.4</scalacheck.version>
         <scalatest.version>3.0.0-M7</scalatest.version>
-        <fugue.version>${project.version}</fugue.version>
         <license.location>${project.basedir}/../clover.license</license.location>
     </properties>
 
@@ -95,7 +94,7 @@
             <groupId>io.atlassian.fugue</groupId>
             <artifactId>fugue</artifactId>
             <scope>provided</scope>
-            <version>${fugue.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.scala-lang</groupId>
