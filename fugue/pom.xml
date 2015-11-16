@@ -20,6 +20,7 @@
 
     <properties>
         <scala.version>2.11.7</scala.version>
+        <license.location>${project.basedir}/../clover.license</license.location>
     </properties>
 
     <build>

@@ -24,6 +24,7 @@
         <scalacheck.version>1.12.4</scalacheck.version>
         <scalatest.version>3.0.0-M7</scalatest.version>
         <fugue.version>${project.version}</fugue.version>
+        <license.location>${project.basedir}/../clover.license</license.location>
     </properties>
 
     <build>
