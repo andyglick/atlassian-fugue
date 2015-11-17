@@ -10,13 +10,50 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>fugue-parent</artifactId>
-        <groupId>com.atlassian.fugue</groupId>
-        <version>3.0.0-m007-SNAPSHOT</version>
+        <groupId>io.atlassian.fugue</groupId>
+        <version>3.1.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>fugue-guava</artifactId>
     <packaging>jar</packaging>
     <name>Functional Extensions Guava Inter-Ops</name>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                            <goal>bundle</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <instructions>
+                        <Export-Package>
+                            io.atlassian.fugue.deprecated.*;version="${fugue.osgi.import.version}",
+                            io.atlassian.fugue.extras.*;version="${fugue.osgi.import.version}",
+                            io.atlassian.fugue.retry.*;version="${fugue.osgi.import.version}"
+                        </Export-Package>
+                        <Import-Package>
+                            *
+                        </Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <properties>
+        <license.location>${project.basedir}/../clover.license</license.location>
+    </properties>
+
 
     <dependencies>
         <dependency>
@@ -32,7 +69,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.atlassian.fugue</groupId>
+            <groupId>io.atlassian.fugue</groupId>
             <artifactId>fugue</artifactId>
             <scope>provided</scope>
             <version>${project.version}</version>

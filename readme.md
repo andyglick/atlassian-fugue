@@ -2,65 +2,96 @@
 
 ## Functional Extensions
 
-Google's guava project is a solid utility library providing many useful interfaces
-and utilities, and it is a very commonly added dependency for most projects.
-Unfortunately, they have a strong NIH syndrome and are somewhat half-pregnant
-when it comes to functional-programming. This library attempts to round out some 
-of the deficiencies that a functional programmer finds when using Guava.
+Java 8 has standardised some of the basic function interfaces, but does not include quite a few more tools
+that a functional programmer may expect to be available. This library attempts to fill in some of the
+gaps when using Java 8.
 
-In particular it provides Option and Either types similar to the Scala library
-as well as a Pair.
+In particular it provides Option and Either types as well as a Pair.
 
-There also additional helper classes for common Function and Supplier operations.
+There also additional helper classes for common Function, Supplier, and Iterable operations.
 
 ## Issue Tracking
 
 Issues are tracked in the [fugue](https://bitbucket.org/atlassian/fugue/issues) project on bitbucket.
 
+## Change log
+
+Changes are documented in `changelog.md`. 
+
 ## Getting fugue
 
-Add the Atlassian public repository:
-
-
-    <repositories>
-        ...
-        <repository>
-          <id>atlassian-public</id>
-          <url>https://maven.atlassian.com/content/groups/public/</url>
-        </repository>
-        ...
-    </repositories>
-
-And then add fugue as a dependency to your pom.xml:
-
+Add fugue as a dependency to your pom.xml:
 
     <dependencies>
         ...
         <dependency>
-            <groupId>com.atlassian.fugue</groupId>
+            <groupId>io.atlassian.fugue</groupId>
             <artifactId>fugue</artifactId>
-            <version>2.2.0</version>
+            <version>3.0.0</version>
         </dependency>
         ...
     </dependencies>
+    
+For Gradle add fugue as a dependency to your `dependencies` section:
+
+    compile 'io.atlassian.fugue:fugue:3.0.0'
+
+## Building fugue
+
+To build and install to local Maven repo, run from project root folder:
+
+    $ mvn clean install
+
+To generate javadocs:
+
+    $ mvn clean install javadoc:javadoc
+
+This will generate javadocs for each project module in ```<module-dir>/target/site/apidocs/```.
 
 ## Guava compatibility
 
-This library mostly only depends on core Guava functionality and should be compatible with
-very old versions of Guava, and certainly with the newest versions. However, the tests may 
-rely on API that is only available in later versions (at the time of writing a minimum of 
-14.0 was needed to run the tests).
+In the past Guava was a core dependency. That dependency has been removed in favor of a new module
+`fugue-guava`. Code requiring direct interaction with Guava types can be found there.
 
-## Scala Integration
+## Scala integration
 
-From 2.2 there is a fugue-scala module that adds some helper methods in Scala to convert common 
-Fugue and Guava classes into their Scala equivalents and vice-versa. For instance, to convert a 
+From 2.2 there is a `fugue-scala` module that adds some helper methods in Scala to convert common 
+Fugue and Guava classes into their Scala equivalents and vice-versa. For instance, to convert a
 scala function `f` to a Java `Function<A, B>` there is syntax `.toJava` available and to go the
 other way you can use `.toScala`.
 
 To enable this syntax you need to add the following to your scope:
 
-    import com.atlassian.fugue.converters.ScalaConverters._
+    import io.atlassian.fugue.converters.ScalaConverters._
+
+## Android
+
+Please use 2.x releases for projects requiring JDK 1.6. The latest release 2.x release is v2.6.1.
+
+## Migrating from Fugue v2.x to v3.x
+
+See `changelog.md` for a list of changes. The root package changed from com to io to allow a
+more gradual inclusion of the breaking changes introduced between v2 and v3. All the functional 
+interfaces that came from Guava in v2 have been replaced with their equivalents in the Java 8
+util.functions package. Replacing instances of com.google.common.base.Function with
+java.util.function.Function will address that change. The Fugue Iterables class in v2 added some
+missing functionality to the Guava Iterables class in a complementary rather than replacement 
+fashion. This required one of the two Iterables classes to be imported by it's fully qualified
+name when both were needed in a single source file. Immutable maps have been moved to the
+fugue-guava module along with the com.atlassian.retry package, Throwables, and the Function2
+interface. The Scala type conversion code has been migrated from using, and clashing on, asScala
+to toScala. Many of the previously existing deprecations have been removed.
+
+* Replace com.google.common.base.Function with java.util.function.Function for each of: Function, 
+Supplier, and Predicate
+* Replace com.atlassian.fugue.Function2 with java.util.function.BiFunction
+* See `changelog.md` for new implementations of functions on Iterables to reduce the places where
+you need to import io.atlassian.fugue.Iterables by it's FQN
+* Find io.atlassian.fugue.retry.*, ImmutableMaps, Function2, and Throwables in the fugue-guava module
+* Replace usages of asScala/asJava with toScala/toJava
+* When conversion between a JDK and a Guava functional interface is required use of a method reference 
+on the abstract method is recommended
+* See the `changelog.md` for further changes
 
 ## Contributors
 
@@ -68,3 +99,25 @@ Source code should be formatted according to the local style, which is encoded i
 rules in:
 
     src/etc/eclipse/formatter.xml
+
+This can be applied by running maven-formatter-plugin for Java and maven-scalariform-plugin for
+Scala:
+
+    mvn formatter:format
+    mvn scalariform:format
+
+Source code should must be accompanied by tests covering new functionality. Run tests with:
+
+    mvn verify
+
+For test coverage and other Clover checks run (highly recommended):
+
+    mvn clean clover2:setup test clover2:aggregate clover2:clover
+
+*If you are having any issues with the provided clover license (e.g. it has expired), please raise an
+issue and a member of the team will renew it.*
+
+**Note:** It is not recommended to install/deploy classes that are instrumented for coverage. It is
+better to separate the builds for coverage verification and install/deploy.
+
+For more details read the [Clover documentation](https://confluence.atlassian.com/display/CLOVER/Basic+usage).

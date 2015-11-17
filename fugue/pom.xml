@@ -9,14 +9,19 @@
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.atlassian.fugue</groupId>
+        <groupId>io.atlassian.fugue</groupId>
         <artifactId>fugue-parent</artifactId>
-        <version>3.0.0-m007-SNAPSHOT</version>
+        <version>3.1.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>fugue</artifactId>
     <packaging>jar</packaging>
     <name>Functional Extensions</name>
+
+    <properties>
+        <scala.version>2.11.7</scala.version>
+        <license.location>${project.basedir}/../clover.license</license.location>
+    </properties>
 
     <build>
         <plugins>
@@ -36,12 +41,11 @@
                 <configuration>
                     <instructions>
                         <Export-Package>
-                            com.atlassian.fugue.*;version="${project.version}"
+                            io.atlassian.fugue.*;version="${project.version}"
                         </Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
-
         </plugins>
     </build>
 

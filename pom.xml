@@ -10,14 +10,14 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.atlassian.pom</groupId>
-        <artifactId>public-pom</artifactId>
-        <version>3.0.90</version>
+        <artifactId>central-pom</artifactId>
+        <version>4.0.4</version>
     </parent>
 
-    <groupId>com.atlassian.fugue</groupId>
+    <groupId>io.atlassian.fugue</groupId>
     <artifactId>fugue-parent</artifactId>
     <packaging>pom</packaging>
-    <version>3.0.0-m007-SNAPSHOT</version>
+    <version>3.1.1-SNAPSHOT</version>
     <name>Functional Extensions Library</name>
 
     <licenses>
@@ -39,13 +39,15 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
-        <clover.version>4.0.4</clover.version>
+        <maven.javadoc.plugin.version>2.10.3</maven.javadoc.plugin.version>
+        <clover.version>4.0.6</clover.version>
         <mockito-core.version>1.8.4</mockito-core.version>
         <junit.version>4.12</junit.version>
         <hamcrest.version>1.3</hamcrest.version>
         <jsr305.version>3.0.0</jsr305.version>
         <guava.osgi.version>16.0.1</guava.osgi.version>
         <slf4j-api.version>1.6.0</slf4j-api.version>
+        <fugue.osgi.import.version>3.1.0</fugue.osgi.import.version>
     </properties>
 
     <issueManagement>
@@ -60,21 +62,50 @@
         <connection>scm:git:git@bitbucket.org:atlassian/fugue.git</connection>
         <developerConnection>scm:git:git@bitbucket.org:atlassian/fugue.git</developerConnection>
         <url>https://bitbucket.org/atlassian/fugue</url>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-                <!-- needed for the distribution management below -->
-                <version>3.3</version>
+                <groupId>net.revelc.code</groupId>
+                <artifactId>formatter-maven-plugin</artifactId>
+                <version>0.5.2</version>
+                <executions>
+                    <execution>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <configFile>${project.basedir}/../src/etc/eclipse/formatter.xml</configFile>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.scalariform</groupId>
+                <artifactId>scalariform-maven-plugin</artifactId>
+                <version>0.1.4</version>
+                <executions>
+                    <execution>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <preserveDanglingCloseParenthesis>true</preserveDanglingCloseParenthesis>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>com.atlassian.maven.plugins</groupId>
                 <artifactId>maven-clover2-plugin</artifactId>
                 <version>${clover.version}</version>
+                <configuration>
+                    <licenseLocation>${license.location}</licenseLocation>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -82,6 +113,15 @@
                 <configuration>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <tagNameFormat>v@{project.version}</tagNameFormat>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <compilerArgs>
+                        <arg>-Xlint:all</arg>
+                        <arg>-Werror</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
         </plugins>
@@ -170,4 +210,10 @@
         </pluginRepository>
     </pluginRepositories>
 
+    <distributionManagement>
+        <site>
+            <id>atlassian-documentation</id>
+            <url>scpexe://docs-app.internal.atlassian.com/var/www/domains/docs.atlassian.com/${project.artifactId}/${project.version}</url>
+        </site>
+    </distributionManagement>
 </project>
