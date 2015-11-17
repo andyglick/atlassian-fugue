@@ -1,7 +1,6 @@
 package io.atlassian.fugue.optic;
 
 import io.atlassian.fugue.*;
-import io.atlassian.fugue.optic.internal.Utils;
 
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
@@ -64,12 +63,6 @@ public abstract class PLens<S, T, A, B> {
    * function
    */
   public abstract Function<S, Option<T>> modifyOptionF(Function<A, Option<B>> f);
-
-  /**
-   * modify polymorphically the target of a {@link PLens} with an Applicative
-   * function
-   */
-  public abstract Function<S, Stream<T>> modifyStreamF(Function<A, Stream<B>> f);
 
   /**
    * modify polymorphically the target of a {@link PLens} with an Applicative
@@ -173,10 +166,6 @@ public abstract class PLens<S, T, A, B> {
         return self.modifyOptionF(other.modifyOptionF(f));
       }
 
-      @Override public Function<S, Stream<T>> modifyStreamF(final Function<C, Stream<D>> f) {
-        return self.modifyStreamF(other.modifyStreamF(f));
-      }
-
       @Override public Function<S, Iterable<T>> modifyIterableF(final Function<C, Iterable<D>> f) {
         return self.modifyIterableF(other.modifyIterableF(f));
       }
@@ -262,10 +251,6 @@ public abstract class PLens<S, T, A, B> {
         return self.modifyOptionF(f);
       }
 
-      @Override public Function<S, Stream<T>> modifyStreamF(final Function<A, Stream<B>> f) {
-        return self.modifyStreamF(f);
-      }
-
       @Override public Function<S, Iterable<T>> modifyIterableF(final Function<A, Iterable<B>> f) {
         return self.modifyIterableF(f);
       }
@@ -313,10 +298,6 @@ public abstract class PLens<S, T, A, B> {
 
       @Override public Function<S, Option<T>> modifyOptionF(final Function<A, Option<B>> f) {
         return self.modifyOptionF(f);
-      }
-
-      @Override public Function<S, Stream<T>> modifyStreamF(final Function<A, Stream<B>> f) {
-        return self.modifyStreamF(f);
       }
 
       @Override public Function<S, Iterable<T>> modifyIterableF(final Function<A, Iterable<B>> f) {
@@ -368,10 +349,6 @@ public abstract class PLens<S, T, A, B> {
         return s -> f.apply(get.apply(s)).map(a -> set.apply(a).apply(s));
       }
 
-      @Override public Function<S, Stream<T>> modifyStreamF(final Function<A, Stream<B>> f) {
-        return s -> f.apply(get.apply(s)).map(a -> set.apply(a).apply(s));
-      }
-
       @Override public Function<S, Iterable<T>> modifyIterableF(final Function<A, Iterable<B>> f) {
         return s -> Iterables.map(f.apply(get.apply(s)), a -> set.apply(a).apply(s));
       }
@@ -381,7 +358,7 @@ public abstract class PLens<S, T, A, B> {
       }
 
       @Override public Function<S, Pair<T, T>> modifyPairF(final Function<A, Pair<B, B>> f) {
-        return s -> Utils.map(f.apply(get.apply(s)), a -> set.apply(a).apply(s));
+        return s -> Pair.map(f.apply(get.apply(s)), a -> set.apply(a).apply(s));
       }
 
       @Override public Function<S, T> modify(final Function<A, B> f) {

@@ -1,7 +1,6 @@
 package io.atlassian.fugue.optic;
 
 import io.atlassian.fugue.*;
-import io.atlassian.fugue.optic.internal.Utils;
 
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
@@ -93,14 +92,6 @@ public abstract class PIso<S, T, A, B> {
    * modify polymorphically the target of a {@link PIso} with an Applicative
    * function
    */
-  public final Function<S, Stream<T>> modifyStreamF(final Function<A, Stream<B>> f) {
-    return s -> f.apply(get(s)).map(this::reverseGet);
-  }
-
-  /**
-   * modify polymorphically the target of a {@link PIso} with an Applicative
-   * function
-   */
   public final Function<S, Iterable<T>> modifyIterableF(final Function<A, Iterable<B>> f) {
     return s -> Iterables.map(f.apply(get(s)), this::reverseGet);
   }
@@ -118,7 +109,7 @@ public abstract class PIso<S, T, A, B> {
    * function
    */
   public final Function<S, Pair<T, T>> modifyPairF(final Function<A, Pair<B, B>> f) {
-    return s -> Utils.map(f.apply(get(s)), this::reverseGet);
+    return s -> Pair.map(f.apply(get(s)), this::reverseGet);
   }
 
   /**
@@ -296,10 +287,6 @@ public abstract class PIso<S, T, A, B> {
         return self.modifyOptionF(f);
       }
 
-      @Override public Function<S, Stream<T>> modifyStreamF(final Function<A, Stream<B>> f) {
-        return self.modifyStreamF(f);
-      }
-
       @Override public Function<S, Iterable<T>> modifyIterableF(final Function<A, Iterable<B>> f) {
         return self.modifyIterableF(f);
       }
@@ -339,10 +326,6 @@ public abstract class PIso<S, T, A, B> {
 
       @Override public Function<S, Option<T>> modifyOptionF(final Function<A, Option<B>> f) {
         return self.modifyOptionF(f);
-      }
-
-      @Override public Function<S, Stream<T>> modifyStreamF(final Function<A, Stream<B>> f) {
-        return self.modifyStreamF(f);
       }
 
       @Override public Function<S, Iterable<T>> modifyIterableF(final Function<A, Iterable<B>> f) {
@@ -419,10 +402,6 @@ public abstract class PIso<S, T, A, B> {
 
       @Override public Function<S, Option<T>> modifyOptionF(final Function<A, Option<B>> f) {
         return self.modifyOptionF(f);
-      }
-
-      @Override public Function<S, Stream<T>> modifyStreamF(final Function<A, Stream<B>> f) {
-        return self.modifyStreamF(f);
       }
 
       @Override public Function<S, Iterable<T>> modifyIterableF(final Function<A, Iterable<B>> f) {

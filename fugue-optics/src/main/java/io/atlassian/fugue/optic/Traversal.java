@@ -30,10 +30,6 @@ public final class Traversal<S, A> extends PTraversal<S, S, A, A> {
     return pTraversal.modifyOptionF(f);
   }
 
-  @Override public Function<S, Stream<S>> modifyStreamF(final Function<A, Stream<A>> f) {
-    return pTraversal.modifyStreamF(f);
-  }
-
   @Override public Function<S, Iterable<S>> modifyIterableF(final Function<A, Iterable<A>> f) {
     return pTraversal.modifyIterableF(f);
   }

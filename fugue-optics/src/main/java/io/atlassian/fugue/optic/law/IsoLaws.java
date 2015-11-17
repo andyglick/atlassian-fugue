@@ -1,16 +1,14 @@
 package io.atlassian.fugue.optic.law;
 
 import io.atlassian.fugue.*;
+import io.atlassian.fugue.law.IsEq;
 import io.atlassian.fugue.optic.PIso;
-import io.atlassian.fugue.optic.internal.IsEq;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import static io.atlassian.fugue.optic.internal.IsEq.isEq;
+import static io.atlassian.fugue.law.IsEq.isEq;
 import static java.util.Spliterator.ORDERED;
 import static java.util.Spliterators.spliteratorUnknownSize;
 import static java.util.stream.Collectors.toList;
@@ -78,13 +76,6 @@ public final class IsoLaws<S, A> {
    */
   public IsEq<Pair<S, S>> modifyPairFPoint(S s) {
     return isEq(iso.modifyPairF(a -> Pair.pair(a, a)).apply(s), Pair.pair(s, s));
-  }
-
-  /**
-   * modifyF Applicative.point(_) = Applicative.point(_)
-   */
-  public IsEq<List<S>> modifyStreamFPoint(S s) {
-    return isEq(iso.modifyStreamF(Stream::of).apply(s).collect(Collectors.toList()), Collections.singletonList(s));
   }
 
   /**

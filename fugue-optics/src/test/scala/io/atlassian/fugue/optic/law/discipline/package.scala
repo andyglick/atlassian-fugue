@@ -1,6 +1,6 @@
 package io.atlassian.fugue.optic.law
 
-import io.atlassian.fugue.optic.internal.IsEq
+import io.atlassian.fugue.law.IsEq
 import org.scalacheck.Prop
 import org.scalacheck.Prop._
 import org.scalacheck.util.Pretty

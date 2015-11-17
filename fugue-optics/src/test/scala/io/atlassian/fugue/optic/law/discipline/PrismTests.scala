@@ -19,7 +19,6 @@ object PrismTests extends Laws {
       "modifyIterableF point = point" -> forAll((s: S) => laws.modifyIterableFPoint(s)),
       "modifyOptionF point = point" -> forAll((s: S) => laws.modifyOptionFPoint(s)),
       "modifyPairF point = point" -> forAll((s: S) => laws.modifyPairFPoint(s)),
-      "modifyStreamF point = point" -> forAll((s: S) => laws.modifyStreamFPoint(s)),
       "modifySupplierF point = point" -> forAll((s: S) => laws.modifySupplierFPoint(s)),
       "setOption" -> forAll((s: S, a: A) => laws.setOption(s, a)),
       "modifyOption" -> forAll((s: S) => laws.modifyOptionIdentity(s))

@@ -1,11 +1,11 @@
 package io.atlassian.fugue.optic.law;
 
+import io.atlassian.fugue.law.IsEq;
 import io.atlassian.fugue.optic.PSetter;
-import io.atlassian.fugue.optic.internal.IsEq;
 
 import java.util.function.Function;
 
-import static io.atlassian.fugue.optic.internal.IsEq.isEq;
+import static io.atlassian.fugue.law.IsEq.isEq;
 
 public final class SetterLaws<S, A> {
 
