@@ -1,7 +1,6 @@
 package io.atlassian.fugue.optic;
 
 import io.atlassian.fugue.*;
-import io.atlassian.fugue.optic.internal.Utils;
 
 import java.util.Collections;
 import java.util.function.Function;
@@ -21,10 +20,6 @@ public final class Optional<S, A> extends POptional<S, S, A, A> {
 
   @Override public Function<S, S> set(final A a) {
     return pOptional.set(a);
-  }
-
-  @Override public Function<S, Stream<S>> modifyStreamF(final Function<A, Stream<A>> f) {
-    return pOptional.modifyStreamF(f);
   }
 
   @Override public Function<S, Supplier<S>> modifySupplierF(final Function<A, Supplier<A>> f) {
@@ -173,10 +168,6 @@ public final class Optional<S, A> extends POptional<S, S, A, A> {
         return s -> getOption.apply(s).fold(() -> Option.some(s), t -> f.apply(t).map(b -> set.apply(b).apply(s)));
       }
 
-      @Override public Function<S, Stream<S>> modifyStreamF(final Function<A, Stream<A>> f) {
-        return s -> getOption.apply(s).fold(() -> Stream.of(s), t -> f.apply(t).map(b -> set.apply(b).apply(s)));
-      }
-
       @Override public Function<S, Iterable<S>> modifyIterableF(final Function<A, Iterable<A>> f) {
         return s -> getOption.apply(s).<Iterable<S>> fold(() -> Collections.singleton(s), t -> Iterables.map(f.apply(t), b -> set.apply(b).apply(s)));
       }
@@ -187,7 +178,7 @@ public final class Optional<S, A> extends POptional<S, S, A, A> {
       }
 
       @Override public Function<S, Pair<S, S>> modifyPairF(final Function<A, Pair<A, A>> f) {
-        return s -> getOption.apply(s).<Pair<S, S>> fold(() -> Pair.pair(s, s), t -> Utils.map(f.apply(t), b -> set.apply(b).apply(s)));
+        return s -> getOption.apply(s).<Pair<S, S>> fold(() -> Pair.pair(s, s), t -> Pair.map(f.apply(t), b -> set.apply(b).apply(s)));
       }
 
       @Override public Function<S, S> modify(final Function<A, A> f) {

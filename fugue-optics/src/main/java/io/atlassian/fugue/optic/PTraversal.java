@@ -1,7 +1,6 @@
 package io.atlassian.fugue.optic;
 
 import io.atlassian.fugue.*;
-import io.atlassian.fugue.optic.internal.Utils;
 
 import java.util.function.*;
 import java.util.stream.Stream;
@@ -38,12 +37,6 @@ public abstract class PTraversal<S, T, A, B> {
    * Applicative function
    */
   public abstract Function<S, Option<T>> modifyOptionF(Function<A, Option<B>> f);
-
-  /**
-   * modify polymorphically the target of a {@link PTraversal} with an
-   * Applicative function
-   */
-  public abstract Function<S, Stream<T>> modifyStreamF(Function<A, Stream<B>> f);
 
   /**
    * modify polymorphically the target of a {@link PTraversal} with an
@@ -146,11 +139,6 @@ public abstract class PTraversal<S, T, A, B> {
           s1 -> other.modifyOptionF(f).apply(s1).map(Eithers.toRight()));
       }
 
-      @Override public Function<Either<S, S1>, Stream<Either<T, T1>>> modifyStreamF(final Function<A, Stream<B>> f) {
-        return ss1 -> ss1.fold(s -> self.modifyStreamF(f).apply(s).map(Eithers.toLeft()),
-          s1 -> other.modifyStreamF(f).apply(s1).map(Eithers.toRight()));
-      }
-
       @Override public Function<Either<S, S1>, Iterable<Either<T, T1>>> modifyIterableF(final Function<A, Iterable<B>> f) {
         return ss1 -> ss1.fold(s -> Iterables.map(self.modifyIterableF(f).apply(s), Eithers.toLeft()),
           s1 -> Iterables.map(other.modifyIterableF(f).apply(s1), Eithers.toRight()));
@@ -162,8 +150,8 @@ public abstract class PTraversal<S, T, A, B> {
       }
 
       @Override public Function<Either<S, S1>, Pair<Either<T, T1>, Either<T, T1>>> modifyPairF(final Function<A, Pair<B, B>> f) {
-        return ss1 -> ss1.fold(s -> Utils.map(self.modifyPairF(f).apply(s), Eithers.toLeft()),
-          s1 -> Utils.map(other.modifyPairF(f).apply(s1), Eithers.toRight()));
+        return ss1 -> ss1.fold(s -> Pair.map(self.modifyPairF(f).apply(s), Eithers.toLeft()),
+          s1 -> Pair.map(other.modifyPairF(f).apply(s1), Eithers.toRight()));
       }
 
       @Override public <M> Function<Either<S, S1>, M> foldMap(final Supplier<M> identity, final BinaryOperator<M> op, final Function<A, M> f) {
@@ -217,10 +205,6 @@ public abstract class PTraversal<S, T, A, B> {
 
       @Override public Function<S, Option<T>> modifyOptionF(final Function<C, Option<D>> f) {
         return self.modifyOptionF(other.modifyOptionF(f));
-      }
-
-      @Override public Function<S, Stream<T>> modifyStreamF(final Function<C, Stream<D>> f) {
-        return self.modifyStreamF(other.modifyStreamF(f));
       }
 
       @Override public Function<S, Iterable<T>> modifyIterableF(final Function<C, Iterable<D>> f) {
@@ -310,10 +294,6 @@ public abstract class PTraversal<S, T, A, B> {
         return s -> s.bimap(f, f).fold(o -> o.map(Eithers.toLeft()), o -> o.map(Eithers.toRight()));
       }
 
-      @Override public Function<Either<S, S>, Stream<Either<T, T>>> modifyStreamF(final Function<S, Stream<T>> f) {
-        return s -> s.bimap(f, f).fold(stream -> stream.map(Eithers.toLeft()), stream -> stream.map(Eithers.toRight()));
-      }
-
       @Override public Function<Either<S, S>, Iterable<Either<T, T>>> modifyIterableF(final Function<S, Iterable<T>> f) {
         return s -> s.bimap(f, f).fold(ts -> Iterables.map(ts, Eithers.toLeft()), ts -> Iterables.map(ts, Eithers.toRight()));
       }
@@ -323,7 +303,7 @@ public abstract class PTraversal<S, T, A, B> {
       }
 
       @Override public Function<Either<S, S>, Pair<Either<T, T>, Either<T, T>>> modifyPairF(final Function<S, Pair<T, T>> f) {
-        return s -> s.bimap(f, f).fold(tt -> Utils.map(tt, Eithers.toLeft()), tt -> Utils.map(tt, Eithers.toRight()));
+        return s -> s.bimap(f, f).fold(tt -> Pair.map(tt, Eithers.toLeft()), tt -> Pair.map(tt, Eithers.toRight()));
       }
 
       @Override public <M> Function<Either<S, S>, M> foldMap(final Supplier<M> identity, final BinaryOperator<M> op, final Function<S, M> f) {
@@ -337,7 +317,7 @@ public abstract class PTraversal<S, T, A, B> {
     return new PTraversal<S, T, A, B>() {
 
       @Override public <C> Function<S, Function<C, T>> modifyFunctionF(final Function<A, Function<C, B>> f) {
-        return s -> Utils.ap(f.apply(get2.apply(s)), f.apply(get1.apply(s)).andThen(b1 -> b2 -> set.apply(b1, b2).apply(s)));
+        return s -> Functions.ap(f.apply(get2.apply(s)), f.apply(get1.apply(s)).andThen(b1 -> b2 -> set.apply(b1, b2).apply(s)));
       }
 
       @Override public <L> Function<S, Either<L, T>> modifyEitherF(final Function<A, Either<L, B>> f) {
@@ -348,20 +328,16 @@ public abstract class PTraversal<S, T, A, B> {
         return s -> Options.ap(f.apply(get2.apply(s)), f.apply(get1.apply(s)).<Function<B, T>> map(b1 -> b2 -> set.apply(b1, b2).apply(s)));
       }
 
-      @Override public Function<S, Stream<T>> modifyStreamF(final Function<A, Stream<B>> f) {
-        return s -> Utils.ap(f.apply(get2.apply(s)), f.apply(get1.apply(s)).<Function<B, T>> map(b1 -> b2 -> set.apply(b1, b2).apply(s)));
-      }
-
       @Override public Function<S, Iterable<T>> modifyIterableF(final Function<A, Iterable<B>> f) {
-        return s -> Utils.ap(f.apply(get2.apply(s)), Iterables.map(f.apply(get1.apply(s)), b1 -> b2 -> set.apply(b1, b2).apply(s)));
+        return s -> Iterables.ap(f.apply(get2.apply(s)), Iterables.map(f.apply(get1.apply(s)), b1 -> b2 -> set.apply(b1, b2).apply(s)));
       }
 
       @Override public Function<S, Supplier<T>> modifySupplierF(final Function<A, Supplier<B>> f) {
-        return s -> Utils.ap(f.apply(get2.apply(s)), Suppliers.compose(b1 -> b2 -> set.apply(b1, b2).apply(s), f.apply(get1.apply(s))));
+        return s -> Suppliers.ap(f.apply(get2.apply(s)), Suppliers.compose(b1 -> b2 -> set.apply(b1, b2).apply(s), f.apply(get1.apply(s))));
       }
 
       @Override public Function<S, Pair<T, T>> modifyPairF(final Function<A, Pair<B, B>> f) {
-        return s -> Utils.ap(f.apply(get2.apply(s)), Utils.map(f.apply(get1.apply(s)), b1 -> b2 -> set.apply(b1, b2).apply(s)));
+        return s -> Pair.ap(f.apply(get2.apply(s)), Pair.map(f.apply(get1.apply(s)), b1 -> b2 -> set.apply(b1, b2).apply(s)));
       }
 
       @Override public <M> Function<S, M> foldMap(final Supplier<M> identity, final BinaryOperator<M> op, final Function<A, M> f) {
@@ -399,7 +375,7 @@ public abstract class PTraversal<S, T, A, B> {
     return new PTraversal<S, T, A, B>() {
 
       @Override public <C> Function<S, Function<C, T>> modifyFunctionF(final Function<A, Function<C, B>> f) {
-        return s -> Utils.ap(f.apply(lastGet.apply(s)), curriedTraversal.modifyFunctionF(f).apply(s));
+        return s -> Functions.ap(f.apply(lastGet.apply(s)), curriedTraversal.modifyFunctionF(f).apply(s));
       }
 
       @Override public <L> Function<S, Either<L, T>> modifyEitherF(final Function<A, Either<L, B>> f) {
@@ -410,20 +386,16 @@ public abstract class PTraversal<S, T, A, B> {
         return s -> Options.ap(f.apply(lastGet.apply(s)), curriedTraversal.modifyOptionF(f).apply(s));
       }
 
-      @Override public Function<S, Stream<T>> modifyStreamF(final Function<A, Stream<B>> f) {
-        return s -> Utils.ap(f.apply(lastGet.apply(s)), curriedTraversal.modifyStreamF(f).apply(s));
-      }
-
       @Override public Function<S, Iterable<T>> modifyIterableF(final Function<A, Iterable<B>> f) {
-        return s -> Utils.ap(f.apply(lastGet.apply(s)), curriedTraversal.modifyIterableF(f).apply(s));
+        return s -> Iterables.ap(f.apply(lastGet.apply(s)), curriedTraversal.modifyIterableF(f).apply(s));
       }
 
       @Override public Function<S, Supplier<T>> modifySupplierF(final Function<A, Supplier<B>> f) {
-        return s -> Utils.ap(f.apply(lastGet.apply(s)), curriedTraversal.modifySupplierF(f).apply(s));
+        return s -> Suppliers.ap(f.apply(lastGet.apply(s)), curriedTraversal.modifySupplierF(f).apply(s));
       }
 
       @Override public Function<S, Pair<T, T>> modifyPairF(final Function<A, Pair<B, B>> f) {
-        return s -> Utils.ap(f.apply(lastGet.apply(s)), curriedTraversal.modifyPairF(f).apply(s));
+        return s -> Pair.ap(f.apply(lastGet.apply(s)), curriedTraversal.modifyPairF(f).apply(s));
       }
 
       @Override public <M> Function<S, M> foldMap(final Supplier<M> identity, final BinaryOperator<M> op, final Function<A, M> f) {

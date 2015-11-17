@@ -39,10 +39,6 @@ public final class Lens<S, A> extends PLens<S, S, A, A> {
     return pLens.modifyOptionF(f);
   }
 
-  @Override public Function<S, Stream<S>> modifyStreamF(final Function<A, Stream<A>> f) {
-    return pLens.modifyStreamF(f);
-  }
-
   @Override public Function<S, Iterable<S>> modifyIterableF(final Function<A, Iterable<A>> f) {
     return pLens.modifyIterableF(f);
   }

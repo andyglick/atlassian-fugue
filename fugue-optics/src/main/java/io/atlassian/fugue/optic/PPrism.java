@@ -1,7 +1,6 @@
 package io.atlassian.fugue.optic;
 
 import io.atlassian.fugue.*;
-import io.atlassian.fugue.optic.internal.Utils;
 
 import java.util.Collections;
 import java.util.function.BinaryOperator;
@@ -82,16 +81,8 @@ public abstract class PPrism<S, T, A, B> {
    * modify polymorphically the target of a {@link PPrism} with an Applicative
    * function
    */
-  public final Function<S, Stream<T>> modifyStreamF(final Function<A, Stream<B>> f) {
-    return s -> getOrModify(s).fold(Stream::of, t -> f.apply(t).map(this::reverseGet));
-  }
-
-  /**
-   * modify polymorphically the target of a {@link PPrism} with an Applicative
-   * function
-   */
   public final Function<S, Pair<T, T>> modifyPairF(final Function<A, Pair<B, B>> f) {
-    return s -> getOrModify(s).fold(t -> Pair.pair(t, t), t -> Utils.map(f.apply(t), this::reverseGet));
+    return s -> getOrModify(s).fold(t -> Pair.pair(t, t), t -> Pair.map(f.apply(t), this::reverseGet));
   }
 
   /**
@@ -277,10 +268,6 @@ public abstract class PPrism<S, T, A, B> {
         return self.modifyOptionF(f);
       }
 
-      @Override public Function<S, Stream<T>> modifyStreamF(final Function<A, Stream<B>> f) {
-        return self.modifyStreamF(f);
-      }
-
       @Override public Function<S, Iterable<T>> modifyIterableF(final Function<A, Iterable<B>> f) {
         return self.modifyIterableF(f);
       }
@@ -321,10 +308,6 @@ public abstract class PPrism<S, T, A, B> {
 
       @Override public Function<S, Option<T>> modifyOptionF(final Function<A, Option<B>> f) {
         return self.modifyOptionF(f);
-      }
-
-      @Override public Function<S, Stream<T>> modifyStreamF(final Function<A, Stream<B>> f) {
-        return self.modifyStreamF(f);
       }
 
       @Override public Function<S, Iterable<T>> modifyIterableF(final Function<A, Iterable<B>> f) {

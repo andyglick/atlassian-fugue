@@ -1,15 +1,14 @@
 package io.atlassian.fugue.optic.law;
 
 import io.atlassian.fugue.*;
+import io.atlassian.fugue.law.IsEq;
 import io.atlassian.fugue.optic.POptional;
-import io.atlassian.fugue.optic.internal.IsEq;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
-import static io.atlassian.fugue.optic.internal.IsEq.isEq;
+import static io.atlassian.fugue.law.IsEq.isEq;
 import static java.util.Spliterator.ORDERED;
 import static java.util.Spliterators.spliteratorUnknownSize;
 import static java.util.stream.Collectors.toList;
@@ -77,13 +76,6 @@ public final class OptionalLaws<S, A> {
    */
   public IsEq<Pair<S, S>> modifyPairFPoint(S s) {
     return isEq(optional.modifyPairF(a -> Pair.pair(a, a)).apply(s), Pair.pair(s, s));
-  }
-
-  /**
-   * modifyF Applicative.point(_) = Applicative.point(_)
-   */
-  public IsEq<List<S>> modifyStreamFPoint(S s) {
-    return isEq(optional.modifyStreamF(Stream::of).apply(s).collect(toList()), Collections.singletonList(s));
   }
 
   /**
