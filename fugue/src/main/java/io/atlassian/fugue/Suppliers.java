@@ -142,6 +142,18 @@ public class Suppliers {
       Objects.requireNonNull(supplier));
   }
 
+  /**
+   * Performs function application within a supplier (applicative functor pattern).
+   *
+   * @param sa supplier providing an input value
+   * @param sf supplier providing a function to transform the input.
+   *
+   * @return A new {@link java.util.function.Supplier} returning a transformed value from the first supplier.
+   */
+  public static <A, B> Supplier<B> ap(final Supplier<A> sa, final Supplier<Function<A, B>> sf) {
+    return () -> sf.get().apply(sa.get());
+  }
+
   private static final class MemoizingSupplier<A> implements Supplier<A> {
 
     private volatile Supplier<A> delegate;
