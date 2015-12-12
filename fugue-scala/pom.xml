@@ -97,6 +97,12 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>io.atlassian.fugue</groupId>
+            <artifactId>fugue-optics</artifactId>
+            <scope>provided</scope>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
             <scope>provided</scope>

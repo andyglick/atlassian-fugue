@@ -18,55 +18,8 @@
     <artifactId>fugue-optics</artifactId>
     <name>Functional Optics Library</name>
 
-    <properties>
-        <scala.version>2.11.7</scala.version>
-    </properties>
-
     <build>
         <plugins>
-            <plugin>
-                <groupId>net.alchim31.maven</groupId>
-                <artifactId>scala-maven-plugin</artifactId>
-                <version>3.2.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>testCompile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <scalaVersion>${scala.version}</scalaVersion>
-                </configuration>
-            </plugin>
-            <!-- disable surefire -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <skipTests>true</skipTests>
-                </configuration>
-            </plugin>
-            <!-- enable scalatest -->
-            <plugin>
-                <groupId>org.scalatest</groupId>
-                <artifactId>scalatest-maven-plugin</artifactId>
-                <version>1.0</version>
-                <configuration>
-                    <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
-                    <junitxml>.</junitxml>
-                    <filereports>WDF TestSuite.txt</filereports>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>test</id>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -83,7 +36,7 @@
                 <configuration>
                     <instructions>
                         <Export-Package>
-                            com.atlassian.fugue.optic.*;version="${project.version}"
+                            io.atlassian.fugue.optic.*;version="${project.version}"
                         </Export-Package>
                     </instructions>
                 </configuration>
@@ -96,31 +49,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>fugue</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <!-- Test deps -->
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-library</artifactId>
-            <version>${scala.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.typelevel</groupId>
-            <artifactId>discipline_2.11</artifactId>
-            <version>0.4</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.scalacheck</groupId>
-            <artifactId>scalacheck_2.11</artifactId>
-            <version>1.12.5</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.scalatest</groupId>
-            <artifactId>scalatest_2.11</artifactId>
-            <version>3.0.0-M11</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
