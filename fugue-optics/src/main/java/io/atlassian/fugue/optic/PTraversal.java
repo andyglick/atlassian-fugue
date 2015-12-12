@@ -2,6 +2,7 @@ package io.atlassian.fugue.optic;
 
 import io.atlassian.fugue.*;
 
+import java.util.Collections;
 import java.util.function.*;
 import java.util.stream.Stream;
 
@@ -59,27 +60,27 @@ public abstract class PTraversal<S, T, A, B> {
   /**
    * map each target to a {@link Monoid} and combine the results
    */
-  public abstract <M> Function<S, M> foldMap(Supplier<M> identity, BinaryOperator<M> op, Function<A, M> f);
+  public abstract <M> Function<S, M> foldMap(Monoid<M> monoid, Function<A, M> f);
 
   /**
    * combine all targets using a target's {@link Monoid}
    */
-  public final Function<S, A> fold(final Supplier<A> identity, final BinaryOperator<A> op) {
-    return foldMap(identity, op, Function.identity());
+  public final Function<S, A> fold(final Monoid<A> monoid) {
+    return foldMap(monoid, Function.identity());
   }
 
   /**
    * get all the targets of a {@link PTraversal}
    */
-  public final Stream<A> getAll(final S s) {
-    return foldMap(Stream::<A> empty, Stream::concat, Stream::of).apply(s);
+  public final Iterable<A> getAll(final S s) {
+    return foldMap(Monoids.iterable(), Collections::singleton).apply(s);
   }
 
   /**
    * find the first target of a {@link PTraversal} matching the predicate
    */
   public final Function<S, Option<A>> find(final Predicate<A> p) {
-    return foldMap(Option::none, Option::orElse, a -> p.test(a) ? Option.some(a) : Option.none());
+    return foldMap(Monoids.firstOption(), a -> p.test(a) ? Option.some(a) : Option.none());
   }
 
   /**
@@ -93,14 +94,14 @@ public abstract class PTraversal<S, T, A, B> {
    * check if at least one target satisfies the predicate
    */
   public final Predicate<S> exist(final Predicate<A> p) {
-    return foldMap(() -> Boolean.FALSE, Boolean::logicalOr, p::test)::apply;
+    return foldMap(Monoids.disjunction, p::test)::apply;
   }
 
   /**
    * check if all targets satisfy the predicate
    */
   public final Predicate<S> all(final Predicate<A> p) {
-    return foldMap(() -> Boolean.TRUE, Boolean::logicalAnd, p::test)::apply;
+    return foldMap(Monoids.conjunction, p::test)::apply;
   }
 
   /**
@@ -154,8 +155,8 @@ public abstract class PTraversal<S, T, A, B> {
           s1 -> Pair.map(other.modifyPairF(f).apply(s1), Eithers.toRight()));
       }
 
-      @Override public <M> Function<Either<S, S1>, M> foldMap(final Supplier<M> identity, final BinaryOperator<M> op, final Function<A, M> f) {
-        return ss1 -> ss1.fold(self.foldMap(identity, op, f), other.foldMap(identity, op, f));
+      @Override public <M> Function<Either<S, S1>, M> foldMap(final Monoid<M> monoid, final Function<A, M> f) {
+        return ss1 -> ss1.fold(self.foldMap(monoid, f), other.foldMap(monoid, f));
       }
 
     };
@@ -219,8 +220,8 @@ public abstract class PTraversal<S, T, A, B> {
         return self.modifyPairF(other.modifyPairF(f));
       }
 
-      @Override public <M> Function<S, M> foldMap(final Supplier<M> identity, final BinaryOperator<M> op, final Function<C, M> f) {
-        return self.foldMap(identity, op, other.foldMap(identity, op, f));
+      @Override public <M> Function<S, M> foldMap(final Monoid<M> monoid, final Function<C, M> f) {
+        return self.foldMap(monoid, other.foldMap(monoid, f));
       }
     };
   }
@@ -262,8 +263,8 @@ public abstract class PTraversal<S, T, A, B> {
    */
   public final Fold<S, A> asFold() {
     return new Fold<S, A>() {
-      @Override public <M> Function<S, M> foldMap(final Supplier<M> identity, final BinaryOperator<M> op, final Function<A, M> f) {
-        return PTraversal.this.foldMap(identity, op, f);
+      @Override public <M> Function<S, M> foldMap(final Monoid<M> monoid, final Function<A, M> f) {
+        return PTraversal.this.foldMap(monoid, f);
       }
     };
   }
@@ -306,7 +307,7 @@ public abstract class PTraversal<S, T, A, B> {
         return s -> s.bimap(f, f).fold(tt -> Pair.map(tt, Eithers.toLeft()), tt -> Pair.map(tt, Eithers.toRight()));
       }
 
-      @Override public <M> Function<Either<S, S>, M> foldMap(final Supplier<M> identity, final BinaryOperator<M> op, final Function<S, M> f) {
+      @Override public <M> Function<Either<S, S>, M> foldMap(final Monoid<M> monoid, final Function<S, M> f) {
         return s -> s.fold(f, f);
       }
     };
@@ -340,8 +341,8 @@ public abstract class PTraversal<S, T, A, B> {
         return s -> Pair.ap(f.apply(get2.apply(s)), Pair.map(f.apply(get1.apply(s)), b1 -> b2 -> set.apply(b1, b2).apply(s)));
       }
 
-      @Override public <M> Function<S, M> foldMap(final Supplier<M> identity, final BinaryOperator<M> op, final Function<A, M> f) {
-        return s -> op.apply(f.apply(get1.apply(s)), f.apply(get2.apply(s)));
+      @Override public <M> Function<S, M> foldMap(final Monoid<M> monoid, final Function<A, M> f) {
+        return s -> monoid.append(f.apply(get1.apply(s)), f.apply(get2.apply(s)));
       }
     };
   }
@@ -398,8 +399,8 @@ public abstract class PTraversal<S, T, A, B> {
         return s -> Pair.ap(f.apply(lastGet.apply(s)), curriedTraversal.modifyPairF(f).apply(s));
       }
 
-      @Override public <M> Function<S, M> foldMap(final Supplier<M> identity, final BinaryOperator<M> op, final Function<A, M> f) {
-        return s -> op.apply(curriedTraversal.foldMap(identity, op, f).apply(s), f.apply(lastGet.apply(s)));
+      @Override public <M> Function<S, M> foldMap(final Monoid<M> monoid, final Function<A, M> f) {
+        return s -> monoid.append(curriedTraversal.foldMap(monoid, f).apply(s), f.apply(lastGet.apply(s)));
       }
     };
   }

@@ -1,8 +1,11 @@
 package io.atlassian.fugue.optic;
 
 import io.atlassian.fugue.Either;
+import io.atlassian.fugue.Monoid;
+import io.atlassian.fugue.Monoids;
 import io.atlassian.fugue.Option;
 
+import java.util.Collections;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -27,27 +30,27 @@ public abstract class Fold<S, A> {
    * representation of {@link Fold}, all {@link Fold} methods are defined in
    * terms of foldMap
    */
-  public abstract <M> Function<S, M> foldMap(Supplier<M> identity, BinaryOperator<M> op, Function<A, M> f);
+  public abstract <M> Function<S, M> foldMap(Monoid<M> monoid, Function<A, M> f);
 
   /**
    * combine all targets using a target's {@link Monoid}
    */
-  public final Function<S, A> fold(final Supplier<A> identity, final BinaryOperator<A> op) {
-    return foldMap(identity, op, Function.identity());
+  public final Function<S, A> fold(Monoid<A> monoid) {
+    return foldMap(monoid, Function.identity());
   }
 
   /**
    * get all the targets of a {@link Fold}
    */
-  public final Stream<A> getAll(final S s) {
-    return foldMap(Stream::<A> empty, Stream::concat, Stream::of).apply(s);
+  public final Iterable<A> getAll(final S s) {
+    return foldMap(Monoids.iterable(), Collections::singleton).apply(s);
   }
 
   /**
    * find the first target of a {@link Fold} matching the predicate
    */
   public final Function<S, Option<A>> find(final Predicate<A> p) {
-    return foldMap(Option::none, Option::orElse, a -> p.test(a) ? Option.some(a) : Option.none());
+    return foldMap(Monoids.firstOption(), a -> p.test(a) ? Option.some(a) : Option.none());
   }
 
   /**
@@ -61,14 +64,14 @@ public abstract class Fold<S, A> {
    * check if at least one target satisfies the predicate
    */
   public final Predicate<S> exist(final Predicate<A> p) {
-    return foldMap(() -> Boolean.FALSE, Boolean::logicalOr, p::test)::apply;
+    return foldMap(Monoids.disjunction, p::test)::apply;
   }
 
   /**
    * check if all targets satisfy the predicate
    */
   public final Function<S, Boolean> all(final Predicate<A> p) {
-    return foldMap(() -> Boolean.TRUE, Boolean::logicalAnd, p::test)::apply;
+    return foldMap(Monoids.conjunction, p::test)::apply;
   }
 
   /**
@@ -76,8 +79,8 @@ public abstract class Fold<S, A> {
    */
   public final <S1> Fold<Either<S, S1>, A> sum(final Fold<S1, A> other) {
     return new Fold<Either<S, S1>, A>() {
-      @Override public <B> Function<Either<S, S1>, B> foldMap(final Supplier<B> identity, final BinaryOperator<B> op, final Function<A, B> f) {
-        return s -> s.fold(Fold.this.foldMap(identity, op, f), other.foldMap(identity, op, f));
+      @Override public <B> Function<Either<S, S1>, B> foldMap(final Monoid<B> monoid, final Function<A, B> f) {
+        return s -> s.fold(Fold.this.foldMap(monoid, f), other.foldMap(monoid, f));
       }
     };
   }
@@ -91,8 +94,8 @@ public abstract class Fold<S, A> {
    */
   public final <B> Fold<S, B> composeFold(final Fold<A, B> other) {
     return new Fold<S, B>() {
-      @Override public <C> Function<S, C> foldMap(final Supplier<C> identity, final BinaryOperator<C> op, final Function<B, C> f) {
-        return Fold.this.foldMap(identity, op, other.foldMap(identity, op, f));
+      @Override public <C> Function<S, C> foldMap(final Monoid<C> monoid, final Function<B, C> f) {
+        return Fold.this.foldMap(monoid, other.foldMap(monoid, f));
       }
     };
   }
@@ -138,7 +141,7 @@ public abstract class Fold<S, A> {
 
   public static <A> Fold<Either<A, A>, A> codiagonal() {
     return new Fold<Either<A, A>, A>() {
-      @Override public <B> Function<Either<A, A>, B> foldMap(final Supplier<B> identity, final BinaryOperator<B> op, final Function<A, B> f) {
+      @Override public <B> Function<Either<A, A>, B> foldMap(final Monoid<B> monoid, final Function<A, B> f) {
         return e -> e.fold(f, f);
       }
     };

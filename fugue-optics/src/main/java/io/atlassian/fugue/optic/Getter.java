@@ -1,6 +1,7 @@
 package io.atlassian.fugue.optic;
 
 import io.atlassian.fugue.Either;
+import io.atlassian.fugue.Monoid;
 import io.atlassian.fugue.Pair;
 
 import java.util.function.BinaryOperator;
@@ -104,7 +105,7 @@ public abstract class Getter<S, A> {
    */
   public final Fold<S, A> asFold() {
     return new Fold<S, A>() {
-      @Override public <B> Function<S, B> foldMap(final Supplier<B> identity, final BinaryOperator<B> op, final Function<A, B> f) {
+      @Override public <B> Function<S, B> foldMap(final Monoid<B> monoid, final Function<A, B> f) {
         return s -> f.apply(get(s));
       }
     };

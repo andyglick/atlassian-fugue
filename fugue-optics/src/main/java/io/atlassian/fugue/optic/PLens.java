@@ -200,7 +200,7 @@ public abstract class PLens<S, T, A, B> {
    */
   public final Fold<S, A> asFold() {
     return new Fold<S, A>() {
-      @Override public <M> Function<S, M> foldMap(final Supplier<M> identity, final BinaryOperator<M> op, final Function<A, M> f) {
+      @Override public <M> Function<S, M> foldMap(final Monoid<M> monoid, final Function<A, M> f) {
         return s -> f.apply(get(s));
       }
     };
@@ -263,7 +263,7 @@ public abstract class PLens<S, T, A, B> {
         return self.modifyPairF(f);
       }
 
-      @Override public <M> Function<S, M> foldMap(final Supplier<M> identity, final BinaryOperator<M> op, final Function<A, M> f) {
+      @Override public <M> Function<S, M> foldMap(final Monoid<M> monoid, final Function<A, M> f) {
         return s -> f.apply(get(s));
       }
 

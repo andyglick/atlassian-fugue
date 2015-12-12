@@ -1,6 +1,7 @@
 package io.atlassian.fugue.optic;
 
 import io.atlassian.fugue.Either;
+import io.atlassian.fugue.Monoid;
 import io.atlassian.fugue.Option;
 import io.atlassian.fugue.Pair;
 
@@ -42,8 +43,8 @@ public final class Traversal<S, A> extends PTraversal<S, S, A, A> {
     return pTraversal.modifyPairF(f);
   }
 
-  @Override public <M> Function<S, M> foldMap(final Supplier<M> identity, final BinaryOperator<M> op, final Function<A, M> f) {
-    return pTraversal.foldMap(identity, op, f);
+  @Override public <M> Function<S, M> foldMap(final Monoid<M> monoid, final Function<A, M> f) {
+    return pTraversal.foldMap(monoid, f);
   }
 
   /**

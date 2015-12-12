@@ -241,8 +241,8 @@ public abstract class POptional<S, T, A, B> {
    */
   public final Fold<S, A> asFold() {
     return new Fold<S, A>() {
-      @Override public <M> Function<S, M> foldMap(final Supplier<M> identity, final BinaryOperator<M> op, final Function<A, M> f) {
-        return s -> POptional.this.getOption(s).map(f).getOr(identity);
+      @Override public <M> Function<S, M> foldMap(final Monoid<M> monoid, final Function<A, M> f) {
+        return s -> POptional.this.getOption(s).map(f).getOrElse(monoid.zero());
       }
     };
   }
@@ -293,8 +293,8 @@ public abstract class POptional<S, T, A, B> {
         return self.modifyPairF(f);
       }
 
-      @Override public <M> Function<S, M> foldMap(final Supplier<M> identity, final BinaryOperator<M> op, final Function<A, M> f) {
-        return s -> self.getOption(s).map(f).getOr(identity);
+      @Override public <M> Function<S, M> foldMap(final Monoid<M> monoid, final Function<A, M> f) {
+        return s -> self.getOption(s).map(f).getOrElse(monoid.zero());
       }
     };
   }

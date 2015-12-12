@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static io.atlassian.fugue.law.IsEq.isEq;
 import static java.util.Spliterator.ORDERED;
@@ -27,8 +28,8 @@ public final class TraversalLaws<S, A> {
    * get what you set.
    */
   public IsEq<List<A>> setGetAll(S s, A a) {
-    return isEq(traversal.getAll(traversal.set(a).apply(s)).collect(Collectors.toList()),
-      traversal.getAll(s).map(__ -> a).collect(Collectors.toList()));
+    return isEq(stream(traversal.getAll(traversal.set(a).apply(s)).spliterator(), false).collect(Collectors.toList()),
+      stream(Iterables.map(traversal.getAll(s), __ -> a).spliterator(), false).collect(Collectors.toList()));
   }
 
   /**
@@ -93,7 +94,7 @@ public final class TraversalLaws<S, A> {
    * headOption returns the first element of getAll
    */
   public IsEq<Option<A>> headOption(S s) {
-    return isEq(traversal.headOption(s), traversal.getAll(s).findFirst().map(Options.toOption()).orElse(Option.none()));
+    return isEq(traversal.headOption(s), Iterables.first(traversal.getAll(s)));
   }
 
 }
