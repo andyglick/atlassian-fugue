@@ -16,19 +16,23 @@
 
 package io.atlassian.fugue;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Function;
-
 import static io.atlassian.fugue.Either.left;
 import static io.atlassian.fugue.Either.right;
-import static io.atlassian.fugue.Iterables.*;
+import static io.atlassian.fugue.Iterables.concat;
+import static io.atlassian.fugue.Iterables.drop;
+import static io.atlassian.fugue.Iterables.first;
+import static io.atlassian.fugue.Iterables.join;
+import static io.atlassian.fugue.Iterables.map;
 import static io.atlassian.fugue.Option.none;
 import static io.atlassian.fugue.Option.some;
 import static io.atlassian.fugue.Options.filterNone;
 import static io.atlassian.fugue.Unit.Unit;
 import static java.util.Collections.emptyList;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
 
 /**
  * {@link io.atlassian.fugue.Monoid} instances.
@@ -374,7 +378,7 @@ public final class Monoids {
       }
 
       @Override public Option<A> multiply(final int n, final Option<A> as) {
-        return n <= 0 ? none() : as.fold(Option::none, a -> some(semigroup.multiply1p(n - 1, a)));
+        return n <= 0 ? none() : as.fold(Option::<A> none, a -> some(semigroup.multiply1p(n - 1, a)));
       }
     };
   }
