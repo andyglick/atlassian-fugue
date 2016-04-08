@@ -15,6 +15,11 @@
  */
 package io.atlassian.fugue;
 
+import static io.atlassian.fugue.Option.none;
+import static io.atlassian.fugue.Option.some;
+import static io.atlassian.fugue.Suppliers.ofInstance;
+import static java.util.Objects.requireNonNull;
+
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -22,11 +27,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-
-import static io.atlassian.fugue.Option.none;
-import static io.atlassian.fugue.Option.some;
-import static io.atlassian.fugue.Suppliers.ofInstance;
-import static java.util.Objects.requireNonNull;
 
 /**
  * A class that acts as a container for a value of one of two types. An Either
@@ -302,13 +302,47 @@ public abstract class Either<L, R> implements Serializable {
    * @param or Function to run if this is a left
    * @return contained value of R or result of {@code or}
    * @since 2.3
+   * @deprecated In favor of {@code rightOr}
+   * @see Either#rightOr(Function)
    */
-  public final R valueOr(final Function<L, ? extends R> or) {
+  @Deprecated public final R valueOr(final Function<L, ? extends R> or) {
     if (right().isDefined()) {
       return right().get();
     }
 
     return or.apply(left().get());
+  }
+
+  /**
+   * If this is a right return the contained value, else return the result of
+   * applying {@code leftTransformer} on left
+   *
+   * @param leftTransformer Function to run on left if this is a left
+   * @return contained value of right or result of {@code leftTransformer}
+   * @since 3.2
+   */
+  public final R rightOr(final Function<L, ? extends R> leftTransformer) {
+    if (right().isDefined()) {
+      return right().get();
+    }
+
+    return leftTransformer.apply(left().get());
+  }
+
+  /**
+   * If this is a left return the contained value, else return the result of
+   * applying {@code rightTransformer} on right
+   *
+   * @param rightTransformer Function to run on right if this is a right
+   * @return contained value of left or result of {@code rightTransformer}
+   * @since 3.2
+   */
+  public final L leftOr(final Function<R, ? extends L> rightTransformer) {
+    if (left().isDefined()) {
+      return left().get();
+    }
+
+    return rightTransformer.apply(right().get());
   }
 
   /**

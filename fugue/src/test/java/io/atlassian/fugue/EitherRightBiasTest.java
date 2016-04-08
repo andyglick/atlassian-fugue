@@ -1,11 +1,5 @@
 package io.atlassian.fugue;
 
-import org.hamcrest.Matchers;
-import org.junit.Test;
-
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Function;
-
 import static io.atlassian.fugue.Either.left;
 import static io.atlassian.fugue.Either.right;
 import static io.atlassian.fugue.EitherRightProjectionTest.reverseToEither;
@@ -15,6 +9,12 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
+
+import org.hamcrest.Matchers;
+import org.junit.Test;
 
 public class EitherRightBiasTest {
   private final Either<String, Integer> l = left("heyaa!");
@@ -173,12 +173,12 @@ public class EitherRightBiasTest {
     assertThat(pp, is(p));
   }
 
-  @Test public void valueOrRight() {
-    assertThat(r.valueOr(Functions.<String, Integer> constant(99)), is(12));
+  @Test public void rightOr_valueIsARight_returnsRightValue() {
+    assertThat(r.rightOr(Functions.constant(99)), is(12));
   }
 
-  @Test public void valueOrLeft() {
-    assertThat(l.valueOr(Functions.<String, Integer> constant(99)), is(99));
+  @Test public void rightOr_valueIsALeft_returnsLeftTransformerResult() {
+    assertThat(l.rightOr(Functions.constant(99)), is(99));
   }
 
   @Test public void flatMapSubTypesOnLeft() {
