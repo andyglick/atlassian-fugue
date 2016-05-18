@@ -99,6 +99,19 @@ public class Functions {
   }
 
   /**
+   * Performs function application within a higher-order function (applicative
+   * functor pattern).
+   *
+   * @param ca A function to apply within a higher-order function.
+   * @param cab The higher-order function to apply a function to.
+   * @return A new function after applying the given higher-order function to
+   * the given function.
+   */
+  public static <A, B, C> Function<C, B> ap(final Function<C, A> ca, final Function<C, Function<A, B>> cab) {
+    return m -> ca.andThen(cab.apply(m)).apply(m);
+  }
+
+  /**
    * Apply f to each element in elements, with each application using the result
    * of the previous application as the other argument to f. zero is used as the
    * first 'result' value. The final result is returned.

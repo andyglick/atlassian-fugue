@@ -159,6 +159,19 @@ public class Iterables {
   }
 
   /**
+   * Performs function application within an iterable (applicative functor
+   * pattern).
+   *
+   * @param as an iterable
+   * @param fs The iterable of functions to apply.
+   * @return A new iterable after applying the given stream of functions through
+   * as.
+   */
+  public static <A, B> Iterable<B> ap(final Iterable<A> as, final Iterable<Function<A, B>> fs) {
+    return flatMap(fs, f -> map(as, f));
+  }
+
+  /**
    * Applies {@code f} to each element of {@code collection}, then concatenates
    * the result.
    *

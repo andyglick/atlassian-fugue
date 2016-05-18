@@ -55,6 +55,19 @@ public class Suppliers {
   }
 
   /**
+   * Performs function application within a supplier (applicative functor
+   * pattern).
+   *
+   * @param sa supplier
+   * @param sf The Supplier function to apply.
+   * @return A new Supplier after applying the given Supplier function to the
+   * first argument.
+   */
+  public static <A, B> Supplier<B> ap(final Supplier<A> sa, final Supplier<Function<A, B>> sf) {
+    return () -> sf.get().apply(sa.get());
+  }
+
+  /**
    * Supplies true.
    *
    * @return a supplier that always supplies {@code true}.

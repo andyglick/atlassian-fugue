@@ -21,8 +21,8 @@
     <properties>
         <scala.version>2.11.7</scala.version>
         <scala-maven-plugin.version>3.2.2</scala-maven-plugin.version>
-        <scalacheck.version>1.12.4</scalacheck.version>
-        <scalatest.version>3.0.0-M7</scalatest.version>
+        <scalacheck.version>1.12.5</scalacheck.version>
+        <scalatest.version>3.0.0-M11</scalatest.version>
         <license.location>${project.basedir}/../clover.license</license.location>
     </properties>
 
@@ -93,6 +93,12 @@
         <dependency>
             <groupId>io.atlassian.fugue</groupId>
             <artifactId>fugue</artifactId>
+            <scope>provided</scope>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.atlassian.fugue</groupId>
+            <artifactId>fugue-optics</artifactId>
             <scope>provided</scope>
             <version>${project.version}</version>
         </dependency>
