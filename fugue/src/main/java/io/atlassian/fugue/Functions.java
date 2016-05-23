@@ -15,6 +15,7 @@
  */
 package io.atlassian.fugue;
 
+import static io.atlassian.fugue.Option.option;
 import static java.util.Objects.requireNonNull;
 
 import java.io.Serializable;
@@ -29,8 +30,6 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-
-import static io.atlassian.fugue.Option.option;
 
 /**
  * Utility methods for Functions
@@ -780,15 +779,17 @@ public class Functions {
   }
 
   /**
-   * Performs function application within a higher-order function (applicative functor pattern).
+   * Performs function application within a higher-order function (applicative
+   * functor pattern).
    *
    * @param ca A function to apply within a higher-order function.
    * @param cab The higher-order function to apply a function to.
    *
-   * @return A new function after applying the given higher-order function to the given function.
+   * @return A new function after applying the given higher-order function to
+   * the given function.
    */
-  public static <A, B, C> Function<C, B> ap(final Function<C, A> ca, final Function<C, Function<A, B>> cab) {
-    return c -> ca.andThen(cab.apply(c)).apply(c);
+  public static <A, B, C> Function<A, C> ap(final Function<A, B> ab, final Function<A, Function<B, C>> abc) {
+    return a -> abc.apply(a).apply(ab.apply(a));
   }
 
   static <A> Predicate<A> countingPredicate(final int n) {
