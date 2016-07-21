@@ -224,7 +224,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   }
 
   /** {@inheritDoc} */
-  @Override public boolean forall(final Predicate<? super A> p) {
+  @Override public final boolean forall(final Predicate<? super A> p) {
     requireNonNull(p);
     return isEmpty() || p.test(get());
   }
