@@ -50,7 +50,6 @@
         <guava.osgi.version>18.0</guava.osgi.version>
         <slf4j-api.version>1.6.0</slf4j-api.version>
         <fugue.osgi.import.version>${project.version}</fugue.osgi.import.version>
-        <license.location>${project.basedir}/../clover.license</license.location>
     </properties>
 
     <issueManagement>
