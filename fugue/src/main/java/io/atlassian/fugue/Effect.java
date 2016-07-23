@@ -57,6 +57,7 @@ import java.util.function.Consumer;
      * @param effect the input to use for performing the effect.
      *
      * @deprecated extend or implement {@link Iterable#forEach(Consumer)}
+     * instead
      */
     @Deprecated void foreach(Effect<? super A> effect);
   }
