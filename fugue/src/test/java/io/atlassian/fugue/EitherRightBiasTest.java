@@ -3,6 +3,8 @@ package io.atlassian.fugue;
 import static io.atlassian.fugue.Either.left;
 import static io.atlassian.fugue.Either.right;
 import static io.atlassian.fugue.EitherRightProjectionTest.reverseToEither;
+import static io.atlassian.fugue.Option.none;
+import static io.atlassian.fugue.Option.some;
 import static io.atlassian.fugue.UtilityFunctions.addOne;
 import static io.atlassian.fugue.UtilityFunctions.reverse;
 import static org.hamcrest.Matchers.is;
@@ -10,6 +12,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
@@ -138,12 +141,12 @@ public class EitherRightBiasTest {
   }
 
   @Test public void filterRight() {
-    assertThat(r.filter(x -> x == 12), is(Option.some(r)));
-    assertThat(r.filter(x -> x == 11), Matchers.is(Option.<Either<String, Integer>> none()));
+    assertThat(r.filter(x -> x == 12), is(some(r)));
+    assertThat(r.filter(x -> x == 11), is(Option.<Either<String, Integer>> none()));
   }
 
   @Test public void filterLeft() {
-    assertThat(l.filter(x -> x == 12), Matchers.is(Option.<Either<String, Integer>> none()));
+    assertThat(l.filter(x -> x == 12), is(Option.<Either<String, Integer>> none()));
   }
 
   @Test public void orElseRightInstance() {
@@ -213,11 +216,19 @@ public class EitherRightBiasTest {
   }
 
   @Test public void toOptionRight() {
-    assertThat(r.toOption(), is(Option.some(12)));
+    assertThat(r.toOption(), is(some(12)));
   }
 
   @Test public void toOptionLeft() {
-    assertThat(l.toOption(), Matchers.is(Option.<Integer> none()));
+    assertThat(l.toOption(), is(none()));
+  }
+
+  @Test public void toOptionalRight() {
+    assertThat(r.toOptional(), is(Optional.of(12)));
+  }
+
+  @Test public void toOptionalLeft() {
+    assertThat(l.toOptional(), is(Optional.empty()));
   }
 
   @Test public void sequenceDefined() {

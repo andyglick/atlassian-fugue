@@ -56,7 +56,7 @@ import java.util.function.Consumer;
      *
      * @param effect the input to use for performing the effect.
      *
-     * @deprecated extend or implement {@link Iterable#forEach(Consumer)}
+     * @deprecated extend or implement {@link io.atlassian.fugue.Applicant#forEach(Consumer)}
      * instead
      */
     @Deprecated void foreach(Effect<? super A> effect);

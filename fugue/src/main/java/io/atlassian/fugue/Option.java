@@ -381,7 +381,9 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
       throw ifUndefined.get();
     }
 
-    @Deprecated @Override public void foreach(final Effect<? super Object> effect) {}
+    @Deprecated @Override public void foreach(final Effect<? super Object> effect) {
+      this.forEach(effect);
+    }
 
     @Override public void forEach(final Consumer<? super Object> effect) {}
 
@@ -430,7 +432,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
     }
 
     @Deprecated @Override public void foreach(final Effect<? super A> effect) {
-      effect.apply(value);
+      this.forEach(effect);
     }
 
     @Override public void forEach(final Consumer<? super A> effect) {
