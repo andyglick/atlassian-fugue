@@ -14,9 +14,9 @@
         <version>3.2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>fugue-guava</artifactId>
+    <artifactId>fugue-deprecated</artifactId>
     <packaging>jar</packaging>
-    <name>Functional Extensions Guava Inter-Ops</name>
+    <name>Functional Extensions Deprecated Inter-Ops</name>
 
 
     <build>
@@ -37,7 +37,7 @@
                 <configuration>
                     <instructions>
                         <Export-Package>
-                            io.atlassian.fugue.extras.*;version="${fugue.osgi.import.version}",
+                            io.atlassian.fugue.deprecated.*;version="${fugue.osgi.import.version}",
                         </Export-Package>
                         <Import-Package>
                             *

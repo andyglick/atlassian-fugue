@@ -14,9 +14,9 @@
         <version>3.2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>fugue-guava</artifactId>
+    <artifactId>fugue-retry</artifactId>
     <packaging>jar</packaging>
-    <name>Functional Extensions Guava Inter-Ops</name>
+    <name>Functional Extensions Retry Inter-Ops</name>
 
 
     <build>
@@ -37,7 +37,7 @@
                 <configuration>
                     <instructions>
                         <Export-Package>
-                            io.atlassian.fugue.extras.*;version="${fugue.osgi.import.version}",
+                            io.atlassian.fugue.retry.*;version="${fugue.osgi.import.version}"
                         </Export-Package>
                         <Import-Package>
                             *
@@ -57,12 +57,6 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
             <scope>provided</scope>
         </dependency>
 

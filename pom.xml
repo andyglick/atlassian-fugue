@@ -32,7 +32,9 @@
         <module>fugue</module>
         <module>fugue-optics</module>
         <module>fugue-scala</module>
+        <module>fugue-retry</module>
         <module>fugue-guava</module>
+        <module>fugue-deprecated</module>
     </modules>
 
     <properties>
@@ -40,14 +42,15 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <maven.javadoc.plugin.version>2.10.3</maven.javadoc.plugin.version>
-        <clover.version>4.0.6</clover.version>
+        <clover.version>4.1.1</clover.version>
         <mockito-core.version>1.8.4</mockito-core.version>
         <junit.version>4.12</junit.version>
         <hamcrest.version>1.3</hamcrest.version>
         <jsr305.version>3.0.0</jsr305.version>
-        <guava.osgi.version>16.0.1</guava.osgi.version>
+        <guava.osgi.version>18.0</guava.osgi.version>
         <slf4j-api.version>1.6.0</slf4j-api.version>
-        <fugue.osgi.import.version>3.1.0</fugue.osgi.import.version>
+        <fugue.osgi.import.version>${project.version}</fugue.osgi.import.version>
+        <license.location>${project.basedir}/../clover.license</license.location>
     </properties>
 
     <issueManagement>
@@ -101,7 +104,7 @@
             </plugin>
             <plugin>
                 <groupId>com.atlassian.maven.plugins</groupId>
-                <artifactId>maven-clover2-plugin</artifactId>
+                <artifactId>clover-maven-plugin</artifactId>
                 <version>${clover.version}</version>
                 <configuration>
                     <licenseLocation>${license.location}</licenseLocation>
