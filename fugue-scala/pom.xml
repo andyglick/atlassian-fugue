@@ -11,7 +11,7 @@
     <parent>
         <artifactId>fugue-parent</artifactId>
         <groupId>io.atlassian.fugue</groupId>
-        <version>3.2.0-SNAPSHOT</version>
+        <version>4.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>fugue-scala</artifactId>
@@ -22,7 +22,7 @@
         <scala.version>2.11.7</scala.version>
         <scala-maven-plugin.version>3.2.2</scala-maven-plugin.version>
         <scalacheck.version>1.12.5</scalacheck.version>
-        <scalatest.version>3.0.0-M11</scalatest.version>
+        <scalatest.version>3.0.0-M15</scalatest.version>
         <license.location>${project.basedir}/../clover.license</license.location>
     </properties>
 
