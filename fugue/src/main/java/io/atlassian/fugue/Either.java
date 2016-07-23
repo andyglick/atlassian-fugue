@@ -362,8 +362,9 @@ public abstract class Either<L, R> implements Serializable {
   }
 
   /**
-   * Convert this Either to an {@link Optional}. Returns with {@link Optional#of(Object)} if
-   * it is a right, otherwise {@link Optional#empty()}.
+   * Convert this Either to an {@link Optional}. Returns with
+   * {@link Optional#of(Object)} if it is a right, otherwise
+   * {@link Optional#empty()}.
    *
    * @return The right projection's value in <code>of</code> if it exists,
    * otherwise <code>empty</code>.
