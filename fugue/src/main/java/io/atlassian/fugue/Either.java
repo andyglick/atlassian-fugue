@@ -307,11 +307,7 @@ public abstract class Either<L, R> implements Serializable {
    * @see Either#rightOr(Function)
    */
   @Deprecated public final R valueOr(final Function<L, ? extends R> or) {
-    if (right().isDefined()) {
-      return right().get();
-    }
-
-    return or.apply(left().get());
+    return rightOr(or);
   }
 
   /**

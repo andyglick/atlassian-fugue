@@ -176,12 +176,28 @@ public class EitherRightBiasTest {
     assertThat(pp, is(p));
   }
 
+  @Test public void valueOr_valueIsARight_returnsRightValue() {
+    assertThat(r.valueOr(Functions.constant(99)), is(12));
+  }
+
+  @Test public void valueOr_valueIsALeft_returnsOrResult() {
+    assertThat(l.valueOr(Functions.constant(99)), is(99));
+  }
+
   @Test public void rightOr_valueIsARight_returnsRightValue() {
     assertThat(r.rightOr(Functions.constant(99)), is(12));
   }
 
   @Test public void rightOr_valueIsALeft_returnsLeftTransformerResult() {
     assertThat(l.rightOr(Functions.constant(99)), is(99));
+  }
+
+  @Test public void leftOr_valueIsALeft_returnsLeftValue() {
+    assertThat(l.leftOr(Functions.constant("s")), is("heyaa!"));
+  }
+
+  @Test public void leftOr_valueIsARight_returnsRightTransformerResult() {
+    assertThat(r.leftOr(Functions.constant("s")), is("s"));
   }
 
   @Test public void flatMapSubTypesOnLeft() {
