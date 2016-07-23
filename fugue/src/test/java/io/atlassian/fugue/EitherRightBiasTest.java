@@ -176,14 +176,6 @@ public class EitherRightBiasTest {
     assertThat(pp, is(p));
   }
 
-  @Test @SuppressWarnings("deprecation") public void valueOr_valueIsARight_returnsRightValue() {
-    assertThat(r.valueOr(Functions.constant(99)), is(12));
-  }
-
-  @Test @SuppressWarnings("deprecation") public void valueOr_valueIsALeft_returnsOrResult() {
-    assertThat(l.valueOr(Functions.constant(99)), is(99));
-  }
-
   @Test public void rightOr_valueIsARight_returnsRightValue() {
     assertThat(r.rightOr(Functions.constant(99)), is(12));
   }
