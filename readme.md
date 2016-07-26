@@ -93,7 +93,7 @@ you need to import io.atlassian.fugue.Iterables by it's FQN
 on the abstract method is recommended
 * See the `changelog.md` for further changes
 
-## Migrating from Fugue v2.x to v4.x
+## Migrating from Fugue v3.x to v4.x
 
 * Find io.atlassian.fugue.retry.* in the fugue-retry module
 * Find ImmutableMaps in the fugue-guava module
