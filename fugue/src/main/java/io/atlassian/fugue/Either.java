@@ -23,6 +23,7 @@ import static java.util.Objects.requireNonNull;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -306,11 +307,7 @@ public abstract class Either<L, R> implements Serializable {
    * @see Either#rightOr(Function)
    */
   @Deprecated public final R valueOr(final Function<L, ? extends R> or) {
-    if (right().isDefined()) {
-      return right().get();
-    }
-
-    return or.apply(left().get());
+    return rightOr(or);
   }
 
   /**
@@ -358,6 +355,19 @@ public abstract class Either<L, R> implements Serializable {
    */
   public final Option<Either<L, R>> filter(final Predicate<? super R> p) {
     return right().filter(p);
+  }
+
+  /**
+   * Convert this Either to an {@link Optional}. Returns with
+   * {@link Optional#of(Object)} if it is a right, otherwise
+   * {@link Optional#empty()}.
+   *
+   * @return The right projection's value in <code>of</code> if it exists,
+   * otherwise <code>empty</code>.
+   * @since 4.0
+   */
+  public final Optional<R> toOptional() {
+    return right().toOptional();
   }
 
   /**
@@ -625,7 +635,11 @@ public abstract class Either<L, R> implements Serializable {
     }
 
     @Override public final Option<A> toOption() {
-      return isDefined() ? some(get()) : Option.<A> none();
+      return isDefined() ? some(get()) : none();
+    }
+
+    @Override public final Optional<A> toOptional() {
+      return toOption().toOptional();
     }
 
     @Override public final boolean exists(final Predicate<? super A> f) {
@@ -661,9 +675,7 @@ public abstract class Either<L, R> implements Serializable {
     }
 
     @Deprecated @Override public final void foreach(final Effect<? super A> f) {
-      if (isDefined()) {
-        f.apply(get());
-      }
+      this.forEach(f::apply);
     }
 
     @Override public final void forEach(final Consumer<? super A> f) {
@@ -743,7 +755,7 @@ public abstract class Either<L, R> implements Serializable {
      * Returns <code>None</code> if this projection has no value or if the given
      * predicate <code>p</code> does not hold for the value, otherwise, returns
      * a left in <code>Some</code>.
-     * 
+     *
      * @param <X> the RHS type
      * @param f The predicate function to test on this projection's value.
      * @return <code>None</code> if this projection has no value or if the given
@@ -861,14 +873,14 @@ public abstract class Either<L, R> implements Serializable {
      * @return An either after binding through this projection.
      */
     public <X> Either<L, X> sequence(final Either<L, X> e) {
-      return flatMap(Functions.<R, Either<L, X>> constant(e));
+      return flatMap(Functions.constant(e));
     }
 
     /**
      * Returns <code>None</code> if this projection has no value or if the given
      * predicate <code>p</code> does not hold for the value, otherwise, returns
      * a right in <code>Some</code>.
-     * 
+     *
      * @param <X> the LHS type
      * @param f The predicate function to test on this projection's value.
      * @return <code>None</code> if this projection has no value or if the given
@@ -938,6 +950,16 @@ public abstract class Either<L, R> implements Serializable {
      * otherwise <code>None</code>.
      */
     Option<? super A> toOption();
+
+    /**
+     * Returns this projection's value in {@link Optional#of} if it exists,
+     * otherwise {@link Optional#empty()}.
+     *
+     * @return This projection's value in <code>of</code> if it exists,
+     * otherwise <code>empty</code>.
+     * @since 4.0
+     */
+    Optional<? super A> toOptional();
 
     /**
      * The value of this projection or the result of the given function on the

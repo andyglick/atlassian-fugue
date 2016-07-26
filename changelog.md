@@ -3,10 +3,16 @@ All notable changes to this project will be documented in this file.
 
 This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 
-## [3.2.0] - [unreleased]
+## [4.0.0] - [unreleased]
 ### Added
 - Either.leftOr(Function<R, ? extends L>) returns the left if exists or the result of applying the transformer to right
 - Either.rightOr(Function<L, ? extends R>) returns the right if exists or the result of applying the transformer to left
+- Either.toOptional added to the Left and Right as well as right-biased
+- io.atlassian.fugue.optic.* in the fugue-optics package.
+
+### Changed
+- io.atlassian.fugue.retry.* has been moved from the fugue-guava package to fugue-retry.
+- io.atlassian.fugue.deprecated.* has been moved from the fugue-guava package to fugue-deprecated. This is planned to remove in 5.0.
 
 ### Deprecated
 - Either.valueOr, in favor of the symmetrically-named Either.rightOr
