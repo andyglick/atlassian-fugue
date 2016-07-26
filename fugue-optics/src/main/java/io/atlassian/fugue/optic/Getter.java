@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 /**
  * A {@link Getter} can be seen as a glorified get method between a type S and a
  * type A.
- * <p/>
+ * <p>
  * A {@link Getter} is also a valid {@link Fold}
  *
  * @param <S> the source of a {@link Getter}

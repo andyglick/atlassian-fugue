@@ -5,12 +5,12 @@ import io.atlassian.fugue.Either;
 import java.util.function.Function;
 
 /**
- * A {@link PSetter} is a generalisation of Functor map: - `map: (A => B) =>
- * F[A] => F[B]` - `modify: (A => B) => S => T`
- * <p/>
+ * A {@link PSetter} is a generalisation of Functor map: - `map: (A =&gt; B) =&gt;
+ * F[A] =&gt; F[B]` - `modify: (A =&gt; B) =&gt; S =&gt; T`
+ * <p>
  * {@link PSetter} stands for Polymorphic Setter as it set and modify methods
  * change a type `A` to `B` and `S` to `T`.
- * <p/>
+ * <p>
  * {@link PTraversal}, {@link POptional}, {@link PPrism}, {@link PLens} and
  * {@link PIso} are valid {@link PSetter}
  *

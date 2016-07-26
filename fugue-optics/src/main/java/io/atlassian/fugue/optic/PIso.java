@@ -9,21 +9,17 @@ import java.util.stream.Stream;
 
 /**
  * A {@link PIso} defines an isomorphism between types S, A and B, T:
- * <p/>
- * 
  * <pre>
  *              get                           reverse.get
- *     -------------------->             -------------------->
+ *     --------------------&gt;             --------------------&gt;
  *   S                       A         T                       B
- *     <--------------------             <--------------------
+ *     &lt;--------------------             &lt;--------------------
  *       reverse.reverseGet                   reverseGet
  * </pre>
- * <p/>
+ * <p>
  * In addition, if f and g forms an isomorphism between `A` and `B`, i.e. if `f
  * . g = id` and `g . f = id`, then a {@link PIso} defines an isomorphism
  * between `S` and `T`:
- * <p/>
- * 
  * <pre>
  *     S           T                                   S           T
  *     |           ↑                                   ↑           |
@@ -31,9 +27,9 @@ import java.util.stream.Stream;
  * get |           | reverseGet     reverse.reverseGet |           | reverse.get
  *     |           |                                   |           |
  *     ↓     f     |                                   |     g     ↓
- *     A --------> B                                   A <-------- B
+ *     A --------&gt; B                                   A &lt;-------- B
  * </pre>
- * <p/>
+ * <p>
  * A {@link PIso} is also a valid {@link Getter}, {@link Fold}, {@link PLens},
  * {@link PPrism}, {@link POptional}, {@link PTraversal} and {@link PSetter}
  *
@@ -458,13 +454,11 @@ public abstract class PIso<S, T, A, B> {
    * create a {@link PIso} between any type and itself. id is the zero element
    * of optics composition, for all optics o of type O (e.g. Lens, Iso, Prism,
    * ...):
-   * <p/>
-   * 
    * <pre>
    *  o composeIso Iso.id == o
    *  Iso.id composeO o == o
    * </pre>
-   * <p/>
+   * <p>
    * (replace composeO by composeLens, composeIso, composePrism, ...)
    */
   public static <S, T> PIso<S, T, S, T> pId() {

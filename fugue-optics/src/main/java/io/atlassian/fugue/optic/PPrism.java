@@ -9,19 +9,19 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 /**
- * A {@link PPrism} can be seen as a pair of functions: - `getOrModify: S => T
- * \/ A` - `reverseGet : B => T`
- * <p/>
+ * A {@link PPrism} can be seen as a pair of functions: - `getOrModify: S =&gt; T
+ * \/ A` - `reverseGet : B =&gt; T`
+ * <p>
  * A {@link PPrism} could also be defined as a weaker {@link PIso} where get can
  * fail.
- * <p/>
+ * <p>
  * Typically a {@link PPrism} or {@link Prism} encodes the relation between a
  * Sum or CoProduct type (e.g. sealed trait) and one of it is element.
- * <p/>
+ * <p>
  * {@link PPrism} stands for Polymorphic Prism as it set and modify methods
  * change a type `A` to `B` and `S` to `T`. {@link Prism} is a {@link PPrism}
  * where the type of target cannot be modified.
- * <p/>
+ * <p>
  * A {@link PPrism} is also a valid {@link Fold}, {@link POptional},
  * {@link PTraversal} and {@link PSetter}
  *

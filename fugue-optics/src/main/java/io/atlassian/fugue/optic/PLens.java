@@ -8,20 +8,20 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 /**
- * A {@link PLens} can be seen as a pair of functions: - `get: S => A` i.e. from
- * an `S`, we can extract an `A` - `set: (B, S) => T` i.e. if we replace an `A`
+ * A {@link PLens} can be seen as a pair of functions: - `get: S =&gt; A` i.e. from
+ * an `S`, we can extract an `A` - `set: (B, S) =&gt; T` i.e. if we replace an `A`
  * by a `B` in an `S`, we obtain a `T`
- * <p/>
+ * <p>
  * A {@link PLens} could also be defined as a weaker {@link PIso} where set
  * requires an additional parameter than reverseGet.
- * <p/>
+ * <p>
  * {@link PLens} stands for Polymorphic Lens as it set and modify methods change
  * a type `A` to `B` and `S` to `T`. {@link Lens} is a {@link PLens} restricted
  * to monomorphic updates.
- * <p/>
+ * <p>
  * A {@link PLens} is also a valid {@link Getter}, {@link Fold},
  * {@link POptional}, {@link PTraversal} and {@link PSetter}
- * <p/>
+ * <p>
  * Typically a {@link PLens} or {@link Lens} can be defined between a Product
  * (e.g. case class, tuple, HList) and one of it is component.
  *

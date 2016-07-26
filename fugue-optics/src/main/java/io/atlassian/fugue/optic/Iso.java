@@ -139,13 +139,13 @@ public final class Iso<S, A> extends PIso<S, S, A, A> {
    * create an {@link Iso} between any type and itself. id is the zero element
    * of optics composition, for all optics o of type O (e.g. Lens, Iso, Prism,
    * ...):
-   * <p/>
+   * <p>
    * 
    * <pre>
    *  o composeIso Iso.id == o
    *  Iso.id composeO o == o
    * </pre>
-   * <p/>
+   * <p>
    * (replace composeO by composeLens, composeIso, composePrism, ...)
    */
   public static <S> Iso<S, S> id() {

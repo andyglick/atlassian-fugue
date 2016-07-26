@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 /**
  * A {@link Fold} can be seen as a {@link Getter} with many targets or a weaker
  * {@link PTraversal} which cannot modify its target.
- * <p/>
+ * <p>
  * {@link Fold} is on the top of the Optic hierarchy which means that
  * {@link Getter}, {@link PTraversal}, {@link POptional}, {@link PLens},
  * {@link PPrism} and {@link PIso} are valid {@link Fold}

@@ -9,12 +9,12 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 /**
- * A {@link POptional} can be seen as a pair of functions: - `getOrModify: S =>
- * T \/ A` - `set : (B, S) => T`
- * <p/>
+ * A {@link POptional} can be seen as a pair of functions: - `getOrModify: S =&gt;
+ * T \/ A` - `set : (B, S) =&gt; T`
+ * <p>
  * A {@link POptional} could also be defined as a weaker {@link PLens} and
  * weaker {@link PPrism}
- * <p/>
+ * <p>
  * {@link POptional} stands for Polymorphic Optional as it set and modify
  * methods change a type `A` to `B` and `S` to `T`. {@link Optional} is a
  * {@link POptional} restricted to monomorphic updates: {{{ type Optional[S, A]
