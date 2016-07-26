@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 
 /**
  * A {@link PIso} defines an isomorphism between types S, A and B, T:
+ * 
  * <pre>
  *              get                           reverse.get
  *     --------------------&gt;             --------------------&gt;
@@ -20,6 +21,7 @@ import java.util.stream.Stream;
  * In addition, if f and g forms an isomorphism between `A` and `B`, i.e. if `f
  * . g = id` and `g . f = id`, then a {@link PIso} defines an isomorphism
  * between `S` and `T`:
+ * 
  * <pre>
  *     S           T                                   S           T
  *     |           ↑                                   ↑           |
@@ -454,6 +456,7 @@ public abstract class PIso<S, T, A, B> {
    * create a {@link PIso} between any type and itself. id is the zero element
    * of optics composition, for all optics o of type O (e.g. Lens, Iso, Prism,
    * ...):
+   * 
    * <pre>
    *  o composeIso Iso.id == o
    *  Iso.id composeO o == o

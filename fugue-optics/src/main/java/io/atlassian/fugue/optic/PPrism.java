@@ -9,8 +9,8 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 /**
- * A {@link PPrism} can be seen as a pair of functions: - `getOrModify: S =&gt; T
- * \/ A` - `reverseGet : B =&gt; T`
+ * A {@link PPrism} can be seen as a pair of functions: - `getOrModify: S =&gt;
+ * T \/ A` - `reverseGet : B =&gt; T`
  * <p>
  * A {@link PPrism} could also be defined as a weaker {@link PIso} where get can
  * fail.

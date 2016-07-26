@@ -8,9 +8,9 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 /**
- * A {@link PLens} can be seen as a pair of functions: - `get: S =&gt; A` i.e. from
- * an `S`, we can extract an `A` - `set: (B, S) =&gt; T` i.e. if we replace an `A`
- * by a `B` in an `S`, we obtain a `T`
+ * A {@link PLens} can be seen as a pair of functions: - `get: S =&gt; A` i.e.
+ * from an `S`, we can extract an `A` - `set: (B, S) =&gt; T` i.e. if we replace
+ * an `A` by a `B` in an `S`, we obtain a `T`
  * <p>
  * A {@link PLens} could also be defined as a weaker {@link PIso} where set
  * requires an additional parameter than reverseGet.

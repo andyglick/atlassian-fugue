@@ -9,8 +9,8 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 /**
- * A {@link POptional} can be seen as a pair of functions: - `getOrModify: S =&gt;
- * T \/ A` - `set : (B, S) =&gt; T`
+ * A {@link POptional} can be seen as a pair of functions: - `getOrModify: S
+ * =&gt; T \/ A` - `set : (B, S) =&gt; T`
  * <p>
  * A {@link POptional} could also be defined as a weaker {@link PLens} and
  * weaker {@link PPrism}
