@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 
 This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 
+## [4.1.0] - [unreleased]
+
 ## [4.0.0] - 2016-07-26
 ### Added
 - Either.leftOr(Function<R, ? extends L>) returns the left if exists or the result of applying the transformer to right
