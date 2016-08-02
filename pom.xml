@@ -17,7 +17,7 @@
     <groupId>io.atlassian.fugue</groupId>
     <artifactId>fugue-parent</artifactId>
     <packaging>pom</packaging>
-    <version>4.0.0</version>
+    <version>4.0.1-SNAPSHOT</version>
     <name>Functional Extensions Library</name>
 
     <licenses>
