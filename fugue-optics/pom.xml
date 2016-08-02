@@ -45,8 +45,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>io.atlassian.fugue</groupId>
             <artifactId>fugue</artifactId>
+            <scope>provided</scope>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
