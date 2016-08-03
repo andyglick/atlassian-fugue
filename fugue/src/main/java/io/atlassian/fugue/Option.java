@@ -95,7 +95,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    */
   public static <A> Option<A> none() {
     @SuppressWarnings("unchecked")
-    final Option<A> result = (Option<A>) NONE;
+    final Option<A> result = (Option<A>) None.NONE;
     return result;
   }
 
@@ -151,7 +151,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   //
 
   /** do not constructor */
-  Option() {}
+  private Option() {}
 
   //
   // abstract methods
@@ -359,8 +359,67 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   // static members
   //
 
-  private static final Option<Object> NONE = new Option<Object>() {
+  private static final Supplier<String> NONE_STRING = ofInstance("none()");
+  private static final Supplier<Integer> NONE_HASH = ofInstance(31);
+
+  private static final Function<Object, String> SOME_STRING = obj -> String.format("some(%s)", obj);
+  private static final Function<Object, Integer> SOME_HASH = Object::hashCode;
+
+  @Deprecated private static final Option<Object> NONE = new Option<Object>() {
     private static final long serialVersionUID = -1978333494161467110L;
+
+    @Override public <B> B fold(final Supplier<? extends B> none, final Function<? super Object, ? extends B> some) {
+      return None.NONE.fold(none, some);
+    }
+
+    @Override public Object get() {
+      return None.NONE.get();
+    }
+
+    @Override public boolean isDefined() {
+      return None.NONE.isDefined();
+    }
+
+    @Override public Object getOrError(final Supplier<String> err) {
+      return None.NONE.getOrError(err);
+    }
+
+    @Override public <X extends Throwable> Object getOrThrow(final Supplier<X> ifUndefined) throws X {
+      return None.NONE.getOrThrow(ifUndefined);
+    }
+
+    @Deprecated @Override public void foreach(final Effect<? super Object> effect) {
+      None.NONE.foreach(effect);
+    }
+
+    @Override public void forEach(final Consumer<? super Object> effect) {
+      None.NONE.forEach(effect);
+    }
+
+    @Override public Optional<Object> toOptional() {
+      return None.NONE.toOptional();
+    }
+
+    private Object writeReplace() {
+      return None.NONE;
+    }
+
+    private Object readResolve() {
+      return None.NONE;
+    }
+  };
+
+  //
+  // inner classes
+  //
+
+  /**
+   * The big two, the actual implementation classes.
+   */
+  private static final class None extends Option<Object> {
+    private static final long serialVersionUID = -1978333494161467110L;
+
+    private static final Option<Object> NONE = new None();
 
     @Override public <B> B fold(final Supplier<? extends B> none, final Function<? super Object, ? extends B> some) {
       return none.get();
@@ -391,19 +450,9 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
     @Override public Optional<Object> toOptional() {
       return Optional.empty();
     }
-  };
+  }
 
-  private static final Supplier<String> NONE_STRING = ofInstance("none()");
-  private static final Supplier<Integer> NONE_HASH = ofInstance(31);
-
-  //
-  // inner classes
-  //
-
-  /**
-   * The big one, the actual implementation class.
-   */
-  static final class Some<A> extends Option<A> {
+  private static final class Some<A> extends Option<A> {
     private static final long serialVersionUID = 5542513144209030852L;
 
     private final A value;
@@ -445,6 +494,4 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
     }
   }
 
-  private static final Function<Object, String> SOME_STRING = obj -> String.format("some(%s)", obj);
-  private static final Function<Object, Integer> SOME_HASH = Object::hashCode;
 }
