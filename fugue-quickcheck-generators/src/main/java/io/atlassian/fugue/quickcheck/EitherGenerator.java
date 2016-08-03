@@ -11,10 +11,10 @@ import java.util.stream.Collectors;
 /**
  * Produces values of type {@link Either}.
  */
-public class EitherGenerator extends ComponentizedGenerator<Either> {
+public class EitherGenerator extends ComponentizedGenerator<Either<?, ?>> {
 
   public EitherGenerator() {
-    super(Either.class);
+    super((Class) Either.class);
   }
 
   @Override public Either<?, ?> generate(SourceOfRandomness random, GenerationStatus status) {
@@ -34,8 +34,8 @@ public class EitherGenerator extends ComponentizedGenerator<Either> {
     }
   }
 
-  @Override public List<Either> doShrink(SourceOfRandomness random, Either larger) {
-    return ((Either<?, ?>) larger).fold(left -> componentGenerators().get(0).shrink(random, left).stream().filter(l -> l != null).map(Either::left),
+  @Override public List<Either<?, ?>> doShrink(SourceOfRandomness random, Either<?, ?> larger) {
+    return larger.fold(left -> componentGenerators().get(0).shrink(random, left).stream().filter(l -> l != null).map(Either::left),
       right -> componentGenerators().get(1).shrink(random, right).stream().filter(r -> r != null).map(Either::right)).collect(Collectors.toList());
   }
 

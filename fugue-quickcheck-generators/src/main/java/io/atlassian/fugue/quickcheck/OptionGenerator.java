@@ -13,10 +13,10 @@ import java.util.stream.Stream;
 /**
  * Produces values of type {@link Option}.
  */
-public class OptionGenerator extends ComponentizedGenerator<Option> {
+public class OptionGenerator extends ComponentizedGenerator<Option<?>> {
 
   public OptionGenerator() {
-    super(Option.class);
+    super((Class) Option.class);
   }
 
   @Override public Option<?> generate(SourceOfRandomness random, GenerationStatus status) {
@@ -32,8 +32,8 @@ public class OptionGenerator extends ComponentizedGenerator<Option> {
     }
   }
 
-  @Override public List<Option> doShrink(SourceOfRandomness random, Option larger) {
-    return ((Option<?>) larger)
+  @Override public List<Option<?>> doShrink(SourceOfRandomness random, Option<?> larger) {
+    return larger
       .fold(
         Collections::emptyList,
         largerItem -> Stream.concat(Stream.of(Option.none()),
