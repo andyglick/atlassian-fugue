@@ -35,6 +35,8 @@
         <module>fugue-retry</module>
         <module>fugue-guava</module>
         <module>fugue-deprecated</module>
+        <module>fugue-hamcrest</module>
+        <module>fugue-quickcheck-generators</module>
     </modules>
 
     <properties>
@@ -46,6 +48,7 @@
         <mockito-core.version>1.8.4</mockito-core.version>
         <junit.version>4.12</junit.version>
         <hamcrest.version>1.3</hamcrest.version>
+        <junit-quickcheck.version>0.6.1</junit-quickcheck.version>
         <jsr305.version>3.0.0</jsr305.version>
         <guava.osgi.version>18.0</guava.osgi.version>
         <slf4j-api.version>1.6.0</slf4j-api.version>
@@ -142,6 +145,11 @@
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j-api.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>${slf4j-api.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>com.google.guava</groupId>
@@ -177,6 +185,23 @@
                 <groupId>org.hamcrest</groupId>
                 <artifactId>hamcrest-library</artifactId>
                 <version>${hamcrest.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.pholser</groupId>
+                <artifactId>junit-quickcheck-core</artifactId>
+                <version>${junit-quickcheck.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.pholser</groupId>
+                <artifactId>junit-quickcheck-generators</artifactId>
+                <version>${junit-quickcheck.version}</version>
+            </dependency>
+
+            <!-- Internal deps -->
+            <dependency>
+                <groupId>io.atlassian.fugue</groupId>
+                <artifactId>fugue</artifactId>
+                <version>4.1.0-SNAPSHOT</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

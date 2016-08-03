@@ -1,0 +1,2 @@
+io.atlassian.fugue.quickcheck.EitherGenerator
+io.atlassian.fugue.quickcheck.OptionGenerator
