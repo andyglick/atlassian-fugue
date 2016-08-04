@@ -151,7 +151,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   //
 
   /** do not constructor */
-  private Option() {}
+  Option() {}
 
   //
   // abstract methods
@@ -365,6 +365,104 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   private static final Function<Object, String> SOME_STRING = obj -> String.format("some(%s)", obj);
   private static final Function<Object, Integer> SOME_HASH = Object::hashCode;
 
+  //
+  // inner classes
+  //
+
+  /**
+   * One of the big two, the actual implementation classes.
+   * @since 4.1.0
+   */
+  private static final class None extends Option<Object> {
+    private static final long serialVersionUID = -1978333494161467110L;
+
+    private static final Option<Object> NONE = new None();
+
+    @Override public <B> B fold(final Supplier<? extends B> none, final Function<? super Object, ? extends B> some) {
+      return none.get();
+    }
+
+    @Override public Object get() {
+      throw new NoSuchElementException();
+    }
+
+    @Override public boolean isDefined() {
+      return false;
+    }
+
+    @Override public Object getOrError(final Supplier<String> err) {
+      throw new AssertionError(err.get());
+    }
+
+    @Override public <X extends Throwable> Object getOrThrow(final Supplier<X> ifUndefined) throws X {
+      throw ifUndefined.get();
+    }
+
+    @Deprecated @Override public void foreach(final Effect<? super Object> effect) {
+      this.forEach(effect);
+    }
+
+    @Override public void forEach(final Consumer<? super Object> effect) {}
+
+    @Override public Optional<Object> toOptional() {
+      return Optional.empty();
+    }
+
+    private Object readResolve() {
+      return None.NONE;
+    }
+  }
+
+
+  /**
+   * One of the big one, the actual implementation classes.
+   */
+  private static final class Some<A> extends Option<A> {
+    private static final long serialVersionUID = 5542513144209030852L;
+
+    private final A value;
+
+    private Some(final A value) {
+      this.value = value;
+    }
+
+    @Override public <B> B fold(final Supplier<? extends B> none, final Function<? super A, ? extends B> f) {
+      return f.apply(value);
+    }
+
+    @Override public A get() {
+      return value;
+    }
+
+    @Override public boolean isDefined() {
+      return true;
+    }
+
+    @Override public A getOrError(final Supplier<String> err) {
+      return get();
+    }
+
+    @Override public <X extends Throwable> A getOrThrow(final Supplier<X> ifUndefined) throws X {
+      return get();
+    }
+
+    @Deprecated @Override public void foreach(final Effect<? super A> effect) {
+      this.forEach(effect);
+    }
+
+    @Override public void forEach(final Consumer<? super A> effect) {
+      effect.accept(value);
+    }
+
+    @Override public Optional<A> toOptional() {
+      return Optional.of(value);
+    }
+  }
+
+  /**
+   * Backwards compatibility requires us to have a class Option$1 so we can
+   * deserialize it into Option$None.
+   */
   @Deprecated private static final Option<Object> NONE = new Option<Object>() {
     private static final long serialVersionUID = -1978333494161467110L;
 
@@ -408,90 +506,5 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
       return None.NONE;
     }
   };
-
-  //
-  // inner classes
-  //
-
-  /**
-   * The big two, the actual implementation classes.
-   */
-  private static final class None extends Option<Object> {
-    private static final long serialVersionUID = -1978333494161467110L;
-
-    private static final Option<Object> NONE = new None();
-
-    @Override public <B> B fold(final Supplier<? extends B> none, final Function<? super Object, ? extends B> some) {
-      return none.get();
-    }
-
-    @Override public Object get() {
-      throw new NoSuchElementException();
-    }
-
-    @Override public boolean isDefined() {
-      return false;
-    }
-
-    @Override public Object getOrError(final Supplier<String> err) {
-      throw new AssertionError(err.get());
-    }
-
-    @Override public <X extends Throwable> Object getOrThrow(final Supplier<X> ifUndefined) throws X {
-      throw ifUndefined.get();
-    }
-
-    @Deprecated @Override public void foreach(final Effect<? super Object> effect) {
-      this.forEach(effect);
-    }
-
-    @Override public void forEach(final Consumer<? super Object> effect) {}
-
-    @Override public Optional<Object> toOptional() {
-      return Optional.empty();
-    }
-  }
-
-  private static final class Some<A> extends Option<A> {
-    private static final long serialVersionUID = 5542513144209030852L;
-
-    private final A value;
-
-    private Some(final A value) {
-      this.value = value;
-    }
-
-    @Override public <B> B fold(final Supplier<? extends B> none, final Function<? super A, ? extends B> f) {
-      return f.apply(value);
-    }
-
-    @Override public A get() {
-      return value;
-    }
-
-    @Override public boolean isDefined() {
-      return true;
-    }
-
-    @Override public A getOrError(final Supplier<String> err) {
-      return get();
-    }
-
-    @Override public <X extends Throwable> A getOrThrow(final Supplier<X> ifUndefined) throws X {
-      return get();
-    }
-
-    @Deprecated @Override public void foreach(final Effect<? super A> effect) {
-      this.forEach(effect);
-    }
-
-    @Override public void forEach(final Consumer<? super A> effect) {
-      effect.accept(value);
-    }
-
-    @Override public Optional<A> toOptional() {
-      return Optional.of(value);
-    }
-  }
 
 }

@@ -29,7 +29,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 
-public class OptionDeprecatedNoneTest {
+public class OptionAnonymousNoneTest {
   private final Option<Integer> none;
   {
     try {

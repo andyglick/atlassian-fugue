@@ -9,9 +9,7 @@ import java.util.Base64;
 
 import static io.atlassian.fugue.Serializer.toBytes;
 import static io.atlassian.fugue.Serializer.toObject;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 public class OptionSerializationTest {
@@ -38,7 +36,8 @@ public class OptionSerializationTest {
   }
 
   @Test public void deserializeAnonymousNoneReadResolve() throws IOException {
-    final byte[] serialized = Base64.getDecoder().decode("rO0ABXNyABtpby5hdGxhc3NpYW4uZnVndWUuT3B0aW9uJDHki4wrMT+ZGgIAAHhyABlpby5hdGxhc3NpYW4uZnVndWUuT3B0aW9ubO2YatZzMVECAAB4cA==");
-    assertThat(toObject(serialized).getClass(), equalTo(Option.none().getClass()));
+    final byte[] serialized = Base64.getDecoder().decode(
+      "rO0ABXNyABtpby5hdGxhc3NpYW4uZnVndWUuT3B0aW9uJDHki4wrMT+ZGgIAAHhyABlpby5hdGxhc3NpYW4uZnVndWUuT3B0aW9ubO2YatZzMVECAAB4cA==");
+    assertThat(toObject(serialized), sameInstance(Option.none()));
   }
 }
