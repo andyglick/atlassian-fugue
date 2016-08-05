@@ -95,7 +95,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    */
   public static <A> Option<A> none() {
     @SuppressWarnings("unchecked")
-    final Option<A> result = (Option<A>) NONE;
+    final Option<A> result = (Option<A>) None.NONE;
     return result;
   }
 
@@ -359,8 +359,25 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   // static members
   //
 
-  private static final Option<Object> NONE = new Option<Object>() {
+  private static final Supplier<String> NONE_STRING = ofInstance("none()");
+  private static final Supplier<Integer> NONE_HASH = ofInstance(31);
+
+  private static final Function<Object, String> SOME_STRING = obj -> String.format("some(%s)", obj);
+  private static final Function<Object, Integer> SOME_HASH = Object::hashCode;
+
+  //
+  // inner classes
+  //
+
+  /**
+   * One of the big two, the actual implementation classes.
+   * 
+   * @since 4.2.0
+   */
+  static final class None extends Option<Object> {
     private static final long serialVersionUID = -1978333494161467110L;
+
+    private static final Option<Object> NONE = new None();
 
     @Override public <B> B fold(final Supplier<? extends B> none, final Function<? super Object, ? extends B> some) {
       return none.get();
@@ -391,17 +408,14 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
     @Override public Optional<Object> toOptional() {
       return Optional.empty();
     }
-  };
 
-  private static final Supplier<String> NONE_STRING = ofInstance("none()");
-  private static final Supplier<Integer> NONE_HASH = ofInstance(31);
-
-  //
-  // inner classes
-  //
+    private Object readResolve() {
+      return None.NONE;
+    }
+  }
 
   /**
-   * The big one, the actual implementation class.
+   * One of the big one, the actual implementation classes.
    */
   static final class Some<A> extends Option<A> {
     private static final long serialVersionUID = 5542513144209030852L;
@@ -445,6 +459,16 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
     }
   }
 
-  private static final Function<Object, String> SOME_STRING = obj -> String.format("some(%s)", obj);
-  private static final Function<Object, Integer> SOME_HASH = Object::hashCode;
+  /**
+   * Backwards compatibility requires us to have a class Option$1 so we can
+   * deserialize it into Option$None.
+   */
+  @Deprecated private static final Serializable NONE = new Serializable() {
+    private static final long serialVersionUID = -1978333494161467110L;
+
+    private Object readResolve() {
+      return None.NONE;
+    }
+  };
+
 }
