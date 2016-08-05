@@ -3,7 +3,13 @@ All notable changes to this project will be documented in this file.
 
 This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 
-## [4.1.0] - [unreleased]
+## [4.1.0] - 2016-08-05
+### Added
+- fugue-hamcrest module which adds hamcrest matchers for Either and Option
+- fugue-quickcheck-generators module which adds junit-quickcheck generators for Either and Option
+
+### Changed
+- Option.equals now handles the situation where Option.some has a null value
 
 ## [4.0.1] - 2016-08-02
 ### Changed

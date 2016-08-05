@@ -18,6 +18,7 @@ package io.atlassian.fugue;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -351,7 +352,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   //
 
   private Function<Object, Boolean> valuesEqual() {
-    return obj -> isDefined() && get().equals(obj);
+    return obj -> isDefined() && Objects.equals(get(), obj);
   }
 
   //
