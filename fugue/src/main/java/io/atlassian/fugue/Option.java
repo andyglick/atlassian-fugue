@@ -370,7 +370,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   //
 
   /**
-   * One of the big two, the actual implementation classes.
+   * One of the big two actual implementation classes.
    * 
    * @since 4.2.0
    */
@@ -415,7 +415,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   }
 
   /**
-   * One of the big one, the actual implementation classes.
+   * One of the big two actual implementation classes.
    */
   static final class Some<A> extends Option<A> {
     private static final long serialVersionUID = 5542513144209030852L;
@@ -462,6 +462,8 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   /**
    * Backwards compatibility requires us to have a class Option$1 so we can
    * deserialize it into Option$None.
+   *
+   * @since 4.2.0
    */
   @Deprecated private static final Serializable NONE = new Serializable() {
     private static final long serialVersionUID = -1978333494161467110L;
