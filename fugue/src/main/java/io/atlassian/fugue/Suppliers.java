@@ -62,6 +62,7 @@ public class Suppliers {
    * @param sf The Supplier function to apply.
    * @return A new Supplier after applying the given Supplier function to the
    * first argument.
+   * @since 4.0
    */
   public static <A, B> Supplier<B> ap(final Supplier<A> sa, final Supplier<Function<A, B>> sf) {
     return () -> sf.get().apply(sa.get());
@@ -153,18 +154,6 @@ public class Suppliers {
   public static <A> Supplier<A> weakMemoize(final Supplier<A> supplier) {
     return supplier instanceof WeakMemoizingSupplier || supplier instanceof MemoizingSupplier ? supplier : new WeakMemoizingSupplier<>(
       Objects.requireNonNull(supplier));
-  }
-
-  /**
-   * Performs function application within a supplier (applicative functor pattern).
-   *
-   * @param sa supplier providing an input value
-   * @param sf supplier providing a function to transform the input.
-   *
-   * @return A new {@link java.util.function.Supplier} returning a transformed value from the first supplier.
-   */
-  public static <A, B> Supplier<B> ap(final Supplier<A> sa, final Supplier<Function<A, B>> sf) {
-    return () -> sf.get().apply(sa.get());
   }
 
   private static final class MemoizingSupplier<A> implements Supplier<A> {
