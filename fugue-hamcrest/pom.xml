@@ -11,7 +11,7 @@
     <parent>
         <groupId>io.atlassian.fugue</groupId>
         <artifactId>fugue-parent</artifactId>
-        <version>4.1.0</version>
+        <version>4.1.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>fugue-hamcrest</artifactId>
