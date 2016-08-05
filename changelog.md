@@ -28,6 +28,7 @@ This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 - Either.rightOr(Function<L, ? extends R>) returns the right if exists or the result of applying the transformer to left
 - Either.toOptional added to the Left and Right as well as right-biased
 - io.atlassian.fugue.optic.* in the fugue-optics package.
+- Functions.ap and Suppliers.ap host the ap from applicative for Function and Supplier
 
 ### Changed
 - io.atlassian.fugue.retry.* has been moved from the fugue-guava package to fugue-retry.

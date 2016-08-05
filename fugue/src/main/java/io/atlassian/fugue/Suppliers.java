@@ -62,6 +62,7 @@ public class Suppliers {
    * @param sf The Supplier function to apply.
    * @return A new Supplier after applying the given Supplier function to the
    * first argument.
+   * @since 4.0
    */
   public static <A, B> Supplier<B> ap(final Supplier<A> sa, final Supplier<Function<A, B>> sf) {
     return () -> sf.get().apply(sa.get());

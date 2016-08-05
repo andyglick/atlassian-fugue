@@ -15,6 +15,7 @@
  */
 package io.atlassian.fugue;
 
+import static io.atlassian.fugue.Option.option;
 import static java.util.Objects.requireNonNull;
 
 import java.io.Serializable;
@@ -29,8 +30,6 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-
-import static io.atlassian.fugue.Option.option;
 
 /**
  * Utility methods for Functions
@@ -106,6 +105,7 @@ public class Functions {
    * @param cab The higher-order function to apply a function to.
    * @return A new function after applying the given higher-order function to
    * the given function.
+   * @since 4.0
    */
   public static <A, B, C> Function<C, B> ap(final Function<C, A> ca, final Function<C, Function<A, B>> cab) {
     return m -> ca.andThen(cab.apply(m)).apply(m);
