@@ -15,6 +15,7 @@
  */
 package io.atlassian.fugue;
 
+import static io.atlassian.fugue.Option.option;
 import static java.util.Objects.requireNonNull;
 
 import java.io.Serializable;
@@ -29,8 +30,6 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-
-import static io.atlassian.fugue.Option.option;
 
 /**
  * Utility methods for Functions
