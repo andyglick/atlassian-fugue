@@ -15,7 +15,7 @@ import java.util.stream.Stream;
  */
 public class OptionGenerator extends ComponentizedGenerator<Option<?>> {
 
-  public OptionGenerator() {
+  @SuppressWarnings("unchecked") public OptionGenerator() {
     super((Class) Option.class);
   }
 

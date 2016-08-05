@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  */
 public class EitherGenerator extends ComponentizedGenerator<Either<?, ?>> {
 
-  public EitherGenerator() {
+  @SuppressWarnings("unchecked") public EitherGenerator() {
     super((Class) Either.class);
   }
 
