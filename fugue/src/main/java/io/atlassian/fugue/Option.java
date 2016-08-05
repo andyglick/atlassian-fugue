@@ -373,7 +373,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    * One of the big two, the actual implementation classes.
    * @since 4.1.0
    */
-  private static final class None extends Option<Object> {
+  static final class None extends Option<Object> {
     private static final long serialVersionUID = -1978333494161467110L;
 
     private static final Option<Object> NONE = new None();
@@ -413,11 +413,10 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
     }
   }
 
-
   /**
    * One of the big one, the actual implementation classes.
    */
-  private static final class Some<A> extends Option<A> {
+  static final class Some<A> extends Option<A> {
     private static final long serialVersionUID = 5542513144209030852L;
 
     private final A value;
@@ -463,44 +462,8 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    * Backwards compatibility requires us to have a class Option$1 so we can
    * deserialize it into Option$None.
    */
-  @Deprecated private static final Option<Object> NONE = new Option<Object>() {
+  @Deprecated private static final Serializable NONE = new Serializable() {
     private static final long serialVersionUID = -1978333494161467110L;
-
-    @Override public <B> B fold(final Supplier<? extends B> none, final Function<? super Object, ? extends B> some) {
-      return None.NONE.fold(none, some);
-    }
-
-    @Override public Object get() {
-      return None.NONE.get();
-    }
-
-    @Override public boolean isDefined() {
-      return None.NONE.isDefined();
-    }
-
-    @Override public Object getOrError(final Supplier<String> err) {
-      return None.NONE.getOrError(err);
-    }
-
-    @Override public <X extends Throwable> Object getOrThrow(final Supplier<X> ifUndefined) throws X {
-      return None.NONE.getOrThrow(ifUndefined);
-    }
-
-    @Deprecated @Override public void foreach(final Effect<? super Object> effect) {
-      None.NONE.foreach(effect);
-    }
-
-    @Override public void forEach(final Consumer<? super Object> effect) {
-      None.NONE.forEach(effect);
-    }
-
-    @Override public Optional<Object> toOptional() {
-      return None.NONE.toOptional();
-    }
-
-    private Object writeReplace() {
-      return None.NONE;
-    }
 
     private Object readResolve() {
       return None.NONE;
