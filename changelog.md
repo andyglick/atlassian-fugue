@@ -3,7 +3,9 @@ All notable changes to this project will be documented in this file.
 
 This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 
-## [4.2.0] - [unreleased]
+## [4.2.1] - [unreleased]
+
+## [4.2.0] - 2016-08-05
 ### Added
 - A new anonymous a inner class Option$1 to deserialize Option$1 into Option$None using readResolve() for backwards compatibility
 
