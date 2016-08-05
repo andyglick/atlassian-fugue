@@ -371,7 +371,8 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
 
   /**
    * One of the big two, the actual implementation classes.
-   * @since 4.1.0
+   * 
+   * @since 4.2.0
    */
   static final class None extends Option<Object> {
     private static final long serialVersionUID = -1978333494161467110L;
