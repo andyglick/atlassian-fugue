@@ -18,6 +18,7 @@ package io.atlassian.fugue;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -94,7 +95,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    */
   public static <A> Option<A> none() {
     @SuppressWarnings("unchecked")
-    final Option<A> result = (Option<A>) NONE;
+    final Option<A> result = (Option<A>) None.NONE;
     return result;
   }
 
@@ -224,7 +225,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   }
 
   /** {@inheritDoc} */
-  @Override public boolean forall(final Predicate<? super A> p) {
+  @Override public final boolean forall(final Predicate<? super A> p) {
     requireNonNull(p);
     return isEmpty() || p.test(get());
   }
@@ -351,15 +352,32 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   //
 
   private Function<Object, Boolean> valuesEqual() {
-    return obj -> isDefined() && get().equals(obj);
+    return obj -> isDefined() && Objects.equals(get(), obj);
   }
 
   //
   // static members
   //
 
-  private static final Option<Object> NONE = new Option<Object>() {
+  private static final Supplier<String> NONE_STRING = ofInstance("none()");
+  private static final Supplier<Integer> NONE_HASH = ofInstance(31);
+
+  private static final Function<Object, String> SOME_STRING = obj -> String.format("some(%s)", obj);
+  private static final Function<Object, Integer> SOME_HASH = Object::hashCode;
+
+  //
+  // inner classes
+  //
+
+  /**
+   * One of the big two actual implementation classes.
+   * 
+   * @since 4.2.0
+   */
+  static final class None extends Option<Object> {
     private static final long serialVersionUID = -1978333494161467110L;
+
+    private static final Option<Object> NONE = new None();
 
     @Override public <B> B fold(final Supplier<? extends B> none, final Function<? super Object, ? extends B> some) {
       return none.get();
@@ -381,24 +399,23 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
       throw ifUndefined.get();
     }
 
-    @Deprecated @Override public void foreach(final Effect<? super Object> effect) {}
+    @Deprecated @Override public void foreach(final Effect<? super Object> effect) {
+      this.forEach(effect);
+    }
 
     @Override public void forEach(final Consumer<? super Object> effect) {}
 
     @Override public Optional<Object> toOptional() {
       return Optional.empty();
     }
-  };
 
-  private static final Supplier<String> NONE_STRING = ofInstance("none()");
-  private static final Supplier<Integer> NONE_HASH = ofInstance(31);
-
-  //
-  // inner classes
-  //
+    private Object readResolve() {
+      return None.NONE;
+    }
+  }
 
   /**
-   * The big one, the actual implementation class.
+   * One of the big two actual implementation classes.
    */
   static final class Some<A> extends Option<A> {
     private static final long serialVersionUID = 5542513144209030852L;
@@ -430,7 +447,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
     }
 
     @Deprecated @Override public void foreach(final Effect<? super A> effect) {
-      effect.apply(value);
+      this.forEach(effect);
     }
 
     @Override public void forEach(final Consumer<? super A> effect) {
@@ -442,6 +459,18 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
     }
   }
 
-  private static final Function<Object, String> SOME_STRING = obj -> String.format("some(%s)", obj);
-  private static final Function<Object, Integer> SOME_HASH = Object::hashCode;
+  /**
+   * Backwards compatibility requires us to have a class Option$1 so we can
+   * deserialize it into Option$None.
+   *
+   * @since 4.2.0
+   */
+  @Deprecated private static final Serializable NONE = new Serializable() {
+    private static final long serialVersionUID = -1978333494161467110L;
+
+    private Object readResolve() {
+      return None.NONE;
+    }
+  };
+
 }

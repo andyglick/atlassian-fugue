@@ -3,7 +3,38 @@ All notable changes to this project will be documented in this file.
 
 This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 
-## [3.2.0] - [unreleased]
+## [4.2.0] - [unreleased]
+### Added
+- A new anonymous a inner class Option$1 to deserialize Option$1 into Option$None using readResolve() for backwards compatibility
+
+### Changed
+- The original anonymous inner class Option$1 is now known as Option$None for slightly more informative stack traces
+
+## [4.1.0] - 2016-08-05
+### Added
+- fugue-hamcrest module which adds hamcrest matchers for Either and Option
+- fugue-quickcheck-generators module which adds junit-quickcheck generators for Either and Option
+
+### Changed
+- Option.equals now handles the situation where Option.some has a null value
+
+## [4.0.1] - 2016-08-02
+### Changed
+- fugue-optics dependency on fugue changed from compile scope to provided scope.
+
+## [4.0.0] - 2016-07-26
+### Added
+- Either.leftOr(Function<R, ? extends L>) returns the left if exists or the result of applying the transformer to right
+- Either.rightOr(Function<L, ? extends R>) returns the right if exists or the result of applying the transformer to left
+- Either.toOptional added to the Left and Right as well as right-biased
+- io.atlassian.fugue.optic.* in the fugue-optics package.
+
+### Changed
+- io.atlassian.fugue.retry.* has been moved from the fugue-guava package to fugue-retry.
+- io.atlassian.fugue.deprecated.* has been moved from the fugue-guava package to fugue-deprecated. This is planned to remove in 5.0.
+
+### Deprecated
+- Either.valueOr, in favor of the symmetrically-named Either.rightOr
 
 ## [3.1.0]
 ### Added

@@ -80,6 +80,29 @@ public final class Pair<A, B> implements Serializable {
   }
 
   /**
+   * Performs function application within an homogeneous pair (applicative
+   * functor pattern).
+   *
+   * @param aa an homogeneous pair
+   * @param ff The pair of functions to apply.
+   * @return A new pair after applying the given pair of functions through aa.
+   */
+  public static <A, B> Pair<B, B> ap(final Pair<A, A> aa, final Pair<Function<A, B>, Function<A, B>> ff) {
+    return Pair.pair(ff.left().apply(aa.left()), ff.right().apply(aa.right()));
+  }
+
+  /**
+   * Apply a function to both elements of an homogeneous pair.
+   *
+   * @param aa an homogeneous pair
+   * @param f function to apply to both elements of aa
+   * @return A new pair after applying the function to aa elements.
+   */
+  public static <A, B> Pair<B, B> map(final Pair<A, A> aa, final Function<A, B> f) {
+    return Pair.pair(f.apply(aa.left()), f.apply(aa.right()));
+  }
+
+  /**
    * Zips two iterables into a single iterable that produces {@link Pair pairs}.
    *
    * @param <A> LHS type

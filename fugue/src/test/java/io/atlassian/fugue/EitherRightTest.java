@@ -20,9 +20,12 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import static io.atlassian.fugue.Either.right;
 import static io.atlassian.fugue.Eithers.getOrThrow;
+import static io.atlassian.fugue.Option.none;
+import static io.atlassian.fugue.Option.some;
 import static io.atlassian.fugue.UtilityFunctions.bool2String;
 import static io.atlassian.fugue.UtilityFunctions.int2String;
 import static java.lang.String.valueOf;
@@ -103,6 +106,16 @@ public class EitherRightTest {
 
   @Test public void rightPredicateMatches() {
     assertThat(Eithers.<Boolean, Integer> isRight().test(either), is(true));
+  }
+
+  @Test public void toOptionTest() {
+    assertThat(either.right().toOption(), is(some(ORIGINAL_VALUE)));
+    assertThat(either.left().toOption(), is(none()));
+  }
+
+  @Test public void toOptionalTest() {
+    assertThat(either.right().toOptional(), is(Optional.of(ORIGINAL_VALUE)));
+    assertThat(either.left().toOptional(), is(Optional.empty()));
   }
 
   @Test public void notThrowsException() throws Exception {

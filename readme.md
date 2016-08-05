@@ -27,14 +27,14 @@ Add fugue as a dependency to your pom.xml:
         <dependency>
             <groupId>io.atlassian.fugue</groupId>
             <artifactId>fugue</artifactId>
-            <version>3.0.0</version>
+            <version>4.0.0</version>
         </dependency>
         ...
     </dependencies>
     
 For Gradle add fugue as a dependency to your `dependencies` section:
 
-    compile 'io.atlassian.fugue:fugue:3.0.0'
+    compile 'io.atlassian.fugue:fugue:4.0.0'
 
 ## Building fugue
 
@@ -91,6 +91,14 @@ you need to import io.atlassian.fugue.Iterables by it's FQN
 * Replace usages of asScala/asJava with toScala/toJava
 * When conversion between a JDK and a Guava functional interface is required use of a method reference 
 on the abstract method is recommended
+* See the `changelog.md` for further changes
+
+## Migrating from Fugue v3.x to v4.x
+
+* Find io.atlassian.fugue.retry.* in the fugue-retry module
+* Find ImmutableMaps in the fugue-guava module
+* Find Function2 and Throwables in the fugue-deprecated module
+* New fugue-optics module 
 * See the `changelog.md` for further changes
 
 ## Contributors
