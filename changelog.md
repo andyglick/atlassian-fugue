@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file.
 
 This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 
+## [4.2.0] - [unreleased]
+### Added
+- A new anonymous a inner class Option$1 to deserialize Option$1 into Option$None using readResolve() for backwards compatibility
+
+### Changed
+- The original anonymous inner class Option$1 is now known as Option$None for slightly more informative stack traces
+
 ## [4.1.0] - 2016-08-05
 ### Added
 - fugue-hamcrest module which adds hamcrest matchers for Either and Option
