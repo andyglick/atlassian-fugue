@@ -120,7 +120,7 @@ Source code should must be accompanied by tests covering new functionality. Run 
 
 For test coverage and other Clover checks run (highly recommended):
 
-    mvn clean clover2:setup test clover2:aggregate clover2:clover
+    mvn clean clover:setup test clover:aggregate clover:clover
 
 *If you are having any issues with the provided clover license (e.g. it has expired), please raise an
 issue and a member of the team will renew it.*
