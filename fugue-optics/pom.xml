@@ -17,6 +17,11 @@
     <artifactId>fugue-optics</artifactId>
     <name>Functional Optics Library</name>
 
+
+    <properties>
+        <license.location>${project.basedir}/../clover.license</license.location>
+    </properties>
+
     <build>
         <plugins>
             <plugin>

@@ -6,11 +6,8 @@ import io.atlassian.fugue.Monoids;
 import io.atlassian.fugue.Option;
 
 import java.util.Collections;
-import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 /**
  * A {@link Fold} can be seen as a {@link Getter} with many targets or a weaker
