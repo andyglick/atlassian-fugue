@@ -19,15 +19,44 @@
     <name>Functional Extensions Scala Inter-Ops</name>
 
     <properties>
-        <scala.version>2.11.7</scala.version>
+        <scala.version.base>2.11</scala.version.base>
+        <scala.version>${scala.version.base}.8</scala.version>
         <scala-maven-plugin.version>3.2.2</scala-maven-plugin.version>
         <scalacheck.version>1.12.5</scalacheck.version>
         <scalatest.version>3.0.0-M15</scalatest.version>
+        <scala.import.version>${scala.version.base}</scala.import.version>
+        <scala.version.exclusive>2.12</scala.version.exclusive>
         <license.location>${project.basedir}/../clover.license</license.location>
     </properties>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                            <goal>bundle</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <instructions>
+                        <Export-Package>
+                            io.atlassian.fugue.converters.*;version="${fugue.osgi.export.version}"
+                        </Export-Package>
+                        <Import-Package>
+                            scala.*;version="[${scala.import.version},${scala.version.exclusive})",
+
+                            *
+                        </Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
