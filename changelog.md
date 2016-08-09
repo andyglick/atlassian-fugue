@@ -3,7 +3,14 @@ All notable changes to this project will be documented in this file.
 
 This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 
-## [4.2.2] - [unreleased]
+## [4.2.3] - [unreleased]
+
+## [4.2.2] - 2016-08-09
+### Added
+- fugue-scala bundle manifest instructions
+
+### Changed
+- fugue-scala dependency on scala at 2.11.8
 
 ## [4.2.1] - 2016-08-09
 ### Changed
