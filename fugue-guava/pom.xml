@@ -11,7 +11,7 @@
     <parent>
         <artifactId>fugue-parent</artifactId>
         <groupId>io.atlassian.fugue</groupId>
-        <version>4.2.2</version>
+        <version>4.2.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>fugue-guava</artifactId>
