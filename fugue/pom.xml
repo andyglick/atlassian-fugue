@@ -40,7 +40,7 @@
                 <configuration>
                     <instructions>
                         <Export-Package>
-                            io.atlassian.fugue.*;version="${project.version}"
+                            io.atlassian.fugue.*;version="${fugue.osgi.export.version}",
                         </Export-Package>
                     </instructions>
                 </configuration>

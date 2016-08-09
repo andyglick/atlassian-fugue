@@ -52,7 +52,7 @@
         <jsr305.version>3.0.0</jsr305.version>
         <guava.osgi.version>18.0</guava.osgi.version>
         <slf4j-api.version>1.6.0</slf4j-api.version>
-        <fugue.osgi.import.version>${project.version}</fugue.osgi.import.version>
+        <fugue.osgi.export.version>${project.version}</fugue.osgi.export.version>
     </properties>
 
     <issueManagement>
@@ -195,13 +195,6 @@
                 <groupId>com.pholser</groupId>
                 <artifactId>junit-quickcheck-generators</artifactId>
                 <version>${junit-quickcheck.version}</version>
-            </dependency>
-
-            <!-- Internal deps -->
-            <dependency>
-                <groupId>io.atlassian.fugue</groupId>
-                <artifactId>fugue</artifactId>
-                <version>4.2.1-SNAPSHOT</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

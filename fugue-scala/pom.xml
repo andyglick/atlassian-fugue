@@ -97,16 +97,18 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.atlassian.fugue</groupId>
-            <artifactId>fugue-optics</artifactId>
-            <scope>provided</scope>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
             <scope>provided</scope>
             <version>${scala.version}</version>
+        </dependency>
+
+        <!-- Test deps -->
+        <dependency>
+            <groupId>io.atlassian.fugue</groupId>
+            <artifactId>fugue-optics</artifactId>
+            <scope>test</scope>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.scalacheck</groupId>
@@ -120,8 +122,6 @@
             <version>${scalatest.version}</version>
             <scope>test</scope>
         </dependency>
-
-        <!-- Test deps -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

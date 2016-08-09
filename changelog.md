@@ -3,7 +3,13 @@ All notable changes to this project will be documented in this file.
 
 This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 
-## [4.2.1] - [unreleased]
+## [4.2.2] - [unreleased]
+
+## [4.2.1] - 2016-08-09
+### Changed
+- fugue-scala only requires fuge-optics as a test dependency
+- fugue-optics now explicitly specifying OSGI import package
+- fugue-quickcheck-generators and fugue-hamcrest now have provided dependency on fugue
 
 ## [4.2.0] - 2016-08-05
 ### Added
