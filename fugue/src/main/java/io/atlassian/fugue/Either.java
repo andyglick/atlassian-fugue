@@ -130,10 +130,24 @@ public abstract class Either<L, R> implements Serializable {
    *
    * @param supplier called if this is a left
    * @return the wrapped value or the value from the {@code Supplier}
-   * @since 2.3
+   * @since 4.3
    */
-  public final R getOrElse(final Supplier<? extends R> supplier) {
+  public final R getOr(final Supplier<? extends R> supplier) {
     return right().getOr(supplier);
+  }
+
+  /**
+   * Get the value if it is a right or call the supplier and return its value if
+   * not.
+   *
+   * @param supplier called if this is a left
+   * @return the wrapped value or the value from the {@code Supplier}
+   * @since 2.3
+   * @deprecated since 4.3, use {@link #getOr(Supplier)} instead
+   */
+  @Deprecated
+  public final R getOrElse(final Supplier<? extends R> supplier) {
+    return getOr(supplier);
   }
 
   /**
