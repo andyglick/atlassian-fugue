@@ -145,8 +145,7 @@ public abstract class Either<L, R> implements Serializable {
    * @since 2.3
    * @deprecated since 4.3, use {@link #getOr(Supplier)} instead
    */
-  @Deprecated
-  public final R getOrElse(final Supplier<? extends R> supplier) {
+  @Deprecated public final R getOrElse(final Supplier<? extends R> supplier) {
     return getOr(supplier);
   }
 

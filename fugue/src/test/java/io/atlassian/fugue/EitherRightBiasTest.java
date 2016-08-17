@@ -56,11 +56,15 @@ public class EitherRightBiasTest {
   }
 
   @Test public void getOrElseSupplierRight() {
-    assertThat(r.getOrElse(Suppliers.ofInstance(1)), is(12));
+    @SuppressWarnings("deprecation")
+    final Integer orElse = r.getOrElse(Suppliers.ofInstance(1));
+    assertThat(orElse, is(12));
   }
 
   @Test public void getOrElseSupplierLeft() {
-    assertThat(l.getOrElse(Suppliers.ofInstance(1)), is(1));
+    @SuppressWarnings("deprecation")
+    final Integer orElse = l.getOrElse(Suppliers.ofInstance(1));
+    assertThat(orElse, is(1));
   }
 
   @Test public void getOrElseRight() {
