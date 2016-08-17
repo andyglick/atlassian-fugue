@@ -3,7 +3,9 @@ All notable changes to this project will be documented in this file.
 
 This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 
-## [4.3.0] - [unreleased]
+## [4.3.1] - [unreleased]
+
+## [4.3.0] - 2016-08-17
 ### Added
 - Right biased getOr method added to Either, that accepts a Supplier
 
