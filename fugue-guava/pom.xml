@@ -40,6 +40,8 @@
                             io.atlassian.fugue.extras.*;version="${fugue.osgi.export.version}"
                         </Export-Package>
                         <Import-Package>
+                            com.google.common.base;version="${guava.osgi.version}",
+                            com.google.common.collect;version="${guava.osgi.version}",
                             *
                         </Import-Package>
                     </instructions>
