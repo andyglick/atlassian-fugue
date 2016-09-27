@@ -3,7 +3,11 @@ All notable changes to this project will be documented in this file.
 
 This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 
-## [4.3.1] - [unreleased]
+## [4.3.2] - [unreleased]
+
+## [4.3.1] - [2016-09-27]
+- fugue-guava added an explicit lower bound osgi instruction. Where previously maven-bundle-plugin inserted [18,19) by default now only 18 is present.
+
 
 ## [4.3.0] - 2016-08-17
 ### Added
