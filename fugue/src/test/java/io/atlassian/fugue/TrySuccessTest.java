@@ -7,7 +7,6 @@ import org.junit.rules.ExpectedException;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
@@ -18,8 +17,17 @@ public class TrySuccessTest {
 
     private final Integer STARTING_VALUE = 0;
     private final Try<Integer> t = Try.of(() -> STARTING_VALUE);
-    private final Try.CheckedFunction<Integer, String> f = Object::toString;
-    private final Try.CheckedFunction<String, Integer> g = Integer::valueOf;
+    private final Function<Integer, String> f = Object::toString;
+    private final Function<String, Integer> g = Integer::valueOf;
+    private final Try.CheckedFunction<Integer, String> fChecked = Object::toString;
+    private final Try.CheckedFunction<String, Integer> gChecked = Integer::valueOf;
+    private final Function<Integer, String> fThrows = x -> {
+        throw new TestException();
+    };
+    private final Function<Integer, Try<String>> fTryThrows = x -> {
+        throw new TestException();
+    };
+
 
     @Test
     public void isFailure() throws Exception {
@@ -37,10 +45,24 @@ public class TrySuccessTest {
     }
 
     @Test
+    public void mapThrowingFunctionThrows() throws Exception {
+        thrown.expect(TestException.class);
+
+        t.map(fThrows).map(g);
+    }
+
+    @Test
     public void flatMap() throws Exception {
-        Try<String> t2 = t.flatMap(i -> Try.of(() -> f.apply(i)));
+        Try<String> t2 = t.flatMap(i -> Try.of(() -> fChecked.apply(i)));
 
         assertThat(t2, is(Try.of(() -> "0")));
+    }
+
+    @Test
+    public void flatMapThrowingFunctionThrows() {
+        thrown.expect(TestException.class);
+
+        t.flatMap(fTryThrows);
     }
 
     @Test
@@ -59,36 +81,19 @@ public class TrySuccessTest {
     }
 
     @Test
-    public void filterNoMatch() throws Exception {
-        Try<Integer> filtered = t.filter(i -> i == STARTING_VALUE + 1);
-
-        assertThat(filtered.isFailure(), is(true));
-        assertThat(filtered.getExceptionUnsafe(), instanceOf(NoSuchElementException.class));
-    }
-
-    @Test
-    public void filterMathchesPredicate() throws Exception {
-        assertThat(t.filter(i -> i == 0), is(t));
-    }
-
-    @Test
-    public void filterCatchesThrowingPredicate() throws Exception {
-        Try<Integer> filtered = t.filter(x -> {
-            throw new RuntimeException("Failed recovery");
-        });
-
-        assertThat(filtered.isFailure(), is(true));
-        assertThat(filtered.getExceptionUnsafe(), instanceOf(RuntimeException.class));
-        assertThat(filtered.getExceptionUnsafe().getMessage(), is("Failed recovery"));
-    }
-
-    @Test
     public void fold() throws Exception {
         Integer i = t.fold(v -> {
             throw new RuntimeException();
         }, Function.identity());
 
         assertThat(i, is(STARTING_VALUE));
+    }
+
+    @Test
+    public void foldPassedThrowingFunctionThrows() throws Exception {
+        thrown.expect(TestException.class);
+
+        String e = t.fold(x -> "x", fThrows);
     }
 
     @Test
@@ -111,6 +116,17 @@ public class TrySuccessTest {
     @Test
     public void toOption() throws Exception {
         assertThat(t.toOption(), is(Option.some(STARTING_VALUE)));
+    }
+
+    @Test
+    public void liftingFunctionReturnsSuccessIfNoExceptionThrow(){
+        Try<Integer> result = Try.lift(String::length).apply("test");
+
+        assertThat(result.isSuccess(), is(true));
+        assertThat(result.getUnsafe(), is(4));
+    }
+
+    private class TestException extends RuntimeException {
     }
 
 }

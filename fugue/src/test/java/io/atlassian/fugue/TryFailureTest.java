@@ -16,7 +16,7 @@ public class TryFailureTest {
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
-    private class TestException extends Exception {
+    private class TestException extends RuntimeException {
         TestException(final String message) {
             super(message);
         }
@@ -26,6 +26,13 @@ public class TryFailureTest {
     private final Try<Integer> t = Try.of(() -> {
         throw new TestException(MESSAGE);
     });
+    private final Function<Exception, String> fThrows = x -> {
+        throw new TestException(MESSAGE);
+    };
+
+    private final Function<Exception, Try<Integer>> fTryThrows = x -> {
+        throw new RuntimeException();
+    };
 
     @Test
     public void map() throws Exception {
@@ -58,22 +65,15 @@ public class TryFailureTest {
     }
 
     @Test
-    public void recoverWithCatchesException() throws Exception {
-        Try<Integer> recovered = t.recoverWith(x -> {throw new RuntimeException("Failed recovery");});
+    public void recoverWithPassedThrowingFunctionThrows() throws Exception {
+        thrown.expect(RuntimeException.class);
 
-        assertThat(recovered.isFailure(), is(true));
-        assertThat(recovered.getExceptionUnsafe(), instanceOf(RuntimeException.class));
-        assertThat(recovered.getExceptionUnsafe().getMessage(), is("Failed recovery"));
+        t.recoverWith(fTryThrows);
     }
 
     @Test
     public void getOrElse() throws Exception {
         assertThat(t.getOrElse(() -> 0), is(0));
-    }
-
-    @Test
-    public void filter() throws Exception {
-        assertThat(t.filter(x -> true), is(t));
     }
 
     @Test
@@ -84,6 +84,13 @@ public class TryFailureTest {
 
         assertThat(e, instanceOf(TestException.class));
         assertThat(e.getMessage(), is(MESSAGE));
+    }
+
+    @Test
+    public void foldPassedThrowingExceptionsThrows() throws Exception {
+        thrown.expect(TestException.class);
+
+        String s = t.fold(fThrows, x -> "x");
     }
 
     @Test
@@ -113,5 +120,15 @@ public class TryFailureTest {
     public void toOption() throws Exception {
         assertThat(t.toOption(), is(Option.none()));
     }
+
+    @Test
+    public void liftingFunctionThatThrowsReturnsFailure(){
+        Try<Integer> result = Try.<String,Integer>lift(x -> {throw new TestException(MESSAGE);}).apply("test");
+
+        assertThat(result.isFailure(), is(true));
+        assertThat(result.getExceptionUnsafe(), instanceOf(TestException.class));
+        assertThat(result.getExceptionUnsafe().getMessage(), is(MESSAGE));
+    }
+
 
 }
