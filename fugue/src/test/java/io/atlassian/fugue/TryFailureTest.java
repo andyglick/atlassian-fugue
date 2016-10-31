@@ -7,6 +7,7 @@ import org.junit.rules.ExpectedException;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 
+import static java.util.function.Function.identity;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -78,7 +79,7 @@ public class TryFailureTest {
 
     @Test
     public void fold() throws Exception {
-        Exception e = t.fold(Function.identity(), v -> {
+        Exception e = t.fold(identity(), v -> {
             throw new RuntimeException();
         });
 
@@ -91,20 +92,6 @@ public class TryFailureTest {
         thrown.expect(TestException.class);
 
         String s = t.fold(fThrows, x -> "x");
-    }
-
-    @Test
-    public void getUnsafe() throws Exception {
-        thrown.expect(NoSuchElementException.class);
-        t.getUnsafe();
-    }
-
-    @Test
-    public void getExceptionUnsafe() throws Exception {
-        Exception e = t.getExceptionUnsafe();
-
-        assertThat(e, instanceOf(TestException.class));
-        assertThat(e.getMessage(), is(MESSAGE));
     }
 
     @Test
@@ -123,11 +110,13 @@ public class TryFailureTest {
 
     @Test
     public void liftingFunctionThatThrowsReturnsFailure(){
-        Try<Integer> result = Try.<String,Integer>lift(x -> {throw new TestException(MESSAGE);}).apply("test");
+        Try<Integer> result = Try.<String,Integer,TestException>lift(x -> {throw new TestException(MESSAGE);}).apply("test");
 
         assertThat(result.isFailure(), is(true));
-        assertThat(result.getExceptionUnsafe(), instanceOf(TestException.class));
-        assertThat(result.getExceptionUnsafe().getMessage(), is(MESSAGE));
+
+        final Exception e = result.fold(identity(), x -> {throw new NoSuchElementException();});
+        assertThat(e, instanceOf(TestException.class));
+        assertThat(e.getMessage(), is(MESSAGE));
     }
 
 

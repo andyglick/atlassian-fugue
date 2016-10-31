@@ -4,9 +4,12 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
+import static io.atlassian.fugue.Functions.identity;
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.core.Is.is;
@@ -66,8 +69,10 @@ public class TryTest {
         Try<Iterable<String>> result = Try.sequence(Arrays.asList(failed1, failed2, failed3));
 
         assertThat(result.isFailure(), is(true));
-        assertThat(result.getExceptionUnsafe(), instanceOf(RuntimeException.class));
-        assertThat(result.getExceptionUnsafe().getMessage(), is("FIRST"));
+
+        final Exception e = result.fold(identity(), x -> {throw new NoSuchElementException();});
+        assertThat(e, instanceOf(RuntimeException.class));
+        assertThat(e.getMessage(), is("FIRST"));
     }
 
     @Test
@@ -75,7 +80,8 @@ public class TryTest {
         Try<Iterable<Integer>> result = Try.sequence(IntStream.range(0, 10).mapToObj(i -> Try.of(() -> i))::iterator);
 
         assertThat(result.isSuccess(), is(true));
-        assertThat(result.getUnsafe(), is(IntStream.range(0, 10).boxed().collect(toList())));
+        Iterable<Integer> vals = result.fold(f -> {throw new NoSuchElementException();}, identity());
+        assertThat(vals, is(IntStream.range(0, 10).boxed().collect(toList())));
     }
 
     @Test
@@ -94,8 +100,9 @@ public class TryTest {
         Try<Integer> flattened = Try.flatten(nested);
 
         assertThat(flattened.isFailure(), is(true));
-        assertThat(flattened.getExceptionUnsafe(), instanceOf(IOException.class));
-        assertThat(flattened.getExceptionUnsafe().getMessage(), is(EXCEPTION_MESSAGE));
+        final Exception e = flattened.fold(identity(), x -> {throw new NoSuchElementException();});
+        assertThat(e, instanceOf(IOException.class));
+        assertThat(e.getMessage(), is(EXCEPTION_MESSAGE));
     }
 
 }

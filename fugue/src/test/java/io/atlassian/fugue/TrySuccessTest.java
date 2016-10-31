@@ -7,6 +7,7 @@ import org.junit.rules.ExpectedException;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 
+import static java.util.function.Function.identity;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
@@ -19,8 +20,8 @@ public class TrySuccessTest {
     private final Try<Integer> t = Try.of(() -> STARTING_VALUE);
     private final Function<Integer, String> f = Object::toString;
     private final Function<String, Integer> g = Integer::valueOf;
-    private final Try.CheckedFunction<Integer, String> fChecked = Object::toString;
-    private final Try.CheckedFunction<String, Integer> gChecked = Integer::valueOf;
+    private final Try.CheckedFunction<Integer, String, Exception> fChecked = Object::toString;
+    private final Try.CheckedFunction<String, Integer,Exception> gChecked = Integer::valueOf;
     private final Function<Integer, String> fThrows = x -> {
         throw new TestException();
     };
@@ -84,7 +85,7 @@ public class TrySuccessTest {
     public void fold() throws Exception {
         Integer i = t.fold(v -> {
             throw new RuntimeException();
-        }, Function.identity());
+        }, identity());
 
         assertThat(i, is(STARTING_VALUE));
     }
@@ -94,18 +95,6 @@ public class TrySuccessTest {
         thrown.expect(TestException.class);
 
         String e = t.fold(x -> "x", fThrows);
-    }
-
-    @Test
-    public void getUnsafe() throws Exception {
-        assertThat(t.getUnsafe(), is(STARTING_VALUE));
-    }
-
-    @Test
-    public void getExceptionUnsafe() throws Exception {
-        thrown.expect(NoSuchElementException.class);
-
-        t.getExceptionUnsafe();
     }
 
     @Test
@@ -123,7 +112,9 @@ public class TrySuccessTest {
         Try<Integer> result = Try.lift(String::length).apply("test");
 
         assertThat(result.isSuccess(), is(true));
-        assertThat(result.getUnsafe(), is(4));
+
+        final int val = result.fold(f -> {throw new NoSuchElementException();}, identity());
+        assertThat(val, is(4));
     }
 
     private class TestException extends RuntimeException {

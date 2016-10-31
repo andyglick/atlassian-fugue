@@ -5,12 +5,13 @@ import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;
 
 /**
  * A <code>Try</code> represents a computation that may either throw an
- * exception or result in a value. A Try will either be {@link Try.Success
+ * exception or return a value. A Try will either be {@link Try.Success
  * Success} wrapping a value or {@link Try.Failure Failure} which wraps an
  * exception.
  * <p>
@@ -19,55 +20,58 @@ import static java.util.function.Function.identity;
  * In particular map will not catch automatically catch thrown exceptions,
  * instead you should use {@link Try#lift} to to make the function explicitly return a Try and the use flatmap.
  */
-public abstract class Try<T> {
+public abstract class Try<A> {
 
     /**
      * Represents a {@link Function} that may throw an exception.
      *
-     * @param <T> the type of the input to the function
-     * @param <R> the type of the result of the function
+     * @param <A> the type of the input to the function
+     * @param <B> the type of the result of the function
+     * @param <E> The type of exception potentially thrown
      */
     @FunctionalInterface
-    public interface CheckedFunction<T, R> {
-        R apply(T t) throws Exception;
+    public interface CheckedFunction<A, B, E extends Exception> {
+        B apply(A t) throws E;
     }
 
     /**
      * Represents a {@link Supplier} that may throw an exception.
      *
-     * @param <T> the type of the result of the supplier
+     * @param <A> the type of the result of the supplier
+     * @param <E> The type of exception potentially thrown
      */
     @FunctionalInterface
-    public interface CheckedSupplier<T> {
-        T get() throws Exception;
+    public interface CheckedSupplier<A, E extends Exception> {
+        A get() throws E;
     }
 
     /**
-     * Lift a function that potentially throws in a function that either returns a
+     * Lifts a function that potentially throws into a function that either returns a
      * Success of the value or a failure containing the thrown exception.
      *
      * @param f   a function that can throw
-     * @param <T>
-     * @param <R>
-     * @return a function that either returns a Success of the value or a failure
-     * containing the thrown exception.
+     * @param <A> the function argument type
+     * @param <B> the function return type
+     * @param <E> The type of exception potentially thrown
+     * @return the argument function lifted into returning a Try
+     *
      */
-    public static <T, R> Function<T, Try<R>> lift(CheckedFunction<T, R> f) {
-        return t -> Try.of(() -> f.apply(t));
+    public static <A, B, E extends Exception> Function<A, Try<B>> lift(CheckedFunction<A, B, E> f) {
+        return a -> Try.of(() -> f.apply(a));
     }
 
     /**
-     * Create a new Try representing the result of a potentially exception
-     * throwing operation. If the provided supplier throws an exception this will
-     * return a failure wrapping the exception, otherwise a success of the
-     * supplied value will be returned.
+     * Create a new Try representing the result of a potentially exception throwing operation.
+     * If the provided supplier throws an exception this will return a failure wrapping the exception,
+     * otherwise a success of the supplied value will be returned.
      *
      * @param s   a supplier that may throw an exception
-     * @param <U> the type of value s supplies
+     * @param <A> the type of value s supplies
+     * @param <E> The type of exception potentially thrown
      * @return If s throws an exception this will return a failure wrapping the
-     * exception, otherwise a success of the supplied value/.
+     * exception, otherwise a success of the supplied value.
      */
-    public static <U> Try<U> of(CheckedSupplier<U> s) {
+    public static <A, E extends Exception> Try<A> of(CheckedSupplier<A, E> s) {
         try {
             return successful(s.get());
         } catch (final Exception e) {
@@ -79,10 +83,10 @@ public abstract class Try<T> {
      * Creates a new failure
      *
      * @param e   an exception to wrap, must not be null.
-     * @param <U> the success type
+     * @param <A> the success type
      * @return a new Failure wrapping e.
      */
-    public static <U> Try<U> failure(final Exception e) {
+    public static <A> Try<A> failure(final Exception e) {
         requireNonNull(e);
         return new Failure<>(e);
     }
@@ -90,13 +94,13 @@ public abstract class Try<T> {
     /**
      * Creates a new Success
      *
-     * @param v   a value to wrap, must not be null
-     * @param <U> the wrapped value type
+     * @param value a value to wrap, must not be null
+     * @param <A>   the wrapped value type
      * @return a new Success wrapping v
      */
-    public static <U> Try<U> successful(final U v) {
-        requireNonNull(v);
-        return new Success<>(v);
+    public static <A> Try<A> successful(final A value) {
+        requireNonNull(value);
+        return new Success<>(value);
     }
 
     /**
@@ -104,29 +108,33 @@ public abstract class Try<T> {
      * success, otherwise this returns the first failure
      *
      * @param trys an iterable of try values
-     * @param <T>  The success type
+     * @param <A>  The success type
      * @return a success wrapping all of the values if all of the arguments were a
      * success, otherwise this returns the first failure
      */
-    public static <T> Try<Iterable<T>> sequence(Iterable<Try<T>> trys) {
-        final ArrayList<T> ts = new ArrayList<>();
-        for (final Try<T> t : trys) {
+    public static <A> Try<Iterable<A>> sequence(Iterable<Try<A>> trys) {
+        final ArrayList<A> ts = new ArrayList<>();
+        for (final Try<A> t : trys) {
             if (t.isFailure()) {
-                return new Failure<>(t.getExceptionUnsafe());
+                return new Failure<>(t.fold(identity(), x -> {
+                    throw new NoSuchElementException();
+                }));
             }
-            ts.add(t.getUnsafe());
+            ts.add(t.fold(f -> {
+                throw new NoSuchElementException();
+            }, identity()));
         }
-        return new Success<>(ts);
+        return new Success<>(unmodifiableList(ts));
     }
 
     /**
-     * reduces a nested Try by a single level
+     * Reduces a nested Try by a single level
      *
-     * @param t A nested Try
-     * @param <T> The success type
+     * @param t   A nested Try
+     * @param <A> The success type
      * @return The flattened try
      */
-    public static <T> Try<T> flatten(Try<Try<T>> t) {
+    public static <A> Try<A> flatten(Try<Try<A>> t) {
         return t.flatMap(identity());
     }
 
@@ -147,43 +155,42 @@ public abstract class Try<T> {
     /**
      * Binds the given function across the success value if it is one.
      *
-     * @param <U> result type
+     * @param <B> result type
      * @param f   the function to bind.
      * @return A new Try value after binding with the function applied if this is
      * a Success, otherwise returns this if this is a `Failure`.
      */
-    public abstract <U> Try<U> flatMap(Function<? super T, Try<U>> f);
+    public abstract <B> Try<B> flatMap(Function<? super A, Try<B>> f);
 
     /**
-     * Maps the given function to the value from this `Success` or returns this if
-     * this is a `Failure`.
+     * Maps the given function to the value from this `Success` or returns this unchanged if a `Failure`.
      *
-     * @param <U> result type
+     * @param <B> result type
      * @param f   the function to apply
      * @return `f` applied to the `Success`, otherwise returns this if this is a
      * `Failure`.
      */
-    public abstract <U> Try<U> map(Function<? super T, ? extends U> f);
+    public abstract <B> Try<B> map(Function<? super A, ? extends B> f);
 
     /**
-     * Applies the given function `f` if this is a `Failure`. This is like map for
-     * the exception.
+     * Applies the given function `f` if this is a `Failure` otherwise this unchanged if a 'Success'.
+     * This is like map for the failure.
      *
      * @param f the function to apply
      * @return `f` applied to the `Failure`, otherwise returns this if this is a
      * `Success`.
      */
-    public abstract Try<T> recover(Function<? super Exception, T> f);
+    public abstract Try<A> recover(Function<? super Exception, A> f);
 
     /**
-     * Binds the given function across the failure value if it is one. This is
-     * like flatmap for the exception.
+     * Binds the given function across the failure value if it is one, otherwise this unchanged if a 'Success'.
+     * This is like flatmap for the failure.
      *
      * @param f the function to bind.
      * @return A new Try value after binding with the function applied if this is
      * a Success, otherwise returns this if this is a `Failure`.
      */
-    public abstract Try<T> recoverWith(Function<? super Exception, Try<T>> f);
+    public abstract Try<A> recoverWith(Function<? super Exception, Try<A>> f);
 
     /**
      * Returns the contained value if this is a success otherwise call the
@@ -192,7 +199,7 @@ public abstract class Try<T> {
      * @param s called if this is a failure
      * @return the wrapped value or the value from the {@code Supplier}
      */
-    public abstract T getOrElse(Supplier<T> s);
+    public abstract A getOrElse(Supplier<A> s);
 
     /**
      * Applies the function to the wrapped value, applying failureF it this is a
@@ -200,26 +207,10 @@ public abstract class Try<T> {
      *
      * @param failureF the function to apply if this is a Failure
      * @param successF the function to apply if this is a Success
-     * @param <U>      the destination type
+     * @param <B>      the destination type
      * @return the result of the applied function
      */
-    public abstract <U> U fold(Function<? super Exception, U> failureF, Function<T, U> successF);
-
-    /**
-     * Returns the wrapped value if this is a success, otherwise throws an
-     * exception. It is not recommended to directly call this.
-     *
-     * @return the wrapped success value
-     */
-    public abstract T getUnsafe();
-
-    /**
-     * Returns the wrapped exception if this is a failure, otherwise throws an
-     * exception. It is not recommended to directly call this.
-     *
-     * @return the wrapped exception
-     */
-    public abstract Exception getExceptionUnsafe();
+    public abstract <B> B fold(Function<? super Exception, B> failureF, Function<A, B> successF);
 
     /**
      * Convert this Try to an {@link Either}, becoming a left if this is a failure
@@ -228,7 +219,7 @@ public abstract class Try<T> {
      * @return this value wrapped in right if a success, and the exception wrapped
      * in a left if a failure.
      */
-    public abstract Either<Exception, T> toEither();
+    public abstract Either<Exception, A> toEither();
 
     /**
      * Convert this Try to an Option. Returns <code>Some</code> with a value if it
@@ -237,9 +228,9 @@ public abstract class Try<T> {
      * @return The success's value in <code>Some</code> if it exists, otherwise
      * <code>None</code>
      */
-    public abstract Option<T> toOption();
+    public abstract Option<A> toOption();
 
-    private static final class Failure<T> extends Try<T> {
+    private static final class Failure<A> extends Try<A> {
 
         private final Exception e;
 
@@ -249,7 +240,7 @@ public abstract class Try<T> {
         }
 
         @Override
-        public <U> Try<U> map(final Function<? super T, ? extends U> f) {
+        public <B> Try<B> map(final Function<? super A, ? extends B> f) {
             return new Failure<>(e);
         }
 
@@ -264,47 +255,37 @@ public abstract class Try<T> {
         }
 
         @Override
-        public <U> Try<U> flatMap(final Function<? super T, Try<U>> f) {
+        public <B> Try<B> flatMap(final Function<? super A, Try<B>> f) {
             return Try.failure(e);
         }
 
         @Override
-        public Try<T> recover(final Function<? super Exception, T> f) {
+        public Try<A> recover(final Function<? super Exception, A> f) {
             return Try.of(() -> f.apply(e));
         }
 
         @Override
-        public Try<T> recoverWith(final Function<? super Exception, Try<T>> f) {
+        public Try<A> recoverWith(final Function<? super Exception, Try<A>> f) {
             return f.apply(e);
         }
 
         @Override
-        public T getOrElse(final Supplier<T> s) {
+        public A getOrElse(final Supplier<A> s) {
             return s.get();
         }
 
         @Override
-        public <U> U fold(final Function<? super Exception, U> failureF, final Function<T, U> successF) {
+        public <B> B fold(final Function<? super Exception, B> failureF, final Function<A, B> successF) {
             return failureF.apply(e);
         }
 
         @Override
-        public T getUnsafe() {
-            throw new NoSuchElementException();
-        }
-
-        @Override
-        public Exception getExceptionUnsafe() {
-            return e;
-        }
-
-        @Override
-        public Either<Exception, T> toEither() {
+        public Either<Exception, A> toEither() {
             return Either.left(e);
         }
 
         @Override
-        public Option<T> toOption() {
+        public Option<A> toOption() {
             return Option.none();
         }
 
@@ -328,18 +309,18 @@ public abstract class Try<T> {
         }
     }
 
-    private static final class Success<T> extends Try<T> {
+    private static final class Success<A> extends Try<A> {
 
-        private final T value;
+        private final A value;
 
-        public Success(final T value) {
+        public Success(final A value) {
             requireNonNull(value);
             this.value = value;
         }
 
         @Override
-        public <U> Try<U> map(final Function<? super T, ? extends U> f) {
-            U val = f.apply(value);
+        public <B> Try<B> map(final Function<? super A, ? extends B> f) {
+            B val = f.apply(value);
             return Try.of(() -> val);
         }
 
@@ -354,47 +335,37 @@ public abstract class Try<T> {
         }
 
         @Override
-        public <U> Try<U> flatMap(final Function<? super T, Try<U>> f) {
+        public <B> Try<B> flatMap(final Function<? super A, Try<B>> f) {
             return f.apply(value);
         }
 
         @Override
-        public Try<T> recover(final Function<? super Exception, T> f) {
+        public Try<A> recover(final Function<? super Exception, A> f) {
             return this;
         }
 
         @Override
-        public Try<T> recoverWith(final Function<? super Exception, Try<T>> f) {
+        public Try<A> recoverWith(final Function<? super Exception, Try<A>> f) {
             return this;
         }
 
         @Override
-        public T getOrElse(final Supplier<T> s) {
+        public A getOrElse(final Supplier<A> s) {
             return value;
         }
 
         @Override
-        public <U> U fold(final Function<? super Exception, U> failureF, final Function<T, U> successF) {
+        public <B> B fold(final Function<? super Exception, B> failureF, final Function<A, B> successF) {
             return successF.apply(value);
         }
 
         @Override
-        public T getUnsafe() {
-            return value;
-        }
-
-        @Override
-        public Exception getExceptionUnsafe() {
-            throw new NoSuchElementException();
-        }
-
-        @Override
-        public Either<Exception, T> toEither() {
+        public Either<Exception, A> toEither() {
             return Either.right(value);
         }
 
         @Override
-        public Option<T> toOption() {
+        public Option<A> toOption() {
             return Option.some(value);
         }
 
