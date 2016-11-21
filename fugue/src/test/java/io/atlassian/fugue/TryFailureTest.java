@@ -23,7 +23,7 @@ public class TryFailureTest {
   }
 
   private static final String MESSAGE = "known exception message";
-  private final Try<Integer> t = Try.of(() -> {
+  private final Try<Integer> t = Checked.of(() -> {
     throw new TestException(MESSAGE);
   });
   private final Function<Exception, String> fThrows = x -> {
@@ -51,11 +51,11 @@ public class TryFailureTest {
   }
 
   @Test public void recover() throws Exception {
-    assertThat(t.recover(x -> 0), is(Try.of(() -> 0)));
+    assertThat(t.recover(x -> 0), is(Checked.of(() -> 0)));
   }
 
   @Test public void recoverWith() throws Exception {
-    assertThat(t.recoverWith(x -> Try.of(() -> 0)), is(Try.of(() -> 0)));
+    assertThat(t.recoverWith(x -> Checked.of(() -> 0)), is(Checked.of(() -> 0)));
   }
 
   @Test public void recoverWithPassedThrowingFunctionThrows() throws Exception {
@@ -96,7 +96,7 @@ public class TryFailureTest {
   }
 
   @Test public void liftingFunctionThatThrowsReturnsFailure() {
-    Try<Integer> result = Try.<String, Integer, TestException> lift(x -> {
+    Try<Integer> result = Checked.<String, Integer, TestException> lift(x -> {
       throw new TestException(MESSAGE);
     }).apply("test");
 

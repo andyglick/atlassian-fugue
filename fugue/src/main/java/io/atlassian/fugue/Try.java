@@ -18,8 +18,8 @@ import static java.util.function.Function.identity;
  * success and failure case. Unless method level javadoc says otherwise, methods
  * will not automatically catch exceptions thrown by function arguments. In
  * particular map will not catch automatically catch thrown exceptions, instead
- * you should use {@link Checked#lift} to to make the function explicitly return a
- * Try and the use flatmap.
+ * you should use {@link Checked#lift} to to make the function explicitly return
+ * a Try and the use flatmap.
  */
 public abstract class Try<A> {
   /**
