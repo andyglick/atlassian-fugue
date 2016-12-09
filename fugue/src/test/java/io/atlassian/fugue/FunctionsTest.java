@@ -18,6 +18,7 @@ package io.atlassian.fugue;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 import java.util.HashMap;
 
@@ -106,6 +107,12 @@ public class FunctionsTest {
     assertThat(
       matches(partial(dividableBy(6), square), partial(dividableBy(5), square), partial(dividableBy(4), square), partial(dividableBy(3), square),
         partial(dividableBy(2), square)).apply(1), is(Option.<Integer> none()));
+  }
+
+  @Test public void functionsFromConsumer() {
+    AtomicBoolean called = new AtomicBoolean(false);
+    Functions.fromConsumer(o ->  called.set(true)).apply(new Object());
+    assertThat(called.get(), is(true));
   }
 
   @Test public void functionsToBiFunction() {

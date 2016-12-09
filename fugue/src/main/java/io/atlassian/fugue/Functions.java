@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -493,6 +494,42 @@ public class Functions {
 
     @Override public int hashCode() {
       return supplier.hashCode();
+    }
+  }
+
+  /**
+   * Get a function (with {@code Void} return type) that calls the consumer for all inputs.
+   *
+   * @param <D> the key type
+   * @param consumer called for all inputs, must not be null
+   * @return the function
+   * @since 4.4
+   */
+  public static <D> Function<D, Void> fromConsumer(Consumer<D> consumer) {
+    return new FromConsumer<D>(consumer);
+  }
+
+  private static class FromConsumer<D> implements Function<D, Void> {
+    private final Consumer<D> consumer;
+
+    FromConsumer(final Consumer<D> consumer) {
+      this.consumer = requireNonNull(consumer);
+    }
+
+    @Override
+    public Void apply(D d) {
+      consumer.accept(d);
+      return null;
+    }
+
+    @Override
+    public String toString() {
+      return "FromConsumer";
+    }
+
+    @Override
+    public int hashCode() {
+      return consumer.hashCode();
     }
   }
 
