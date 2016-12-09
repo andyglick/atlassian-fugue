@@ -111,7 +111,7 @@ public class FunctionsTest {
 
   @Test public void functionsFromConsumer() {
     AtomicBoolean called = new AtomicBoolean(false);
-    Functions.fromConsumer(o ->  called.set(true)).apply(new Object());
+    Functions.fromConsumer(o -> called.set(true)).apply(new Object());
     assertThat(called.get(), is(true));
   }
 
