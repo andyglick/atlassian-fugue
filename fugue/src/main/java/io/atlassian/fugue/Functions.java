@@ -15,9 +15,6 @@
  */
 package io.atlassian.fugue;
 
-import static io.atlassian.fugue.Option.option;
-import static java.util.Objects.requireNonNull;
-
 import java.io.Serializable;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
@@ -31,6 +28,10 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+
+import static io.atlassian.fugue.Option.option;
+import static io.atlassian.fugue.Unit.Unit;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Utility methods for Functions
@@ -505,30 +506,27 @@ public class Functions {
    * @return the function
    * @since 4.4
    */
-  public static <D> Function<D, Void> fromConsumer(Consumer<D> consumer) {
+  public static <D> Function<D, Unit> fromConsumer(Consumer<D> consumer) {
     return new FromConsumer<D>(consumer);
   }
 
-  private static class FromConsumer<D> implements Function<D, Void> {
+  private static class FromConsumer<D> implements Function<D, Unit> {
     private final Consumer<D> consumer;
 
     FromConsumer(final Consumer<D> consumer) {
       this.consumer = requireNonNull(consumer);
     }
 
-    @Override
-    public Void apply(D d) {
+    @Override public Unit apply(D d) {
       consumer.accept(d);
-      return null;
+      return Unit();
     }
 
-    @Override
-    public String toString() {
+    @Override public String toString() {
       return "FromConsumer";
     }
 
-    @Override
-    public int hashCode() {
+    @Override public int hashCode() {
       return consumer.hashCode();
     }
   }
