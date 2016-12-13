@@ -499,15 +499,16 @@ public class Functions {
   }
 
   /**
-   * Get a function (with {@code Void} return type) that calls the consumer for all inputs.
+   * Get a function (with {@link Unit} return type) that calls the consumer for
+   * all inputs.
    *
    * @param <D> the key type
    * @param consumer called for all inputs, must not be null
    * @return the function
-   * @since 4.4
+   * @since 4.4.0
    */
   public static <D> Function<D, Unit> fromConsumer(Consumer<D> consumer) {
-    return new FromConsumer<D>(consumer);
+    return new FromConsumer<>(consumer);
   }
 
   private static class FromConsumer<D> implements Function<D, Unit> {
