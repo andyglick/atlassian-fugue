@@ -3,7 +3,9 @@ All notable changes to this project will be documented in this file.
 
 This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 
-## [4.3.2] - [unreleased]
+## [4.4.0] - [unreleased]
+- Added Functions#fromConsumer(Consumer<D>) returning Function<D, Unit> to convert between consumers and functions
+- Added Try.java as an implementation of an exception handling monad. See Try.java for further documentation. This Try does not implicitly catch exceptions.
 
 ## [4.3.1] - [2016-09-27]
 - fugue-guava added an explicit lower bound osgi instruction. Where previously maven-bundle-plugin inserted [18,19) by default now only 18 is present.
