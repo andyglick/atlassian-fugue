@@ -20,6 +20,8 @@ import static java.util.function.Function.identity;
  * particular map will not catch automatically catch thrown exceptions, instead
  * you should use {@link Checked#lift} to to make the function explicitly return
  * a Try and the use flatmap.
+ *
+ * @since 4.4.0
  */
 public abstract class Try<A> {
   /**
