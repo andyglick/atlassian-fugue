@@ -9,9 +9,9 @@ This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 ### Added
 - Added Functions#fromConsumer(Consumer<D>) returning Function<D, Unit> to convert between consumers and functions
 - Added Try.java as an implementation of an exception handling monad.
-  This is similar to Either but is explicitly intended for handling a computation that may either result in an exception or return a successfully computed value.
-  See Try.java for further documentation. Note the methods on Try does not implicitly catch exceptions thrown by argument functions.
-- Added Checked.java which contains utility functions for working with Try, for example lifting potentially throwing functions into returning a Try.
+  This is similar to Either but is explicitly intended for handling a computation that may result in an exception or return a successfully computed value.
+  See Try.java for further documentation. Note the methods on Try do not implicitly catch exceptions thrown by argument functions.
+- Added Checked.java which contains utility functions for working with Try, for example lifting potentially throwing functions into functions that return a Try.
 
 ## [4.3.1] - [2016-09-27]
 - fugue-guava added an explicit lower bound osgi instruction. Where previously maven-bundle-plugin inserted [18,19) by default now only 18 is present.
