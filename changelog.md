@@ -3,7 +3,9 @@ All notable changes to this project will be documented in this file.
 
 This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 
-## [4.4.0] - [unreleased]
+## [4.4.1] - [unreleased]
+
+## [4.4.0] - [2016-12-13]
 - Added Functions#fromConsumer(Consumer<D>) returning Function<D, Unit> to convert between consumers and functions
 - Added Try.java as an implementation of an exception handling monad. See Try.java for further documentation. This Try does not implicitly catch exceptions.
 
