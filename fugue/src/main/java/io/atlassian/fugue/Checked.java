@@ -1,5 +1,10 @@
 package io.atlassian.fugue;
 
+/**
+ * Helpers to work with functions that may throw exceptions. Used with {@link Try}.
+ *
+ * @since 4.4.0
+ */
 public class Checked {
   // do not ctor
   private Checked() {}
