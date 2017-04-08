@@ -3,7 +3,11 @@ All notable changes to this project will be documented in this file.
 
 This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 
-## [4.4.1] - [unreleased]
+## [4.5.1] - [unreleased]
+
+## [4.5.0] - [unreleased]
+### Added
+- Added toStream to Option and Either types that will return a java.util.stream.Stream object of either a single element Stream or empty Stream
 
 ## [4.4.0] - [2016-12-13]
 ### Added
