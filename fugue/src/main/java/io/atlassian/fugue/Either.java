@@ -28,6 +28,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 /**
  * A class that acts as a container for a value of one of two types. An Either
@@ -396,6 +397,19 @@ public abstract class Either<L, R> implements Serializable {
   }
 
   /**
+   * Convert this Either to a {@link Stream}. Returns with
+   * {@link Stream#of(Object)} if it is a right, otherwise
+   * {@link Stream#empty()}.
+   *
+   * @return The right projection's value in <code>of</code> if it exists,
+   * otherwise <code>empty</code>.
+   * @since 4.5.0
+   */
+  public final Stream<R> toStream() {
+    return right().toStream();
+  }
+
+  /**
    * Will return the supplied Either if this one is right, otherwise this one if
    * left.
    *
@@ -655,6 +669,10 @@ public abstract class Either<L, R> implements Serializable {
       return toOption().toOptional();
     }
 
+    @Override public final Stream<A> toStream() {
+      return toOption().toStream();
+    }
+
     @Override public final boolean exists(final Predicate<? super A> f) {
       return isDefined() && f.test(get());
     }
@@ -790,7 +808,6 @@ public abstract class Either<L, R> implements Serializable {
      * @param either The either of the function to apply on this projection's
      * value.
      * @return The result of function application within either.
-     *
      * @since 3.0
      */
     public <X> Either<X, R> ap(final Either<Function<L, X>, R> either) {
@@ -804,9 +821,8 @@ public abstract class Either<L, R> implements Serializable {
      * @param either The either of the function to apply on this projection's
      * value.
      * @return The result of function application within either.
-     *
-     * @deprecated since 3.0
      * @see #ap ap
+     * @deprecated since 3.0
      */
     @Deprecated public <X> Either<X, R> apply(final Either<Function<L, X>, R> either) {
       return ap(either);
@@ -915,7 +931,6 @@ public abstract class Either<L, R> implements Serializable {
      * @param either The either of the function to apply on this projection's
      * value.
      * @return The result of function application within either.
-     *
      * @since 3.0
      */
     public <X> Either<L, X> ap(final Either<L, Function<R, X>> either) {
@@ -929,7 +944,6 @@ public abstract class Either<L, R> implements Serializable {
      * @param either The either of the function to apply on this projection's
      * value.
      * @return The result of function application within either.
-     *
      * @deprecated since 3.0 see ap
      */
     @Deprecated public <X> Either<L, X> apply(final Either<L, Function<R, X>> either) {
@@ -973,6 +987,16 @@ public abstract class Either<L, R> implements Serializable {
      * @since 4.0
      */
     Optional<? super A> toOptional();
+
+    /**
+     * Returns this projection's value in {@link Stream#of} if it exists,
+     * otherwise {@link Stream#empty()}.
+     *
+     * @return This projection's value in <code>of</code> if it exists,
+     * otherwise <code>empty</code>.
+     * @since 4.5.0
+     */
+    Stream<? super A> toStream();
 
     /**
      * The value of this projection or the result of the given function on the

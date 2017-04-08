@@ -20,18 +20,22 @@ import org.junit.Test;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import static io.atlassian.fugue.Option.defined;
 import static io.atlassian.fugue.Option.none;
 import static io.atlassian.fugue.Option.some;
 import static io.atlassian.fugue.Suppliers.ofInstance;
 import static io.atlassian.fugue.UtilityFunctions.toStringFunction;
+import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.emptyIterable;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
 
 public class OptionTest {
   @Test public void foldOnNoneReturnsValueFromSupplier() {
@@ -164,6 +168,25 @@ public class OptionTest {
 
   @Test public void noneToOptional() {
     assertThat(none().toOptional(), is(Optional.empty()));
+  }
+
+  @Test public void someToStream() {
+    final Stream<String> stream = some("value").toStream();
+    assertThat(stream, notNullValue());
+    assertThat(stream.collect(toList()), contains("value"));
+  }
+
+  @Test public void someWithNullToStream() {
+    final String nullString = null;
+    final Stream<String> stream = some("null").map(Functions.constant(nullString)).toStream();
+    assertThat(stream, notNullValue());
+    assertThat(stream.collect(toList()), contains(nullString));
+  }
+
+  @Test public void noneToStream() {
+    final Stream<String> stream = Option.<String> none().toStream();
+    assertThat(stream, notNullValue());
+    assertThat(stream.collect(toList()), empty());
   }
 
   //

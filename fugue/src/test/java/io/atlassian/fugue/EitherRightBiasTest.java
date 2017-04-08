@@ -7,6 +7,9 @@ import static io.atlassian.fugue.Option.none;
 import static io.atlassian.fugue.Option.some;
 import static io.atlassian.fugue.UtilityFunctions.addOne;
 import static io.atlassian.fugue.UtilityFunctions.reverse;
+import static java.util.stream.Collectors.toList;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
@@ -241,6 +244,14 @@ public class EitherRightBiasTest {
 
   @Test public void toOptionLeft() {
     assertThat(l.toOption(), is(none()));
+  }
+
+  @Test public void toStreamRight() {
+    assertThat(r.toStream().collect(toList()), contains(12));
+  }
+
+  @Test public void toStreamLeft() {
+    assertThat(l.toStream().collect(toList()), empty());
   }
 
   @Test public void toOptionalRight() {
