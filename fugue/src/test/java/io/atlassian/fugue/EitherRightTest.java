@@ -29,6 +29,9 @@ import static io.atlassian.fugue.Option.some;
 import static io.atlassian.fugue.UtilityFunctions.bool2String;
 import static io.atlassian.fugue.UtilityFunctions.int2String;
 import static java.lang.String.valueOf;
+import static java.util.stream.Collectors.toList;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -116,6 +119,11 @@ public class EitherRightTest {
   @Test public void toOptionalTest() {
     assertThat(either.right().toOptional(), is(Optional.of(ORIGINAL_VALUE)));
     assertThat(either.left().toOptional(), is(Optional.empty()));
+  }
+
+  @Test public void toStreamTest() {
+    assertThat(either.right().toStream().collect(toList()), contains(ORIGINAL_VALUE));
+    assertThat(either.left().toStream().collect(toList()), empty());
   }
 
   @Test public void notThrowsException() throws Exception {

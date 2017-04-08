@@ -24,6 +24,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import static io.atlassian.fugue.Suppliers.ofInstance;
 import static java.util.Objects.requireNonNull;
@@ -325,6 +326,15 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    */
   public abstract Optional<A> toOptional();
 
+  /**
+   * Create a {@link java.util.stream.Stream} from this option.
+   *
+   * @return {@link java.util.stream.Stream#of(Object)} with the value if
+   * defined, {@link java.util.stream.Stream#empty()} if not defined.
+   * @since 4.5.0
+   */
+  public abstract Stream<A> toStream();
+
   /** {@inheritDoc} */
   @Override public final int hashCode() {
     return fold(NONE_HASH, SOME_HASH);
@@ -409,6 +419,10 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
       return Optional.empty();
     }
 
+    @Override public Stream<Object> toStream() {
+      return Stream.empty();
+    }
+
     private Object readResolve() {
       return None.NONE;
     }
@@ -456,6 +470,10 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
 
     @Override public Optional<A> toOptional() {
       return Optional.of(value);
+    }
+
+    @Override public Stream<A> toStream() {
+      return Stream.of(value);
     }
   }
 

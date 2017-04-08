@@ -1,7 +1,8 @@
 package io.atlassian.fugue;
 
 /**
- * Helpers to work with functions that may throw exceptions. Used with {@link Try}.
+ * Helpers to work with functions that may throw exceptions. Used with
+ * {@link Try}.
  *
  * @since 4.4.0
  */
