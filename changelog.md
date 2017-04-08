@@ -5,7 +5,7 @@ This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 
 ## [4.5.1] - [unreleased]
 
-## [4.5.0] - [unreleased]
+## [4.5.0] - [2017-04-09]
 ### Added
 - Added toStream to Option and Either types that will return a java.util.stream.Stream object of either a single element Stream or empty Stream
 
