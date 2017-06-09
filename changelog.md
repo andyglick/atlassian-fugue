@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 
 ## [4.5.1] - [unreleased]
+### fixed
+- typo in Either#fold javadoc
 
 ## [4.5.0] - [2017-04-09]
 ### Added
