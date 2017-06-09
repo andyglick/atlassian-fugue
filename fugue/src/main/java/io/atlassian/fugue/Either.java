@@ -494,7 +494,7 @@ public abstract class Either<L, R> implements Serializable {
   public abstract Either<R, L> swap();
 
   /**
-   * Applies the function to the wrapped value, applying ifLeft it this is a
+   * Applies the function to the wrapped value, applying ifLeft if this is a
    * Left and ifRight if this is a Right.
    *
    * @param <V> the destination type
