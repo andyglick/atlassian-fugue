@@ -9,9 +9,9 @@
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.atlassian.pom</groupId>
-        <artifactId>public-pom</artifactId>
-        <version>3.0.105</version>
+        <groupId>com.atlassian.platform.parentpom</groupId>
+        <artifactId>public-pom-3-artifactory</artifactId>
+        <version>1.0.1</version>
     </parent>
 
     <groupId>com.atlassian.fugue</groupId>
