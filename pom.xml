@@ -37,7 +37,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdkLevel>1.7</jdkLevel>
         <clover.version>4.0.6</clover.version>
-        <guava.osgi.version>18.0</guava.osgi.version>
+        <guava.osgi.version>16.0.1</guava.osgi.version>
         <slf4j-api.version>1.7.25</slf4j-api.version>
         <atlassian-util-concurrent.version>2.4.1</atlassian-util-concurrent.version>
         <mockito-core.version>1.8.4</mockito-core.version>
