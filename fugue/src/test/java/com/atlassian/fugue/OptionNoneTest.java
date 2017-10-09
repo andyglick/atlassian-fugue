@@ -128,7 +128,7 @@ public class OptionNoneTest {
     none.iterator().next();
   }
 
-  @Test(expected = UnsupportedOperationException.class) public void iteratorImmutable() {
+  @Test(expected = IllegalStateException.class) public void iteratorImmutable() {
     none.iterator().remove();
   }
 

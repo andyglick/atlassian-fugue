@@ -15,18 +15,18 @@
  */
 package com.atlassian.fugue;
 
-import static com.atlassian.fugue.Suppliers.ofInstance;
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import java.io.Serializable;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Supplier;
-import com.google.common.collect.Iterators;
+
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
+import static com.atlassian.fugue.Suppliers.ofInstance;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A class that encapsulates missing values. An Option may be either
@@ -251,7 +251,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
   }
 
   @Override public final Iterator<A> iterator() {
-    return fold(Suppliers.ofInstance(Iterators.<A> emptyIterator()), Functions.<A> singletonIterator());
+    return fold(Suppliers.ofInstance(Collections.<A>emptyIterator()), Functions.<A>singletonIterator());
   }
 
   //
@@ -310,7 +310,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    * @return the content of this option if defined as a right, or the supplier's
    * content as a left if not
    * 
-   * @see toLeft
+   * @see #toLeft
    */
   public final <X> Either<X, A> toRight(final Supplier<X> left) {
     return isEmpty() ? Either.<X, A> left(left.get()) : Either.<X, A> right(get());
@@ -325,7 +325,7 @@ public abstract class Option<A> implements Iterable<A>, Maybe<A>, Serializable {
    * @return the content of this option if defined as a left, or the supplier's
    * content as a right if not defined.
    * 
-   * @see toRight
+   * @see #toRight
    */
   public final <X> Either<A, X> toLeft(final Supplier<X> right) {
     return isEmpty() ? Either.<A, X> right(right.get()) : Either.<A, X> left(get());
