@@ -37,7 +37,7 @@ And then add fugue as a dependency to your pom.xml:
         <dependency>
             <groupId>com.atlassian.fugue</groupId>
             <artifactId>fugue</artifactId>
-            <version>2.6.0</version>
+            <version>2.7.0</version>
         </dependency>
         ...
     </dependencies>
@@ -52,14 +52,14 @@ If you are using Gradle, add a new repository to your `repositories` section:
     
 And then add fugue as a dependency to your `dependencies` section:
 
-    compile 'com.atlassian.fugue:fugue:2.6.0'
+    compile 'com.atlassian.fugue:fugue:2.7.0'
 
 ## Guava compatibility
 
 This library mostly only depends on core Guava functionality and should be compatible with
-very old versions of Guava, and certainly with the newest versions. However, the tests may 
-rely on API that is only available in later versions (at the time of writing a minimum of 
-14.0 was needed to run the tests).
+somewhat old versions of Guava, and certainly with the newest versions (at the time of writing,
+this is known to be compatible with Guava 23.1, but a minimum of 16.0.1 is needed to run the
+tests).
 
 ## Scala Integration
 

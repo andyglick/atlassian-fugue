@@ -29,6 +29,7 @@ import static com.google.common.collect.Sets.newTreeSet;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableCollection;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -66,7 +67,7 @@ public class Iterables {
 
   static final Iterable<?> EMPTY = new Iterable<Object>() {
     @Override public Iterator<Object> iterator() {
-      return Iterators.emptyIterator();
+      return Collections.emptyIterator();
     }
 
     @Override public String toString() {
