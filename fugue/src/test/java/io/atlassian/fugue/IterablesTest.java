@@ -57,7 +57,7 @@ public class IterablesTest {
     emptyIterable().iterator().next();
   }
 
-  @Test(expected = IllegalStateException.class) public void emptyIterableIteratorRemove() {
+  @Test(expected = UnsupportedOperationException.class) public void emptyIterableIteratorRemove() {
     emptyIterable().iterator().remove();
   }
 
