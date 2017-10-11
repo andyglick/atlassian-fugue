@@ -16,6 +16,7 @@
 package io.atlassian.fugue;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
