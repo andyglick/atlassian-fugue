@@ -90,6 +90,7 @@
                 </configuration>
             </plugin>
             <plugin>
+<<<<<<< HEAD
                 <groupId>org.scalariform</groupId>
                 <artifactId>scalariform-maven-plugin</artifactId>
                 <version>0.1.4</version>
@@ -104,12 +105,17 @@
                 <configuration>
                     <preserveDanglingCloseParenthesis>true</preserveDanglingCloseParenthesis>
                 </configuration>
+=======
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+>>>>>>> v2.7.x
             </plugin>
             <plugin>
                 <groupId>com.atlassian.maven.plugins</groupId>
                 <artifactId>clover-maven-plugin</artifactId>
                 <version>${clover.version}</version>
                 <configuration>
+<<<<<<< HEAD
                     <licenseLocation>${license.location}</licenseLocation>
                 </configuration>
             </plugin>
@@ -128,6 +134,8 @@
                         <arg>-Xlint:all</arg>
                         <arg>-Werror</arg>
                     </compilerArgs>
+=======
+>>>>>>> v2.7.x
                     <jdk>${jdkLevel}</jdk>
                     <licenseLocation>${clover.licenseLocation}</licenseLocation>
                     <generateXml>true</generateXml>
