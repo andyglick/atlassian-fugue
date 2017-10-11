@@ -7,6 +7,12 @@ This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 ### fixed
 - typo in Either#fold javadoc
 
+## [2.7.0] - [2017-10-11]
+### Changed
+- minimum jdk version to 1.7 to support forward compatibility with gauva v22+
+- Now throws IllegalStateException instead of UnsupportedOperationException from emptyiterable.iterator and none.iterator. This is a consequence
+  of swapping out guava's empty iterator for collections.emptyiterator. This change is _not_ present in fugue v3+.
+
 ## [4.5.0] - [2017-04-09]
 ### Added
 - Added toStream to Option and Either types that will return a java.util.stream.Stream object of either a single element Stream or empty Stream
