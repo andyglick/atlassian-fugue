@@ -66,7 +66,9 @@ To enable this syntax you need to add the following to your scope:
 
 ## Android
 
-Please use 2.x releases for projects requiring JDK 1.6. The latest release 2.x release is v2.6.1.
+The latest release that supports JDK 1.6 is v2.6.1.
+The latest release that supports JDK 1.7 is v2.7.0. This is forward compatibile with guava for 
+andriod v22+ which requires 1.7.
 
 ## Migrating from Fugue v2.x to v3.x
 
