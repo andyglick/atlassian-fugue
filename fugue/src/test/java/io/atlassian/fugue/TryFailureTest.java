@@ -54,8 +54,24 @@ public class TryFailureTest {
     assertThat(t.recover(x -> 0), is(Checked.of(() -> 0)));
   }
 
+  @Test public void recoverMatchingException() throws Exception {
+    assertThat(t.recover(TestException.class, x -> 0), is(t.recover(x -> 0)));
+  }
+
+  @Test public void recoverMismatchingException() throws Exception {
+    assertThat(t.recover(IllegalStateException.class, x -> 0), is(t));
+  }
+
   @Test public void recoverWith() throws Exception {
     assertThat(t.recoverWith(x -> Checked.of(() -> 0)), is(Checked.of(() -> 0)));
+  }
+
+  @Test public void recoverWithMatchingException() throws Exception {
+    assertThat(t.recoverWith(TestException.class, x -> Checked.of(() -> 0)), is(t.recoverWith(x -> Checked.of(() -> 0))));
+  }
+
+  @Test public void recoverWithMismatchingException() throws Exception {
+    assertThat(t.recoverWith(IllegalStateException.class, x -> Checked.of(() -> 0)), is(t));
   }
 
   @Test public void recoverWithPassedThrowingFunctionThrows() throws Exception {
