@@ -64,8 +64,16 @@ public class TrySuccessTest {
     assertThat(t.recover(e -> 1), is(t));
   }
 
+  @Test public void recoverExceptionType() throws Exception {
+    assertThat(t.recover(Exception.class, e -> 1), is(t));
+  }
+
   @Test public void recoverWith() throws Exception {
     assertThat(t.recoverWith(e -> Checked.of(() -> 1)), is(t));
+  }
+
+  @Test public void recoverWithExceptionType() throws Exception {
+    assertThat(t.recoverWith(Exception.class, e -> Checked.of(() -> 1)), is(t));
   }
 
   @Test public void getOrElse() throws Exception {
