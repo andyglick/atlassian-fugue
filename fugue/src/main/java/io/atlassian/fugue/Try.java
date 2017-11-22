@@ -134,7 +134,7 @@ public abstract class Try<A> {
    * @param f             the function to apply
    * @param <X>           exception type
    * @return `f` applied to the `Failure`, otherwise returns this if this is a
-   * `Success`.
+   * `Success` or the exception does not match the exception type.
    */
   public abstract <X extends Exception> Try<A> recover(Class<X> exceptionType, Function<? super X, A> f);
 
@@ -144,7 +144,7 @@ public abstract class Try<A> {
    *
    * @param f the function to bind.
    * @return A new Try value after binding with the function applied if this is
-   * a Success, otherwise returns this if this is a `Failure`.
+   * a `Failure`, otherwise returns this if this is a `Success`.
    */
   public abstract Try<A> recoverWith(Function<? super Exception, Try<A>> f);
 
@@ -156,7 +156,8 @@ public abstract class Try<A> {
    * @param f             the function to apply
    * @param <X>           exception type
    * @return A new Try value after binding with the function applied if this is
-   * a Success, otherwise returns this if this is a `Failure`.
+   * a `Failure`, otherwise returns this if this is a `Success` or the exception
+   * does not match the exception type.
    */
   public abstract <X extends Exception> Try<A> recoverWith(Class<X> exceptionType, Function<? super X, Try<A>> f);
 
