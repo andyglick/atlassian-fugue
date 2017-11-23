@@ -9,6 +9,7 @@ This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 - slf4j version bump 1.6.0 to 1.7.25
 - jsr305 version bump 3.0.0 to 3.0.2
 - clover version bump 4.1.1 to 4.1.2
+- support for partial recover for Try via Try#recover(Class, Function) and Try#recoverWith(Class, Function)
 
 ## [2.7.0] - [2017-10-11]
 ### Changed
