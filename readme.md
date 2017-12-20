@@ -131,3 +131,5 @@ issue and a member of the team will renew it.*
 better to separate the builds for coverage verification and install/deploy.
 
 For more details read the [Clover documentation](https://confluence.atlassian.com/display/CLOVER/Basic+usage).
+
+Maven releases are changing. Publishing to maven central will require manual intervention go/buildeng
