@@ -16,6 +16,7 @@
 package io.atlassian.fugue;
 
 import java.io.Serializable;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -115,6 +116,23 @@ public final class Pair<A, B> implements Serializable {
    */
   public static <A, B> Iterable<Pair<A, B>> zip(final Iterable<A> as, final Iterable<B> bs) {
     return Iterables.zip(as, bs);
+  }
+
+  /**
+   * Zips the two given optionals into an optional of a pair.
+   *
+   * @param oA the first optional
+   * @param oB the second optional
+   * @param <A> the first type
+   * @param <B> the second type
+   * @return empty if either or both optionals are empty
+   * @since 4.6.0
+   */
+  @SuppressWarnings("OptionalUsedAsFieldOrParameterType") public static <A, B> Optional<?> zip(final Optional<A> oA, final Optional<B> oB) {
+    if (oA.isPresent() && oB.isPresent()) {
+      return Optional.of(pair(oA.get(), oB.get()));
+    }
+    return Optional.empty();
   }
 
   //
