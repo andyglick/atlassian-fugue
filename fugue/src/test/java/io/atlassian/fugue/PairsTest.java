@@ -53,7 +53,7 @@ public class PairsTest {
 
   @SuppressWarnings("OptionalUsedAsFieldOrParameterType") private static <A, B> void assertZip(final Optional<A> o1, final Optional<B> o2,
     final Optional<Pair<A, B>> expected) {
-    final Optional<?> zip = zip(o1, o2);
+    final Optional<Pair<A, B>> zip = zip(o1, o2);
     assertThat(zip, is(expected));
   }
 

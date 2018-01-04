@@ -3,7 +3,9 @@ All notable changes to this project will be documented in this file.
 
 This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 
-## [4.5.2] - [unreleased]
+## [4.6.0] - [unreleased]
+### Added
+- added `Pair#zip(Optional, Optional)`
 
 ## [4.5.1] - [2017-12-8]
 ### Changed

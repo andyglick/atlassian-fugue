@@ -128,7 +128,7 @@ public final class Pair<A, B> implements Serializable {
    * @return empty if either or both optionals are empty
    * @since 4.6.0
    */
-  @SuppressWarnings("OptionalUsedAsFieldOrParameterType") public static <A, B> Optional<?> zip(final Optional<A> oA, final Optional<B> oB) {
+  @SuppressWarnings("OptionalUsedAsFieldOrParameterType") public static <A, B> Optional<Pair<A, B>> zip(final Optional<A> oA, final Optional<B> oB) {
     if (oA.isPresent() && oB.isPresent()) {
       return Optional.of(pair(oA.get(), oB.get()));
     }
