@@ -6,6 +6,7 @@ package io.atlassian.fugue;
  *
  * @since 4.4.0
  */
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class Checked {
   // do not ctor
   private Checked() {}
@@ -17,10 +18,11 @@ public class Checked {
    * @param <B> the type of the result of the function
    * @param <E> The type of exception potentially thrown
    */
+  @SuppressWarnings("unused")
   @FunctionalInterface public interface Function<A, B, E extends Exception> {
     B apply(A t) throws E;
 
-    default public java.util.function.Function<A, Try<B>> lift() {
+    default java.util.function.Function<A, Try<B>> lift() {
       return Checked.lift(this);
     }
   }
@@ -31,10 +33,11 @@ public class Checked {
    * @param <A> the type of the result of the supplier
    * @param <E> The type of exception potentially thrown
    */
+  @SuppressWarnings("unused")
   @FunctionalInterface public interface Supplier<A, E extends Exception> {
     A get() throws E;
 
-    default public Try<A> attempt() {
+    default Try<A> attempt() {
       return of(this);
     }
   }
@@ -55,6 +58,11 @@ public class Checked {
     return a -> Checked.of(() -> f.apply(a));
   }
 
+  public static <A, B, E extends Exception> java.util.function.Function<A, Try<B>> delayedLift(
+          Checked.Function<A, B, E> f) {
+    return a -> Checked.delayed(() -> f.apply(a));
+  }
+
   /**
    * Create a new Try representing the result of a potentially exception
    * throwing operation. If the provided supplier throws an exception this will
@@ -73,5 +81,9 @@ public class Checked {
     } catch (final Exception e) {
       return Try.failure(e);
     }
+  }
+
+  public static <A, E extends Exception> Try<A> delayed(Checked.Supplier<A, E> s) {
+    return Try.delayed(() -> of(s));
   }
 }

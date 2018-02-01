@@ -4,10 +4,11 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static io.atlassian.fugue.Functions.identity;
 import static java.util.stream.Collectors.toList;
@@ -80,6 +81,89 @@ public class TryTest {
       throw new NoSuchElementException();
     }, identity());
     assertThat(vals, is(IntStream.range(0, 10).boxed().collect(toList())));
+  }
+
+  @Test public void delayedSequenceEvaluatesFirstFailure() {
+    AtomicInteger called = new AtomicInteger(0);
+    Try<String> failed1 = Checked.delayed(() -> {
+      throw new RuntimeException("FIRST " + called.addAndGet(1));
+    });
+    Try<String> failed2 = Checked.delayed(() -> {
+      throw new RuntimeException("SECOND " + called.addAndGet(1));
+    });
+    Try<String> failed3 = Checked.delayed(() -> {
+      throw new RuntimeException("THIRD " + called.addAndGet(1));
+    });
+
+    Try<Iterable<String>> result = Try.sequence(Arrays.asList(failed1, failed2, failed3));
+
+    assertThat(result.isFailure(), is(true));
+
+    final Exception e = result.fold(identity(), x -> {
+      throw new NoSuchElementException();
+    });
+    assertThat(e, instanceOf(RuntimeException.class));
+    assertThat(e.getMessage(), is("FIRST 1"));
+
+    assertThat(called.get(), is(1));
+  }
+
+  @Test public void sequenceCollectReturnsFirstFailure() {
+    Try<String> failed1 = Checked.of(() -> {
+      throw new RuntimeException("FIRST");
+    });
+    Try<String> failed2 = Checked.of(() -> {
+      throw new RuntimeException("SECOND");
+    });
+    Try<String> failed3 = Checked.of(() -> {
+      throw new RuntimeException("THIRD");
+    });
+
+    Try<Iterable<String>> result = Stream.of(failed1, failed2, failed3).collect(Try.sequenceCollector());
+
+    assertThat(result.isFailure(), is(true));
+
+    final Exception e = result.fold(identity(), x -> {
+      throw new NoSuchElementException();
+    });
+    assertThat(e, instanceOf(RuntimeException.class));
+    assertThat(e.getMessage(), is("FIRST"));
+  }
+
+  @Test public void sequenceCollectReturnsValuesFromAllSuccesses() {
+    Try<Iterable<Integer>> result = IntStream.range(0, 10).mapToObj(i -> Checked.of(() -> i))
+            .collect(Try.sequenceCollector());
+
+    assertThat(result.isSuccess(), is(true));
+    Iterable<Integer> vals = result.fold(f -> {
+      throw new NoSuchElementException();
+    }, identity());
+    assertThat(vals, is(IntStream.range(0, 10).boxed().collect(toList())));
+  }
+
+  @Test public void delayedSequenceCollectEvaluatesFirstFailure() {
+    AtomicInteger called = new AtomicInteger(0);
+    Try<String> failed1 = Checked.delayed(() -> {
+      throw new RuntimeException("FIRST " + called.addAndGet(1));
+    });
+    Try<String> failed2 = Checked.delayed(() -> {
+      throw new RuntimeException("SECOND " + called.addAndGet(1));
+    });
+    Try<String> failed3 = Checked.delayed(() -> {
+      throw new RuntimeException("THIRD " + called.addAndGet(1));
+    });
+
+    Try<Iterable<String>> result = Stream.of(failed1, failed2, failed3).collect(Try.sequenceCollector());
+
+    assertThat(result.isFailure(), is(true));
+
+    final Exception e = result.fold(identity(), x -> {
+      throw new NoSuchElementException();
+    });
+    assertThat(e, instanceOf(RuntimeException.class));
+    assertThat(e.getMessage(), is("FIRST 1"));
+
+    assertThat(called.get(), is(1));
   }
 
   @Test public void flattenNestedSuccess() {

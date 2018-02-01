@@ -1,10 +1,17 @@
 package io.atlassian.fugue;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collector;
 
+import static io.atlassian.fugue.Suppliers.memoize;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;
@@ -23,6 +30,7 @@ import static java.util.function.Function.identity;
  *
  * @since 4.4.0
  */
+@SuppressWarnings("WeakerAccess")
 public abstract class Try<A> {
   /**
    * Creates a new failure
@@ -44,6 +52,10 @@ public abstract class Try<A> {
    */
   public static <A> Try<A> successful(final A value) {
     return new Success<>(value);
+  }
+
+  public static <A> Try<A> delayed(final Supplier<Try<A>> supplier) {
+    return new Delayed<>(supplier);
   }
 
   /**
@@ -68,6 +80,83 @@ public abstract class Try<A> {
       }, identity()));
     }
     return new Success<>(unmodifiableList(ts));
+  }
+
+  public static <A> SequenceCollector<A> sequenceCollector() {
+    return new SequenceCollector<>();
+  }
+
+  public static class SequenceCollector<A> implements Collector<Try<A>, SequenceCollector.ResultContainer<A>, Try<Iterable<A>>> {
+
+    static class ResultContainer<A> {
+      private volatile Try<List<A>> result;
+
+      private ResultContainer() {
+        this(new ArrayList<>());
+      }
+
+      private ResultContainer(List<A> mutableList) {
+        this.result = Try.successful(mutableList);
+      }
+
+      private ResultContainer(Try<List<A>> ts) {
+        this.result = ts;
+      }
+
+      private void add(Try<A> t) {
+        this.result = result.flatMap(as -> {
+          if (t.isFailure()) {
+            return Try.failure(t.fold(identity(), a -> {
+              throw new NoSuchElementException();
+            }));
+          }
+          as.add(t.fold(e -> {
+            throw new NoSuchElementException();
+          }, identity()));
+          return Try.successful(as);
+        });
+      }
+
+      private ResultContainer<A> append(ResultContainer<A> other) {
+        return new ResultContainer<>(this.result.flatMap(as1 -> other.result.flatMap(as2 -> {
+          final List<A> combined = new ArrayList<>(as1);
+          combined.addAll(as2);
+          return Try.successful(combined);
+        })));
+      }
+
+      private Try<Iterable<A>> get() {
+        return this.result.map(as -> {
+          final ArrayList<A> copy = new ArrayList<>(as);
+          return Collections.unmodifiableList(copy);
+        });
+      }
+    }
+
+    @Override
+    public Supplier<ResultContainer<A>> supplier() {
+      return ResultContainer::new;
+    }
+
+    @Override
+    public BiConsumer<ResultContainer<A>, Try<A>> accumulator() {
+      return ResultContainer::add;
+    }
+
+    @Override
+    public BinaryOperator<ResultContainer<A>> combiner() {
+      return ResultContainer::append;
+    }
+
+    @Override
+    public Function<ResultContainer<A>, Try<Iterable<A>>> finisher() {
+      return ResultContainer::get;
+    }
+
+    @Override
+    public Set<Characteristics> characteristics() {
+      return Collections.emptySet();
+    }
   }
 
   /**
@@ -344,6 +433,79 @@ public abstract class Try<A> {
 
     @Override public int hashCode() {
       return value.hashCode();
+    }
+  }
+
+  private static final class Delayed<A> extends Try<A> {
+
+    private final Supplier<Try<A>> supplier;
+
+    Delayed(final Supplier<Try<A>> delayed) {
+      this.supplier = memoize(delayed);
+    }
+
+    private Try<A> eval() {
+      return this.supplier.get();
+    }
+
+    @Override
+    public boolean isFailure() {
+      return eval().isFailure();
+    }
+
+    @Override
+    public boolean isSuccess() {
+      return eval().isSuccess();
+    }
+
+    @Override
+    public <B> Try<B> flatMap(Function<? super A, Try<B>> f) {
+      return Try.delayed(() -> eval().flatMap(f));
+    }
+
+    @Override
+    public <B> Try<B> map(Function<? super A, ? extends B> f) {
+      return Try.delayed(() -> eval().map(f));
+    }
+
+    @Override
+    public Try<A> recover(Function<? super Exception, A> f) {
+      return Try.delayed(() -> eval().recover(f));
+    }
+
+    @Override
+    public <X extends Exception> Try<A> recover(Class<X> exceptionType, Function<? super X, A> f) {
+      return Try.delayed(() -> eval().recover(exceptionType, f));
+    }
+
+    @Override
+    public Try<A> recoverWith(Function<? super Exception, Try<A>> f) {
+      return Try.delayed(() -> eval().recoverWith(f));
+    }
+
+    @Override
+    public <X extends Exception> Try<A> recoverWith(Class<X> exceptionType, Function<? super X, Try<A>> f) {
+      return Try.delayed(() -> eval().recoverWith(exceptionType, f));
+    }
+
+    @Override
+    public A getOrElse(Supplier<A> s) {
+      return eval().getOrElse(s);
+    }
+
+    @Override
+    public <B> B fold(Function<? super Exception, B> failureF, Function<A, B> successF) {
+      return eval().fold(failureF, successF);
+    }
+
+    @Override
+    public Either<Exception, A> toEither() {
+      return eval().toEither();
+    }
+
+    @Override
+    public Option<A> toOption() {
+      return eval().toOption();
     }
   }
 }

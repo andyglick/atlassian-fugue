@@ -96,7 +96,7 @@ public class TryFailureTest {
   @Test public void foldPassedThrowingExceptionsThrows() throws Exception {
     thrown.expect(TestException.class);
 
-    String s = t.fold(fThrows, x -> "x");
+    t.fold(fThrows, x -> "x");
   }
 
   @Test public void toEither() throws Exception {
