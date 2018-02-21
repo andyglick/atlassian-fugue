@@ -55,7 +55,7 @@ public abstract class Try<A> {
   }
 
   public static <A> Try<A> delayed(final Supplier<Try<A>> supplier) {
-    return new Delayed<>(supplier);
+    return Delayed.fromSupplier(supplier);
   }
 
   /**
@@ -438,14 +438,19 @@ public abstract class Try<A> {
 
   private static final class Delayed<A> extends Try<A> {
 
-    private final Supplier<Try<A>> supplier;
+    private final Function<Unit, Try<A>> run;
 
-    Delayed(final Supplier<Try<A>> delayed) {
-      this.supplier = memoize(delayed);
+    static <A> Delayed<A> fromSupplier(final Supplier<Try<A>> delayed) {
+      Supplier<Try<A>> memorized = memoize(delayed);
+      return new Delayed<>(unit -> memorized.get());
+    }
+
+    private Delayed(final Function<Unit, Try<A>> run) {
+      this.run = run;
     }
 
     private Try<A> eval() {
-      return this.supplier.get();
+      return this.run.apply(Unit.VALUE);
     }
 
     @Override
@@ -458,34 +463,38 @@ public abstract class Try<A> {
       return eval().isSuccess();
     }
 
+    private <B> Try<B> composeDelayed(Function<Try<A>, Try<B>> f) {
+      return new Delayed<>(f.compose(this.run));
+    }
+
     @Override
     public <B> Try<B> flatMap(Function<? super A, Try<B>> f) {
-      return Try.delayed(() -> eval().flatMap(f));
+      return composeDelayed(t -> t.flatMap(f));
     }
 
     @Override
     public <B> Try<B> map(Function<? super A, ? extends B> f) {
-      return Try.delayed(() -> eval().map(f));
+      return composeDelayed(t -> t.map(f));
     }
 
     @Override
     public Try<A> recover(Function<? super Exception, A> f) {
-      return Try.delayed(() -> eval().recover(f));
+      return composeDelayed(t -> t.recover(f));
     }
 
     @Override
     public <X extends Exception> Try<A> recover(Class<X> exceptionType, Function<? super X, A> f) {
-      return Try.delayed(() -> eval().recover(exceptionType, f));
+      return composeDelayed(t -> t.recover(exceptionType, f));
     }
 
     @Override
     public Try<A> recoverWith(Function<? super Exception, Try<A>> f) {
-      return Try.delayed(() -> eval().recoverWith(f));
+      return composeDelayed(t -> t.recoverWith(f));
     }
 
     @Override
     public <X extends Exception> Try<A> recoverWith(Class<X> exceptionType, Function<? super X, Try<A>> f) {
-      return Try.delayed(() -> eval().recoverWith(exceptionType, f));
+      return composeDelayed(t -> t.recoverWith(exceptionType, f));
     }
 
     @Override
