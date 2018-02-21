@@ -89,10 +89,10 @@ public class TryTest {
       throw new RuntimeException("FIRST " + called.addAndGet(1));
     });
     Try<String> failed2 = Checked.delayed(() -> {
-      throw new RuntimeException("SECOND " + called.addAndGet(1));
+      throw new RuntimeException("SECOND " + called.addAndGet(10));
     });
     Try<String> failed3 = Checked.delayed(() -> {
-      throw new RuntimeException("THIRD " + called.addAndGet(1));
+      throw new RuntimeException("THIRD " + called.addAndGet(100));
     });
 
     Try<Iterable<String>> result = Try.sequence(Arrays.asList(failed1, failed2, failed3));
