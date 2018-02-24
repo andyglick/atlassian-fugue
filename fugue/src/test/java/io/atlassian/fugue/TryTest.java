@@ -4,14 +4,16 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
 import static io.atlassian.fugue.Functions.identity;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -80,6 +82,18 @@ public class TryTest {
       throw new NoSuchElementException();
     }, identity());
     assertThat(vals, is(IntStream.range(0, 10).boxed().collect(toList())));
+  }
+
+  @Test public void sequenceReturnsValuesFromAllSuccessesWithCustomCollector() {
+    Try<Set<Integer>> result = Try.sequence(IntStream.range(0, 10).map(i -> i % 4)
+            .mapToObj(i -> Checked.of(() -> i))
+            .collect(toList()), toSet());
+
+    assertThat(result.isSuccess(), is(true));
+    Set<Integer> vals = result.fold(f -> {
+      throw new NoSuchElementException();
+    }, identity());
+    assertThat(vals, contains(0, 1, 2, 3));
   }
 
   @Test public void flattenNestedSuccess() {
