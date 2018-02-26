@@ -127,12 +127,13 @@ public abstract class Try<A> {
   public abstract Try<A> recover(Function<? super Exception, A> f);
 
   /**
-   * Applies the given function `f` if this is a `Failure` with certain exception type otherwise leaves this
-   * unchanged. This is like map for exceptions types.
+   * Applies the given function `f` if this is a `Failure` with certain
+   * exception type otherwise leaves this unchanged. This is like map for
+   * exceptions types.
    *
    * @param exceptionType exception class
-   * @param f             the function to apply
-   * @param <X>           exception type
+   * @param f the function to apply
+   * @param <X> exception type
    * @return `f` applied to the `Failure`, otherwise returns this if this is a
    * `Success` or the exception does not match the exception type.
    */
@@ -149,12 +150,12 @@ public abstract class Try<A> {
   public abstract Try<A> recoverWith(Function<? super Exception, Try<A>> f);
 
   /**
-   * Binds the given function across certain exception type if it is one, otherwise
-   * this unchanged. This is like flatmap for exceptions types.
+   * Binds the given function across certain exception type if it is one,
+   * otherwise this unchanged. This is like flatmap for exceptions types.
    *
    * @param exceptionType exception class
-   * @param f             the function to apply
-   * @param <X>           exception type
+   * @param f the function to apply
+   * @param <X> exception type
    * @return A new Try value after binding with the function applied if this is
    * a `Failure`, otherwise returns this if this is a `Success` or the exception
    * does not match the exception type.
@@ -227,8 +228,7 @@ public abstract class Try<A> {
       return Checked.of(() -> f.apply(e));
     }
 
-    @SuppressWarnings("unchecked")
-    @Override public <X extends Exception> Try<A> recover(final Class<X> exceptionType, final Function<? super X, A> f) {
+    @SuppressWarnings("unchecked") @Override public <X extends Exception> Try<A> recover(final Class<X> exceptionType, final Function<? super X, A> f) {
       return exceptionType.isAssignableFrom(e.getClass()) ? Checked.of(() -> f.apply((X) e)) : this;
     }
 
@@ -236,8 +236,7 @@ public abstract class Try<A> {
       return f.apply(e);
     }
 
-    @SuppressWarnings("unchecked")
-    @Override public <X extends Exception> Try<A> recoverWith(Class<X> exceptionType, Function<? super X, Try<A>> f) {
+    @SuppressWarnings("unchecked") @Override public <X extends Exception> Try<A> recoverWith(Class<X> exceptionType, Function<? super X, Try<A>> f) {
       return exceptionType.isAssignableFrom(e.getClass()) ? f.apply((X) e) : this;
     }
 
