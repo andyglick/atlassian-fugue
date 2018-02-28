@@ -1,11 +1,12 @@
 package io.atlassian.fugue;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
-import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;
 
@@ -55,19 +56,36 @@ public abstract class Try<A> {
    * @return a success wrapping all of the values if all of the arguments were a
    * success, otherwise this returns the first failure
    */
-  public static <A> Try<Iterable<A>> sequence(Iterable<Try<A>> trys) {
-    final ArrayList<A> ts = new ArrayList<>();
-    for (final Try<A> t : trys) {
+  public static <A> Try<Iterable<A>> sequence(final Iterable<Try<A>> trys) {
+    return sequence(trys, Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
+  }
+
+  /**
+   * Returns a success wrapping all of the values if all of the arguments were a
+   * success, otherwise this returns the first failure
+   *
+   * @param trys an iterable of try values
+   * @param collector result collector
+   * @param <T> The success type
+   * @param <A> The intermediate accumulator type
+   * @param <R> The result type
+   * @return a success wrapping all of the values if all of the arguments were a
+   * success, otherwise this returns the first failure
+   * @since 4.6.0
+   */
+  public static <T, A, R> Try<R> sequence(final Iterable<Try<T>> trys, final Collector<T, A, R> collector) {
+    A accumulator = collector.supplier().get();
+    for (final Try<T> t : trys) {
       if (t.isFailure()) {
         return new Failure<>(t.fold(identity(), x -> {
           throw new NoSuchElementException();
         }));
       }
-      ts.add(t.fold(f -> {
+      collector.accumulator().accept(accumulator, t.fold(f -> {
         throw new NoSuchElementException();
       }, identity()));
     }
-    return new Success<>(unmodifiableList(ts));
+    return new Success<>(collector.finisher().apply(accumulator));
   }
 
   /**
