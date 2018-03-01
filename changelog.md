@@ -6,6 +6,9 @@ This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 ## [4.6.0] - [unreleased]
 ### Added
 - added `Pair#zip(Optional, Optional)`
+- added `Eithers#sequenceRight(Iterable, Collector)`
+- added `Eithers#sequenceLeft(Iterable, Collector)`
+- added `Try#sequence(Iterable, Collector)`
 
 ## [4.5.1] - [2017-12-8]
 ### Changed

@@ -19,6 +19,7 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static io.atlassian.fugue.Either.left;
 import static io.atlassian.fugue.Either.right;
@@ -40,6 +41,11 @@ import static org.junit.Assert.assertThat;
     assertThat(sequenceRight(eithers), is(Build.<String, Iterable<Integer>> l("2")));
   }
 
+  @Test public void sequenceRightsCustomCollector() {
+    final List<Either<Object, Integer>> eithers = Arrays.asList(right(1), right(2), right(2), right(3));
+    assertThat(sequenceRight(eithers, Collectors.toSet()).right().get(), contains(1, 2, 3));
+  }
+
   @Test public void sequenceLefts() {
     final List<Either<Integer, Object>> eithers = Arrays.asList(left(1), left(2), left(3));
     assertThat(sequenceLeft(eithers).left().get(), contains(1, 2, 3));
@@ -49,6 +55,11 @@ import static org.junit.Assert.assertThat;
     final Iterable<Either<String, Integer>> eithers = build(Build.<String, Integer> l("1"), Build.<String, Integer> r(2),
       Build.<String, Integer> l("3"));
     assertThat(sequenceLeft(eithers), is(Build.<Iterable<String>, Integer> r(2)));
+  }
+
+  @Test public void sequenceLeftCustomCollector() {
+    final List<Either<Integer, Object>> eithers = Arrays.asList(left(1), left(2), left(2), left(3));
+    assertThat(sequenceLeft(eithers, Collectors.toSet()).left().get(), contains(1, 2, 3));
   }
 
   static class Build {

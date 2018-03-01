@@ -20,6 +20,8 @@ import java.util.Collections;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import static io.atlassian.fugue.Iterables.collect;
 import static io.atlassian.fugue.Iterables.map;
@@ -320,14 +322,31 @@ public class Eithers {
    * @return either the iterable of right values, or the first left encountered.
    */
   public static <L, R> Either<L, Iterable<R>> sequenceRight(final Iterable<Either<L, R>> eithers) {
-    final ArrayList<R> rs = new ArrayList<>();
+    return sequenceRight(eithers, Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
+  }
+
+  /**
+   * Collect the right values if there are only rights, otherwise return the
+   * first left encountered.
+   *
+   * @param <L> the LHS type
+   * @param <R> the RHS type
+   * @param <A> The intermediate accumulator type
+   * @param <C> The result type
+   * @param eithers an Iterable of either values
+   * @param collector result collector
+   * @since 4.6.0
+   * @return either the iterable of right values, or the first left encountered.
+   */
+  public static <L, R, A, C> Either<L, C> sequenceRight(final Iterable<Either<L, R>> eithers, final Collector<R, A, C> collector) {
+    final A accumulator = collector.supplier().get();
     for (final Either<L, R> e : eithers) {
       if (e.isLeft()) {
-        return e.left().<Iterable<R>> as();
+        return e.left().as();
       }
-      rs.add(e.right().get());
+      collector.accumulator().accept(accumulator, e.right().get());
     }
-    return Either.right(Collections.unmodifiableList(rs));
+    return Either.right(collector.finisher().apply(accumulator));
   }
 
   /**
@@ -340,13 +359,30 @@ public class Eithers {
    * @return either the iterable of left values, or the first right encountered.
    */
   public static <L, R> Either<Iterable<L>, R> sequenceLeft(final Iterable<Either<L, R>> eithers) {
-    final ArrayList<L> ls = new ArrayList<>();
+    return sequenceLeft(eithers, Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
+  }
+
+  /**
+   * Collect the left values if there are only lefts, otherwise return the first
+   * right encountered.
+   *
+   * @param <L> the LHS type
+   * @param <R> the RHS type
+   * @param <A> The intermediate accumulator type
+   * @param <C> The result type
+   * @param eithers an Iterable of either values
+   * @param collector result collector
+   * @since 4.6.0
+   * @return either the iterable of left values, or the first right encountered.
+   */
+  public static <L, R, A, C> Either<C, R> sequenceLeft(final Iterable<Either<L, R>> eithers, final Collector<L, A, C> collector) {
+    final A accumulator = collector.supplier().get();
     for (final Either<L, R> e : eithers) {
       if (e.isRight()) {
-        return e.right().<Iterable<L>> as();
+        return e.right().as();
       }
-      ls.add(e.left().get());
+      collector.accumulator().accept(accumulator, e.left().get());
     }
-    return Either.left(Collections.unmodifiableList(ls));
+    return Either.left(collector.finisher().apply(accumulator));
   }
 }
