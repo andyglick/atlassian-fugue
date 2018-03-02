@@ -25,8 +25,7 @@ import static java.util.function.Function.identity;
  *
  * @since 4.4.0
  */
-@SuppressWarnings("WeakerAccess")
-public abstract class Try<A> {
+@SuppressWarnings("WeakerAccess") public abstract class Try<A> {
   /**
    * Creates a new failure
    *
@@ -50,8 +49,9 @@ public abstract class Try<A> {
   }
 
   /**
-   * Creates a delayed Try, which will return either a Failure or a Success when evaluated.
-   * The supplier is called only once, no matter how many times the returned delayed Try is evaluated.
+   * Creates a delayed Try, which will return either a Failure or a Success when
+   * evaluated. The supplier is called only once, no matter how many times the
+   * returned delayed Try is evaluated.
    *
    * @param supplier a supplier that returns a Try of A.
    * @param <A> the wrapped value type
@@ -395,13 +395,11 @@ public abstract class Try<A> {
       return this.run.apply(Unit.VALUE);
     }
 
-    @Override
-    public boolean isFailure() {
+    @Override public boolean isFailure() {
       return eval().isFailure();
     }
 
-    @Override
-    public boolean isSuccess() {
+    @Override public boolean isSuccess() {
       return eval().isSuccess();
     }
 
@@ -409,53 +407,43 @@ public abstract class Try<A> {
       return new Delayed<>(f.compose(this.run));
     }
 
-    @Override
-    public <B> Try<B> flatMap(Function<? super A, Try<B>> f) {
+    @Override public <B> Try<B> flatMap(Function<? super A, Try<B>> f) {
       return composeDelayed(t -> t.flatMap(f));
     }
 
-    @Override
-    public <B> Try<B> map(Function<? super A, ? extends B> f) {
+    @Override public <B> Try<B> map(Function<? super A, ? extends B> f) {
       return composeDelayed(t -> t.map(f));
     }
 
-    @Override
-    public Try<A> recover(Function<? super Exception, A> f) {
+    @Override public Try<A> recover(Function<? super Exception, A> f) {
       return composeDelayed(t -> t.recover(f));
     }
 
-    @Override
-    public <X extends Exception> Try<A> recover(Class<X> exceptionType, Function<? super X, A> f) {
+    @Override public <X extends Exception> Try<A> recover(Class<X> exceptionType, Function<? super X, A> f) {
       return composeDelayed(t -> t.recover(exceptionType, f));
     }
 
-    @Override
-    public Try<A> recoverWith(Function<? super Exception, Try<A>> f) {
+    @Override public Try<A> recoverWith(Function<? super Exception, Try<A>> f) {
       return composeDelayed(t -> t.recoverWith(f));
     }
 
-    @Override
-    public <X extends Exception> Try<A> recoverWith(Class<X> exceptionType, Function<? super X, Try<A>> f) {
+    @Override public <X extends Exception> Try<A> recoverWith(Class<X> exceptionType, Function<? super X, Try<A>> f) {
       return composeDelayed(t -> t.recoverWith(exceptionType, f));
     }
 
-    @Override
-    public A getOrElse(Supplier<A> s) {
+    @Override public A getOrElse(Supplier<A> s) {
       return eval().getOrElse(s);
     }
 
-    @Override
-    public <B> B fold(Function<? super Exception, B> failureF, Function<A, B> successF) {
+    @Override public <B> B fold(Function<? super Exception, B> failureF, Function<A, B> successF) {
       return eval().fold(failureF, successF);
     }
 
-    @Override
-    public Either<Exception, A> toEither() {
+    @Override public Either<Exception, A> toEither() {
       return eval().toEither();
     }
 
-    @Override
-    public Option<A> toOption() {
+    @Override public Option<A> toOption() {
       return eval().toOption();
     }
   }

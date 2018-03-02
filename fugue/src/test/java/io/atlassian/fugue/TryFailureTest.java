@@ -67,8 +67,7 @@ public class TryFailureTest {
   }
 
   @Test public void recoverWithMatchingException() throws Exception {
-    assertThat(t.recoverWith(TestException.class, x -> Checked.now(() -> 0)),
-            is(t.recoverWith(x -> Checked.now(() -> 0))));
+    assertThat(t.recoverWith(TestException.class, x -> Checked.now(() -> 0)), is(t.recoverWith(x -> Checked.now(() -> 0))));
   }
 
   @Test public void recoverWithMismatchingException() throws Exception {

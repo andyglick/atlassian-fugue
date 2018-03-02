@@ -111,8 +111,7 @@ public class TryTest {
   }
 
   @Test public void delayedSequenceReturnsValuesFromAllSuccesses() {
-    Try<Iterable<Integer>> result = Try.sequence(IntStream.range(0, 10).
-        mapToObj(i -> Checked.delay(() -> i))::iterator);
+    Try<Iterable<Integer>> result = Try.sequence(IntStream.range(0, 10).mapToObj(i -> Checked.delay(() -> i))::iterator);
 
     assertThat(result.isSuccess(), is(true));
     Iterable<Integer> vals = result.fold(f -> {
@@ -122,9 +121,7 @@ public class TryTest {
   }
 
   @Test public void sequenceReturnsValuesFromAllSuccessesWithCustomCollector() {
-    Try<Set<Integer>> result = Try.sequence(IntStream.range(0, 10).map(i -> i % 4)
-            .mapToObj(i -> Checked.now(() -> i))
-            .collect(toList()), toSet());
+    Try<Set<Integer>> result = Try.sequence(IntStream.range(0, 10).map(i -> i % 4).mapToObj(i -> Checked.now(() -> i)).collect(toList()), toSet());
 
     assertThat(result.isSuccess(), is(true));
     Set<Integer> vals = result.fold(f -> {
