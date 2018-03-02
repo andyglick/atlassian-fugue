@@ -23,7 +23,7 @@ public class TryFailureTest {
   }
 
   private static final String MESSAGE = "known exception message";
-  private final Try<Integer> t = Checked.of(() -> {
+  private final Try<Integer> t = Checked.now(() -> {
     throw new TestException(MESSAGE);
   });
   private final Function<Exception, String> fThrows = x -> {
@@ -51,7 +51,7 @@ public class TryFailureTest {
   }
 
   @Test public void recover() throws Exception {
-    assertThat(t.recover(x -> 0), is(Checked.of(() -> 0)));
+    assertThat(t.recover(x -> 0), is(Checked.now(() -> 0)));
   }
 
   @Test public void recoverMatchingException() throws Exception {
@@ -63,15 +63,16 @@ public class TryFailureTest {
   }
 
   @Test public void recoverWith() throws Exception {
-    assertThat(t.recoverWith(x -> Checked.of(() -> 0)), is(Checked.of(() -> 0)));
+    assertThat(t.recoverWith(x -> Checked.now(() -> 0)), is(Checked.now(() -> 0)));
   }
 
   @Test public void recoverWithMatchingException() throws Exception {
-    assertThat(t.recoverWith(TestException.class, x -> Checked.of(() -> 0)), is(t.recoverWith(x -> Checked.of(() -> 0))));
+    assertThat(t.recoverWith(TestException.class, x -> Checked.now(() -> 0)),
+            is(t.recoverWith(x -> Checked.now(() -> 0))));
   }
 
   @Test public void recoverWithMismatchingException() throws Exception {
-    assertThat(t.recoverWith(IllegalStateException.class, x -> Checked.of(() -> 0)), is(t));
+    assertThat(t.recoverWith(IllegalStateException.class, x -> Checked.now(() -> 0)), is(t));
   }
 
   @Test public void recoverWithPassedThrowingFunctionThrows() throws Exception {

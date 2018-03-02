@@ -14,13 +14,13 @@ public class TryDelayedTest {
   @Rule public ExpectedException thrown = ExpectedException.none();
 
   @Test public void success() {
-    Try<Integer> t = Checked.delayed(() -> 1);
+    Try<Integer> t = Checked.delay(() -> 1);
     assertThat(t.isSuccess(), is(true));
     assertThat(t.isFailure(), is(false));
   }
 
   @Test public void failure() {
-    Try<Integer> t = Checked.delayed(() -> {
+    Try<Integer> t = Checked.delay(() -> {
       throw new Exception("ex");
     });
     assertThat(t.isSuccess(), is(false));
@@ -29,7 +29,7 @@ public class TryDelayedTest {
 
   @Test public void onlyEvaluatedOnce() {
     AtomicInteger evaluated = new AtomicInteger(0);
-    Try<Integer> t = Checked.delayed(() -> evaluated.addAndGet(1));
+    Try<Integer> t = Checked.delay(() -> evaluated.addAndGet(1));
     t.isSuccess(); // evaluated at the first call
     t.isFailure(); // evaluation result is already cached.
     assertThat(evaluated.get(), is(1));
@@ -37,8 +37,8 @@ public class TryDelayedTest {
 
   @Test public void flatMapDoesNotEvaluate() {
     AtomicInteger evaluated = new AtomicInteger(0);
-    Try<Integer> a = Checked.delayed(() -> evaluated.addAndGet(1));
-    Try<Integer> b = a.flatMap(i -> Checked.of(() -> i * 10));
+    Try<Integer> a = Checked.delay(() -> evaluated.addAndGet(1));
+    Try<Integer> b = a.flatMap(i -> Checked.now(() -> i * 10));
     assertThat(evaluated.get(), is(0));
     assertThat(b.getOrElse(() -> -1), is(10));
     assertThat(evaluated.get(), is(1));
@@ -46,7 +46,7 @@ public class TryDelayedTest {
 
   @Test public void mapDoesNotEvaluate() {
     AtomicInteger evaluated = new AtomicInteger(0);
-    Try<Integer> a = Checked.delayed(() -> evaluated.addAndGet(1));
+    Try<Integer> a = Checked.delay(() -> evaluated.addAndGet(1));
     Try<Integer> b = a.map(i -> i * 10);
     assertThat(evaluated.get(), is(0));
     assertThat(b.getOrElse(() -> -1), is(10));
@@ -55,7 +55,7 @@ public class TryDelayedTest {
 
   @Test public void recoverDoesNotEvaluate() {
     AtomicInteger evaluated = new AtomicInteger(0);
-    Try<Integer> a = Checked.delayed(() -> {
+    Try<Integer> a = Checked.delay(() -> {
       evaluated.addAndGet(1);
       throw new Exception();
     });
@@ -67,7 +67,7 @@ public class TryDelayedTest {
 
   @Test public void recoverWithDoesNotEvaluate() {
     AtomicInteger evaluated = new AtomicInteger(0);
-    Try<Integer> a = Checked.delayed(() -> {
+    Try<Integer> a = Checked.delay(() -> {
       evaluated.addAndGet(1);
       throw new Exception();
     });

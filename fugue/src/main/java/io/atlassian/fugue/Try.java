@@ -1,12 +1,7 @@
 package io.atlassian.fugue;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
@@ -54,6 +49,14 @@ public abstract class Try<A> {
     return new Success<>(value);
   }
 
+  /**
+   * Creates a delayed Try, which will return either a Failure or a Success when evaluated.
+   * The supplier is called only once, no matter how many times the returned delayed Try is evaluated.
+   *
+   * @param supplier a supplier that returns a Try of A.
+   * @param <A> the wrapped value type
+   * @return a new Delayed Try wrapping the supplier.
+   */
   public static <A> Try<A> delayed(final Supplier<Try<A>> supplier) {
     return Delayed.fromSupplier(supplier);
   }
@@ -97,83 +100,6 @@ public abstract class Try<A> {
       }, identity()));
     }
     return new Success<>(collector.finisher().apply(accumulator));
-  }
-
-  public static <A> SequenceCollector<A> sequenceCollector() {
-    return new SequenceCollector<>();
-  }
-
-  public static class SequenceCollector<A> implements Collector<Try<A>, SequenceCollector.ResultContainer<A>, Try<Iterable<A>>> {
-
-    static class ResultContainer<A> {
-      private volatile Try<List<A>> result;
-
-      private ResultContainer() {
-        this(new ArrayList<>());
-      }
-
-      private ResultContainer(List<A> mutableList) {
-        this.result = Try.successful(mutableList);
-      }
-
-      private ResultContainer(Try<List<A>> ts) {
-        this.result = ts;
-      }
-
-      private void add(Try<A> t) {
-        this.result = result.flatMap(as -> {
-          if (t.isFailure()) {
-            return Try.failure(t.fold(identity(), a -> {
-              throw new NoSuchElementException();
-            }));
-          }
-          as.add(t.fold(e -> {
-            throw new NoSuchElementException();
-          }, identity()));
-          return Try.successful(as);
-        });
-      }
-
-      private ResultContainer<A> append(ResultContainer<A> other) {
-        return new ResultContainer<>(this.result.flatMap(as1 -> other.result.flatMap(as2 -> {
-          final List<A> combined = new ArrayList<>(as1);
-          combined.addAll(as2);
-          return Try.successful(combined);
-        })));
-      }
-
-      private Try<Iterable<A>> get() {
-        return this.result.map(as -> {
-          final ArrayList<A> copy = new ArrayList<>(as);
-          return Collections.unmodifiableList(copy);
-        });
-      }
-    }
-
-    @Override
-    public Supplier<ResultContainer<A>> supplier() {
-      return ResultContainer::new;
-    }
-
-    @Override
-    public BiConsumer<ResultContainer<A>, Try<A>> accumulator() {
-      return ResultContainer::add;
-    }
-
-    @Override
-    public BinaryOperator<ResultContainer<A>> combiner() {
-      return ResultContainer::append;
-    }
-
-    @Override
-    public Function<ResultContainer<A>, Try<Iterable<A>>> finisher() {
-      return ResultContainer::get;
-    }
-
-    @Override
-    public Set<Characteristics> characteristics() {
-      return Collections.emptySet();
-    }
   }
 
   /**
@@ -331,11 +257,11 @@ public abstract class Try<A> {
     }
 
     @Override public Try<A> recover(final Function<? super Exception, A> f) {
-      return Checked.of(() -> f.apply(e));
+      return Checked.now(() -> f.apply(e));
     }
 
     @SuppressWarnings("unchecked") @Override public <X extends Exception> Try<A> recover(final Class<X> exceptionType, final Function<? super X, A> f) {
-      return exceptionType.isAssignableFrom(e.getClass()) ? Checked.of(() -> f.apply((X) e)) : this;
+      return exceptionType.isAssignableFrom(e.getClass()) ? Checked.now(() -> f.apply((X) e)) : this;
     }
 
     @Override public Try<A> recoverWith(final Function<? super Exception, Try<A>> f) {
@@ -389,7 +315,7 @@ public abstract class Try<A> {
     }
 
     @Override public <B> Try<B> map(final Function<? super A, ? extends B> f) {
-      return Checked.of(() -> f.apply(value));
+      return Checked.now(() -> f.apply(value));
     }
 
     @Override public boolean isFailure() {

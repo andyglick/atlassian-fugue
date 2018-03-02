@@ -16,7 +16,7 @@ public class TrySuccessTest {
   @Rule public ExpectedException thrown = ExpectedException.none();
 
   private final Integer STARTING_VALUE = 0;
-  private final Try<Integer> t = Checked.of(() -> STARTING_VALUE);
+  private final Try<Integer> t = Checked.now(() -> STARTING_VALUE);
   private final Function<Integer, String> f = Object::toString;
   private final Function<String, Integer> g = Integer::valueOf;
   private final Checked.Function<Integer, String, Exception> fChecked = Object::toString;
@@ -47,9 +47,9 @@ public class TrySuccessTest {
   }
 
   @Test public void flatMap() throws Exception {
-    Try<String> t2 = t.flatMap(i -> Checked.of(() -> fChecked.apply(i)));
+    Try<String> t2 = t.flatMap(i -> Checked.now(() -> fChecked.apply(i)));
 
-    assertThat(t2, is(Checked.of(() -> "0")));
+    assertThat(t2, is(Checked.now(() -> "0")));
   }
 
   @Test public void flatMapThrowingFunctionThrows() {
@@ -67,11 +67,11 @@ public class TrySuccessTest {
   }
 
   @Test public void recoverWith() throws Exception {
-    assertThat(t.recoverWith(e -> Checked.of(() -> 1)), is(t));
+    assertThat(t.recoverWith(e -> Checked.now(() -> 1)), is(t));
   }
 
   @Test public void recoverWithExceptionType() throws Exception {
-    assertThat(t.recoverWith(Exception.class, e -> Checked.of(() -> 1)), is(t));
+    assertThat(t.recoverWith(Exception.class, e -> Checked.now(() -> 1)), is(t));
   }
 
   @Test public void getOrElse() throws Exception {
