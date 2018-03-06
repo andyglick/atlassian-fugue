@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import static io.atlassian.fugue.Suppliers.memoize;
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;
 
@@ -24,7 +25,7 @@ import static java.util.function.Function.identity;
  *
  * @since 4.4.0
  */
-public abstract class Try<A> {
+@SuppressWarnings("WeakerAccess") public abstract class Try<A> {
   /**
    * Creates a new failure
    *
@@ -45,6 +46,19 @@ public abstract class Try<A> {
    */
   public static <A> Try<A> successful(final A value) {
     return new Success<>(value);
+  }
+
+  /**
+   * Creates a delayed Try, which will return either a Failure or a Success when
+   * evaluated. The supplier is called only once, no matter how many times the
+   * returned delayed Try is evaluated.
+   *
+   * @param supplier a supplier that returns a Try of A.
+   * @param <A> the wrapped value type
+   * @return a new Delayed Try wrapping the supplier.
+   */
+  public static <A> Try<A> delayed(final Supplier<Try<A>> supplier) {
+    return Delayed.fromSupplier(supplier);
   }
 
   /**
@@ -243,11 +257,11 @@ public abstract class Try<A> {
     }
 
     @Override public Try<A> recover(final Function<? super Exception, A> f) {
-      return Checked.of(() -> f.apply(e));
+      return Checked.now(() -> f.apply(e));
     }
 
     @SuppressWarnings("unchecked") @Override public <X extends Exception> Try<A> recover(final Class<X> exceptionType, final Function<? super X, A> f) {
-      return exceptionType.isAssignableFrom(e.getClass()) ? Checked.of(() -> f.apply((X) e)) : this;
+      return exceptionType.isAssignableFrom(e.getClass()) ? Checked.now(() -> f.apply((X) e)) : this;
     }
 
     @Override public Try<A> recoverWith(final Function<? super Exception, Try<A>> f) {
@@ -301,7 +315,7 @@ public abstract class Try<A> {
     }
 
     @Override public <B> Try<B> map(final Function<? super A, ? extends B> f) {
-      return Checked.of(() -> f.apply(value));
+      return Checked.now(() -> f.apply(value));
     }
 
     @Override public boolean isFailure() {
@@ -361,6 +375,76 @@ public abstract class Try<A> {
 
     @Override public int hashCode() {
       return value.hashCode();
+    }
+  }
+
+  private static final class Delayed<A> extends Try<A> {
+
+    private final Function<Unit, Try<A>> run;
+
+    static <A> Delayed<A> fromSupplier(final Supplier<Try<A>> delayed) {
+      Supplier<Try<A>> memorized = memoize(delayed);
+      return new Delayed<>(unit -> memorized.get());
+    }
+
+    private Delayed(final Function<Unit, Try<A>> run) {
+      this.run = run;
+    }
+
+    private Try<A> eval() {
+      return this.run.apply(Unit.VALUE);
+    }
+
+    @Override public boolean isFailure() {
+      return eval().isFailure();
+    }
+
+    @Override public boolean isSuccess() {
+      return eval().isSuccess();
+    }
+
+    private <B> Try<B> composeDelayed(Function<Try<A>, Try<B>> f) {
+      return new Delayed<>(f.compose(this.run));
+    }
+
+    @Override public <B> Try<B> flatMap(Function<? super A, Try<B>> f) {
+      return composeDelayed(t -> t.flatMap(f));
+    }
+
+    @Override public <B> Try<B> map(Function<? super A, ? extends B> f) {
+      return composeDelayed(t -> t.map(f));
+    }
+
+    @Override public Try<A> recover(Function<? super Exception, A> f) {
+      return composeDelayed(t -> t.recover(f));
+    }
+
+    @Override public <X extends Exception> Try<A> recover(Class<X> exceptionType, Function<? super X, A> f) {
+      return composeDelayed(t -> t.recover(exceptionType, f));
+    }
+
+    @Override public Try<A> recoverWith(Function<? super Exception, Try<A>> f) {
+      return composeDelayed(t -> t.recoverWith(f));
+    }
+
+    @Override public <X extends Exception> Try<A> recoverWith(Class<X> exceptionType, Function<? super X, Try<A>> f) {
+      return composeDelayed(t -> t.recoverWith(exceptionType, f));
+    }
+
+    @Override public A getOrElse(Supplier<A> s) {
+      return eval().getOrElse(s);
+    }
+
+    @Override public <B> B fold(Function<? super Exception, B> failureF, Function<A, B> successF) {
+      return eval().fold(failureF, successF);
+    }
+
+    @Override public Either<Exception, A> toEither() {
+      return eval().toEither();
+    }
+
+    @Override public Option<A> toOption() {
+      return eval().toOption();
     }
   }
 }

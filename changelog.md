@@ -9,6 +9,12 @@ This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 - added `Eithers#sequenceRight(Iterable, Collector)`
 - added `Eithers#sequenceLeft(Iterable, Collector)`
 - added `Try#sequence(Iterable, Collector)`
+- added `Checked#delay(Supplier)`, `Try#delayed(Supplier<Try>)` and `Try#Delayed`.
+  This delays the execution of a computation that may result in an exception or return a successfully computed value.
+  It works nicely with `Try#sequence(Iterable)` to bypass following computations if a previous computation has already resulted in an exception.
+  
+### Deprecated
+- `Checked#of(Supplier)` deprecated in favour of `Checked#now(Supplier)` to make it explicit that the evaluation is immediate. 
 
 ## [4.5.1] - [2017-12-8]
 ### Changed
