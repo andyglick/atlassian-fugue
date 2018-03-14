@@ -27,14 +27,14 @@ Add fugue as a dependency to your pom.xml:
         <dependency>
             <groupId>io.atlassian.fugue</groupId>
             <artifactId>fugue</artifactId>
-            <version>4.5.1</version>
+            <version>4.6.1</version>
         </dependency>
         ...
     </dependencies>
     
 For Gradle add fugue as a dependency to your `dependencies` section:
 
-    compile 'io.atlassian.fugue:fugue:4.5.1'
+    compile 'io.atlassian.fugue:fugue:4.6.1'
 
 ## Building fugue
 
