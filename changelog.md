@@ -3,7 +3,11 @@ All notable changes to this project will be documented in this file.
 
 This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 
-## [4.6.0] - [unreleased]
+## [4.6.2] - [unreleased]
+### Changed
+- changed Iterables#rangeTo(int,int) and Iterables#rangeTo(int,int,int) to properly handle max and min integers
+
+## [4.6.1] - [2018-03-12]
 ### Added
 - added `Pair#zip(Optional, Optional)`
 - added `Eithers#sequenceRight(Iterable, Collector)`
