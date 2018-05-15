@@ -490,6 +490,9 @@ public class Iterables {
       }
 
       @Override public Integer next() {
+        if (!hasNext()) {
+          throw new NoSuchElementException();
+        }
         try {
           return i;
         } finally {

@@ -6,6 +6,7 @@ This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 ## [4.6.2] - [unreleased]
 ### Changed
 - changed Iterables#rangeTo(int,int) and Iterables#rangeTo(int,int,int) to properly handle max and min integers
+- changed rangeTo().iterator().next() to throw NoSuchElementException when hasNext() returns false
 
 ## [4.6.1] - [2018-03-12]
 ### Added

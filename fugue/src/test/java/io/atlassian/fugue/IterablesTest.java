@@ -122,6 +122,12 @@ public class IterablesTest {
     assertThat(rangeTo(Integer.MIN_VALUE + 1, Integer.MIN_VALUE), is(contains(Integer.MIN_VALUE + 1, Integer.MIN_VALUE)));
   }
 
+  @Test(expected = NoSuchElementException.class) public void rangeToIterator() {
+    final Iterator<Integer> iterator = rangeTo(1, 1, 1).iterator();
+    iterator.next();
+    iterator.next();
+  }
+
   @Test public void rangeUntilStep() {
     assertThat(rangeUntil(1, 5, 2), is(contains(1, 3)));
   }
