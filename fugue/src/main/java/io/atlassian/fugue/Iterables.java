@@ -463,7 +463,7 @@ public class Iterables {
    * @param start from (inclusive), must be greater than zero and less than end
    * @param end to (inclusive)
    * @param step size to step – must not be zero, must be positive if end is
-   * greater than start, neagtive otherwise
+   * greater than start, negative otherwise
    * @return a sequence of {@link Integer integers}
    * @since 1.2
    */
@@ -483,16 +483,25 @@ public class Iterables {
 
     return () -> new Iterators.Unmodifiable<Integer>() {
       private int i = start;
+      private boolean reachedMinOrMax = false;
 
       @Override public boolean hasNext() {
-        return step > 0 ? i <= end : i >= end;
+        return (step > 0 ? i <= end : i >= end) && !reachedMinOrMax;
       }
 
       @Override public Integer next() {
+        if (!hasNext()) {
+          throw new NoSuchElementException();
+        }
         try {
           return i;
         } finally {
-          i += step;
+          int attempt = i + step;
+          // see Math#addExact(int,int)
+          if (((i ^ attempt) & (step ^ attempt)) < 0) {
+            reachedMinOrMax = true;
+          }
+          i = attempt;
         }
       }
     };
