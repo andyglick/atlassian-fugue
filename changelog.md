@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 
+## [4.6.3] - [unreleased]
+### Added
+- added `TryMatchers` to complement current set of hamcrest matchers
+
 ## [4.6.2] - [unreleased]
 ### Changed
 - changed Iterables#rangeTo(int,int) and Iterables#rangeTo(int,int,int) to properly handle max and min integers
