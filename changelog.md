@@ -6,7 +6,7 @@ This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 ## [4.6.3] - [unreleased]
 ### Added
 - added `TryMatchers` to complement current set of hamcrest matchers
-- Try#Success, Try#Failure and Try#Delayed are all now, serializable
+- Try#Success, Try#Failure and Try#Delayed are serializable
 
 ## [4.6.2] - [2018-06-15]
 ### Changed

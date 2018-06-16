@@ -7,7 +7,6 @@ import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -15,6 +14,7 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static io.atlassian.fugue.Suppliers.memoize;
+import static io.atlassian.fugue.Unit.Unit;
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;
 
@@ -408,7 +408,9 @@ import static java.util.function.Function.identity;
     }
 
     public Delayed() {
-      this.runReference = new AtomicReference<>();
+      this(unit -> {
+        throw new IllegalStateException("Try.Delayed() default constructor only required for Serialization. Do not invoke directly.");
+      });
     }
 
     private Delayed(final Function<Unit, Try<A>> run) {
@@ -420,7 +422,7 @@ import static java.util.function.Function.identity;
     }
 
     private Try<A> eval() {
-      return this.getRunner().apply(Unit.VALUE);
+      return this.getRunner().apply(Unit());
     }
 
     @Override public boolean isFailure() {
@@ -475,26 +477,10 @@ import static java.util.function.Function.identity;
       return eval().toOption();
     }
 
-    @Override public boolean equals(final Object o) {
-      if (this == o) {
-        return true;
-      }
-      if (o == null || getClass() != o.getClass()) {
-        return false;
-      }
-      final Delayed<?> delayed = (Delayed<?>) o;
-      return Objects.equals(eval(), delayed.eval());
-    }
-
-    @Override public int hashCode() {
-      return eval().hashCode();
-    }
-
-    @Override public String toString() {
-      return "Try.Delayed(" + eval().toString() + ")";
-    }
-
     @Override public void writeExternal(ObjectOutput out) throws IOException {
+      // If you required serialization to return this through a remote call, it
+      // would seem expected for the expression to be evaluated.
+      // Therefore in order to serialize we need to evaluate the Delayed.
       out.writeObject(eval());
     }
 

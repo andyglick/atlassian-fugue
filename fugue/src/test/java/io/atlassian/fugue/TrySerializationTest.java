@@ -9,27 +9,36 @@ import java.util.Objects;
 import static io.atlassian.fugue.Serializer.toBytes;
 import static io.atlassian.fugue.Serializer.toObject;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
 public class TrySerializationTest {
   @Test public void serializeFailure() throws IOException {
-    final Try<String> e = Try.failure(new EqualityException("Error message"));
-    assertThat(Serializer.toObject(toBytes(e)), equalTo(e));
+    final Try<String> t = Try.failure(new EqualityException("Error message"));
+    assertThat(Serializer.toObject(toBytes(t)), equalTo(t));
   }
 
   @Test public void serializeSuccess() throws IOException {
-    final Try<Integer> e = Try.successful(1);
-    assertThat(Serializer.toObject(toBytes(e)), equalTo(e));
+    final Try<Integer> t = Try.successful(1);
+    assertThat(Serializer.toObject(toBytes(t)), equalTo(t));
   }
 
   @Test public void serializeDelayedFailure() throws IOException {
-    final Try<String> e = Try.delayed(() -> Try.failure(new EqualityException("Delay This Error")));
-    assertThat(Serializer.toObject(toBytes(e)), equalTo(e));
+    final Try<String> t = Try.delayed(() -> Try.failure(new EqualityException("Delay This Error")));
+    final Try<String> deserialized = Serializer.toObject(toBytes(t));
+
+    assertThat("Try.Delayed has not implemented .equals() so deserialized object should not be equal", deserialized, not(equalTo(t)));
+    assertThat("Evaluating a Try.Delayed into Either will have equal content", deserialized.toEither(), equalTo(t.toEither()));
+    assertThat("Evaluated Try.Delayed still not actually equal", deserialized, not(equalTo(t)));
   }
 
   @Test public void serializeDelayedSuccess() throws IOException {
-    final Try<String> e = Try.delayed(() -> Try.successful("Delay This Message"));
-    assertThat(Serializer.toObject(toBytes(e)), equalTo(e));
+    final Try<String> t = Try.delayed(() -> Try.successful("Delay This Message"));
+    final Try<String> deserialized = Serializer.toObject(toBytes(t));
+
+    assertThat("Try.Delayed has not implemented .equals() so deserialized object should not be equal", deserialized, not(equalTo(t)));
+    assertThat("Evaluating a Try.Delayed into Either will have equal content", deserialized.toEither(), equalTo(t.toEither()));
+    assertThat("Evaluated Try.Delayed still not actually equal", deserialized, not(equalTo(t)));
   }
 
   @Test(expected = NotSerializableException.class) public void serializeSuccessNonSerializable() throws IOException {
@@ -56,6 +65,7 @@ public class TrySerializationTest {
       }
 
       final EqualityException equalityException = (EqualityException) o;
+
       return Objects.equals(getMessage(), equalityException.getMessage());
     }
 
