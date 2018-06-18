@@ -1,7 +1,8 @@
 package io.atlassian.fugue.extensions.step;
 
-import io.atlassian.fugue.extensions.functions.Function4;
 import io.atlassian.fugue.Try;
+import io.atlassian.fugue.extensions.functions.Function4;
+import io.atlassian.fugue.extensions.functions.Predicate4;
 
 import java.util.function.Supplier;
 
@@ -20,17 +21,24 @@ public class TryStep4<A, B, C, D> {
   }
 
   public <E> TryStep5<A, B, C, D, E> then(Function4<A, B, C, D, Try<E>> functor) {
-    Try<E> try5 = try1.flatMap(e1 -> try2.flatMap(e2 -> try3.flatMap(e3 -> try4.flatMap(e4 -> functor.apply(e1, e2, e3, e4)))));
+    Try<E> try5 = try1.flatMap(value1 -> try2.flatMap(value2 -> try3.flatMap(value3 -> try4.flatMap(value4 -> functor.apply(value1, value2, value3,
+      value4)))));
     return new TryStep5<>(try1, try2, try3, try4, try5);
   }
 
   public <E> TryStep5<A, B, C, D, E> then(Supplier<Try<E>> supplier) {
-    Try<E> try5 = try1.flatMap(e1 -> try2.flatMap(e2 -> try3.flatMap(e3 -> try4.flatMap(e4 -> supplier.get()))));
+    Try<E> try5 = try1.flatMap(value1 -> try2.flatMap(value2 -> try3.flatMap(value3 -> try4.flatMap(value4 -> supplier.get()))));
     return new TryStep5<>(try1, try2, try3, try4, try5);
   }
 
+  public TryStep4<A, B, C, D> filter(Predicate4<A, B, C, D> predicate, Supplier<? extends Exception> failureExceptionSupplier) {
+    Try<D> filterTry4 = try1.flatMap(value1 -> try2.flatMap(value2 -> try3.flatMap(value3 -> try4.filter(
+      value4 -> predicate.test(value1, value2, value3, value4), failureExceptionSupplier))));
+    return new TryStep4<>(try1, try2, try3, filterTry4);
+  }
+
   public <Z> Try<Z> yield(Function4<A, B, C, D, Z> functor) {
-    return try1.flatMap(e1 -> try2.flatMap(e2 -> try3.flatMap(e3 -> try4.map(e4 -> functor.apply(e1, e2, e3, e4)))));
+    return try1.flatMap(value1 -> try2.flatMap(value2 -> try3.flatMap(value3 -> try4.map(value4 -> functor.apply(value1, value2, value3, value4)))));
   }
 
 }

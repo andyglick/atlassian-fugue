@@ -1,7 +1,10 @@
 package io.atlassian.fugue.extensions.step;
 
-import io.atlassian.fugue.extensions.functions.Function6;
 import io.atlassian.fugue.Try;
+import io.atlassian.fugue.extensions.functions.Function6;
+import io.atlassian.fugue.extensions.functions.Predicate6;
+
+import java.util.function.Supplier;
 
 public class TryStep6<A, B, C, D, E, F> {
   private final Try<A> try1;
@@ -20,8 +23,14 @@ public class TryStep6<A, B, C, D, E, F> {
     this.try6 = try6;
   }
 
+  public TryStep6<A, B, C, D, E, F> filter(Predicate6<A, B, C, D, E, F> predicate, Supplier<? extends Exception> failureExceptionSupplier) {
+    Try<F> filterTry6 = try1.flatMap(value1 -> try2.flatMap(value2 -> try3.flatMap(value3 -> try4.flatMap(value4 -> try5.flatMap(value5 -> try6
+      .filter(value6 -> predicate.test(value1, value2, value3, value4, value5, value6), failureExceptionSupplier))))));
+    return new TryStep6<>(try1, try2, try3, try4, try5, filterTry6);
+  }
+
   public <Z> Try<Z> yield(Function6<A, B, C, D, E, F, Z> functor) {
-    return try1.flatMap(e1 -> try2.flatMap(e2 -> try3.flatMap(e3 -> try4.flatMap(e4 -> try5.flatMap(e5 -> try6.map(e6 -> functor.apply(e1, e2, e3,
-      e4, e5, e6)))))));
+    return try1.flatMap(value1 -> try2.flatMap(value2 -> try3.flatMap(value3 -> try4.flatMap(value4 -> try5.flatMap(value5 -> try6
+      .map(value6 -> functor.apply(value1, value2, value3, value4, value5, value6)))))));
   }
 }

@@ -2,6 +2,7 @@ package io.atlassian.fugue.extensions.step;
 
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType") public class OptionalStep1<A> {
@@ -18,8 +19,13 @@ import java.util.function.Supplier;
   }
 
   public <B> OptionalStep2<A, B> then(Supplier<Optional<B>> supplier) {
-    Optional<B> Optional = optional1.flatMap(e1 -> supplier.get());
+    Optional<B> Optional = optional1.flatMap(value1 -> supplier.get());
     return new OptionalStep2<>(optional1, Optional);
+  }
+
+  public OptionalStep1<A> filter(Predicate<A> predicate) {
+    Optional<A> filterOptional1 = optional1.filter(predicate);
+    return new OptionalStep1<>(filterOptional1);
   }
 
   public <Z> Optional<Z> yield(Function<A, Z> function) {

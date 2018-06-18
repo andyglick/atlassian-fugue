@@ -1,6 +1,7 @@
 package io.atlassian.fugue.extensions.step;
 
 import io.atlassian.fugue.extensions.functions.Function5;
+import io.atlassian.fugue.extensions.functions.Predicate5;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -32,8 +33,14 @@ import java.util.function.Supplier;
     return new OptionalStep6<>(optional1, optional2, optional3, optional4, optional5, optional6);
   }
 
+  public OptionalStep5<A, B, C, D, E> filter(Predicate5<A, B, C, D, E> predicate) {
+    Optional<E> filterOptional5 = optional1.flatMap(value1 -> optional2.flatMap(value2 -> optional3.flatMap(value3 -> optional4
+      .flatMap(value4 -> optional5.filter(value5 -> predicate.test(value1, value2, value3, value4, value5))))));
+    return new OptionalStep5<>(optional1, optional2, optional3, optional4, filterOptional5);
+  }
+
   public <Z> Optional<Z> yield(Function5<A, B, C, D, E, Z> functor) {
-    return optional1.flatMap(e1 -> optional2.flatMap(e2 -> optional3.flatMap(e3 -> optional4.flatMap(e4 -> optional5.map(e5 -> functor.apply(e1, e2,
-      e3, e4, e5))))));
+    return optional1.flatMap(value1 -> optional2.flatMap(value2 -> optional3.flatMap(value3 -> optional4.flatMap(value4 -> optional5
+      .map(value5 -> functor.apply(value1, value2, value3, value4, value5))))));
   }
 }

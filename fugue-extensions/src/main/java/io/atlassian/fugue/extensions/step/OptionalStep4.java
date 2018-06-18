@@ -1,6 +1,7 @@
 package io.atlassian.fugue.extensions.step;
 
 import io.atlassian.fugue.extensions.functions.Function4;
+import io.atlassian.fugue.extensions.functions.Predicate4;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -20,19 +21,27 @@ import java.util.function.Supplier;
   }
 
   public <E> OptionalStep5<A, B, C, D, E> then(Function4<A, B, C, D, Optional<E>> functor) {
-    Optional<E> option5 = optional1.flatMap(e1 -> optional2.flatMap(e2 -> optional3.flatMap(e3 -> optional4.flatMap(e4 -> functor.apply(e1, e2, e3,
-      e4)))));
+    Optional<E> option5 = optional1.flatMap(value1 -> optional2.flatMap(value2 -> optional3.flatMap(value3 -> optional4.flatMap(value4 -> functor
+      .apply(value1, value2, value3, value4)))));
 
     return new OptionalStep5<>(optional1, optional2, optional3, optional4, option5);
   }
 
   public <E> OptionalStep5<A, B, C, D, E> then(Supplier<Optional<E>> supplier) {
-    Optional<E> Optional = optional1.flatMap(e1 -> optional2.flatMap(e2 -> optional3.flatMap(e3 -> optional4.flatMap(e4 -> supplier.get()))));
+    Optional<E> Optional = optional1.flatMap(value1 -> optional2.flatMap(value2 -> optional3.flatMap(value3 -> optional4.flatMap(value4 -> supplier
+      .get()))));
     return new OptionalStep5<>(optional1, optional2, optional3, optional4, Optional);
   }
 
+  public OptionalStep4<A, B, C, D> filter(Predicate4<A, B, C, D> predicate) {
+    Optional<D> filterOptional4 = optional1.flatMap(value1 -> optional2.flatMap(value2 -> optional3.flatMap(value3 -> optional4
+      .filter(value4 -> predicate.test(value1, value2, value3, value4)))));
+    return new OptionalStep4<>(optional1, optional2, optional3, filterOptional4);
+  }
+
   public <Z> Optional<Z> yield(Function4<A, B, C, D, Z> functor) {
-    return optional1.flatMap(e1 -> optional2.flatMap(e2 -> optional3.flatMap(e3 -> optional4.map(e4 -> functor.apply(e1, e2, e3, e4)))));
+    return optional1.flatMap(value1 -> optional2.flatMap(value2 -> optional3.flatMap(value3 -> optional4.map(value4 -> functor.apply(value1, value2,
+      value3, value4)))));
   }
 
 }

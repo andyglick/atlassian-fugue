@@ -2,6 +2,7 @@ package io.atlassian.fugue.extensions.step;
 
 import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType") public class OptionalStep2<A, B> {
@@ -15,17 +16,22 @@ import java.util.function.Supplier;
   }
 
   public <C> OptionalStep3<A, B, C> then(BiFunction<A, B, Optional<C>> functor) {
-    Optional<C> option3 = optional1.flatMap(e1 -> optional2.flatMap(e2 -> functor.apply(e1, e2)));
+    Optional<C> option3 = optional1.flatMap(value1 -> optional2.flatMap(value2 -> functor.apply(value1, value2)));
     return new OptionalStep3<>(optional1, optional2, option3);
   }
 
   public <C> OptionalStep3<A, B, C> then(Supplier<Optional<C>> supplier) {
-    Optional<C> Optional = optional1.flatMap(e1 -> optional2.flatMap(e2 -> supplier.get()));
+    Optional<C> Optional = optional1.flatMap(value1 -> optional2.flatMap(value2 -> supplier.get()));
     return new OptionalStep3<>(optional1, optional2, Optional);
   }
 
+  public OptionalStep2<A, B> filter(BiPredicate<A, B> predicate) {
+    Optional<B> filterOptional2 = optional1.flatMap(value1 -> optional2.filter(value2 -> predicate.test(value1, value2)));
+    return new OptionalStep2<>(optional1, filterOptional2);
+  }
+
   public <Z> Optional<Z> yield(BiFunction<A, B, Z> functor) {
-    return optional1.flatMap(e1 -> optional2.map(e2 -> functor.apply(e1, e2)));
+    return optional1.flatMap(value1 -> optional2.map(value2 -> functor.apply(value1, value2)));
   }
 
 }

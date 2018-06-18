@@ -1,7 +1,8 @@
 package io.atlassian.fugue.extensions.step;
 
-import io.atlassian.fugue.extensions.functions.Function5;
 import io.atlassian.fugue.Try;
+import io.atlassian.fugue.extensions.functions.Function5;
+import io.atlassian.fugue.extensions.functions.Predicate5;
 
 import java.util.function.Supplier;
 
@@ -32,7 +33,14 @@ public class TryStep5<A, B, C, D, E> {
     return new TryStep6<>(try1, try2, try3, try4, try5, try6);
   }
 
+  public TryStep5<A, B, C, D, E> filter(Predicate5<A, B, C, D, E> predicate, Supplier<? extends Exception> failureExceptionSupplier) {
+    Try<E> filterTry5 = try1.flatMap(value1 -> try2.flatMap(value2 -> try3.flatMap(value3 -> try4.flatMap(value4 -> try5.filter(
+      value5 -> predicate.test(value1, value2, value3, value4, value5), failureExceptionSupplier)))));
+    return new TryStep5<>(try1, try2, try3, try4, filterTry5);
+  }
+
   public <Z> Try<Z> yield(Function5<A, B, C, D, E, Z> functor) {
-    return try1.flatMap(e1 -> try2.flatMap(e2 -> try3.flatMap(e3 -> try4.flatMap(e4 -> try5.map(e5 -> functor.apply(e1, e2, e3, e4, e5))))));
+    return try1.flatMap(value1 -> try2.flatMap(value2 -> try3.flatMap(value3 -> try4.flatMap(value4 -> try5.map(value5 -> functor.apply(value1,
+      value2, value3, value4, value5))))));
   }
 }

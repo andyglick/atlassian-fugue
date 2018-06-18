@@ -1,7 +1,8 @@
 package io.atlassian.fugue.extensions.step;
 
-import io.atlassian.fugue.extensions.functions.Function6;
 import io.atlassian.fugue.Option;
+import io.atlassian.fugue.extensions.functions.Function6;
+import io.atlassian.fugue.extensions.functions.Predicate6;
 
 public class OptionStep6<A, B, C, D, E, F> {
   private final Option<A> option1;
@@ -20,8 +21,14 @@ public class OptionStep6<A, B, C, D, E, F> {
     this.option6 = option6;
   }
 
+  public OptionStep6<A, B, C, D, E, F> filter(Predicate6<A, B, C, D, E, F> predicate) {
+    Option<F> filterOption6 = option1.flatMap(value1 -> option2.flatMap(value2 -> option3.flatMap(value3 -> option4.flatMap(value4 -> option5
+      .flatMap(value5 -> option6.filter(value6 -> predicate.test(value1, value2, value3, value4, value5, value6)))))));
+    return new OptionStep6<>(option1, option2, option3, option4, option5, filterOption6);
+  }
+
   public <Z> Option<Z> yield(Function6<A, B, C, D, E, F, Z> functor) {
-    return option1.flatMap(e1 -> option2.flatMap(e2 -> option3.flatMap(e3 -> option4.flatMap(e4 -> option5.flatMap(e5 -> option6.map(e6 -> functor
-      .apply(e1, e2, e3, e4, e5, e6)))))));
+    return option1.flatMap(value1 -> option2.flatMap(value2 -> option3.flatMap(value3 -> option4.flatMap(value4 -> option5.flatMap(value5 -> option6
+      .map(value6 -> functor.apply(value1, value2, value3, value4, value5, value6)))))));
   }
 }

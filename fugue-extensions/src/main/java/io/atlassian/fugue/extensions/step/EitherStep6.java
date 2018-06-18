@@ -1,17 +1,23 @@
 package io.atlassian.fugue.extensions.step;
 
-import io.atlassian.fugue.extensions.functions.Function6;
 import io.atlassian.fugue.Either;
+import io.atlassian.fugue.extensions.functions.Function6;
+import io.atlassian.fugue.extensions.functions.Predicate6;
 
-public class EitherStep6<E1, E2, E3, E4, E5, E6, E> {
-  private final Either<E, E1> either1;
-  private final Either<E, E2> either2;
-  private final Either<E, E3> either3;
-  private final Either<E, E4> either4;
-  private final Either<E, E5> either5;
-  private final Either<E, E6> either6;
+import java.util.function.Supplier;
 
-  EitherStep6(Either<E, E1> either1, Either<E, E2> either2, Either<E, E3> either3, Either<E, E4> either4, Either<E, E5> either5, Either<E, E6> either6) {
+import static io.atlassian.fugue.Either.left;
+
+public class EitherStep6<A, B, C, D, E, F, LEFT> {
+  private final Either<LEFT, A> either1;
+  private final Either<LEFT, B> either2;
+  private final Either<LEFT, C> either3;
+  private final Either<LEFT, D> either4;
+  private final Either<LEFT, E> either5;
+  private final Either<LEFT, F> either6;
+
+  EitherStep6(Either<LEFT, A> either1, Either<LEFT, B> either2, Either<LEFT, C> either3, Either<LEFT, D> either4, Either<LEFT, E> either5,
+    Either<LEFT, F> either6) {
     this.either1 = either1;
     this.either2 = either2;
     this.either3 = either3;
@@ -20,7 +26,14 @@ public class EitherStep6<E1, E2, E3, E4, E5, E6, E> {
     this.either6 = either6;
   }
 
-  public <Z> Either<E, Z> yield(Function6<E1, E2, E3, E4, E5, E6, Z> functor) {
+  public EitherStep6<A, B, C, D, E, F, LEFT> filter(Predicate6<A, B, C, D, E, F> predicate, Supplier<LEFT> leftSupplier) {
+    Either<LEFT, F> filterEither6 = either1.flatMap(value1 -> either2.flatMap(value2 -> either3.flatMap(value3 -> either4.flatMap(value4 -> either5
+      .flatMap(value5 -> either6.filter(value6 -> predicate.test(value1, value2, value3, value4, value5, value6)).getOr(
+        () -> left(leftSupplier.get())))))));
+    return new EitherStep6<>(either1, either2, either3, either4, either5, filterEither6);
+  }
+
+  public <Z> Either<LEFT, Z> yield(Function6<A, B, C, D, E, F, Z> functor) {
     return either1.flatMap(value1 -> either2.flatMap(value2 -> either3.flatMap(value3 -> either4.flatMap(value4 -> either5.flatMap(value5 -> either6
       .map(value6 -> functor.apply(value1, value2, value3, value4, value5, value6)))))));
   }
