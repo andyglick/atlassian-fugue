@@ -5,16 +5,13 @@ This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 
 ## [4.7.0] - [unreleased]
 ### Added
+- added `TryMatchers` to complement current set of hamcrest matchers
 - Try will implement Iterable and includes additional methods:
     * filter
     * orElse
     * forEach
     * toOption
     * toStream
-
-## [4.6.3] - [unreleased]
-### Added
-- added `TryMatchers` to complement current set of hamcrest matchers
 
 ## [4.6.2] - [2018-06-15]
 ### Changed
