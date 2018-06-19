@@ -16,7 +16,7 @@ This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 ### Added
 - added `TryMatchers` to complement current set of hamcrest matchers
 
-## [4.6.2] - [unreleased]
+## [4.6.2] - [2018-06-15]
 ### Changed
 - changed Iterables#rangeTo(int,int) and Iterables#rangeTo(int,int,int) to properly handle max and min integers
 - changed rangeTo().iterator().next() to throw NoSuchElementException when hasNext() returns false
