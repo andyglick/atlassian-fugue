@@ -5,17 +5,26 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toList;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class TrySuccessTest {
 
   @Rule public ExpectedException thrown = ExpectedException.none();
 
-  private final Integer STARTING_VALUE = 0;
+  private final Integer STARTING_VALUE = 1;
+  private final Integer ANOTHER_VALUE = 99;
   private final Try<Integer> t = Checked.now(() -> STARTING_VALUE);
   private final Function<Integer, String> f = Object::toString;
   private final Function<String, Integer> g = Integer::valueOf;
@@ -27,29 +36,29 @@ public class TrySuccessTest {
     throw new TestException();
   };
 
-  @Test public void isFailure() throws Exception {
+  @Test public void isFailure()  {
     assertThat(t.isFailure(), is(false));
   }
 
-  @Test public void isSuccess() throws Exception {
+  @Test public void isSuccess()  {
     assertThat(t.isSuccess(), is(true));
   }
 
-  @Test public void map() throws Exception {
+  @Test public void map()  {
     assertThat(t.map(f).map(g), is(t));
   }
 
-  @Test public void mapThrowingFunctionRetunsFailure() throws Exception {
+  @Test public void mapThrowingFunctionRetunsFailure()  {
 
     Try<Integer> result = t.map(fThrows).map(g);
 
     assertThat(result.isFailure(), is(true));
   }
 
-  @Test public void flatMap() throws Exception {
+  @Test public void flatMap()  {
     Try<String> t2 = t.flatMap(i -> Checked.now(() -> fChecked.apply(i)));
 
-    assertThat(t2, is(Checked.now(() -> "0")));
+    assertThat(t2, is(Checked.now(() -> "1")));
   }
 
   @Test public void flatMapThrowingFunctionThrows() {
@@ -58,27 +67,27 @@ public class TrySuccessTest {
     t.flatMap(fTryThrows);
   }
 
-  @Test public void recover() throws Exception {
+  @Test public void recover()  {
     assertThat(t.recover(e -> 1), is(t));
   }
 
-  @Test public void recoverExceptionType() throws Exception {
+  @Test public void recoverExceptionType()  {
     assertThat(t.recover(Exception.class, e -> 1), is(t));
   }
 
-  @Test public void recoverWith() throws Exception {
+  @Test public void recoverWith()  {
     assertThat(t.recoverWith(e -> Checked.now(() -> 1)), is(t));
   }
 
-  @Test public void recoverWithExceptionType() throws Exception {
+  @Test public void recoverWithExceptionType()  {
     assertThat(t.recoverWith(Exception.class, e -> Checked.now(() -> 1)), is(t));
   }
 
-  @Test public void getOrElse() throws Exception {
+  @Test public void getOrElse()  {
     assertThat(t.getOrElse(() -> 1), is(STARTING_VALUE));
   }
 
-  @Test public void fold() throws Exception {
+  @Test public void fold()  {
     Integer i = t.fold(v -> {
       throw new RuntimeException();
     }, identity());
@@ -86,17 +95,17 @@ public class TrySuccessTest {
     assertThat(i, is(STARTING_VALUE));
   }
 
-  @Test public void foldPassedThrowingFunctionThrows() throws Exception {
+  @Test public void foldPassedThrowingFunctionThrows()  {
     thrown.expect(TestException.class);
 
     t.fold(x -> "x", fThrows);
   }
 
-  @Test public void toEither() throws Exception {
+  @Test public void toEither()  {
     assertThat(t.toEither(), is(Either.right(STARTING_VALUE)));
   }
 
-  @Test public void toOption() throws Exception {
+  @Test public void toOption()  {
     assertThat(t.toOption(), is(Option.some(STARTING_VALUE)));
   }
 
@@ -111,6 +120,67 @@ public class TrySuccessTest {
     assertThat(val, is(4));
   }
 
-  private class TestException extends RuntimeException {}
+  @Test public void toOptional() {
+    assertThat(t.toOptional(), is(Optional.of(STARTING_VALUE)));
+  }
+
+  @Test public void toStream() {
+    final Stream<Integer> stream = t.toStream();
+    assertThat(stream, notNullValue());
+    assertThat(stream.collect(toList()), contains(STARTING_VALUE));
+  }
+
+  @Test public void iterable() {
+    assertThat(t, contains(STARTING_VALUE));
+  }
+
+  @Test public void forEach() {
+    final AtomicInteger invoked = new AtomicInteger(STARTING_VALUE);
+    t.forEach(v -> invoked.set(ANOTHER_VALUE + v));
+
+    assertThat(invoked.get(), is(STARTING_VALUE + ANOTHER_VALUE));
+  }
+
+  @Test public void orElseSuccessInstance() {
+    final Try<Integer> orElse = t.orElse(Try.successful(ANOTHER_VALUE));
+    assertThat(orElse, is(t));
+  }
+
+  @Test public void orElseSuccessSupplier() {
+    final Try<Integer> orElse = t.orElse(() -> Try.successful(ANOTHER_VALUE));
+    assertThat(orElse, notNullValue());
+    assertThat(orElse.isSuccess(), is(true));
+    assertThat(orElse, contains(STARTING_VALUE));
+  }
+
+  @Test public void orElseFailureInstance() {
+    final Try<Integer> orElse = t.orElse(Try.failure(new TestException()));
+    assertThat(orElse, is(t));
+  }
+
+  @Test public void orElseFailureSupplier() {
+    final Try<Integer> orElse = t.orElse(() -> Try.failure(new TestException()));
+    assertThat(orElse, notNullValue());
+    assertThat(orElse.isSuccess(), is(true));
+    assertThat(orElse, contains(STARTING_VALUE));
+  }
+
+  @Test public void filterTrue() {
+    final Try<Integer> orElse = t.filter(value -> Objects.equals(value, STARTING_VALUE));
+    assertThat(orElse, notNullValue());
+    assertThat(orElse.isSuccess(), is(true));
+    assertThat(orElse, contains(STARTING_VALUE));
+  }
+
+  @Test public void filterFalse() {
+    final Try<Integer> orElse = t.filter(value -> !Objects.equals(value, STARTING_VALUE));
+    assertThat(orElse, notNullValue());
+    assertThat(orElse.isSuccess(), is(false));
+    assertThat(orElse.toEither().left().get(), instanceOf(NoSuchElementException.class));
+  }
+
+  private class TestException extends RuntimeException {
+    private static final long serialVersionUID = 2348808619239132482L;
+  }
 
 }

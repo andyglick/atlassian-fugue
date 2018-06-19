@@ -3,6 +3,15 @@ All notable changes to this project will be documented in this file.
 
 This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 
+## [4.7.0] - [unreleased]
+### Added
+- Try will implement Iterable and includes additional methods:
+    * filter
+    * orElse
+    * forEach
+    * toOption
+    * toStream
+
 ## [4.6.3] - [unreleased]
 ### Added
 - added `TryMatchers` to complement current set of hamcrest matchers

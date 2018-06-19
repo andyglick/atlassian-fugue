@@ -1,13 +1,19 @@
 package io.atlassian.fugue;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static io.atlassian.fugue.Suppliers.memoize;
+import static io.atlassian.fugue.Suppliers.ofInstance;
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;
 
@@ -25,7 +31,7 @@ import static java.util.function.Function.identity;
  *
  * @since 4.4.0
  */
-@SuppressWarnings("WeakerAccess") public abstract class Try<A> {
+@SuppressWarnings("WeakerAccess") public abstract class Try<A> implements Iterable<A> {
   /**
    * Creates a new failure
    *
@@ -204,6 +210,40 @@ import static java.util.function.Function.identity;
   public abstract A getOrElse(Supplier<A> s);
 
   /**
+   * If this is a success, return the same success. Otherwise, return {@code orElse}.
+   *
+   * @param orElse try to return if this is failure
+   * @return this or {@code orElse}
+   * @since 4.7
+   */
+  public final Try<A> orElse(final Try<? extends A> orElse) {
+    return this.orElse(ofInstance(orElse));
+  }
+
+  /**
+   * If this is a success, return the same success. Otherwise, return value supplied
+   * by {@code orElse}.
+   *
+   * @param orElse try to return if this is failure
+   * @return this or {@code orElse}
+   * @since 4.7
+   */
+  public abstract Try<A> orElse(final Supplier<? extends Try<? extends A>> orElse);
+
+  /**
+   * Returns <code>Failure</code> if this is a failure or if the given predicate
+   * <code>p</code> does not hold for the contained success value, otherwise, returns this
+   * <code>Success</code>.
+   *
+   * @param p The predicate function to test on the success contained value.
+   * @return this <code>Success</code> is returned if the given predicate holds, otherwise
+   * this <code>Failure</code> or new <code>Failure</code> with <code><code>NoSuchElementException</code>
+   * if the predicate does not hold for success.
+   * @since 4.7
+   */
+  public abstract Try<A> filter(Predicate<? super A> p);
+
+  /**
    * Applies the function to the wrapped value, applying failureF it this is a
    * Left and successF if this is a Right.
    *
@@ -231,6 +271,54 @@ import static java.util.function.Function.identity;
    * <code>None</code>
    */
   public abstract Option<A> toOption();
+
+  /**
+   * Create a {@link java.util.Optional} from this try.
+   *
+   * @return {@link java.util.Optional#of(Object)} with the value if
+   * success, {@link java.util.Optional#empty()} if failure.
+   * @since 4.7
+   */
+  public final Optional<A> toOptional() {
+    return toOption().toOptional();
+  }
+
+  /**
+   * Create a {@link java.util.stream.Stream} from this try.
+   *
+   * @return {@link java.util.stream.Stream#of(Object)} with the value if
+   * success, {@link java.util.stream.Stream#empty()} if failure.
+   * @since 4.7
+   */
+  public final Stream<A> toStream() {
+    return toOption().toStream();
+  }
+
+  /**
+   * Return an iterator for this type. In most cases this takes the form of an
+   * iterator returning zero or one values.
+   *
+   * @return an iterator over the contained value {@link #isSuccess() if
+   * success}, or an empty one otherwise.
+   * @since 4.7
+   */
+  @Override
+  public final Iterator<A> iterator() {
+    return toOption().iterator();
+  }
+
+  /**
+   * Perform the given {@link java.util.function.Consumer} (side-effect) for
+   * the success {@link #isSuccess() if success} value.
+   *
+   * @param action the {@link java.util.function.Consumer} to apply on each
+   * element
+   * @since 4.7
+   */
+  @Override
+  public final void forEach(Consumer<? super A> action) {
+    toOption().forEach(action);
+  }
 
   private static final class Failure<A> extends Try<A> {
 
@@ -276,6 +364,18 @@ import static java.util.function.Function.identity;
       return s.get();
     }
 
+    @Override
+    public Try<A> orElse(Supplier<? extends Try<? extends A>> orElse) {
+      @SuppressWarnings("unchecked")
+      Try<A> result = (Try<A>) orElse.get();
+      return result;
+    }
+
+    @Override
+    public Try<A> filter(Predicate<? super A> p) {
+      return this;
+    }
+
     @Override public <B> B fold(final Function<? super Exception, B> failureF, final Function<A, B> successF) {
       return failureF.apply(e);
     }
@@ -304,6 +404,7 @@ import static java.util.function.Function.identity;
     @Override public int hashCode() {
       return ~e.hashCode();
     }
+
   }
 
   private static final class Success<A> extends Try<A> {
@@ -348,6 +449,21 @@ import static java.util.function.Function.identity;
 
     @Override public A getOrElse(final Supplier<A> s) {
       return value;
+    }
+
+    @Override
+    public Try<A> orElse(Supplier<? extends Try<? extends A>> orElse) {
+      return this;
+    }
+
+    @Override
+    public Try<A> filter(Predicate<? super A> p) {
+        return Checked.now(() -> {
+            if (p.test(value)) {
+                return value;
+            }
+            throw new NoSuchElementException("Try.Success filter predicate does not hold for " + value);
+        });
     }
 
     @Override public <B> B fold(final Function<? super Exception, B> failureF, final Function<A, B> successF) {
@@ -433,6 +549,16 @@ import static java.util.function.Function.identity;
 
     @Override public A getOrElse(Supplier<A> s) {
       return eval().getOrElse(s);
+    }
+
+    @Override
+    public Try<A> orElse(Supplier<? extends Try<? extends A>> orElse) {
+      return composeDelayed(t -> t.orElse(orElse));
+    }
+
+    @Override
+    public Try<A> filter(Predicate<? super A> p) {
+      return composeDelayed(t -> t.filter(p));
     }
 
     @Override public <B> B fold(Function<? super Exception, B> failureF, Function<A, B> successF) {
