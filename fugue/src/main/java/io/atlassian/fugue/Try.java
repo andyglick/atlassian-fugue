@@ -96,7 +96,7 @@ import static java.util.function.Function.identity;
     A accumulator = collector.supplier().get();
     for (final Try<T> t : trys) {
       if (t.isFailure()) {
-        return new Failure<>(t.fold(identity(), x -> {
+        return Try.failure(t.fold(identity(), x -> {
           throw new NoSuchElementException();
         }));
       }
@@ -104,7 +104,7 @@ import static java.util.function.Function.identity;
         throw new NoSuchElementException();
       }, identity()));
     }
-    return new Success<>(collector.finisher().apply(accumulator));
+    return Try.successful(collector.finisher().apply(accumulator));
   }
 
   /**
@@ -120,7 +120,7 @@ import static java.util.function.Function.identity;
 
   /**
    * Returns <code>true</code> if this failure, otherwise <code>false</code>
-   *
+   * <p>
    * Note that for {@link Try#delayed(Supplier)} this <strong>is</strong> an
    * evaluating operation.
    *
@@ -130,7 +130,7 @@ import static java.util.function.Function.identity;
 
   /**
    * Returns <code>true</code> if this success, otherwise <code>false</code>
-   *
+   * <p>
    * Note that for {@link Try#delayed(Supplier)} this <strong>is</strong> an
    * evaluating operation.
    *
@@ -140,7 +140,7 @@ import static java.util.function.Function.identity;
 
   /**
    * Binds the given function across the success value if it is one.
-   *
+   * <p>
    * Note that for {@link Try#delayed(Supplier)} this is not an evaluating
    * operation.
    *
@@ -154,7 +154,7 @@ import static java.util.function.Function.identity;
   /**
    * Maps the given function to the value from this `Success` or returns this
    * unchanged if a `Failure`.
-   *
+   * <p>
    * Note that for {@link Try#delayed(Supplier)} this is not an evaluating
    * operation.
    *
@@ -168,7 +168,7 @@ import static java.util.function.Function.identity;
   /**
    * Applies the given function `f` if this is a `Failure` otherwise this
    * unchanged if a 'Success'. This is like map for the failure.
-   *
+   * <p>
    * Note that for {@link Try#delayed(Supplier)} this is not an evaluating
    * operation.
    *
@@ -182,7 +182,7 @@ import static java.util.function.Function.identity;
    * Applies the given function `f` if this is a `Failure` with certain
    * exception type otherwise leaves this unchanged. This is like map for
    * exceptions types.
-   *
+   * <p>
    * Note that for {@link Try#delayed(Supplier)} this is not an evaluating
    * operation.
    *
@@ -197,7 +197,7 @@ import static java.util.function.Function.identity;
   /**
    * Binds the given function across the failure value if it is one, otherwise
    * this unchanged if a 'Success'. This is like flatmap for the failure.
-   *
+   * <p>
    * Note that for {@link Try#delayed(Supplier)} this is not an evaluating
    * operation.
    *
@@ -210,7 +210,7 @@ import static java.util.function.Function.identity;
   /**
    * Binds the given function across certain exception type if it is one,
    * otherwise this unchanged. This is like flatmap for exceptions types.
-   *
+   * <p>
    * Note that for {@link Try#delayed(Supplier)} this is not an evaluating
    * operation.
    *
@@ -226,7 +226,7 @@ import static java.util.function.Function.identity;
   /**
    * Returns the contained value if this is a success otherwise call the
    * supplier and return its value.
-   *
+   * <p>
    * Note that for {@link Try#delayed(Supplier)} this <strong>is</strong> an
    * evaluating operation.
    *
@@ -238,7 +238,7 @@ import static java.util.function.Function.identity;
   /**
    * If this is a success, return the same success. Otherwise, return
    * {@code orElse}.
-   *
+   * <p>
    * Note that for {@link Try#delayed(Supplier)} this is not an evaluating
    * operation.
    *
@@ -253,7 +253,7 @@ import static java.util.function.Function.identity;
   /**
    * If this is a success, return the same success. Otherwise, return value
    * supplied by {@code orElse}.
-   *
+   * <p>
    * Note that for {@link Try#delayed(Supplier)} this is not an evaluating
    * operation.
    *
@@ -264,19 +264,19 @@ import static java.util.function.Function.identity;
   public abstract Try<A> orElse(final Supplier<? extends Try<? extends A>> orElse);
 
   /**
-   * Returns <code>None</code> if this is a failure or if the given predicate
-   * <code>p</code> does not hold for the success value, otherwise, returns a
-   * success in <code>Some</code>.
-   *
+   * Returns <code>Failure</code> of failureExceptionSupplier if this is a
+   * failure or if the given predicate <code>p</code> does not hold for the
+   * success value, otherwise, returns this success.
+   * <p>
    * Note that for {@link Try#delayed(Supplier)} this is not an evaluating
    * operation.
    *
    * @param p The predicate function to test on this successes value
    * @param failureExceptionSupplier The failure exception to use if the
-   * predicate fails on a success value
-   * @return <code>None</code> if this is a failure or if the given predicate
-   * <code>p</code> does not hold for the success value, otherwise, returns a
-   * success in <code>Some</code>.
+   * predicate fails on a success value or is already a failure
+   * @return <code>Failure</code> of failureExceptionSupplier if this is a
+   * failure or if the given predicate <code>p</code> does not hold for the
+   * success value, otherwise, returns this success.
    * @since 4.7
    */
   public abstract Try<A> filter(Predicate<? super A> p, Supplier<? extends Exception> failureExceptionSupplier);
@@ -284,7 +284,7 @@ import static java.util.function.Function.identity;
   /**
    * Applies the function to the wrapped value, applying failureF it this is a
    * Failure and successF if this is a Success.
-   *
+   * <p>
    * Note that for {@link Try#delayed(Supplier)} this <strong>is</strong> an
    * evaluating operation.
    *
@@ -298,7 +298,7 @@ import static java.util.function.Function.identity;
   /**
    * Convert this Try to an {@link Either}, becoming a left if this is a failure
    * and a right if this is a success.
-   *
+   * <p>
    * Note that for {@link Try#delayed(Supplier)} this <strong>is</strong> an
    * evaluating operation.
    *
@@ -310,7 +310,7 @@ import static java.util.function.Function.identity;
   /**
    * Convert this Try to an Option. Returns <code>Some</code> with a value if it
    * is a success, otherwise <code>None</code>.
-   *
+   * <p>
    * Note that for {@link Try#delayed(Supplier)} this <strong>is</strong> an
    * evaluating operation.
    *
@@ -321,7 +321,7 @@ import static java.util.function.Function.identity;
 
   /**
    * Create a {@link java.util.Optional} from this try.
-   *
+   * <p>
    * Note that for {@link Try#delayed(Supplier)} this <strong>is</strong> an
    * evaluating operation.
    *
@@ -333,7 +333,7 @@ import static java.util.function.Function.identity;
 
   /**
    * Create a {@link java.util.stream.Stream} from this try.
-   *
+   * <p>
    * Note that for {@link Try#delayed(Supplier)} this <strong>is</strong> an
    * evaluating operation.
    *
@@ -346,7 +346,7 @@ import static java.util.function.Function.identity;
   /**
    * Perform the given {@link java.util.function.Consumer} (side-effect) for the
    * success {@link #isSuccess() if success} value.
-   *
+   * <p>
    * Note that for {@link Try#delayed(Supplier)} this <strong>is</strong> an
    * evaluating operation.
    *
@@ -365,7 +365,7 @@ import static java.util.function.Function.identity;
     }
 
     @Override public <B> Try<B> map(final Function<? super A, ? extends B> f) {
-      return new Failure<>(e);
+      return Try.failure(e);
     }
 
     @Override public boolean isFailure() {
@@ -407,7 +407,9 @@ import static java.util.function.Function.identity;
     }
 
     @Override public Try<A> filter(Predicate<? super A> p, Supplier<? extends Exception> failureExceptionSupplier) {
-      return this;
+      return Checked.now(() -> {
+        throw failureExceptionSupplier.get();
+      });
     }
 
     @Override public <B> B fold(final Function<? super Exception, B> failureF, final Function<A, B> successF) {

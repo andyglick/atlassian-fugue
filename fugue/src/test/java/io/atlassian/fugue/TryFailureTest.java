@@ -178,13 +178,15 @@ public class TryFailureTest {
   }
 
   @Test public void filterTrue() {
-    final Try<Integer> filter = t.filter(value -> true, TestException::new);
-    assertThat(filter, is(t));
+    final TestException testException = new TestException();
+    final Try<Integer> filter = t.filter(value -> true, () -> testException);
+    assertThat(filter, is(Try.failure(testException)));
   }
 
   @Test public void filterFalse() {
-    final Try<Integer> filter = t.filter(value -> false, TestException::new);
-    assertThat(filter, is(t));
+    final TestException testException = new TestException();
+    final Try<Integer> filter = t.filter(value -> false, () -> testException);
+    assertThat(filter, is(Try.failure(testException)));
   }
 
 }
