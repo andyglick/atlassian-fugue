@@ -24,8 +24,6 @@ public class TryFailureTest {
   private final Integer ANOTHER_VALUE = 99;
 
   private class TestException extends RuntimeException {
-    private static final long serialVersionUID = 1831652537103191234L;
-
     TestException() {
       super();
     }
