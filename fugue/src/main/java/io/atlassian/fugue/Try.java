@@ -1,7 +1,6 @@
 package io.atlassian.fugue;
 
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -31,7 +30,7 @@ import static java.util.function.Function.identity;
  *
  * @since 4.4.0
  */
-@SuppressWarnings("WeakerAccess") public abstract class Try<A> implements Iterable<A> {
+@SuppressWarnings("WeakerAccess") public abstract class Try<A> {
   /**
    * Creates a new failure
    *
@@ -122,6 +121,9 @@ import static java.util.function.Function.identity;
   /**
    * Returns <code>true</code> if this failure, otherwise <code>false</code>
    *
+   * Note that for {@link Try#delayed(Supplier)} this <strong>is</strong> an
+   * evaluating operation.
+   *
    * @return <code>true</code> if this failure, otherwise <code>false</code>
    */
   public abstract boolean isFailure();
@@ -129,12 +131,18 @@ import static java.util.function.Function.identity;
   /**
    * Returns <code>true</code> if this success, otherwise <code>false</code>
    *
+   * Note that for {@link Try#delayed(Supplier)} this <strong>is</strong> an
+   * evaluating operation.
+   *
    * @return <code>true</code> if this success, otherwise <code>false</code>
    */
   public abstract boolean isSuccess();
 
   /**
    * Binds the given function across the success value if it is one.
+   *
+   * Note that for {@link Try#delayed(Supplier)} this is not an evaluating
+   * operation.
    *
    * @param <B> result type
    * @param f the function to bind.
@@ -147,6 +155,9 @@ import static java.util.function.Function.identity;
    * Maps the given function to the value from this `Success` or returns this
    * unchanged if a `Failure`.
    *
+   * Note that for {@link Try#delayed(Supplier)} this is not an evaluating
+   * operation.
+   *
    * @param <B> result type
    * @param f the function to apply
    * @return `f` applied to the `Success`, otherwise returns this if this is a
@@ -158,6 +169,9 @@ import static java.util.function.Function.identity;
    * Applies the given function `f` if this is a `Failure` otherwise this
    * unchanged if a 'Success'. This is like map for the failure.
    *
+   * Note that for {@link Try#delayed(Supplier)} this is not an evaluating
+   * operation.
+   *
    * @param f the function to apply
    * @return `f` applied to the `Failure`, otherwise returns this if this is a
    * `Success`.
@@ -168,6 +182,9 @@ import static java.util.function.Function.identity;
    * Applies the given function `f` if this is a `Failure` with certain
    * exception type otherwise leaves this unchanged. This is like map for
    * exceptions types.
+   *
+   * Note that for {@link Try#delayed(Supplier)} this is not an evaluating
+   * operation.
    *
    * @param exceptionType exception class
    * @param f the function to apply
@@ -181,6 +198,9 @@ import static java.util.function.Function.identity;
    * Binds the given function across the failure value if it is one, otherwise
    * this unchanged if a 'Success'. This is like flatmap for the failure.
    *
+   * Note that for {@link Try#delayed(Supplier)} this is not an evaluating
+   * operation.
+   *
    * @param f the function to bind.
    * @return A new Try value after binding with the function applied if this is
    * a `Failure`, otherwise returns this if this is a `Success`.
@@ -190,6 +210,9 @@ import static java.util.function.Function.identity;
   /**
    * Binds the given function across certain exception type if it is one,
    * otherwise this unchanged. This is like flatmap for exceptions types.
+   *
+   * Note that for {@link Try#delayed(Supplier)} this is not an evaluating
+   * operation.
    *
    * @param exceptionType exception class
    * @param f the function to apply
@@ -204,13 +227,20 @@ import static java.util.function.Function.identity;
    * Returns the contained value if this is a success otherwise call the
    * supplier and return its value.
    *
+   * Note that for {@link Try#delayed(Supplier)} this <strong>is</strong> an
+   * evaluating operation.
+   *
    * @param s called if this is a failure
    * @return the wrapped value or the value from the {@code Supplier}
    */
   public abstract A getOrElse(Supplier<A> s);
 
   /**
-   * If this is a success, return the same success. Otherwise, return {@code orElse}.
+   * If this is a success, return the same success. Otherwise, return
+   * {@code orElse}.
+   *
+   * Note that for {@link Try#delayed(Supplier)} this is not an evaluating
+   * operation.
    *
    * @param orElse try to return if this is failure
    * @return this or {@code orElse}
@@ -221,8 +251,11 @@ import static java.util.function.Function.identity;
   }
 
   /**
-   * If this is a success, return the same success. Otherwise, return value supplied
-   * by {@code orElse}.
+   * If this is a success, return the same success. Otherwise, return value
+   * supplied by {@code orElse}.
+   *
+   * Note that for {@link Try#delayed(Supplier)} this is not an evaluating
+   * operation.
    *
    * @param orElse try to return if this is failure
    * @return this or {@code orElse}
@@ -231,21 +264,29 @@ import static java.util.function.Function.identity;
   public abstract Try<A> orElse(final Supplier<? extends Try<? extends A>> orElse);
 
   /**
-   * Returns <code>Failure</code> if this is a failure or if the given predicate
-   * <code>p</code> does not hold for the contained success value, otherwise, returns this
-   * <code>Success</code>.
+   * Returns <code>None</code> if this is a failure or if the given predicate
+   * <code>p</code> does not hold for the success value, otherwise, returns a
+   * success in <code>Some</code>.
    *
-   * @param p The predicate function to test on the success contained value.
-   * @return this <code>Success</code> is returned if the given predicate holds, otherwise
-   * this <code>Failure</code> or new <code>Failure</code> with <code><code>NoSuchElementException</code>
-   * if the predicate does not hold for success.
+   * Note that for {@link Try#delayed(Supplier)} this is not an evaluating
+   * operation.
+   *
+   * @param p The predicate function to test on this successes value
+   * @param failureExceptionSupplier The failure exception to use if the
+   * predicate fails on a success value
+   * @return <code>None</code> if this is a failure or if the given predicate
+   * <code>p</code> does not hold for the success value, otherwise, returns a
+   * success in <code>Some</code>.
    * @since 4.7
    */
-  public abstract Try<A> filter(Predicate<? super A> p);
+  public abstract Try<A> filter(Predicate<? super A> p, Supplier<? extends Exception> failureExceptionSupplier);
 
   /**
    * Applies the function to the wrapped value, applying failureF it this is a
-   * Left and successF if this is a Right.
+   * Failure and successF if this is a Success.
+   *
+   * Note that for {@link Try#delayed(Supplier)} this <strong>is</strong> an
+   * evaluating operation.
    *
    * @param failureF the function to apply if this is a Failure
    * @param successF the function to apply if this is a Success
@@ -258,6 +299,9 @@ import static java.util.function.Function.identity;
    * Convert this Try to an {@link Either}, becoming a left if this is a failure
    * and a right if this is a success.
    *
+   * Note that for {@link Try#delayed(Supplier)} this <strong>is</strong> an
+   * evaluating operation.
+   *
    * @return this value wrapped in right if a success, and the exception wrapped
    * in a left if a failure.
    */
@@ -267,6 +311,9 @@ import static java.util.function.Function.identity;
    * Convert this Try to an Option. Returns <code>Some</code> with a value if it
    * is a success, otherwise <code>None</code>.
    *
+   * Note that for {@link Try#delayed(Supplier)} this <strong>is</strong> an
+   * evaluating operation.
+   *
    * @return The success's value in <code>Some</code> if it exists, otherwise
    * <code>None</code>
    */
@@ -275,50 +322,39 @@ import static java.util.function.Function.identity;
   /**
    * Create a {@link java.util.Optional} from this try.
    *
-   * @return {@link java.util.Optional#of(Object)} with the value if
-   * success, {@link java.util.Optional#empty()} if failure.
+   * Note that for {@link Try#delayed(Supplier)} this <strong>is</strong> an
+   * evaluating operation.
+   *
+   * @return {@link java.util.Optional#of(Object)} with the value if success,
+   * {@link java.util.Optional#empty()} if failure.
    * @since 4.7
    */
-  public final Optional<A> toOptional() {
-    return toOption().toOptional();
-  }
+  public abstract Optional<A> toOptional();
 
   /**
    * Create a {@link java.util.stream.Stream} from this try.
+   *
+   * Note that for {@link Try#delayed(Supplier)} this <strong>is</strong> an
+   * evaluating operation.
    *
    * @return {@link java.util.stream.Stream#of(Object)} with the value if
    * success, {@link java.util.stream.Stream#empty()} if failure.
    * @since 4.7
    */
-  public final Stream<A> toStream() {
-    return toOption().toStream();
-  }
+  public abstract Stream<A> toStream();
 
   /**
-   * Return an iterator for this type. In most cases this takes the form of an
-   * iterator returning zero or one values.
+   * Perform the given {@link java.util.function.Consumer} (side-effect) for the
+   * success {@link #isSuccess() if success} value.
    *
-   * @return an iterator over the contained value {@link #isSuccess() if
-   * success}, or an empty one otherwise.
+   * Note that for {@link Try#delayed(Supplier)} this <strong>is</strong> an
+   * evaluating operation.
+   *
+   * @param action the {@link java.util.function.Consumer} to apply on the
+   * success value
    * @since 4.7
    */
-  @Override
-  public final Iterator<A> iterator() {
-    return toOption().iterator();
-  }
-
-  /**
-   * Perform the given {@link java.util.function.Consumer} (side-effect) for
-   * the success {@link #isSuccess() if success} value.
-   *
-   * @param action the {@link java.util.function.Consumer} to apply on each
-   * element
-   * @since 4.7
-   */
-  @Override
-  public final void forEach(Consumer<? super A> action) {
-    toOption().forEach(action);
-  }
+  public abstract void forEach(Consumer<? super A> action);
 
   private static final class Failure<A> extends Try<A> {
 
@@ -364,15 +400,13 @@ import static java.util.function.Function.identity;
       return s.get();
     }
 
-    @Override
-    public Try<A> orElse(Supplier<? extends Try<? extends A>> orElse) {
+    @Override public Try<A> orElse(Supplier<? extends Try<? extends A>> orElse) {
       @SuppressWarnings("unchecked")
       Try<A> result = (Try<A>) orElse.get();
       return result;
     }
 
-    @Override
-    public Try<A> filter(Predicate<? super A> p) {
+    @Override public Try<A> filter(Predicate<? super A> p, Supplier<? extends Exception> failureExceptionSupplier) {
       return this;
     }
 
@@ -387,6 +421,16 @@ import static java.util.function.Function.identity;
     @Override public Option<A> toOption() {
       return Option.none();
     }
+
+    @Override public Optional<A> toOptional() {
+      return Optional.empty();
+    }
+
+    @Override public Stream<A> toStream() {
+      return Stream.empty();
+    }
+
+    @Override public void forEach(Consumer<? super A> action) {}
 
     @Override public boolean equals(final Object o) {
       if (this == o) {
@@ -451,19 +495,17 @@ import static java.util.function.Function.identity;
       return value;
     }
 
-    @Override
-    public Try<A> orElse(Supplier<? extends Try<? extends A>> orElse) {
+    @Override public Try<A> orElse(Supplier<? extends Try<? extends A>> orElse) {
       return this;
     }
 
-    @Override
-    public Try<A> filter(Predicate<? super A> p) {
-        return Checked.now(() -> {
-            if (p.test(value)) {
-                return value;
-            }
-            throw new NoSuchElementException("Try.Success filter predicate does not hold for " + value);
-        });
+    @Override public Try<A> filter(Predicate<? super A> p, Supplier<? extends Exception> failureExceptionSupplier) {
+      return Checked.now(() -> {
+        if (p.test(value)) {
+          return value;
+        }
+        throw failureExceptionSupplier.get();
+      });
     }
 
     @Override public <B> B fold(final Function<? super Exception, B> failureF, final Function<A, B> successF) {
@@ -476,6 +518,18 @@ import static java.util.function.Function.identity;
 
     @Override public Option<A> toOption() {
       return Option.some(value);
+    }
+
+    @Override public Optional<A> toOptional() {
+      return Optional.of(value);
+    }
+
+    @Override public Stream<A> toStream() {
+      return Stream.of(value);
+    }
+
+    @Override public void forEach(Consumer<? super A> action) {
+      action.accept(value);
     }
 
     @Override public boolean equals(final Object o) {
@@ -551,14 +605,12 @@ import static java.util.function.Function.identity;
       return eval().getOrElse(s);
     }
 
-    @Override
-    public Try<A> orElse(Supplier<? extends Try<? extends A>> orElse) {
+    @Override public Try<A> orElse(Supplier<? extends Try<? extends A>> orElse) {
       return composeDelayed(t -> t.orElse(orElse));
     }
 
-    @Override
-    public Try<A> filter(Predicate<? super A> p) {
-      return composeDelayed(t -> t.filter(p));
+    @Override public Try<A> filter(Predicate<? super A> p, Supplier<? extends Exception> failureExceptionSupplier) {
+      return composeDelayed(t -> t.filter(p, failureExceptionSupplier));
     }
 
     @Override public <B> B fold(Function<? super Exception, B> failureF, Function<A, B> successF) {
@@ -571,6 +623,18 @@ import static java.util.function.Function.identity;
 
     @Override public Option<A> toOption() {
       return eval().toOption();
+    }
+
+    @Override public Optional<A> toOptional() {
+      return eval().toOptional();
+    }
+
+    @Override public Stream<A> toStream() {
+      return eval().toStream();
+    }
+
+    @Override public void forEach(Consumer<? super A> action) {
+      eval().forEach(action);
     }
   }
 }

@@ -12,7 +12,6 @@ import java.util.stream.Stream;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.emptyIterable;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.Is.is;
@@ -26,6 +25,10 @@ public class TryFailureTest {
 
   private class TestException extends RuntimeException {
     private static final long serialVersionUID = 1831652537103191234L;
+
+    TestException() {
+      super();
+    }
 
     TestException(final String message) {
       super(message);
@@ -44,57 +47,57 @@ public class TryFailureTest {
     throw new RuntimeException();
   };
 
-  @Test public void map()  {
+  @Test public void map() {
     assertThat(t.map(x -> true), is(t));
   }
 
-  @Test public void isFailure()  {
+  @Test public void isFailure() {
     assertThat(t.isFailure(), is(true));
   }
 
-  @Test public void isSuccess()  {
+  @Test public void isSuccess() {
     assertThat(t.isSuccess(), is(false));
   }
 
-  @Test public void flatMap()  {
+  @Test public void flatMap() {
     assertThat(t.map(x -> true), is(t));
   }
 
-  @Test public void recover()  {
+  @Test public void recover() {
     assertThat(t.recover(x -> 0), is(Checked.now(() -> 0)));
   }
 
-  @Test public void recoverMatchingException()  {
+  @Test public void recoverMatchingException() {
     assertThat(t.recover(TestException.class, x -> 0), is(t.recover(x -> 0)));
   }
 
-  @Test public void recoverMismatchingException()  {
+  @Test public void recoverMismatchingException() {
     assertThat(t.recover(IllegalStateException.class, x -> 0), is(t));
   }
 
-  @Test public void recoverWith()  {
+  @Test public void recoverWith() {
     assertThat(t.recoverWith(x -> Checked.now(() -> 0)), is(Checked.now(() -> 0)));
   }
 
-  @Test public void recoverWithMatchingException()  {
+  @Test public void recoverWithMatchingException() {
     assertThat(t.recoverWith(TestException.class, x -> Checked.now(() -> 0)), is(t.recoverWith(x -> Checked.now(() -> 0))));
   }
 
-  @Test public void recoverWithMismatchingException()  {
+  @Test public void recoverWithMismatchingException() {
     assertThat(t.recoverWith(IllegalStateException.class, x -> Checked.now(() -> 0)), is(t));
   }
 
-  @Test public void recoverWithPassedThrowingFunctionThrows()  {
+  @Test public void recoverWithPassedThrowingFunctionThrows() {
     thrown.expect(RuntimeException.class);
 
     t.recoverWith(fTryThrows);
   }
 
-  @Test public void getOrElse()  {
+  @Test public void getOrElse() {
     assertThat(t.getOrElse(() -> 0), is(0));
   }
 
-  @Test public void fold()  {
+  @Test public void fold() {
     Exception e = t.fold(identity(), v -> {
       throw new RuntimeException();
     });
@@ -103,13 +106,13 @@ public class TryFailureTest {
     assertThat(e.getMessage(), is(MESSAGE));
   }
 
-  @Test public void foldPassedThrowingExceptionsThrows()  {
+  @Test public void foldPassedThrowingExceptionsThrows() {
     thrown.expect(TestException.class);
 
     t.fold(fThrows, x -> "x");
   }
 
-  @Test public void toEither()  {
+  @Test public void toEither() {
     final Either<Exception, Integer> e = t.toEither();
 
     assertThat(e.isLeft(), is(true));
@@ -117,7 +120,7 @@ public class TryFailureTest {
     assertThat(e.left().get().getMessage(), is(MESSAGE));
   }
 
-  @Test public void toOption()  {
+  @Test public void toOption() {
     assertThat(t.toOption(), is(Option.none()));
   }
 
@@ -145,10 +148,6 @@ public class TryFailureTest {
     assertThat(stream.collect(toList()), emptyIterable());
   }
 
-  @Test public void iterable() {
-    assertThat(t, emptyIterable());
-  }
-
   @Test public void forEach() {
     final AtomicBoolean invoked = new AtomicBoolean(false);
     t.forEach(v -> invoked.set(true));
@@ -157,17 +156,15 @@ public class TryFailureTest {
   }
 
   @Test public void orElseSuccessInstance() {
-    final Try<Integer> orElse = t.orElse(Try.successful(ANOTHER_VALUE));
-    assertThat(orElse, notNullValue());
-    assertThat(orElse.isSuccess(), is(true));
-    assertThat(orElse, contains(ANOTHER_VALUE));
+    Try<Integer> successful = Try.successful(ANOTHER_VALUE);
+    final Try<Integer> orElse = t.orElse(successful);
+    assertThat(orElse, is(successful));
   }
 
   @Test public void orElseSuccessSupplier() {
-    final Try<Integer> orElse = t.orElse(() -> Try.successful(ANOTHER_VALUE));
-    assertThat(orElse, notNullValue());
-    assertThat(orElse.isSuccess(), is(true));
-    assertThat(orElse, contains(ANOTHER_VALUE));
+    Try<Integer> successful = Try.successful(ANOTHER_VALUE);
+    final Try<Integer> orElse = t.orElse(() -> successful);
+    assertThat(orElse, is(successful));
   }
 
   @Test public void orElseFailureInstance() {
@@ -183,13 +180,13 @@ public class TryFailureTest {
   }
 
   @Test public void filterTrue() {
-    final Try<Integer> orElse = t.filter(value -> true);
-    assertThat(orElse, is(t));
+    final Try<Integer> filter = t.filter(value -> true, TestException::new);
+    assertThat(filter, is(t));
   }
 
   @Test public void filterFalse() {
-    final Try<Integer> orElse = t.filter(value -> false);
-    assertThat(orElse, is(t));
+    final Try<Integer> filter = t.filter(value -> false, TestException::new);
+    assertThat(filter, is(t));
   }
 
 }
