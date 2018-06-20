@@ -26,9 +26,16 @@ import static java.util.function.Function.identity;
  * This class is similar to {@link Either}, but is explicit about having a
  * success and failure case. Unless method level javadoc says otherwise, methods
  * will not automatically catch exceptions thrown by function arguments. In
- * particular map will not catch automatically catch thrown exceptions, instead
- * you should use {@link Checked#lift} to to make the function explicitly return
- * a Try and the use flatmap.
+ * particular {@link #map(Function)} will not catch automatically catch thrown
+ * exceptions, instead you should use {@link Checked#lift} to to make the
+ * function explicitly return a Try and the use {@link #flatMap(Function)}.
+ * <p>
+ * Note that since 4.7.0, all API methods describe whether or not they will
+ * result in a {@link Try.Delayed Delayed} Try being evaluated. In addition to
+ * this, any action to {@link Serializable Serialize} a {@link Try.Delayed
+ * Delayed} Try will result in it being evaluated, and the underlying Try
+ * {@link Try.Success Success} or {@link Try.Failure Failure} result being
+ * serialized.
  *
  * @since 4.4.0
  */

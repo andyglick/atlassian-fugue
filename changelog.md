@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 
-## [4.6.3] - [unreleased]
+## [4.7.0] - [unreleased]
 ### Added
 - added `TryMatchers` to complement current set of hamcrest matchers
 - Try#Success, Try#Failure and Try#Delayed are serializable
