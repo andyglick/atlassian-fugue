@@ -164,6 +164,15 @@ public class EitherRightBiasTest {
     assertThat(l.filter(x -> x == 12), is(Option.<Either<String, Integer>> none()));
   }
 
+  @Test public void filterUnsatisfiedHandlerRight() {
+    assertThat(r.filter(x -> x == 12, o -> left(o.map(i -> i + " more").getOrElse("else"))), is(r));
+    assertThat(r.filter(x -> x == 11, o -> left(o.map(i -> i + " more").getOrElse("else"))), is(left("else")));
+  }
+
+  @Test public void filterUnsatisfiedHandlerLeft() {
+    assertThat(l.filter(x -> x == 12, o -> left(o.map(i -> i + " more").getOrElse("else"))), is(left("heyaa! more")));
+  }
+
   @Test public void orElseRightInstance() {
     assertThat(r.orElse(Either.<String, Integer> right(44)), is(r));
   }

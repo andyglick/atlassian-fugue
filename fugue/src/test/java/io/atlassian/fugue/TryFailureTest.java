@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -30,6 +31,22 @@ public class TryFailureTest {
 
     TestException(final String message) {
       super(message);
+    }
+
+    @Override public int hashCode() {
+      return Objects.hashCode(getMessage());
+    }
+
+    @Override public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if (!(obj instanceof TestException)) {
+        return false;
+      }
+
+      TestException other = (TestException) obj;
+      return Objects.equals(getMessage(), other.getMessage());
     }
   }
 
@@ -178,15 +195,15 @@ public class TryFailureTest {
   }
 
   @Test public void filterTrue() {
-    final TestException testException = new TestException();
-    final Try<Integer> filter = t.filter(value -> true, () -> testException);
-    assertThat(filter, is(Try.failure(testException)));
+    final TestException testException = new TestException("this is a different error");
+    final Try<Integer> filter = t.filter(value -> true, o -> o.map(Try::<Integer> failure).getOrElse(Try.<Integer> failure(testException)));
+    assertThat(filter, is(Try.failure(new TestException(MESSAGE))));
   }
 
   @Test public void filterFalse() {
-    final TestException testException = new TestException();
-    final Try<Integer> filter = t.filter(value -> false, () -> testException);
-    assertThat(filter, is(Try.failure(testException)));
+    final TestException testException = new TestException("this is a different error");
+    final Try<Integer> filter = t.filter(value -> false, o -> o.map(Try::<Integer> failure).getOrElse(Try.<Integer> failure(testException)));
+    assertThat(filter, is(Try.failure(new TestException(MESSAGE))));
   }
 
 }

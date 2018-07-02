@@ -131,7 +131,7 @@ public class TryDelayedTest {
       evaluated.addAndGet(1);
       return 4;
     });
-    Try<Integer> b = a.filter(v -> true, IllegalStateException::new);
+    Try<Integer> b = a.filter(v -> true, o -> Try.failure(new IllegalStateException()));
     assertThat(evaluated.get(), is(0));
     assertThat(b.getOrElse(() -> -1), is(4));
     assertThat(evaluated.get(), is(1));
@@ -140,7 +140,7 @@ public class TryDelayedTest {
   @Test public void filterFalseDoesNotEvaluate() {
     AtomicInteger evaluated = new AtomicInteger(0);
     Try<Integer> a = Checked.delay(() -> evaluated.addAndGet(1));
-    Try<Integer> b = a.filter(v -> false, IllegalStateException::new);
+    Try<Integer> b = a.filter(v -> false, o -> Try.failure(new IllegalStateException()));
     assertThat(evaluated.get(), is(0));
     assertThat(b.getOrElse(() -> -1), is(-1));
     assertThat(evaluated.get(), is(1));
@@ -152,7 +152,7 @@ public class TryDelayedTest {
       evaluated.incrementAndGet();
       throw new RuntimeException();
     });
-    Try<Integer> b = a.filter(v -> true, IllegalStateException::new);
+    Try<Integer> b = a.filter(v -> true, o -> Try.failure(new IllegalStateException()));
     assertThat(evaluated.get(), is(0));
     assertThat(b.getOrElse(() -> -1), is(-1));
     assertThat(evaluated.get(), is(1));

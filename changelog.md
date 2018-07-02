@@ -12,6 +12,7 @@ This project attempts to adhere to [Semantic Versioning](http://semver.org/).
     * forEach
     * toOption
     * toStream
+- Either includes a new filter method that takes a function for custom handler of the unsatisfied case
 
 ## [4.6.2] - [2018-06-15]
 ### Changed

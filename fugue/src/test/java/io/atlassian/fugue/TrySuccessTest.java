@@ -158,13 +158,15 @@ public class TrySuccessTest {
 
   @Test public void filterTrue() {
     final TestException testException = new TestException();
-    final Try<Integer> filter = t.filter(value -> Objects.equals(value, STARTING_VALUE), () -> testException);
+    final Try<Integer> filter = t.filter(value -> Objects.equals(value, STARTING_VALUE),
+      o -> o.map(Try::<Integer> failure).getOrElse(Try.<Integer> failure(testException)));
     assertThat(filter, is(t));
   }
 
   @Test public void filterFalse() {
     final TestException testException = new TestException();
-    final Try<Integer> filter = t.filter(value -> !Objects.equals(value, STARTING_VALUE), () -> testException);
+    final Try<Integer> filter = t.filter(value -> !Objects.equals(value, STARTING_VALUE),
+      o -> o.map(Try::<Integer> failure).getOrElse(Try.<Integer> failure(testException)));
     assertThat(filter, is(Try.failure(testException)));
   }
 

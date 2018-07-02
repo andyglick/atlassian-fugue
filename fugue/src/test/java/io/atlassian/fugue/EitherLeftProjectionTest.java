@@ -186,6 +186,36 @@ public class EitherLeftProjectionTest {
     assertThat(filtered.isDefined(), is(false));
   }
 
+  @Test public void filterWithUnsatisifedHandlerDefinedTrue() {
+    Either<String, Integer> filtered = l.left().filter(x -> true, o -> right(o.map(i -> 99 + i).getOrElse(300)));
+    assertThat(filtered.left().isDefined(), is(true));
+    assertThat(filtered.left().get(), is("heyaa!"));
+  }
+
+  @Test public void filterWithUnsatisifedHandlerRightDefinedFalse() {
+    Either<String, Integer> filtered = l.left().filter(x -> false, o -> right(o.map(i -> 99 + i).getOrElse(300)));
+    assertThat(filtered.left().isDefined(), is(false));
+    assertThat(filtered.right().get(), is(300));
+  }
+
+  @Test public void filterWithUnsatisifedHandlerLeftDefinedFalse() {
+    Either<String, Integer> filtered = l.left().filter(x -> false, o -> left(o.map(String::valueOf).getOrElse("300")));
+    assertThat(filtered.left().isDefined(), is(true));
+    assertThat(filtered.left().get(), is("300"));
+  }
+
+  @Test public void filterWithUnsatisifedHandlerRightNotDefined() {
+    Either<String, Integer> filtered = r.left().filter(x -> false, o -> right(o.map(i -> 99 + i).getOrElse(300)));
+    assertThat(filtered.left().isDefined(), is(false));
+    assertThat(filtered.right().get(), is(111));
+  }
+
+  @Test public void filterWithUnsatisifedHandlerLeftNotDefined() {
+    Either<String, Integer> filtered = r.left().filter(x -> false, o -> left(o.map(String::valueOf).getOrElse("300")));
+    assertThat(filtered.left().isDefined(), is(true));
+    assertThat(filtered.left().get(), is("12"));
+  }
+
   @Test public void applyDefinedLeft() {
     final Either<Function<String, String>, Integer> func = left(reverse);
     assertThat(l.left().ap(func).left().get(), is("!aayeh"));

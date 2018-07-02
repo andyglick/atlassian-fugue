@@ -11,6 +11,10 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static io.atlassian.fugue.Either.left;
+import static io.atlassian.fugue.Either.right;
+import static io.atlassian.fugue.Option.none;
+import static io.atlassian.fugue.Option.some;
 import static io.atlassian.fugue.Suppliers.memoize;
 import static io.atlassian.fugue.Suppliers.ofInstance;
 import static java.util.Objects.requireNonNull;
@@ -264,22 +268,22 @@ import static java.util.function.Function.identity;
   public abstract Try<A> orElse(final Supplier<? extends Try<? extends A>> orElse);
 
   /**
-   * Returns <code>Failure</code> of failureExceptionSupplier if this is a
-   * failure or if the given predicate <code>p</code> does not hold for the
-   * success value, otherwise, returns this success.
-   * <p>
-   * Note that for {@link Try#delayed(Supplier)} this is not an evaluating
-   * operation.
+   * Returns a <code>Success</code> if this is a success, and the given
+   * predicate holds for the contained value, otherwise returns the result of
+   * executing the unsatisfied handler function.
    *
-   * @param p The predicate function to test on this successes value
-   * @param failureExceptionSupplier The failure exception to use if the
-   * predicate fails on a success value or is already a failure
-   * @return <code>Failure</code> of failureExceptionSupplier if this is a
-   * failure or if the given predicate <code>p</code> does not hold for the
-   * success value, otherwise, returns this success.
-   * @since 4.7
+   * The unsatisfied handler function will receive a <code>None</code> if this
+   * is a success, otherwise it will receive a <code>Some</code> of the failure
+   * value.
+   *
+   * @param p The predicate function to test on the success contained value.
+   * @param unsatisfiedHandler The function to execute when predicate is
+   * unsatisfied
+   * @return a Try that will be a success of the contained value, or the result
+   * of executing the unsatisfied handler function
+   * @since 4.7.0
    */
-  public abstract Try<A> filter(Predicate<? super A> p, Supplier<? extends Exception> failureExceptionSupplier);
+  public abstract Try<A> filter(Predicate<? super A> p, Function<Option<Exception>, Try<A>> unsatisfiedHandler);
 
   /**
    * Applies the function to the wrapped value, applying failureF it this is a
@@ -406,10 +410,8 @@ import static java.util.function.Function.identity;
       return result;
     }
 
-    @Override public Try<A> filter(Predicate<? super A> p, Supplier<? extends Exception> failureExceptionSupplier) {
-      return Checked.now(() -> {
-        throw failureExceptionSupplier.get();
-      });
+    @Override public Try<A> filter(Predicate<? super A> p, Function<Option<Exception>, Try<A>> unsatisfiedHandler) {
+      return unsatisfiedHandler.apply(some(e));
     }
 
     @Override public <B> B fold(final Function<? super Exception, B> failureF, final Function<A, B> successF) {
@@ -417,11 +419,11 @@ import static java.util.function.Function.identity;
     }
 
     @Override public Either<Exception, A> toEither() {
-      return Either.left(e);
+      return left(e);
     }
 
     @Override public Option<A> toOption() {
-      return Option.none();
+      return none();
     }
 
     @Override public Optional<A> toOptional() {
@@ -501,13 +503,13 @@ import static java.util.function.Function.identity;
       return this;
     }
 
-    @Override public Try<A> filter(Predicate<? super A> p, Supplier<? extends Exception> failureExceptionSupplier) {
-      return Checked.now(() -> {
+    @Override public Try<A> filter(Predicate<? super A> p, Function<Option<Exception>, Try<A>> unsatisfiedHandler) {
+      return flatten(Checked.now(() -> {
         if (p.test(value)) {
-          return value;
+          return Try.successful(value);
         }
-        throw failureExceptionSupplier.get();
-      });
+        return unsatisfiedHandler.apply(none());
+      }));
     }
 
     @Override public <B> B fold(final Function<? super Exception, B> failureF, final Function<A, B> successF) {
@@ -515,11 +517,11 @@ import static java.util.function.Function.identity;
     }
 
     @Override public Either<Exception, A> toEither() {
-      return Either.right(value);
+      return right(value);
     }
 
     @Override public Option<A> toOption() {
-      return Option.some(value);
+      return some(value);
     }
 
     @Override public Optional<A> toOptional() {
@@ -611,8 +613,8 @@ import static java.util.function.Function.identity;
       return composeDelayed(t -> t.orElse(orElse));
     }
 
-    @Override public Try<A> filter(Predicate<? super A> p, Supplier<? extends Exception> failureExceptionSupplier) {
-      return composeDelayed(t -> t.filter(p, failureExceptionSupplier));
+    @Override public Try<A> filter(Predicate<? super A> p, Function<Option<Exception>, Try<A>> unsatisfiedHandler) {
+      return composeDelayed(t -> t.filter(p, unsatisfiedHandler));
     }
 
     @Override public <B> B fold(Function<? super Exception, B> failureF, Function<A, B> successF) {

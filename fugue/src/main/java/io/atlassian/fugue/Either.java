@@ -15,11 +15,6 @@
  */
 package io.atlassian.fugue;
 
-import static io.atlassian.fugue.Option.none;
-import static io.atlassian.fugue.Option.some;
-import static io.atlassian.fugue.Suppliers.ofInstance;
-import static java.util.Objects.requireNonNull;
-
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -29,6 +24,11 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+
+import static io.atlassian.fugue.Option.none;
+import static io.atlassian.fugue.Option.some;
+import static io.atlassian.fugue.Suppliers.ofInstance;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A class that acts as a container for a value of one of two types. An Either
@@ -369,6 +369,26 @@ public abstract class Either<L, R> implements Serializable {
    */
   public final Option<Either<L, R>> filter(final Predicate<? super R> p) {
     return right().filter(p);
+  }
+
+  /**
+   * Returns a <code>Right</code> if this is a right, and the given predicate
+   * holds for the contained value, otherwise returns the result of executing
+   * the unsatisfied handler function.
+   *
+   * The unsatisfied handler function will receive a <code>None</code> if this
+   * is a right, otherwise it will receive a <code>Some</code> of the left
+   * value.
+   *
+   * @param p The predicate function to test on the right contained value.
+   * @param unsatisfiedHandler The function to execute when predicate is
+   * unsatisfied
+   * @return a new Either that will be a right of the contained value, or the
+   * result of executing the unsatisfied handler function
+   * @since 4.7.0
+   */
+  public final Either<L, R> filter(Predicate<? super R> p, Function<Option<L>, ? extends Either<? extends L, ? extends R>> unsatisfiedHandler) {
+    return right().filter(p, unsatisfiedHandler);
   }
 
   /**
@@ -802,6 +822,35 @@ public abstract class Either<L, R> implements Serializable {
     }
 
     /**
+     * Returns a <code>Left</code> if this is a left, and the given predicate
+     * holds for the contained value, otherwise returns the result of executing
+     * the unsatisfied handler function.
+     *
+     * The unsatisfied handler function will receive a <code>None</code> if this
+     * is a left, otherwise it will receive a <code>Some</code> of the right
+     * value.
+     *
+     * @param p The predicate function to test on the left contained value.
+     * @param unsatisfiedHandler The function to execute when predicate is
+     * unsatisfied
+     * @return a new Either that will be a left of the contained value, or the
+     * result of executing the unsatisfied handler function
+     * @since 4.7.0
+     */
+    @SuppressWarnings("unchecked") public Either<L, R> filter(Predicate<? super L> p,
+      Function<Option<R>, ? extends Either<? extends L, ? extends R>> unsatisfiedHandler) {
+      if (isLeft()) {
+        if (p.test(get())) {
+          return new Left<>(get());
+        } else {
+          return (Either<L, R>) unsatisfiedHandler.apply(none());
+        }
+      } else {
+        return (Either<L, R>) unsatisfiedHandler.apply(right().toOption());
+      }
+    }
+
+    /**
      * Function application on this projection's value.
      *
      * @param <X> the LHS type
@@ -922,6 +971,35 @@ public abstract class Either<L, R> implements Serializable {
         return some(result);
       }
       return none();
+    }
+
+    /**
+     * Returns a <code>Right</code> if this is a right, and the given predicate
+     * holds for the contained value, otherwise returns the result of executing
+     * the unsatisfied handler function.
+     *
+     * The unsatisfied handler function will receive a <code>None</code> if this
+     * is a right, otherwise it will receive a <code>Some</code> of the left
+     * value.
+     *
+     * @param p The predicate function to test on the right contained value.
+     * @param unsatisfiedHandler The function to execute when predicate is
+     * unsatisfied
+     * @return a new Either that will be a right of the contained value, or the
+     * result of executing the unsatisfied handler function
+     * @since 4.7.0
+     */
+    @SuppressWarnings("unchecked") public Either<L, R> filter(Predicate<? super R> p,
+      Function<Option<L>, ? extends Either<? extends L, ? extends R>> unsatisfiedHandler) {
+      if (isRight()) {
+        if (p.test(get())) {
+          return new Right<>(get());
+        } else {
+          return (Either<L, R>) unsatisfiedHandler.apply(none());
+        }
+      } else {
+        return (Either<L, R>) unsatisfiedHandler.apply(left().toOption());
+      }
     }
 
     /**
