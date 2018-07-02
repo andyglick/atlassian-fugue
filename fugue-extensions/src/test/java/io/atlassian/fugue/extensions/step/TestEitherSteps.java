@@ -1,10 +1,11 @@
 package io.atlassian.fugue.extensions.step;
 
 import io.atlassian.fugue.Either;
+import io.atlassian.fugue.Option;
 import io.atlassian.fugue.Unit;
 import org.junit.Test;
 
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 import static io.atlassian.fugue.Either.left;
 import static io.atlassian.fugue.Either.right;
@@ -33,7 +34,9 @@ public class TestEitherSteps {
   private static final String STRING_LOWERED = "qwerty";
   private static final Long LONG = 123456L;
   private static final Long LONGLONG = 123456123456L;
-  private static final Supplier<AnError> filterAnErrorSupplier = () -> AnError.FILTER;
+  private static final Function<Option<AnError>, Either<AnError, String>> filterStringAnErrorFunction = o -> TestEitherSteps.error(AnError.FILTER);
+  private static final Function<Option<AnError>, Either<AnError, Long>> filterLongAnErrorFunction = o -> TestEitherSteps.error(AnError.FILTER);
+  private static final Function<Option<AnError>, Either<AnError, Boolean>> filterBooleanAnErrorFunction = o -> TestEitherSteps.error(AnError.FILTER);
 
   @Test public void test_1_step_success() {
     Either<AnError, Long> stepped = Steps.begin(ok(STRING)).yield(Long::new);
@@ -48,13 +51,13 @@ public class TestEitherSteps {
   }
 
   @Test public void test_1_step_filter_success() {
-    Either<AnError, Long> stepped = Steps.begin(ok(STRING)).filter(alwaysTrue(), filterAnErrorSupplier).yield(Long::new);
+    Either<AnError, Long> stepped = Steps.begin(ok(STRING)).filter(alwaysTrue(), filterStringAnErrorFunction).yield(Long::new);
 
     assertThat(stepped, isRight(is(LONG)));
   }
 
   @Test public void test_1_step_filter_failure() {
-    Either<AnError, Long> stepped = Steps.begin(ok(STRING)).filter(alwaysFalse(), filterAnErrorSupplier).yield(Long::new);
+    Either<AnError, Long> stepped = Steps.begin(ok(STRING)).filter(alwaysFalse(), filterStringAnErrorFunction).yield(Long::new);
 
     assertThat(stepped, isLeft(is(AnError.FILTER)));
   }
@@ -90,19 +93,22 @@ public class TestEitherSteps {
   }
 
   @Test public void test_2_step_filter_success() {
-    Either<AnError, Long> stepped = Steps.begin(ok(STRING)).then(() -> ok(LONG)).filter(alwaysTrue2(), filterAnErrorSupplier).yield((v1, v2) -> v2);
+    Either<AnError, Long> stepped = Steps.begin(ok(STRING)).then(() -> ok(LONG)).filter(alwaysTrue2(), filterLongAnErrorFunction)
+      .yield((v1, v2) -> v2);
 
     assertThat(stepped, isRight(is(LONG)));
   }
 
   @Test public void test_2_step_filter_failure() {
-    Either<AnError, Long> stepped = Steps.begin(ok(STRING)).then(() -> ok(LONG)).filter(alwaysFalse2(), filterAnErrorSupplier).yield((v1, v2) -> v2);
+    Either<AnError, Long> stepped = Steps.begin(ok(STRING)).then(() -> ok(LONG)).filter(alwaysFalse2(), filterLongAnErrorFunction)
+      .yield((v1, v2) -> v2);
 
     assertThat(stepped, isLeft(is(AnError.FILTER)));
   }
 
   @Test public void test_2_step_filter_failure_1() {
-    Either<AnError, Long> stepped = Steps.begin(ok(STRING)).filter(alwaysFalse(), filterAnErrorSupplier).then(() -> ok(LONG)).yield((v1, v2) -> v2);
+    Either<AnError, Long> stepped = Steps.begin(ok(STRING)).filter(alwaysFalse(), filterStringAnErrorFunction).then(() -> ok(LONG))
+      .yield((v1, v2) -> v2);
 
     assertThat(stepped, isLeft(is(AnError.FILTER)));
   }
@@ -151,27 +157,27 @@ public class TestEitherSteps {
 
   @Test public void test_3_step_filter_success() {
     Either<AnError, Long> stepped = Steps.begin(ok(STRING)).then(() -> ok(LONG)).then(() -> ok(STRING_LOWERED))
-      .filter(alwaysTrue3(), filterAnErrorSupplier).yield((v1, v2, v3) -> v2);
+      .filter(alwaysTrue3(), filterStringAnErrorFunction).yield((v1, v2, v3) -> v2);
 
     assertThat(stepped, isRight(is(LONG)));
   }
 
   @Test public void test_3_step_filter_failure() {
     Either<AnError, Long> stepped = Steps.begin(ok(STRING)).then(() -> ok(LONG)).then(() -> ok(STRING_LOWERED))
-      .filter(alwaysFalse3(), filterAnErrorSupplier).yield((v1, v2, v3) -> v2);
+      .filter(alwaysFalse3(), filterStringAnErrorFunction).yield((v1, v2, v3) -> v2);
 
     assertThat(stepped, isLeft(is(AnError.FILTER)));
   }
 
   @Test public void test_3_step_filter_failure_1() {
-    Either<AnError, Long> stepped = Steps.begin(ok(STRING)).filter(alwaysFalse(), filterAnErrorSupplier).then(() -> ok(LONG))
+    Either<AnError, Long> stepped = Steps.begin(ok(STRING)).filter(alwaysFalse(), filterStringAnErrorFunction).then(() -> ok(LONG))
       .then(() -> ok(STRING_LOWERED)).yield((v1, v2, v3) -> v2);
 
     assertThat(stepped, isLeft(is(AnError.FILTER)));
   }
 
   @Test public void test_3_step_filter_failure_2() {
-    Either<AnError, Long> stepped = Steps.begin(ok(STRING)).then(() -> ok(LONG)).filter(alwaysFalse2(), filterAnErrorSupplier)
+    Either<AnError, Long> stepped = Steps.begin(ok(STRING)).then(() -> ok(LONG)).filter(alwaysFalse2(), filterLongAnErrorFunction)
       .then(() -> ok(STRING_LOWERED)).yield((v1, v2, v3) -> v2);
 
     assertThat(stepped, isLeft(is(AnError.FILTER)));
@@ -228,27 +234,27 @@ public class TestEitherSteps {
 
   @Test public void test_4_step_filter_success() {
     Either<AnError, Long> stepped = Steps.begin(ok(STRING)).then(() -> ok(LONG)).then(() -> ok(STRING_LOWERED)).then(() -> ok(true))
-      .filter(alwaysTrue4(), filterAnErrorSupplier).yield((v1, v2, v3, v4) -> v2);
+      .filter(alwaysTrue4(), filterBooleanAnErrorFunction).yield((v1, v2, v3, v4) -> v2);
 
     assertThat(stepped, isRight(is(LONG)));
   }
 
   @Test public void test_4_step_filter_failure() {
     Either<AnError, Long> stepped = Steps.begin(ok(STRING)).then(() -> ok(LONG)).then(() -> ok(STRING_LOWERED)).then(() -> ok(true))
-      .filter(alwaysFalse4(), filterAnErrorSupplier).yield((v1, v2, v3, v4) -> v2);
+      .filter(alwaysFalse4(), filterBooleanAnErrorFunction).yield((v1, v2, v3, v4) -> v2);
 
     assertThat(stepped, isLeft(is(AnError.FILTER)));
   }
 
   @Test public void test_4_step_filter_failure_1() {
-    Either<AnError, Long> stepped = Steps.begin(ok(STRING)).filter(alwaysFalse(), filterAnErrorSupplier).then(() -> ok(LONG))
+    Either<AnError, Long> stepped = Steps.begin(ok(STRING)).filter(alwaysFalse(), filterStringAnErrorFunction).then(() -> ok(LONG))
       .then(() -> ok(STRING_LOWERED)).then(() -> ok(true)).yield((v1, v2, v3, v4) -> v2);
 
     assertThat(stepped, isLeft(is(AnError.FILTER)));
   }
 
   @Test public void test_4_step_filter_failure_2() {
-    Either<AnError, Long> stepped = Steps.begin(ok(STRING)).then(() -> ok(LONG)).filter(alwaysFalse2(), filterAnErrorSupplier)
+    Either<AnError, Long> stepped = Steps.begin(ok(STRING)).then(() -> ok(LONG)).filter(alwaysFalse2(), filterLongAnErrorFunction)
       .then(() -> ok(STRING_LOWERED)).then(() -> ok(true)).yield((v1, v2, v3, v4) -> v2);
 
     assertThat(stepped, isLeft(is(AnError.FILTER)));
@@ -256,7 +262,7 @@ public class TestEitherSteps {
 
   @Test public void test_4_step_filter_failure_3() {
     Either<AnError, Long> stepped = Steps.begin(ok(STRING)).then(() -> ok(LONG)).then(() -> ok(STRING_LOWERED))
-      .filter(alwaysFalse3(), filterAnErrorSupplier).then(() -> ok(true)).yield((v1, v2, v3, v4) -> v2);
+      .filter(alwaysFalse3(), filterStringAnErrorFunction).then(() -> ok(true)).yield((v1, v2, v3, v4) -> v2);
 
     assertThat(stepped, isLeft(is(AnError.FILTER)));
   }
@@ -320,7 +326,7 @@ public class TestEitherSteps {
 
   @Test public void test_5_step_filter_success() {
     Either<AnError, Long> stepped = Steps.begin(ok(STRING)).then(v -> ok(STRING)).then((first, second) -> ok(first + second))
-      .then((v1, v2, v3) -> ok(STRING)).then((v1, v2, v3, v4) -> ok(STRING)).filter(alwaysTrue5(), filterAnErrorSupplier)
+      .then((v1, v2, v3) -> ok(STRING)).then((v1, v2, v3, v4) -> ok(STRING)).filter(alwaysTrue5(), filterStringAnErrorFunction)
       .yield((value1, value2, value3, value4, value5) -> new Long(value3));
 
     assertThat(stepped, isRight(is(LONGLONG)));
@@ -328,14 +334,14 @@ public class TestEitherSteps {
 
   @Test public void test_5_step_filter_failure() {
     Either<AnError, Long> stepped = Steps.begin(ok(STRING)).then(v -> ok(STRING)).then((first, second) -> ok(first + second))
-      .then((v1, v2, v3) -> ok(STRING)).then((v1, v2, v3, v4) -> ok(STRING)).filter(alwaysFalse5(), filterAnErrorSupplier)
+      .then((v1, v2, v3) -> ok(STRING)).then((v1, v2, v3, v4) -> ok(STRING)).filter(alwaysFalse5(), filterStringAnErrorFunction)
       .yield((value1, value2, value3, value4, value5) -> new Long(value3));
 
     assertThat(stepped, isLeft(is(AnError.FILTER)));
   }
 
   @Test public void test_5_step_filter_failure_1() {
-    Either<AnError, Long> stepped = Steps.begin(ok(STRING)).filter(alwaysFalse(), filterAnErrorSupplier).then(v -> ok(STRING))
+    Either<AnError, Long> stepped = Steps.begin(ok(STRING)).filter(alwaysFalse(), filterStringAnErrorFunction).then(v -> ok(STRING))
       .then((first, second) -> ok(first + second)).then((v1, v2, v3) -> ok(STRING)).then((v1, v2, v3, v4) -> ok(STRING))
       .yield((value1, value2, value3, value4, value5) -> new Long(value3));
 
@@ -343,7 +349,7 @@ public class TestEitherSteps {
   }
 
   @Test public void test_5_step_filter_failure_2() {
-    Either<AnError, Long> stepped = Steps.begin(ok(STRING)).then(v -> ok(STRING)).filter(alwaysFalse2(), filterAnErrorSupplier)
+    Either<AnError, Long> stepped = Steps.begin(ok(STRING)).then(v -> ok(STRING)).filter(alwaysFalse2(), filterStringAnErrorFunction)
       .then((first, second) -> ok(first + second)).then((v1, v2, v3) -> ok(STRING)).then((v1, v2, v3, v4) -> ok(STRING))
       .yield((value1, value2, value3, value4, value5) -> new Long(value3));
 
@@ -352,7 +358,7 @@ public class TestEitherSteps {
 
   @Test public void test_5_step_filter_failure_3() {
     Either<AnError, Long> stepped = Steps.begin(ok(STRING)).then(v -> ok(STRING)).then((first, second) -> ok(first + second))
-      .filter(alwaysFalse3(), filterAnErrorSupplier).then((v1, v2, v3) -> ok(STRING)).then((v1, v2, v3, v4) -> ok(STRING))
+      .filter(alwaysFalse3(), filterStringAnErrorFunction).then((v1, v2, v3) -> ok(STRING)).then((v1, v2, v3, v4) -> ok(STRING))
       .yield((value1, value2, value3, value4, value5) -> new Long(value3));
 
     assertThat(stepped, isLeft(is(AnError.FILTER)));
@@ -360,7 +366,7 @@ public class TestEitherSteps {
 
   @Test public void test_5_step_filter_failure_4() {
     Either<AnError, Long> stepped = Steps.begin(ok(STRING)).then(v -> ok(STRING)).then((first, second) -> ok(first + second))
-      .then((v1, v2, v3) -> ok(STRING)).filter(alwaysFalse4(), filterAnErrorSupplier).then((v1, v2, v3, v4) -> ok(STRING))
+      .then((v1, v2, v3) -> ok(STRING)).filter(alwaysFalse4(), filterStringAnErrorFunction).then((v1, v2, v3, v4) -> ok(STRING))
       .yield((value1, value2, value3, value4, value5) -> new Long(value3));
 
     assertThat(stepped, isLeft(is(AnError.FILTER)));
@@ -434,7 +440,7 @@ public class TestEitherSteps {
 
   @Test public void test_6_step_filter_success() {
     Either<AnError, String> stepped = Steps.begin(ok(STRING)).then(() -> ok(STRING)).then(() -> ok(STRING + STRING)).then(() -> ok(STRING))
-      .then(() -> ok(STRING_UPPERED)).then(() -> ok(STRING_LOWERED)).filter(alwaysTrue6(), filterAnErrorSupplier)
+      .then(() -> ok(STRING_UPPERED)).then(() -> ok(STRING_LOWERED)).filter(alwaysTrue6(), filterStringAnErrorFunction)
       .yield((value1, value2, value3, value4, value5, value6) -> value6);
 
     assertThat(stepped, isRight(is(STRING_LOWERED)));
@@ -442,14 +448,14 @@ public class TestEitherSteps {
 
   @Test public void test_6_step_filter_failure() {
     Either<AnError, String> stepped = Steps.begin(ok(STRING)).then(() -> ok(STRING)).then(() -> ok(STRING + STRING)).then(() -> ok(STRING))
-      .then(() -> ok(STRING_UPPERED)).then(() -> ok(STRING_LOWERED)).filter(alwaysFalse6(), filterAnErrorSupplier)
+      .then(() -> ok(STRING_UPPERED)).then(() -> ok(STRING_LOWERED)).filter(alwaysFalse6(), filterStringAnErrorFunction)
       .yield((value1, value2, value3, value4, value5, value6) -> value6);
 
     assertThat(stepped, isLeft(is(AnError.FILTER)));
   }
 
   @Test public void test_6_step_filter_failure_1() {
-    Either<AnError, String> stepped = Steps.begin(ok(STRING)).filter(alwaysFalse(), filterAnErrorSupplier).then(() -> ok(STRING))
+    Either<AnError, String> stepped = Steps.begin(ok(STRING)).filter(alwaysFalse(), filterStringAnErrorFunction).then(() -> ok(STRING))
       .then(() -> ok(STRING + STRING)).then(() -> ok(STRING)).then(() -> ok(STRING_UPPERED)).then(() -> ok(STRING_LOWERED))
       .yield((value1, value2, value3, value4, value5, value6) -> value6);
 
@@ -457,7 +463,7 @@ public class TestEitherSteps {
   }
 
   @Test public void test_6_step_filter_failure_2() {
-    Either<AnError, String> stepped = Steps.begin(ok(STRING)).then(() -> ok(STRING)).filter(alwaysFalse2(), filterAnErrorSupplier)
+    Either<AnError, String> stepped = Steps.begin(ok(STRING)).then(() -> ok(STRING)).filter(alwaysFalse2(), filterStringAnErrorFunction)
       .then(() -> ok(STRING + STRING)).then(() -> ok(STRING)).then(() -> ok(STRING_UPPERED)).then(() -> ok(STRING_LOWERED))
       .yield((value1, value2, value3, value4, value5, value6) -> value6);
 
@@ -466,7 +472,7 @@ public class TestEitherSteps {
 
   @Test public void test_6_step_filter_failure_3() {
     Either<AnError, String> stepped = Steps.begin(ok(STRING)).then(() -> ok(STRING)).then(() -> ok(STRING + STRING))
-      .filter(alwaysFalse3(), filterAnErrorSupplier).then(() -> ok(STRING)).then(() -> ok(STRING_UPPERED)).then(() -> ok(STRING_LOWERED))
+      .filter(alwaysFalse3(), filterStringAnErrorFunction).then(() -> ok(STRING)).then(() -> ok(STRING_UPPERED)).then(() -> ok(STRING_LOWERED))
       .yield((value1, value2, value3, value4, value5, value6) -> value6);
 
     assertThat(stepped, isLeft(is(AnError.FILTER)));
@@ -474,7 +480,7 @@ public class TestEitherSteps {
 
   @Test public void test_6_step_filter_failure_4() {
     Either<AnError, String> stepped = Steps.begin(ok(STRING)).then(() -> ok(STRING)).then(() -> ok(STRING + STRING)).then(() -> ok(STRING))
-      .filter(alwaysFalse4(), filterAnErrorSupplier).then(() -> ok(STRING_UPPERED)).then(() -> ok(STRING_LOWERED))
+      .filter(alwaysFalse4(), filterStringAnErrorFunction).then(() -> ok(STRING_UPPERED)).then(() -> ok(STRING_LOWERED))
       .yield((value1, value2, value3, value4, value5, value6) -> value6);
 
     assertThat(stepped, isLeft(is(AnError.FILTER)));
@@ -482,7 +488,7 @@ public class TestEitherSteps {
 
   @Test public void test_6_step_filter_failure_5() {
     Either<AnError, String> stepped = Steps.begin(ok(STRING)).then(() -> ok(STRING)).then(() -> ok(STRING + STRING)).then(() -> ok(STRING))
-      .then(() -> ok(STRING_UPPERED)).filter(alwaysFalse5(), filterAnErrorSupplier).then(() -> ok(STRING_LOWERED))
+      .then(() -> ok(STRING_UPPERED)).filter(alwaysFalse5(), filterStringAnErrorFunction).then(() -> ok(STRING_LOWERED))
       .yield((value1, value2, value3, value4, value5, value6) -> value6);
 
     assertThat(stepped, isLeft(is(AnError.FILTER)));

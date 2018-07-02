@@ -1,12 +1,11 @@
 package io.atlassian.fugue.extensions.step;
 
 import io.atlassian.fugue.Either;
+import io.atlassian.fugue.Option;
 import io.atlassian.fugue.extensions.functions.Function6;
 import io.atlassian.fugue.extensions.functions.Predicate6;
 
-import java.util.function.Supplier;
-
-import static io.atlassian.fugue.Either.left;
+import java.util.function.Function;
 
 public class EitherStep6<A, B, C, D, E, F, LEFT> {
   private final Either<LEFT, A> either1;
@@ -26,14 +25,14 @@ public class EitherStep6<A, B, C, D, E, F, LEFT> {
     this.either6 = either6;
   }
 
-  public EitherStep6<A, B, C, D, E, F, LEFT> filter(Predicate6<A, B, C, D, E, F> predicate, Supplier<LEFT> leftSupplier) {
+  public EitherStep6<A, B, C, D, E, F, LEFT> filter(Predicate6<? super A, ? super B, ? super C, ? super D, ? super E, ? super F> predicate,
+    Function<Option<LEFT>, ? extends Either<? extends LEFT, ? extends F>> unsatisfiedHandler) {
     Either<LEFT, F> filterEither6 = either1.flatMap(value1 -> either2.flatMap(value2 -> either3.flatMap(value3 -> either4.flatMap(value4 -> either5
-      .flatMap(value5 -> either6.filter(value6 -> predicate.test(value1, value2, value3, value4, value5, value6)).getOr(
-        () -> left(leftSupplier.get())))))));
+      .flatMap(value5 -> either6.filter(value6 -> predicate.test(value1, value2, value3, value4, value5, value6), unsatisfiedHandler))))));
     return new EitherStep6<>(either1, either2, either3, either4, either5, filterEither6);
   }
 
-  public <Z> Either<LEFT, Z> yield(Function6<A, B, C, D, E, F, Z> functor) {
+  public <Z> Either<LEFT, Z> yield(Function6<? super A, ? super B, ? super C, ? super D, ? super E, ? super F, Z> functor) {
     return either1.flatMap(value1 -> either2.flatMap(value2 -> either3.flatMap(value3 -> either4.flatMap(value4 -> either5.flatMap(value5 -> either6
       .map(value6 -> functor.apply(value1, value2, value3, value4, value5, value6)))))));
   }

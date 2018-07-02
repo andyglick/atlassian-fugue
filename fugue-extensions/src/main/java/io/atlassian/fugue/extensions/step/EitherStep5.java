@@ -1,12 +1,12 @@
 package io.atlassian.fugue.extensions.step;
 
 import io.atlassian.fugue.Either;
+import io.atlassian.fugue.Option;
 import io.atlassian.fugue.extensions.functions.Function5;
 import io.atlassian.fugue.extensions.functions.Predicate5;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
-
-import static io.atlassian.fugue.Either.left;
 
 public class EitherStep5<A, B, C, D, E, LEFT> {
   private final Either<LEFT, A> either1;
@@ -23,7 +23,7 @@ public class EitherStep5<A, B, C, D, E, LEFT> {
     this.either5 = either5;
   }
 
-  public <F> EitherStep6<A, B, C, D, E, F, LEFT> then(Function5<A, B, C, D, E, Either<LEFT, F>> functor) {
+  public <F> EitherStep6<A, B, C, D, E, F, LEFT> then(Function5<? super A, ? super B, ? super C, ? super D, ? super E, Either<LEFT, F>> functor) {
     Either<LEFT, F> either6 = either1.flatMap(value1 -> either2.flatMap(value2 -> either3.flatMap(value3 -> either4.flatMap(value4 -> either5
       .flatMap(value5 -> functor.apply(value1, value2, value3, value4, value5))))));
     return new EitherStep6<>(either1, either2, either3, either4, either5, either6);
@@ -35,13 +35,14 @@ public class EitherStep5<A, B, C, D, E, LEFT> {
     return new EitherStep6<>(either1, either2, either3, either4, either5, either6);
   }
 
-  public EitherStep5<A, B, C, D, E, LEFT> filter(Predicate5<A, B, C, D, E> predicate, Supplier<LEFT> leftSupplier) {
+  public EitherStep5<A, B, C, D, E, LEFT> filter(Predicate5<? super A, ? super B, ? super C, ? super D, ? super E> predicate,
+    Function<Option<LEFT>, ? extends Either<? extends LEFT, ? extends E>> unsatisfiedHandler) {
     Either<LEFT, E> filterEither5 = either1.flatMap(value1 -> either2.flatMap(value2 -> either3.flatMap(value3 -> either4.flatMap(value4 -> either5
-      .filter(value5 -> predicate.test(value1, value2, value3, value4, value5)).getOr(() -> left(leftSupplier.get()))))));
+      .filter(value5 -> predicate.test(value1, value2, value3, value4, value5), unsatisfiedHandler)))));
     return new EitherStep5<>(either1, either2, either3, either4, filterEither5);
   }
 
-  public <Z> Either<LEFT, Z> yield(Function5<A, B, C, D, E, Z> functor) {
+  public <Z> Either<LEFT, Z> yield(Function5<? super A, ? super B, ? super C, ? super D, ? super E, Z> functor) {
     return either1.flatMap(value1 -> either2.flatMap(value2 -> either3.flatMap(value3 -> either4.flatMap(value4 -> either5.map(value5 -> functor
       .apply(value1, value2, value3, value4, value5))))));
   }

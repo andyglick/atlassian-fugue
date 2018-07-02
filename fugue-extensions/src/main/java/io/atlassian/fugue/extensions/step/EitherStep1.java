@@ -1,12 +1,11 @@
 package io.atlassian.fugue.extensions.step;
 
 import io.atlassian.fugue.Either;
+import io.atlassian.fugue.Option;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-
-import static io.atlassian.fugue.Either.left;
 
 public class EitherStep1<A, LEFT> {
 
@@ -16,7 +15,7 @@ public class EitherStep1<A, LEFT> {
     this.either1 = either1;
   }
 
-  public <B> EitherStep2<A, B, LEFT> then(Function<A, Either<LEFT, B>> functor) {
+  public <B> EitherStep2<A, B, LEFT> then(Function<? super A, Either<LEFT, B>> functor) {
     Either<LEFT, B> either2 = either1.flatMap(functor);
     return new EitherStep2<>(either1, either2);
   }
@@ -26,12 +25,13 @@ public class EitherStep1<A, LEFT> {
     return new EitherStep2<>(either1, either2);
   }
 
-  public EitherStep1<A, LEFT> filter(Predicate<A> predicate, Supplier<LEFT> leftSupplier) {
-    Either<LEFT, A> filterEither1 = either1.filter(predicate).getOr(() -> left(leftSupplier.get()));
+  public EitherStep1<A, LEFT> filter(Predicate<? super A> predicate,
+    Function<Option<LEFT>, ? extends Either<? extends LEFT, ? extends A>> unsatisfiedHandler) {
+    Either<LEFT, A> filterEither1 = either1.filter(predicate, unsatisfiedHandler);
     return new EitherStep1<>(filterEither1);
   }
 
-  public <Z> Either<LEFT, Z> yield(Function<A, Z> functor) {
+  public <Z> Either<LEFT, Z> yield(Function<? super A, Z> functor) {
     return either1.map(functor);
   }
 

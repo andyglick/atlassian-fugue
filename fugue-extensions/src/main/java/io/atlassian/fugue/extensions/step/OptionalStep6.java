@@ -23,13 +23,13 @@ import java.util.Optional;
     this.optional6 = optional6;
   }
 
-  public OptionalStep6<A, B, C, D, E, F> filter(Predicate6<A, B, C, D, E, F> predicate) {
+  public OptionalStep6<A, B, C, D, E, F> filter(Predicate6<? super A, ? super B, ? super C, ? super D, ? super E, ? super F> predicate) {
     Optional<F> filterOptional6 = optional1.flatMap(value1 -> optional2.flatMap(value2 -> optional3.flatMap(value3 -> optional4
       .flatMap(value4 -> optional5.flatMap(value5 -> optional6.filter(value6 -> predicate.test(value1, value2, value3, value4, value5, value6)))))));
     return new OptionalStep6<>(optional1, optional2, optional3, optional4, optional5, filterOptional6);
   }
 
-  public <Z> Optional<Z> yield(Function6<A, B, C, D, E, F, Z> functor) {
+  public <Z> Optional<Z> yield(Function6<? super A, ? super B, ? super C, ? super D, ? super E, ? super F, Z> functor) {
     return optional1.flatMap(value1 -> optional2.flatMap(value2 -> optional3.flatMap(value3 -> optional4.flatMap(value4 -> optional5
       .flatMap(value5 -> optional6.map(value6 -> functor.apply(value1, value2, value3, value4, value5, value6)))))));
   }

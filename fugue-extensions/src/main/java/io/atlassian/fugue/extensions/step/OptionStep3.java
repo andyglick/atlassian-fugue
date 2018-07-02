@@ -18,7 +18,7 @@ public class OptionStep3<A, B, C> {
     this.option3 = option3;
   }
 
-  public <D> OptionStep4<A, B, C, D> then(Function3<A, B, C, Option<D>> functor) {
+  public <D> OptionStep4<A, B, C, D> then(Function3<? super A, ? super B, ? super C, Option<D>> functor) {
     Option<D> option4 = option1.flatMap(value1 -> option2.flatMap(value2 -> option3.flatMap(value3 -> functor.apply(value1, value2, value3))));
     return new OptionStep4<>(option1, option2, option3, option4);
   }
@@ -28,12 +28,12 @@ public class OptionStep3<A, B, C> {
     return new OptionStep4<>(option1, option2, option3, option4);
   }
 
-  public OptionStep3<A, B, C> filter(Predicate3<A, B, C> predicate) {
+  public OptionStep3<A, B, C> filter(Predicate3<? super A, ? super B, ? super C> predicate) {
     Option<C> filterOption3 = option1.flatMap(value1 -> option2.flatMap(value2 -> option3.filter(value3 -> predicate.test(value1, value2, value3))));
     return new OptionStep3<>(option1, option2, filterOption3);
   }
 
-  public <Z> Option<Z> yield(Function3<A, B, C, Z> functor) {
+  public <Z> Option<Z> yield(Function3<? super A, ? super B, ? super C, Z> functor) {
     return option1.flatMap(value1 -> option2.flatMap(value2 -> option3.map(value3 -> functor.apply(value1, value2, value3))));
   }
 

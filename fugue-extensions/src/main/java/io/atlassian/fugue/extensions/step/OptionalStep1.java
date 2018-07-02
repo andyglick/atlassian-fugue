@@ -23,12 +23,12 @@ import java.util.function.Supplier;
     return new OptionalStep2<>(optional1, Optional);
   }
 
-  public OptionalStep1<A> filter(Predicate<A> predicate) {
+  public OptionalStep1<A> filter(Predicate<? super A> predicate) {
     Optional<A> filterOptional1 = optional1.filter(predicate);
     return new OptionalStep1<>(filterOptional1);
   }
 
-  public <Z> Optional<Z> yield(Function<A, Z> function) {
+  public <Z> Optional<Z> yield(Function<? super A, Z> function) {
     return optional1.map(function);
   }
 

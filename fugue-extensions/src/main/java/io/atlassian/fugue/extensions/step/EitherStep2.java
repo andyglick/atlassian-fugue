@@ -5,10 +5,8 @@ import io.atlassian.fugue.Option;
 
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
-import java.util.function.Predicate;
+import java.util.function.Function;
 import java.util.function.Supplier;
-
-import static io.atlassian.fugue.Either.left;
 
 public class EitherStep2<A, B, LEFT> {
 
@@ -20,7 +18,7 @@ public class EitherStep2<A, B, LEFT> {
     this.either2 = either2;
   }
 
-  public <C> EitherStep3<A, B, C, LEFT> then(BiFunction<A, B, Either<LEFT, C>> functor) {
+  public <C> EitherStep3<A, B, C, LEFT> then(BiFunction<? super A, ? super B, Either<LEFT, C>> functor) {
     Either<LEFT, C> either3 = either1.flatMap(value1 -> either2.flatMap(value2 -> functor.apply(value1, value2)));
     return new EitherStep3<>(either1, either2, either3);
   }
@@ -30,13 +28,13 @@ public class EitherStep2<A, B, LEFT> {
     return new EitherStep3<>(either1, either2, either3);
   }
 
-  public EitherStep2<A, B, LEFT> filter(BiPredicate<A, B> predicate, Supplier<LEFT> leftSupplier) {
-    Either<LEFT, B> filterEither2 = either1.flatMap(value1 -> either2.filter(value2 -> predicate.test(value1, value2)).getOr(
-      () -> left(leftSupplier.get())));
+  public EitherStep2<A, B, LEFT> filter(BiPredicate<? super A, ? super B> predicate,
+    Function<Option<LEFT>, ? extends Either<? extends LEFT, ? extends B>> unsatisfiedHandler) {
+    Either<LEFT, B> filterEither2 = either1.flatMap(value1 -> either2.filter(value2 -> predicate.test(value1, value2), unsatisfiedHandler));
     return new EitherStep2<>(either1, filterEither2);
   }
 
-  public <Z> Either<LEFT, Z> yield(BiFunction<A, B, Z> functor) {
+  public <Z> Either<LEFT, Z> yield(BiFunction<? super A, ? super B, Z> functor) {
     return either1.flatMap(value1 -> either2.map(value2 -> functor.apply(value1, value2)));
   }
 

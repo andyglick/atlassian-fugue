@@ -15,7 +15,7 @@ import java.util.function.Supplier;
     this.optional2 = optional2;
   }
 
-  public <C> OptionalStep3<A, B, C> then(BiFunction<A, B, Optional<C>> functor) {
+  public <C> OptionalStep3<A, B, C> then(BiFunction<? super A, ? super B, Optional<C>> functor) {
     Optional<C> option3 = optional1.flatMap(value1 -> optional2.flatMap(value2 -> functor.apply(value1, value2)));
     return new OptionalStep3<>(optional1, optional2, option3);
   }
@@ -25,12 +25,12 @@ import java.util.function.Supplier;
     return new OptionalStep3<>(optional1, optional2, Optional);
   }
 
-  public OptionalStep2<A, B> filter(BiPredicate<A, B> predicate) {
+  public OptionalStep2<A, B> filter(BiPredicate<? super A, ? super B> predicate) {
     Optional<B> filterOptional2 = optional1.flatMap(value1 -> optional2.filter(value2 -> predicate.test(value1, value2)));
     return new OptionalStep2<>(optional1, filterOptional2);
   }
 
-  public <Z> Optional<Z> yield(BiFunction<A, B, Z> functor) {
+  public <Z> Optional<Z> yield(BiFunction<? super A, ? super B, Z> functor) {
     return optional1.flatMap(value1 -> optional2.map(value2 -> functor.apply(value1, value2)));
   }
 

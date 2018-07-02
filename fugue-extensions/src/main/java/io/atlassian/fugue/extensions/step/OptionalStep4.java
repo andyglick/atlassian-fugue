@@ -20,7 +20,7 @@ import java.util.function.Supplier;
     this.optional4 = optional4;
   }
 
-  public <E> OptionalStep5<A, B, C, D, E> then(Function4<A, B, C, D, Optional<E>> functor) {
+  public <E> OptionalStep5<A, B, C, D, E> then(Function4<? super A, ? super B, ? super C, ? super D, Optional<E>> functor) {
     Optional<E> option5 = optional1.flatMap(value1 -> optional2.flatMap(value2 -> optional3.flatMap(value3 -> optional4.flatMap(value4 -> functor
       .apply(value1, value2, value3, value4)))));
 
@@ -33,13 +33,13 @@ import java.util.function.Supplier;
     return new OptionalStep5<>(optional1, optional2, optional3, optional4, Optional);
   }
 
-  public OptionalStep4<A, B, C, D> filter(Predicate4<A, B, C, D> predicate) {
+  public OptionalStep4<A, B, C, D> filter(Predicate4<? super A, ? super B, ? super C, ? super D> predicate) {
     Optional<D> filterOptional4 = optional1.flatMap(value1 -> optional2.flatMap(value2 -> optional3.flatMap(value3 -> optional4
       .filter(value4 -> predicate.test(value1, value2, value3, value4)))));
     return new OptionalStep4<>(optional1, optional2, optional3, filterOptional4);
   }
 
-  public <Z> Optional<Z> yield(Function4<A, B, C, D, Z> functor) {
+  public <Z> Optional<Z> yield(Function4<? super A, ? super B, ? super C, ? super D, Z> functor) {
     return optional1.flatMap(value1 -> optional2.flatMap(value2 -> optional3.flatMap(value3 -> optional4.map(value4 -> functor.apply(value1, value2,
       value3, value4)))));
   }

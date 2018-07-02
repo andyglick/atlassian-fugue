@@ -1,10 +1,11 @@
 package io.atlassian.fugue.extensions.step;
 
+import io.atlassian.fugue.Option;
 import io.atlassian.fugue.Try;
 import io.atlassian.fugue.Unit;
 import org.junit.Test;
 
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 import static io.atlassian.fugue.Try.failure;
 import static io.atlassian.fugue.Try.successful;
@@ -40,7 +41,9 @@ public class TestTrySteps {
   private static final Exception exception4 = new Exception();
   private static final Exception exception5 = new Exception();
   private static final Exception exception6 = new Exception();
-  private static final Supplier<? extends Exception> exceptionFilterSupplier = () -> exceptionFilter;
+  private static final Function<Option<Exception>, Try<String>> exceptionStringFilterFunction = o -> Try.failure(exceptionFilter);
+  private static final Function<Option<Exception>, Try<Long>> exceptionLongFilterFunction = o -> Try.failure(exceptionFilter);
+  private static final Function<Option<Exception>, Try<Boolean>> exceptionBooleanFilterFunction = o -> Try.failure(exceptionFilter);
 
   @Test public void test_1_step_success() {
     Try<Long> stepped = Steps.begin(successful(STRING)).yield(Long::new);
@@ -55,13 +58,13 @@ public class TestTrySteps {
   }
 
   @Test public void test_1_step_filter_success() {
-    Try<Long> stepped = Steps.begin(successful(STRING)).filter(alwaysTrue(), exceptionFilterSupplier).yield(Long::new);
+    Try<Long> stepped = Steps.begin(successful(STRING)).filter(alwaysTrue(), exceptionStringFilterFunction).yield(Long::new);
 
     assertThat(stepped, isSuccessful(is(LONG)));
   }
 
   @Test public void test_1_step_filter_failure() {
-    Try<Long> stepped = Steps.begin(successful(STRING)).filter(alwaysFalse(), exceptionFilterSupplier).yield(Long::new);
+    Try<Long> stepped = Steps.begin(successful(STRING)).filter(alwaysFalse(), exceptionStringFilterFunction).yield(Long::new);
 
     assertThat(stepped, isFailure(is(exceptionFilter)));
   }
@@ -97,21 +100,21 @@ public class TestTrySteps {
   }
 
   @Test public void test_2_step_filter_success() {
-    Try<Long> stepped = Steps.begin(successful(STRING)).then(() -> successful(LONG)).filter(alwaysTrue2(), exceptionFilterSupplier)
+    Try<Long> stepped = Steps.begin(successful(STRING)).then(() -> successful(LONG)).filter(alwaysTrue2(), exceptionLongFilterFunction)
       .yield((v1, v2) -> v2);
 
     assertThat(stepped, isSuccessful(is(LONG)));
   }
 
   @Test public void test_2_step_filter_failure() {
-    Try<Long> stepped = Steps.begin(successful(STRING)).then(() -> successful(LONG)).filter(alwaysFalse2(), exceptionFilterSupplier)
+    Try<Long> stepped = Steps.begin(successful(STRING)).then(() -> successful(LONG)).filter(alwaysFalse2(), exceptionLongFilterFunction)
       .yield((v1, v2) -> v2);
 
     assertThat(stepped, isFailure(is(exceptionFilter)));
   }
 
   @Test public void test_2_step_filter_failure_1() {
-    Try<Long> stepped = Steps.begin(successful(STRING)).filter(alwaysFalse(), exceptionFilterSupplier).then(() -> successful(STRING))
+    Try<Long> stepped = Steps.begin(successful(STRING)).filter(alwaysFalse(), exceptionStringFilterFunction).then(() -> successful(STRING))
       .yield((value1, value2) -> new Long(value1 + value2));
 
     assertThat(stepped, isFailure(is(exceptionFilter)));
@@ -161,28 +164,28 @@ public class TestTrySteps {
 
   @Test public void test_3_step_filter_success() {
     Try<Long> stepped = Steps.begin(successful(STRING)).then(() -> successful(LONG)).then(() -> successful(STRING_LOWERED))
-      .filter(alwaysTrue3(), exceptionFilterSupplier).yield((v1, v2, v3) -> v2);
+      .filter(alwaysTrue3(), exceptionStringFilterFunction).yield((v1, v2, v3) -> v2);
 
     assertThat(stepped, isSuccessful(is(LONG)));
   }
 
   @Test public void test_3_step_filter_failure() {
     Try<Long> stepped = Steps.begin(successful(STRING)).then(() -> successful(LONG)).then(() -> successful(STRING_LOWERED))
-      .filter(alwaysFalse3(), exceptionFilterSupplier).yield((v1, v2, v3) -> v2);
+      .filter(alwaysFalse3(), exceptionStringFilterFunction).yield((v1, v2, v3) -> v2);
 
     assertThat(stepped, isFailure(is(exceptionFilter)));
   }
 
   @Test public void test_3_step_filter_failure_1() {
-    Try<Long> stepped = Steps.begin(successful(STRING)).filter(alwaysFalse(), exceptionFilterSupplier).then(() -> successful(LONG))
+    Try<Long> stepped = Steps.begin(successful(STRING)).filter(alwaysFalse(), exceptionStringFilterFunction).then(() -> successful(LONG))
       .then(() -> successful(STRING_LOWERED)).yield((v1, v2, v3) -> v2);
 
     assertThat(stepped, isFailure(is(exceptionFilter)));
   }
 
   @Test public void test_3_step_filter_failure_2() {
-    Try<Long> stepped = Steps.begin(successful(STRING)).then(() -> successful(LONG)).filter(alwaysFalse2(), exceptionFilterSupplier)
-      .then(() -> successful(STRING_LOWERED)).filter(alwaysFalse3(), exceptionFilterSupplier).yield((v1, v2, v3) -> v2);
+    Try<Long> stepped = Steps.begin(successful(STRING)).then(() -> successful(LONG)).filter(alwaysFalse2(), exceptionLongFilterFunction)
+      .then(() -> successful(STRING_LOWERED)).filter(alwaysFalse3(), exceptionStringFilterFunction).yield((v1, v2, v3) -> v2);
 
     assertThat(stepped, isFailure(is(exceptionFilter)));
   }
@@ -238,27 +241,27 @@ public class TestTrySteps {
 
   @Test public void test_4_step_filter_success() {
     Try<Long> stepped = Steps.begin(successful(STRING)).then(() -> successful(LONG)).then(() -> successful(STRING_LOWERED))
-      .then(() -> successful(true)).filter(alwaysTrue4(), exceptionFilterSupplier).yield((v1, v2, v3, v4) -> v2);
+      .then(() -> successful(true)).filter(alwaysTrue4(), exceptionBooleanFilterFunction).yield((v1, v2, v3, v4) -> v2);
 
     assertThat(stepped, isSuccessful(is(LONG)));
   }
 
   @Test public void test_4_step_filter_failure() {
     Try<Long> stepped = Steps.begin(successful(STRING)).then(() -> successful(LONG)).then(() -> successful(STRING_LOWERED))
-      .then(() -> successful(true)).filter(alwaysFalse4(), exceptionFilterSupplier).yield((v1, v2, v3, v4) -> v2);
+      .then(() -> successful(true)).filter(alwaysFalse4(), exceptionBooleanFilterFunction).yield((v1, v2, v3, v4) -> v2);
 
     assertThat(stepped, isFailure(is(exceptionFilter)));
   }
 
   @Test public void test_4_step_filter_failure_1() {
-    Try<Long> stepped = Steps.begin(successful(STRING)).filter(alwaysFalse(), exceptionFilterSupplier).then(() -> successful(LONG))
+    Try<Long> stepped = Steps.begin(successful(STRING)).filter(alwaysFalse(), exceptionStringFilterFunction).then(() -> successful(LONG))
       .then(() -> successful(STRING_LOWERED)).then(() -> successful(true)).yield((v1, v2, v3, v4) -> v2);
 
     assertThat(stepped, isFailure(is(exceptionFilter)));
   }
 
   @Test public void test_4_step_filter_failure_2() {
-    Try<Long> stepped = Steps.begin(successful(STRING)).then(() -> successful(LONG)).filter(alwaysFalse2(), exceptionFilterSupplier)
+    Try<Long> stepped = Steps.begin(successful(STRING)).then(() -> successful(LONG)).filter(alwaysFalse2(), exceptionLongFilterFunction)
       .then(() -> successful(STRING_LOWERED)).then(() -> successful(true)).yield((v1, v2, v3, v4) -> v2);
 
     assertThat(stepped, isFailure(is(exceptionFilter)));
@@ -266,7 +269,7 @@ public class TestTrySteps {
 
   @Test public void test_4_step_filter_failure_3() {
     Try<Long> stepped = Steps.begin(successful(STRING)).then(() -> successful(LONG)).then(() -> successful(STRING_LOWERED))
-      .filter(alwaysFalse3(), exceptionFilterSupplier).then(() -> successful(true)).yield((v1, v2, v3, v4) -> v2);
+      .filter(alwaysFalse3(), exceptionStringFilterFunction).then(() -> successful(true)).yield((v1, v2, v3, v4) -> v2);
 
     assertThat(stepped, isFailure(is(exceptionFilter)));
   }
@@ -331,7 +334,7 @@ public class TestTrySteps {
 
   @Test public void test_5_step_filter_success() {
     Try<Long> stepped = Steps.begin(successful(STRING)).then(v -> successful(STRING)).then((first, second) -> successful(first + second))
-      .then((v1, v2, v3) -> successful(STRING)).then((v1, v2, v3, v4) -> successful(STRING)).filter(alwaysTrue5(), exceptionFilterSupplier)
+      .then((v1, v2, v3) -> successful(STRING)).then((v1, v2, v3, v4) -> successful(STRING)).filter(alwaysTrue5(), exceptionStringFilterFunction)
       .yield((value1, value2, value3, value4, value5) -> new Long(value3));
 
     assertThat(stepped, isSuccessful(is(LONGLONG)));
@@ -339,14 +342,14 @@ public class TestTrySteps {
 
   @Test public void test_5_step_filter_failure() {
     Try<Long> stepped = Steps.begin(successful(STRING)).then(v -> successful(STRING)).then((first, second) -> successful(first + second))
-      .then((v1, v2, v3) -> successful(STRING)).then((v1, v2, v3, v4) -> successful(STRING)).filter(alwaysFalse5(), exceptionFilterSupplier)
+      .then((v1, v2, v3) -> successful(STRING)).then((v1, v2, v3, v4) -> successful(STRING)).filter(alwaysFalse5(), exceptionStringFilterFunction)
       .yield((value1, value2, value3, value4, value5) -> new Long(value3));
 
     assertThat(stepped, isFailure(is(exceptionFilter)));
   }
 
   @Test public void test_5_step_filter_failure_1() {
-    Try<Long> stepped = Steps.begin(successful(STRING)).filter(alwaysFalse(), exceptionFilterSupplier).then(v -> successful(STRING))
+    Try<Long> stepped = Steps.begin(successful(STRING)).filter(alwaysFalse(), exceptionStringFilterFunction).then(v -> successful(STRING))
       .then((first, second) -> successful(first + second)).then((v1, v2, v3) -> successful(STRING)).then((v1, v2, v3, v4) -> successful(STRING))
       .yield((value1, value2, value3, value4, value5) -> new Long(value3));
 
@@ -354,7 +357,7 @@ public class TestTrySteps {
   }
 
   @Test public void test_5_step_filter_failure_2() {
-    Try<Long> stepped = Steps.begin(successful(STRING)).then(v -> successful(STRING)).filter(alwaysFalse2(), exceptionFilterSupplier)
+    Try<Long> stepped = Steps.begin(successful(STRING)).then(v -> successful(STRING)).filter(alwaysFalse2(), exceptionStringFilterFunction)
       .then((first, second) -> successful(first + second)).then((v1, v2, v3) -> successful(STRING)).then((v1, v2, v3, v4) -> successful(STRING))
       .yield((value1, value2, value3, value4, value5) -> new Long(value3));
 
@@ -363,7 +366,7 @@ public class TestTrySteps {
 
   @Test public void test_5_step_filter_failure_3() {
     Try<Long> stepped = Steps.begin(successful(STRING)).then(v -> successful(STRING)).then((first, second) -> successful(first + second))
-      .filter(alwaysFalse3(), exceptionFilterSupplier).then((v1, v2, v3) -> successful(STRING)).then((v1, v2, v3, v4) -> successful(STRING))
+      .filter(alwaysFalse3(), exceptionStringFilterFunction).then((v1, v2, v3) -> successful(STRING)).then((v1, v2, v3, v4) -> successful(STRING))
       .yield((value1, value2, value3, value4, value5) -> new Long(value3));
 
     assertThat(stepped, isFailure(is(exceptionFilter)));
@@ -371,7 +374,7 @@ public class TestTrySteps {
 
   @Test public void test_5_step_filter_failure_4() {
     Try<Long> stepped = Steps.begin(successful(STRING)).then(v -> successful(STRING)).then((first, second) -> successful(first + second))
-      .then((v1, v2, v3) -> successful(STRING)).filter(alwaysFalse4(), exceptionFilterSupplier).then((v1, v2, v3, v4) -> successful(STRING))
+      .then((v1, v2, v3) -> successful(STRING)).filter(alwaysFalse4(), exceptionStringFilterFunction).then((v1, v2, v3, v4) -> successful(STRING))
       .yield((value1, value2, value3, value4, value5) -> new Long(value3));
 
     assertThat(stepped, isFailure(is(exceptionFilter)));
@@ -453,7 +456,7 @@ public class TestTrySteps {
   @Test public void test_6_step_filter_success() {
     Try<String> stepped = Steps.begin(successful(STRING)).then(() -> successful(STRING)).then(() -> successful(STRING + STRING))
       .then(() -> successful(STRING)).then(() -> successful(STRING_UPPERED)).then(() -> successful(STRING_LOWERED))
-      .filter(alwaysTrue6(), exceptionFilterSupplier).yield((value1, value2, value3, value4, value5, value6) -> value6);
+      .filter(alwaysTrue6(), exceptionStringFilterFunction).yield((value1, value2, value3, value4, value5, value6) -> value6);
 
     assertThat(stepped, isSuccessful(is(STRING_LOWERED)));
   }
@@ -461,13 +464,13 @@ public class TestTrySteps {
   @Test public void test_6_step_filter_failure() {
     Try<String> stepped = Steps.begin(successful(STRING)).then(() -> successful(STRING)).then(() -> successful(STRING + STRING))
       .then(() -> successful(STRING)).then(() -> successful(STRING_UPPERED)).then(() -> successful(STRING_LOWERED))
-      .filter(alwaysFalse6(), exceptionFilterSupplier).yield((value1, value2, value3, value4, value5, value6) -> value6);
+      .filter(alwaysFalse6(), exceptionStringFilterFunction).yield((value1, value2, value3, value4, value5, value6) -> value6);
 
     assertThat(stepped, isFailure(is(exceptionFilter)));
   }
 
   @Test public void test_6_step_filter_failure_1() {
-    Try<String> stepped = Steps.begin(successful(STRING)).filter(alwaysFalse(), exceptionFilterSupplier).then(() -> successful(STRING))
+    Try<String> stepped = Steps.begin(successful(STRING)).filter(alwaysFalse(), exceptionStringFilterFunction).then(() -> successful(STRING))
       .then(() -> successful(STRING + STRING)).then(() -> successful(STRING)).then(() -> successful(STRING_UPPERED))
       .then(() -> successful(STRING_LOWERED)).yield((value1, value2, value3, value4, value5, value6) -> value6);
 
@@ -475,7 +478,7 @@ public class TestTrySteps {
   }
 
   @Test public void test_6_step_filter_failure_2() {
-    Try<String> stepped = Steps.begin(successful(STRING)).then(() -> successful(STRING)).filter(alwaysFalse2(), exceptionFilterSupplier)
+    Try<String> stepped = Steps.begin(successful(STRING)).then(() -> successful(STRING)).filter(alwaysFalse2(), exceptionStringFilterFunction)
       .then(() -> successful(STRING + STRING)).then(() -> successful(STRING)).then(() -> successful(STRING_UPPERED))
       .then(() -> successful(STRING_LOWERED)).yield((value1, value2, value3, value4, value5, value6) -> value6);
 
@@ -484,7 +487,7 @@ public class TestTrySteps {
 
   @Test public void test_6_step_filter_failure_3() {
     Try<String> stepped = Steps.begin(successful(STRING)).then(() -> successful(STRING)).then(() -> successful(STRING + STRING))
-      .filter(alwaysFalse3(), exceptionFilterSupplier).then(() -> successful(STRING)).then(() -> successful(STRING_UPPERED))
+      .filter(alwaysFalse3(), exceptionStringFilterFunction).then(() -> successful(STRING)).then(() -> successful(STRING_UPPERED))
       .then(() -> successful(STRING_LOWERED)).yield((value1, value2, value3, value4, value5, value6) -> value6);
 
     assertThat(stepped, isFailure(is(exceptionFilter)));
@@ -492,7 +495,7 @@ public class TestTrySteps {
 
   @Test public void test_6_step_filter_failure_4() {
     Try<String> stepped = Steps.begin(successful(STRING)).then(() -> successful(STRING)).then(() -> successful(STRING + STRING))
-      .then(() -> successful(STRING)).filter(alwaysFalse4(), exceptionFilterSupplier).then(() -> successful(STRING_UPPERED))
+      .then(() -> successful(STRING)).filter(alwaysFalse4(), exceptionStringFilterFunction).then(() -> successful(STRING_UPPERED))
       .then(() -> successful(STRING_LOWERED)).yield((value1, value2, value3, value4, value5, value6) -> value6);
 
     assertThat(stepped, isFailure(is(exceptionFilter)));
@@ -500,7 +503,7 @@ public class TestTrySteps {
 
   @Test public void test_6_step_filter_failure_5() {
     Try<String> stepped = Steps.begin(successful(STRING)).then(() -> successful(STRING)).then(() -> successful(STRING + STRING))
-      .then(() -> successful(STRING)).then(() -> successful(STRING_UPPERED)).filter(alwaysFalse5(), exceptionFilterSupplier)
+      .then(() -> successful(STRING)).then(() -> successful(STRING_UPPERED)).filter(alwaysFalse5(), exceptionStringFilterFunction)
       .then(() -> successful(STRING_LOWERED)).yield((value1, value2, value3, value4, value5, value6) -> value6);
 
     assertThat(stepped, isFailure(is(exceptionFilter)));
