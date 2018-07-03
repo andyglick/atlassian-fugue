@@ -15,12 +15,12 @@ public class EitherStep1<A, LEFT> {
     this.either1 = either1;
   }
 
-  public <B> EitherStep2<A, B, LEFT> then(Function<? super A, Either<LEFT, B>> functor) {
+  public <B, LL extends LEFT> EitherStep2<A, B, LEFT> then(Function<? super A, Either<LL, B>> functor) {
     Either<LEFT, B> either2 = either1.flatMap(functor);
     return new EitherStep2<>(either1, either2);
   }
 
-  public <B> EitherStep2<A, B, LEFT> then(Supplier<Either<LEFT, B>> supplier) {
+  public <B, LL extends LEFT> EitherStep2<A, B, LEFT> then(Supplier<Either<LL, B>> supplier) {
     Either<LEFT, B> either2 = either1.flatMap(value1 -> supplier.get());
     return new EitherStep2<>(either1, either2);
   }

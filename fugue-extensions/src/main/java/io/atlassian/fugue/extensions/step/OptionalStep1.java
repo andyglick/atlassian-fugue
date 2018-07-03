@@ -13,7 +13,7 @@ import java.util.function.Supplier;
     this.optional1 = optional1;
   }
 
-  public <B> OptionalStep2<A, B> then(Function<A, Optional<B>> functor) {
+  public <B> OptionalStep2<A, B> then(Function<? super A, Optional<B>> functor) {
     Optional<B> option2 = optional1.flatMap(functor);
     return new OptionalStep2<>(optional1, option2);
   }

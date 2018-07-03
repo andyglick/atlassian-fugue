@@ -18,12 +18,12 @@ public class EitherStep2<A, B, LEFT> {
     this.either2 = either2;
   }
 
-  public <C> EitherStep3<A, B, C, LEFT> then(BiFunction<? super A, ? super B, Either<LEFT, C>> functor) {
+  public <C, LL extends LEFT> EitherStep3<A, B, C, LEFT> then(BiFunction<? super A, ? super B, Either<LL, C>> functor) {
     Either<LEFT, C> either3 = either1.flatMap(value1 -> either2.flatMap(value2 -> functor.apply(value1, value2)));
     return new EitherStep3<>(either1, either2, either3);
   }
 
-  public <C> EitherStep3<A, B, C, LEFT> then(Supplier<Either<LEFT, C>> supplier) {
+  public <C, LL extends LEFT> EitherStep3<A, B, C, LEFT> then(Supplier<Either<LL, C>> supplier) {
     Either<LEFT, C> either3 = either1.flatMap(value1 -> either2.flatMap(value2 -> supplier.get()));
     return new EitherStep3<>(either1, either2, either3);
   }

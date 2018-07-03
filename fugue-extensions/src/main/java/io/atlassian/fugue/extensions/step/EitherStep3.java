@@ -20,12 +20,12 @@ public class EitherStep3<A, B, C, LEFT> {
     this.either3 = either3;
   }
 
-  public <D> EitherStep4<A, B, C, D, LEFT> then(Function3<? super A, ? super B, ? super C, Either<LEFT, D>> functor) {
+  public <D, LL extends LEFT> EitherStep4<A, B, C, D, LEFT> then(Function3<? super A, ? super B, ? super C, Either<LL, D>> functor) {
     Either<LEFT, D> either4 = either1.flatMap(value1 -> either2.flatMap(value2 -> either3.flatMap(value3 -> functor.apply(value1, value2, value3))));
     return new EitherStep4<>(either1, either2, either3, either4);
   }
 
-  public <D> EitherStep4<A, B, C, D, LEFT> then(Supplier<Either<LEFT, D>> supplier) {
+  public <D, LL extends LEFT> EitherStep4<A, B, C, D, LEFT> then(Supplier<Either<LL, D>> supplier) {
     Either<LEFT, D> either4 = either1.flatMap(value1 -> either2.flatMap(value2 -> either3.flatMap(value3 -> supplier.get())));
     return new EitherStep4<>(either1, either2, either3, either4);
   }

@@ -23,13 +23,14 @@ public class EitherStep5<A, B, C, D, E, LEFT> {
     this.either5 = either5;
   }
 
-  public <F> EitherStep6<A, B, C, D, E, F, LEFT> then(Function5<? super A, ? super B, ? super C, ? super D, ? super E, Either<LEFT, F>> functor) {
+  public <F, LL extends LEFT> EitherStep6<A, B, C, D, E, F, LEFT> then(
+    Function5<? super A, ? super B, ? super C, ? super D, ? super E, Either<LL, F>> functor) {
     Either<LEFT, F> either6 = either1.flatMap(value1 -> either2.flatMap(value2 -> either3.flatMap(value3 -> either4.flatMap(value4 -> either5
       .flatMap(value5 -> functor.apply(value1, value2, value3, value4, value5))))));
     return new EitherStep6<>(either1, either2, either3, either4, either5, either6);
   }
 
-  public <F> EitherStep6<A, B, C, D, E, F, LEFT> then(Supplier<Either<LEFT, F>> supplier) {
+  public <F, LL extends LEFT> EitherStep6<A, B, C, D, E, F, LEFT> then(Supplier<Either<LL, F>> supplier) {
     Either<LEFT, F> either6 = either1.flatMap(value1 -> either2.flatMap(value2 -> either3.flatMap(value3 -> either4.flatMap(value4 -> either5
       .flatMap(value5 -> supplier.get())))));
     return new EitherStep6<>(either1, either2, either3, either4, either5, either6);

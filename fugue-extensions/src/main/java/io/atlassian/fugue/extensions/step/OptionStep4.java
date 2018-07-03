@@ -20,13 +20,13 @@ public class OptionStep4<A, B, C, D> {
     this.option4 = option4;
   }
 
-  public <E> OptionStep5<A, B, C, D, E> then(Function4<? super A, ? super B, ? super C, ? super D, Option<E>> functor) {
+  public <E> OptionStep5<A, B, C, D, E> then(Function4<? super A, ? super B, ? super C, ? super D, ? extends Option<? extends E>> functor) {
     Option<E> option5 = option1.flatMap(value1 -> option2.flatMap(value2 -> option3.flatMap(value3 -> option4.flatMap(value4 -> functor.apply(value1,
       value2, value3, value4)))));
     return new OptionStep5<>(option1, option2, option3, option4, option5);
   }
 
-  public <E> OptionStep5<A, B, C, D, E> then(Supplier<Option<E>> supplier) {
+  public <E> OptionStep5<A, B, C, D, E> then(Supplier<? extends Option<? extends E>> supplier) {
     Option<E> option5 = option1.flatMap(value1 -> option2.flatMap(value2 -> option3.flatMap(value3 -> option4.flatMap(value4 -> supplier.get()))));
     return new OptionStep5<>(option1, option2, option3, option4, option5);
   }

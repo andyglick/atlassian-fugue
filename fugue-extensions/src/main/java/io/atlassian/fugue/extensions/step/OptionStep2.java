@@ -16,12 +16,12 @@ public class OptionStep2<A, B> {
     this.option2 = option2;
   }
 
-  public <C> OptionStep3<A, B, C> then(BiFunction<? super A, ? super B, Option<C>> functor) {
+  public <C> OptionStep3<A, B, C> then(BiFunction<? super A, ? super B, ? extends Option<? extends C>> functor) {
     Option<C> option3 = option1.flatMap(value1 -> option2.flatMap(value2 -> functor.apply(value1, value2)));
     return new OptionStep3<>(option1, option2, option3);
   }
 
-  public <C> OptionStep3<A, B, C> then(Supplier<Option<C>> supplier) {
+  public <C> OptionStep3<A, B, C> then(Supplier<? extends Option<? extends C>> supplier) {
     Option<C> option3 = option1.flatMap(value1 -> option2.flatMap(value2 -> supplier.get()));
     return new OptionStep3<>(option1, option2, option3);
   }

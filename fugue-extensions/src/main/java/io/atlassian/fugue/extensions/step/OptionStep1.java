@@ -14,12 +14,12 @@ public class OptionStep1<A> {
     this.option1 = option1;
   }
 
-  public <B> OptionStep2<A, B> then(Function<? super A, Option<B>> functor) {
+  public <B> OptionStep2<A, B> then(Function<? super A, ? extends Option<? extends B>> functor) {
     Option<B> option2 = option1.flatMap(functor);
     return new OptionStep2<>(option1, option2);
   }
 
-  public <B> OptionStep2<A, B> then(Supplier<Option<B>> supplier) {
+  public <B> OptionStep2<A, B> then(Supplier<? extends Option<? extends B>> supplier) {
     Option<B> option2 = option1.flatMap(value1 -> supplier.get());
     return new OptionStep2<>(option1, option2);
   }

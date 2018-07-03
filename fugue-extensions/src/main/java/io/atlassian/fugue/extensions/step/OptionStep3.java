@@ -18,12 +18,12 @@ public class OptionStep3<A, B, C> {
     this.option3 = option3;
   }
 
-  public <D> OptionStep4<A, B, C, D> then(Function3<? super A, ? super B, ? super C, Option<D>> functor) {
+  public <D> OptionStep4<A, B, C, D> then(Function3<? super A, ? super B, ? super C, ? extends Option<? extends D>> functor) {
     Option<D> option4 = option1.flatMap(value1 -> option2.flatMap(value2 -> option3.flatMap(value3 -> functor.apply(value1, value2, value3))));
     return new OptionStep4<>(option1, option2, option3, option4);
   }
 
-  public <D> OptionStep4<A, B, C, D> then(Supplier<Option<D>> supplier) {
+  public <D> OptionStep4<A, B, C, D> then(Supplier<? extends Option<? extends D>> supplier) {
     Option<D> option4 = option1.flatMap(value1 -> option2.flatMap(value2 -> option3.flatMap(value3 -> supplier.get())));
     return new OptionStep4<>(option1, option2, option3, option4);
   }
