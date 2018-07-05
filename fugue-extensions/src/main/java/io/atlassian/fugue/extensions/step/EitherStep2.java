@@ -1,11 +1,9 @@
 package io.atlassian.fugue.extensions.step;
 
 import io.atlassian.fugue.Either;
-import io.atlassian.fugue.Option;
 
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class EitherStep2<A, B, LEFT> {
@@ -28,9 +26,8 @@ public class EitherStep2<A, B, LEFT> {
     return new EitherStep3<>(either1, either2, either3);
   }
 
-  public EitherStep2<A, B, LEFT> filter(BiPredicate<? super A, ? super B> predicate,
-    Function<Option<LEFT>, ? extends Either<? extends LEFT, ? extends B>> unsatisfiedHandler) {
-    Either<LEFT, B> filterEither2 = either1.flatMap(value1 -> either2.filter(value2 -> predicate.test(value1, value2), unsatisfiedHandler));
+  public EitherStep2<A, B, LEFT> filter(BiPredicate<? super A, ? super B> predicate, Supplier<? extends LEFT> unsatisfiedSupplier) {
+    Either<LEFT, B> filterEither2 = either1.flatMap(value1 -> either2.filterOrElse(value2 -> predicate.test(value1, value2), unsatisfiedSupplier));
     return new EitherStep2<>(either1, filterEither2);
   }
 

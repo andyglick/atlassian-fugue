@@ -1,11 +1,9 @@
 package io.atlassian.fugue.extensions.step;
 
-import io.atlassian.fugue.Option;
 import io.atlassian.fugue.Try;
 
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class TryStep2<A, B> {
@@ -28,8 +26,8 @@ public class TryStep2<A, B> {
     return new TryStep3<>(try1, try2, Try);
   }
 
-  public TryStep2<A, B> filter(BiPredicate<? super A, ? super B> predicate, Function<Option<Exception>, Try<B>> unsatisfiedHandler) {
-    Try<B> filterTry2 = try1.flatMap(value1 -> try2.filter(value2 -> predicate.test(value1, value2), unsatisfiedHandler));
+  public TryStep2<A, B> filter(BiPredicate<? super A, ? super B> predicate, Supplier<Exception> unsatisfiedSupplier) {
+    Try<B> filterTry2 = try1.flatMap(value1 -> try2.filterOrElse(value2 -> predicate.test(value1, value2), unsatisfiedSupplier));
     return new TryStep2<>(try1, filterTry2);
   }
 

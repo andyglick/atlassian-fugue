@@ -1,11 +1,9 @@
 package io.atlassian.fugue.extensions.step;
 
-import io.atlassian.fugue.Option;
 import io.atlassian.fugue.Try;
 import io.atlassian.fugue.extensions.functions.Function5;
 import io.atlassian.fugue.extensions.functions.Predicate5;
 
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class TryStep5<A, B, C, D, E> {
@@ -36,9 +34,9 @@ public class TryStep5<A, B, C, D, E> {
   }
 
   public TryStep5<A, B, C, D, E> filter(Predicate5<? super A, ? super B, ? super C, ? super D, ? super E> predicate,
-    Function<Option<Exception>, Try<E>> unsatisfiedHandler) {
-    Try<E> filterTry5 = try1.flatMap(value1 -> try2.flatMap(value2 -> try3.flatMap(value3 -> try4.flatMap(value4 -> try5.filter(
-      value5 -> predicate.test(value1, value2, value3, value4, value5), unsatisfiedHandler)))));
+    Supplier<Exception> unsatisfiedSupplier) {
+    Try<E> filterTry5 = try1.flatMap(value1 -> try2.flatMap(value2 -> try3.flatMap(value3 -> try4.flatMap(value4 -> try5.filterOrElse(
+      value5 -> predicate.test(value1, value2, value3, value4, value5), unsatisfiedSupplier)))));
     return new TryStep5<>(try1, try2, try3, try4, filterTry5);
   }
 

@@ -1,6 +1,5 @@
 package io.atlassian.fugue.extensions.step;
 
-import io.atlassian.fugue.Option;
 import io.atlassian.fugue.Try;
 
 import java.util.function.Function;
@@ -25,8 +24,8 @@ public class TryStep1<A> {
     return new TryStep2<>(try1, either2);
   }
 
-  public TryStep1<A> filter(Predicate<? super A> predicate, Function<Option<Exception>, Try<A>> unsatisfiedHandler) {
-    Try<A> filterTry1 = try1.filter(predicate, unsatisfiedHandler);
+  public TryStep1<A> filter(Predicate<? super A> predicate, Supplier<Exception> unsatisfiedSupplier) {
+    Try<A> filterTry1 = try1.filterOrElse(predicate, unsatisfiedSupplier);
     return new TryStep1<>(filterTry1);
   }
 

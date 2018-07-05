@@ -1,11 +1,9 @@
 package io.atlassian.fugue.extensions.step;
 
 import io.atlassian.fugue.Either;
-import io.atlassian.fugue.Option;
 import io.atlassian.fugue.extensions.functions.Function3;
 import io.atlassian.fugue.extensions.functions.Predicate3;
 
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class EitherStep3<A, B, C, LEFT> {
@@ -30,10 +28,9 @@ public class EitherStep3<A, B, C, LEFT> {
     return new EitherStep4<>(either1, either2, either3, either4);
   }
 
-  public EitherStep3<A, B, C, LEFT> filter(Predicate3<? super A, ? super B, ? super C> predicate,
-    Function<Option<LEFT>, ? extends Either<? extends LEFT, ? extends C>> unsatisfiedHandler) {
-    Either<LEFT, C> filterEither3 = either1.flatMap(value1 -> either2.flatMap(value2 -> either3.filter(
-      value3 -> predicate.test(value1, value2, value3), unsatisfiedHandler)));
+  public EitherStep3<A, B, C, LEFT> filter(Predicate3<? super A, ? super B, ? super C> predicate, Supplier<? extends LEFT> unsatisfiedSupplier) {
+    Either<LEFT, C> filterEither3 = either1.flatMap(value1 -> either2.flatMap(value2 -> either3.filterOrElse(
+      value3 -> predicate.test(value1, value2, value3), unsatisfiedSupplier)));
     return new EitherStep3<>(either1, either2, filterEither3);
   }
 
