@@ -4,9 +4,26 @@ import io.atlassian.fugue.Either;
 import io.atlassian.fugue.extensions.functions.Function5;
 import io.atlassian.fugue.extensions.functions.Predicate5;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class EitherStep5<A, B, C, D, E, LEFT> {
+/**
+ * The fifth step of the {@link Either} type.
+ * <p>
+ * This class is not intended to be contructed manually, and should only be used
+ * as part of a {@link Steps} chain, started by {@link Steps#begin(Either)}
+ *
+ * @param <A> The right hand side type of the first defined right value
+ * @param <B> The right hand side type of the second defined right value
+ * @param <C> The right hand side type of the third defined right value
+ * @param <D> The right hand side type of the fourth defined right value
+ * @param <E> The right hand side type of the fifth defined right value
+ * @param <LEFT> The left hand side type of the Either result
+ * @see Steps for usage examples
+ * @see Either
+ * @since 4.7.0
+ */
+public final class EitherStep5<A, B, C, D, E, LEFT> {
   private final Either<LEFT, A> either1;
   private final Either<LEFT, B> either2;
   private final Either<LEFT, C> either3;
@@ -21,6 +38,19 @@ public class EitherStep5<A, B, C, D, E, LEFT> {
     this.either5 = either5;
   }
 
+  /**
+   * Apply the provided function with the previous Step results.
+   * <p>
+   * Internally this will perform a {@link Either#flatMap(Function)} and the
+   * result will become the next step value.
+   *
+   * @param functor The functor to be applied as a flatMap with the previous
+   * steps
+   * @param <F> The right hand side type of the next step result
+   * @param <LL> The left hand side type of the result that must be related to
+   * {@link LEFT}
+   * @return The next step class
+   */
   public <F, LL extends LEFT> EitherStep6<A, B, C, D, E, F, LEFT> then(
     Function5<? super A, ? super B, ? super C, ? super D, ? super E, Either<LL, F>> functor) {
     Either<LEFT, F> either6 = either1.flatMap(value1 -> either2.flatMap(value2 -> either3.flatMap(value3 -> either4.flatMap(value4 -> either5
@@ -28,12 +58,40 @@ public class EitherStep5<A, B, C, D, E, LEFT> {
     return new EitherStep6<>(either1, either2, either3, either4, either5, either6);
   }
 
+  /**
+   * Apply the provided supplier with the previous Step results.
+   * <p>
+   * Internally this will perform a {@link Either#flatMap(Function)} and the
+   * supplier will become the next step value.
+   * <p>
+   * This is different to {@link #then(Function5)} in that the previous step
+   * results are not provided for the new step evaluation.
+   *
+   * @param supplier The supplier to provide the result of the flatMap with the
+   * previous step.
+   * @param <F> The right hand side type of the next step result
+   * @param <LL> The left hand side type of the result that must be related to
+   * {@link LEFT}
+   * @return The next step class
+   */
   public <F, LL extends LEFT> EitherStep6<A, B, C, D, E, F, LEFT> then(Supplier<Either<LL, F>> supplier) {
     Either<LEFT, F> either6 = either1.flatMap(value1 -> either2.flatMap(value2 -> either3.flatMap(value3 -> either4.flatMap(value4 -> either5
       .flatMap(value5 -> supplier.get())))));
     return new EitherStep6<>(either1, either2, either3, either4, either5, either6);
   }
 
+  /**
+   * Apply the provided predicate with the previous step results.
+   * <p>
+   * If the predicate is not satisfied then the unsatisfiedSupplier is used to
+   * populate the left value that will prevent any further steps evaluation.
+   *
+   * @param predicate The check that must be satisfied by contained values
+   * @param unsatisfiedSupplier Provide the value to populate the left if not
+   * satisfied
+   * @return This step class with either the same last step value, or changed to
+   * a left
+   */
   public EitherStep5<A, B, C, D, E, LEFT> filter(Predicate5<? super A, ? super B, ? super C, ? super D, ? super E> predicate,
     Supplier<? extends LEFT> unsatisfiedSupplier) {
     Either<LEFT, E> filterEither5 = either1.flatMap(value1 -> either2.flatMap(value2 -> either3.flatMap(value3 -> either4.flatMap(value4 -> either5
@@ -41,6 +99,15 @@ public class EitherStep5<A, B, C, D, E, LEFT> {
     return new EitherStep5<>(either1, either2, either3, either4, filterEither5);
   }
 
+  /**
+   * Terminating step expression, that will provide the previous steps to this
+   * function and return the result as a <code>Right</code>
+   *
+   * @param functor The yield function to map on previous values
+   * @param <Z> The right hand side type for the returned result
+   * @return An Either with the result of this function on right, or the
+   * existing left
+   */
   public <Z> Either<LEFT, Z> yield(Function5<? super A, ? super B, ? super C, ? super D, ? super E, Z> functor) {
     return either1.flatMap(value1 -> either2.flatMap(value2 -> either3.flatMap(value3 -> either4.flatMap(value4 -> either5.map(value5 -> functor
       .apply(value1, value2, value3, value4, value5))))));

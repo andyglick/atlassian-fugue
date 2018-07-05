@@ -186,18 +186,18 @@ public class EitherLeftProjectionTest {
     assertThat(filtered.isDefined(), is(false));
   }
 
-  @Test public void filterOrElseWithUnsatisifedHandlerDefinedTrue() {
+  @Test public void filterOrElseWithUnsatisfiedHandlerDefinedTrue() {
     Either<String, Integer> filtered = l.left().filterOrElse(x -> true, () -> 300);
     assertThat(filtered, is(l));
   }
 
-  @Test public void filterOrElseWithUnsatisifedHandlerDefinedFalse() {
+  @Test public void filterOrElseWithUnsatisfiedHandlerDefinedFalse() {
     Either<String, Integer> filtered = l.left().filterOrElse(x -> false, () -> 300);
     assertThat(filtered.left().isDefined(), is(false));
     assertThat(filtered.right().get(), is(300));
   }
 
-  @Test public void filterOrElseWithUnsatisifedHandlerNotDefined() {
+  @Test public void filterOrElseWithUnsatisfiedHandlerNotDefined() {
     Either<String, Integer> filtered = r.left().filterOrElse(x -> false, () -> 300);
     assertThat(filtered, is(r));
   }
