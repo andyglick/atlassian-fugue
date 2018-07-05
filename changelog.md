@@ -7,12 +7,13 @@ This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 ### Added
 - added `TryMatchers` to complement current set of hamcrest matchers
 - Try includes additional methods:
-    * filter
+    * filterOrElse
     * orElse
     * forEach
     * toOption
     * toStream
-- Either includes a new filter method that takes a function for custom handler of the unsatisfied case
+- Either includes includes additional methods:
+    * filterOrElse
 
 ## [4.6.2] - [2018-06-15]
 ### Changed

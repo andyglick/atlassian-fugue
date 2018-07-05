@@ -372,23 +372,24 @@ public abstract class Either<L, R> implements Serializable {
   }
 
   /**
-   * Returns a <code>Right</code> if this is a right, and the given predicate
-   * holds for the contained value, otherwise returns the result of executing
-   * the unsatisfied handler function.
-   *
-   * The unsatisfied handler function will receive a <code>None</code> if this
-   * is a right, otherwise it will receive a <code>Some</code> of the left
+   * Return a <code>Right</code> if this is a <code>Right</code> and the
+   * contained values satisfies the given predicate.
+   * 
+   * If this is a <code>Right</code> but the predicate is not satisfied, return
+   * a <code>Left</code> with the value provided by the orElseSupplier.
+   * 
+   * Return a <code>Left</code> if this a <code>Left</code> with the contained
    * value.
-   *
+   * 
    * @param p The predicate function to test on the right contained value.
-   * @param unsatisfiedHandler The function to execute when predicate is
-   * unsatisfied
-   * @return a new Either that will be a right of the contained value, or the
-   * result of executing the unsatisfied handler function
+   * @param orElseSupplier The supplier to execute when is a right, and
+   * predicate is unsatisfied
+   * @return a new Either that will be either the existing left/right or a left
+   * with result of orElseSupplier
    * @since 4.7.0
    */
-  public final Either<L, R> filter(Predicate<? super R> p, Function<Option<L>, ? extends Either<? extends L, ? extends R>> unsatisfiedHandler) {
-    return right().filter(p, unsatisfiedHandler);
+  public final Either<L, R> filterOrElse(Predicate<? super R> p, Supplier<? extends L> orElseSupplier) {
+    return right().filterOrElse(p, orElseSupplier);
   }
 
   /**
@@ -822,31 +823,32 @@ public abstract class Either<L, R> implements Serializable {
     }
 
     /**
-     * Returns a <code>Left</code> if this is a left, and the given predicate
-     * holds for the contained value, otherwise returns the result of executing
-     * the unsatisfied handler function.
+     * Return a <code>Left</code> if this is a <code>Left</code> and the
+     * contained values satisfies the given predicate.
      *
-     * The unsatisfied handler function will receive a <code>None</code> if this
-     * is a left, otherwise it will receive a <code>Some</code> of the right
-     * value.
+     * If this is a <code>Left</code> but the predicate is not satisfied, return
+     * a <code>Right</code> with the value provided by the orElseSupplier.
      *
-     * @param p The predicate function to test on the left contained value.
-     * @param unsatisfiedHandler The function to execute when predicate is
-     * unsatisfied
-     * @return a new Either that will be a left of the contained value, or the
-     * result of executing the unsatisfied handler function
+     * Return a <code>Right</code> if this a <code>Right</code> with the
+     * contained value.
+     *
+     * @param p The predicate function to test on the right contained value.
+     * @param orElseSupplier The supplier to execute when is a left, and
+     * predicate is unsatisfied
+     * @return a new Either that will be either the existing left/right or a
+     * right with result of orElseSupplier
      * @since 4.7.0
      */
-    @SuppressWarnings("unchecked") public Either<L, R> filter(Predicate<? super L> p,
-      Function<Option<R>, ? extends Either<? extends L, ? extends R>> unsatisfiedHandler) {
+    @SuppressWarnings("unchecked") public Either<L, R> filterOrElse(Predicate<? super L> p, Supplier<? extends R> orElseSupplier) {
       if (isLeft()) {
-        if (p.test(get())) {
-          return new Left<>(get());
+        L value = get();
+        if (p.test(value)) {
+          return new Left<>(value);
         } else {
-          return (Either<L, R>) unsatisfiedHandler.apply(none());
+          return (Either<L, R>) right(orElseSupplier.get());
         }
       } else {
-        return (Either<L, R>) unsatisfiedHandler.apply(right().toOption());
+        return this.toRight();
       }
     }
 
@@ -974,31 +976,32 @@ public abstract class Either<L, R> implements Serializable {
     }
 
     /**
-     * Returns a <code>Right</code> if this is a right, and the given predicate
-     * holds for the contained value, otherwise returns the result of executing
-     * the unsatisfied handler function.
+     * Return a <code>Right</code> if this is a <code>Right</code> and the
+     * contained values satisfies the given predicate.
      *
-     * The unsatisfied handler function will receive a <code>None</code> if this
-     * is a right, otherwise it will receive a <code>Some</code> of the left
+     * If this is a <code>Right</code> but the predicate is not satisfied,
+     * return a <code>Left</code> with the value provided by the orElseSupplier.
+     *
+     * Return a <code>Left</code> if this a <code>Left</code> with the contained
      * value.
      *
      * @param p The predicate function to test on the right contained value.
-     * @param unsatisfiedHandler The function to execute when predicate is
-     * unsatisfied
-     * @return a new Either that will be a right of the contained value, or the
-     * result of executing the unsatisfied handler function
+     * @param orElseSupplier The supplier to execute when is a right, and
+     * predicate is unsatisfied
+     * @return a new Either that will be either the existing left/right or a
+     * left with result of orElseSupplier
      * @since 4.7.0
      */
-    @SuppressWarnings("unchecked") public Either<L, R> filter(Predicate<? super R> p,
-      Function<Option<L>, ? extends Either<? extends L, ? extends R>> unsatisfiedHandler) {
+    @SuppressWarnings("unchecked") public Either<L, R> filterOrElse(Predicate<? super R> p, Supplier<? extends L> orElseSupplier) {
       if (isRight()) {
-        if (p.test(get())) {
-          return new Right<>(get());
+        R value = get();
+        if (p.test(value)) {
+          return new Right<>(value);
         } else {
-          return (Either<L, R>) unsatisfiedHandler.apply(none());
+          return (Either<L, R>) left(orElseSupplier.get());
         }
       } else {
-        return (Either<L, R>) unsatisfiedHandler.apply(left().toOption());
+        return this.toLeft();
       }
     }
 

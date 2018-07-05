@@ -125,34 +125,34 @@ public class TryDelayedTest {
     assertThat(evaluated.get(), is(1));
   }
 
-  @Test public void filterTrueDoesNotEvaluate() {
+  @Test public void filterOrElseTrueDoesNotEvaluate() {
     AtomicInteger evaluated = new AtomicInteger(0);
     Try<Integer> a = Checked.delay(() -> {
       evaluated.addAndGet(1);
       return 4;
     });
-    Try<Integer> b = a.filter(v -> true, o -> Try.failure(new IllegalStateException()));
+    Try<Integer> b = a.filterOrElse(v -> true, IllegalStateException::new);
     assertThat(evaluated.get(), is(0));
     assertThat(b.getOrElse(() -> -1), is(4));
     assertThat(evaluated.get(), is(1));
   }
 
-  @Test public void filterFalseDoesNotEvaluate() {
+  @Test public void filterOrElseFalseDoesNotEvaluate() {
     AtomicInteger evaluated = new AtomicInteger(0);
     Try<Integer> a = Checked.delay(() -> evaluated.addAndGet(1));
-    Try<Integer> b = a.filter(v -> false, o -> Try.failure(new IllegalStateException()));
+    Try<Integer> b = a.filterOrElse(v -> false, IllegalStateException::new);
     assertThat(evaluated.get(), is(0));
     assertThat(b.getOrElse(() -> -1), is(-1));
     assertThat(evaluated.get(), is(1));
   }
 
-  @Test public void filterFailureDoesNotEvaluate() {
+  @Test public void filterOrElseFailureDoesNotEvaluate() {
     AtomicInteger evaluated = new AtomicInteger(0);
     Try<Integer> a = Checked.delay(() -> {
       evaluated.incrementAndGet();
       throw new RuntimeException();
     });
-    Try<Integer> b = a.filter(v -> true, o -> Try.failure(new IllegalStateException()));
+    Try<Integer> b = a.filterOrElse(v -> true, IllegalStateException::new);
     assertThat(evaluated.get(), is(0));
     assertThat(b.getOrElse(() -> -1), is(-1));
     assertThat(evaluated.get(), is(1));

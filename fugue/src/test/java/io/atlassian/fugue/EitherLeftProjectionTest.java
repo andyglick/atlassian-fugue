@@ -186,34 +186,20 @@ public class EitherLeftProjectionTest {
     assertThat(filtered.isDefined(), is(false));
   }
 
-  @Test public void filterWithUnsatisifedHandlerDefinedTrue() {
-    Either<String, Integer> filtered = l.left().filter(x -> true, o -> right(o.map(i -> 99 + i).getOrElse(300)));
-    assertThat(filtered.left().isDefined(), is(true));
-    assertThat(filtered.left().get(), is("heyaa!"));
+  @Test public void filterOrElseWithUnsatisifedHandlerDefinedTrue() {
+    Either<String, Integer> filtered = l.left().filterOrElse(x -> true, () -> 300);
+    assertThat(filtered, is(l));
   }
 
-  @Test public void filterWithUnsatisifedHandlerRightDefinedFalse() {
-    Either<String, Integer> filtered = l.left().filter(x -> false, o -> right(o.map(i -> 99 + i).getOrElse(300)));
+  @Test public void filterOrElseWithUnsatisifedHandlerDefinedFalse() {
+    Either<String, Integer> filtered = l.left().filterOrElse(x -> false, () -> 300);
     assertThat(filtered.left().isDefined(), is(false));
     assertThat(filtered.right().get(), is(300));
   }
 
-  @Test public void filterWithUnsatisifedHandlerLeftDefinedFalse() {
-    Either<String, Integer> filtered = l.left().filter(x -> false, o -> left(o.map(String::valueOf).getOrElse("300")));
-    assertThat(filtered.left().isDefined(), is(true));
-    assertThat(filtered.left().get(), is("300"));
-  }
-
-  @Test public void filterWithUnsatisifedHandlerRightNotDefined() {
-    Either<String, Integer> filtered = r.left().filter(x -> false, o -> right(o.map(i -> 99 + i).getOrElse(300)));
-    assertThat(filtered.left().isDefined(), is(false));
-    assertThat(filtered.right().get(), is(111));
-  }
-
-  @Test public void filterWithUnsatisifedHandlerLeftNotDefined() {
-    Either<String, Integer> filtered = r.left().filter(x -> false, o -> left(o.map(String::valueOf).getOrElse("300")));
-    assertThat(filtered.left().isDefined(), is(true));
-    assertThat(filtered.left().get(), is("12"));
+  @Test public void filterOrElseWithUnsatisifedHandlerNotDefined() {
+    Either<String, Integer> filtered = r.left().filterOrElse(x -> false, () -> 300);
+    assertThat(filtered, is(r));
   }
 
   @Test public void applyDefinedLeft() {

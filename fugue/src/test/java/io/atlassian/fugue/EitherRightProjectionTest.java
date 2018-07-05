@@ -186,34 +186,20 @@ public class EitherRightProjectionTest {
     assertThat(filtered.isDefined(), is(false));
   }
 
-  @Test public void filterWithUnsatisifedHandlerDefinedTrue() {
-    Either<Integer, String> filtered = r.right().filter(x -> true, o -> left(o.map(i -> 99 + i).getOrElse(300)));
-    assertThat(filtered.right().isDefined(), is(true));
-    assertThat(filtered.right().get(), is("heyaa!"));
+  @Test public void filterOrElseWithUnsatisifedHandlerDefinedTrue() {
+    Either<Integer, String> filtered = r.right().filterOrElse(x -> true, () -> 300);
+    assertThat(filtered, is(r));
   }
 
-  @Test public void filterWithUnsatisifedHandlerLeftDefinedFalse() {
-    Either<Integer, String> filtered = r.right().filter(x -> false, o -> left(o.map(i -> 99 + i).getOrElse(300)));
+  @Test public void filterOrElseWithUnsatisifedHandlerDefinedFalse() {
+    Either<Integer, String> filtered = r.right().filterOrElse(x -> false, () -> 300);
     assertThat(filtered.right().isDefined(), is(false));
     assertThat(filtered.left().get(), is(300));
   }
 
-  @Test public void filterWithUnsatisifedHandlerRightDefinedFalse() {
-    Either<Integer, String> filtered = r.right().filter(x -> false, o -> right(o.map(String::valueOf).getOrElse("300")));
-    assertThat(filtered.right().isDefined(), is(true));
-    assertThat(filtered.right().get(), is("300"));
-  }
-
-  @Test public void filterWithUnsatisifedHandlerLeftNotDefined() {
-    Either<Integer, String> filtered = l.right().filter(x -> false, o -> left(o.map(i -> 99 + i).getOrElse(300)));
-    assertThat(filtered.right().isDefined(), is(false));
-    assertThat(filtered.left().get(), is(111));
-  }
-
-  @Test public void filterWithUnsatisifedHandlerRightNotDefined() {
-    Either<Integer, String> filtered = l.right().filter(x -> false, o -> right(o.map(String::valueOf).getOrElse("300")));
-    assertThat(filtered.right().isDefined(), is(true));
-    assertThat(filtered.right().get(), is("12"));
+  @Test public void filterOrElseWithUnsatisifedHandlerNotDefined() {
+    Either<Integer, String> filtered = l.right().filterOrElse(x -> false, () -> 300);
+    assertThat(filtered, is(l));
   }
 
   @Test public void applyDefinedRight() {

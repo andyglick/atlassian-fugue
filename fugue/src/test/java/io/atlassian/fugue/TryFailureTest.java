@@ -25,10 +25,6 @@ public class TryFailureTest {
   private final Integer ANOTHER_VALUE = 99;
 
   private class TestException extends RuntimeException {
-    TestException() {
-      super();
-    }
-
     TestException(final String message) {
       super(message);
     }
@@ -194,16 +190,14 @@ public class TryFailureTest {
     assertThat(orElse, is(failure));
   }
 
-  @Test public void filterTrue() {
-    final TestException testException = new TestException("this is a different error");
-    final Try<Integer> filter = t.filter(value -> true, o -> o.map(Try::<Integer> failure).getOrElse(Try.<Integer> failure(testException)));
-    assertThat(filter, is(Try.failure(new TestException(MESSAGE))));
+  @Test public void filterOrElseTrue() {
+    final Try<Integer> filter = t.filterOrElse(value -> true, () -> new TestException("this is a different error"));
+    assertThat(filter, is(t));
   }
 
-  @Test public void filterFalse() {
-    final TestException testException = new TestException("this is a different error");
-    final Try<Integer> filter = t.filter(value -> false, o -> o.map(Try::<Integer> failure).getOrElse(Try.<Integer> failure(testException)));
-    assertThat(filter, is(Try.failure(new TestException(MESSAGE))));
+  @Test public void filterOrElseFalseFailure() {
+    final Try<Integer> filter = t.filterOrElse(value -> false, () -> new TestException("this is a different error"));
+    assertThat(filter, is(t));
   }
 
 }

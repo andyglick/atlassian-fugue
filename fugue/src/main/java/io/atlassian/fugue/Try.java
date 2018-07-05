@@ -268,22 +268,24 @@ import static java.util.function.Function.identity;
   public abstract Try<A> orElse(final Supplier<? extends Try<? extends A>> orElse);
 
   /**
-   * Returns a <code>Success</code> if this is a success, and the given
-   * predicate holds for the contained value, otherwise returns the result of
-   * executing the unsatisfied handler function.
+   * Return a <code>Success</code> if this is a <code>Success</code> and the
+   * contained values satisfies the given predicate.
    *
-   * The unsatisfied handler function will receive a <code>None</code> if this
-   * is a success, otherwise it will receive a <code>Some</code> of the failure
-   * value.
+   * If this is a <code>Success</code> but the predicate is not satisfied,
+   * return a <code>Failure</code> with the value provided by the
+   * orElseSupplier.
    *
-   * @param p The predicate function to test on the success contained value.
-   * @param unsatisfiedHandler The function to execute when predicate is
-   * unsatisfied
-   * @return a Try that will be a success of the contained value, or the result
-   * of executing the unsatisfied handler function
+   * Return a <code>Failure</code> if this a <code>Failure</code> with the
+   * contained value.
+   *
+   * @param p The predicate function to test on the right contained value.
+   * @param orElseSupplier The supplier to execute when is a success, and
+   * predicate is unsatisfied
+   * @return a new Try that will be either the existing success/failure or a
+   * failure with result of orElseSupplier
    * @since 4.7.0
    */
-  public abstract Try<A> filter(Predicate<? super A> p, Function<Option<Exception>, Try<A>> unsatisfiedHandler);
+  public abstract Try<A> filterOrElse(Predicate<? super A> p, Supplier<Exception> orElseSupplier);
 
   /**
    * Applies the function to the wrapped value, applying failureF it this is a
@@ -410,8 +412,8 @@ import static java.util.function.Function.identity;
       return result;
     }
 
-    @Override public Try<A> filter(Predicate<? super A> p, Function<Option<Exception>, Try<A>> unsatisfiedHandler) {
-      return unsatisfiedHandler.apply(some(e));
+    @Override public Try<A> filterOrElse(Predicate<? super A> p, Supplier<Exception> orElseSupplier) {
+      return Try.failure(e);
     }
 
     @Override public <B> B fold(final Function<? super Exception, B> failureF, final Function<A, B> successF) {
@@ -503,13 +505,13 @@ import static java.util.function.Function.identity;
       return this;
     }
 
-    @Override public Try<A> filter(Predicate<? super A> p, Function<Option<Exception>, Try<A>> unsatisfiedHandler) {
-      return flatten(Checked.now(() -> {
+    @Override public Try<A> filterOrElse(Predicate<? super A> p, Supplier<Exception> orElseSupplier) {
+      return Checked.now(() -> {
         if (p.test(value)) {
-          return Try.successful(value);
+          return value;
         }
-        return unsatisfiedHandler.apply(none());
-      }));
+        throw orElseSupplier.get();
+      });
     }
 
     @Override public <B> B fold(final Function<? super Exception, B> failureF, final Function<A, B> successF) {
@@ -613,8 +615,8 @@ import static java.util.function.Function.identity;
       return composeDelayed(t -> t.orElse(orElse));
     }
 
-    @Override public Try<A> filter(Predicate<? super A> p, Function<Option<Exception>, Try<A>> unsatisfiedHandler) {
-      return composeDelayed(t -> t.filter(p, unsatisfiedHandler));
+    @Override public Try<A> filterOrElse(Predicate<? super A> p, Supplier<Exception> orElseSupplier) {
+      return composeDelayed(t -> t.filterOrElse(p, orElseSupplier));
     }
 
     @Override public <B> B fold(Function<? super Exception, B> failureF, Function<A, B> successF) {
