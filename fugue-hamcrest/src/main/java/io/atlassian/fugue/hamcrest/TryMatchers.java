@@ -9,6 +9,9 @@ import org.hamcrest.TypeSafeMatcher;
 import static io.atlassian.fugue.Unit.Unit;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * @since 4.7.0
+ */
 public final class TryMatchers {
 
   private TryMatchers() {

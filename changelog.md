@@ -7,13 +7,20 @@ This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 ### Added
 - added `TryMatchers` to complement current set of hamcrest matchers
 - Try includes additional methods:
-    * filterOrElse
-    * orElse
-    * forEach
-    * toOption
-    * toStream
+    * `filterOrElse``
+    * `orElse`
+    * `forEach`
+    * `toOption`
+    * `toStream`
 - Either includes includes additional methods:
-    * filterOrElse
+    * `filterOrElse`
+- a new `fugue-extensions` module has been included that will include:
+    * `Function3`, `Function4`, `Function5`, `Function6` as complements to existing JDK Function and BiFunction
+    * `Predicate3`, `Predicate4`, `Predicate5`, `Predicate6` as complements to existing JDK Predicate and BiPredicate
+    * Steps package that provides some "for-comprehension" styled syntax shortcuts.
+        * `Steps.begin(..)` has methods for `Either`, `Option`, `Try` and `Optional` monad types
+        * `then`, `filter` and `yield` is included with each step
+        * Maximum of 6 steps permitted
 
 ## [4.6.2] - [2018-06-15]
 ### Changed
