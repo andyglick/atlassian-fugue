@@ -1,9 +1,15 @@
 package io.atlassian.fugue;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -17,6 +23,7 @@ import static io.atlassian.fugue.Option.none;
 import static io.atlassian.fugue.Option.some;
 import static io.atlassian.fugue.Suppliers.memoize;
 import static io.atlassian.fugue.Suppliers.ofInstance;
+import static io.atlassian.fugue.Unit.Unit;
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;
 
@@ -28,13 +35,22 @@ import static java.util.function.Function.identity;
  * This class is similar to {@link Either}, but is explicit about having a
  * success and failure case. Unless method level javadoc says otherwise, methods
  * will not automatically catch exceptions thrown by function arguments. In
- * particular map will not catch automatically catch thrown exceptions, instead
- * you should use {@link Checked#lift} to to make the function explicitly return
- * a Try and the use flatmap.
+ * particular {@link #map(Function)} will not catch automatically catch thrown
+ * exceptions, instead you should use {@link Checked#lift} to to make the
+ * function explicitly return a Try and the use {@link #flatMap(Function)}.
+ * <p>
+ * Note that since 4.7.0, all API methods describe whether or not they will
+ * result in a {@link Try.Delayed Delayed} Try being evaluated. In addition to
+ * this, any action to {@link Serializable Serialize} a {@link Try.Delayed
+ * Delayed} Try will result in it being evaluated, and the underlying Try
+ * {@link Try.Success Success} or {@link Try.Failure Failure} result being
+ * serialized.
  *
  * @since 4.4.0
  */
-@SuppressWarnings("WeakerAccess") public abstract class Try<A> {
+@SuppressWarnings("WeakerAccess") public abstract class Try<A> implements Serializable {
+  private static final long serialVersionUID = -999421999482330308L;
+
   /**
    * Creates a new failure
    *
@@ -363,6 +379,7 @@ import static java.util.function.Function.identity;
   public abstract void forEach(Consumer<? super A> action);
 
   private static final class Failure<A> extends Try<A> {
+    private static final long serialVersionUID = 735762069058538901L;
 
     private final Exception e;
 
@@ -455,9 +472,13 @@ import static java.util.function.Function.identity;
       return ~e.hashCode();
     }
 
+    @Override public String toString() {
+      return "Try.Failure(" + e.toString() + ")";
+    }
   }
 
   private static final class Success<A> extends Try<A> {
+    private static final long serialVersionUID = -8360076933771852847L;
 
     private final A value;
 
@@ -552,23 +573,38 @@ import static java.util.function.Function.identity;
     @Override public int hashCode() {
       return value.hashCode();
     }
+
+    @Override public String toString() {
+      return "Try.Success(" + value.toString() + ")";
+    }
   }
 
-  private static final class Delayed<A> extends Try<A> {
+  private static final class Delayed<A> extends Try<A> implements Externalizable {
+    private static final long serialVersionUID = 2439842151512848666L;
 
-    private final Function<Unit, Try<A>> run;
+    private final AtomicReference<Function<Unit, Try<A>>> runReference;
 
     static <A> Delayed<A> fromSupplier(final Supplier<Try<A>> delayed) {
       Supplier<Try<A>> memorized = memoize(delayed);
       return new Delayed<>(unit -> memorized.get());
     }
 
+    public Delayed() {
+      this(unit -> {
+        throw new IllegalStateException("Try.Delayed() default constructor only required for Serialization. Do not invoke directly.");
+      });
+    }
+
     private Delayed(final Function<Unit, Try<A>> run) {
-      this.run = run;
+      this.runReference = new AtomicReference<>(run);
+    }
+
+    private Function<Unit, Try<A>> getRunner() {
+      return this.runReference.get();
     }
 
     private Try<A> eval() {
-      return this.run.apply(Unit.VALUE);
+      return this.getRunner().apply(Unit());
     }
 
     @Override public boolean isFailure() {
@@ -580,7 +616,7 @@ import static java.util.function.Function.identity;
     }
 
     private <B> Try<B> composeDelayed(Function<Try<A>, Try<B>> f) {
-      return new Delayed<>(f.compose(this.run));
+      return new Delayed<>(f.compose(this.getRunner()));
     }
 
     @Override public <B> Try<B> flatMap(Function<? super A, Try<B>> f) {
@@ -641,6 +677,18 @@ import static java.util.function.Function.identity;
 
     @Override public void forEach(Consumer<? super A> action) {
       eval().forEach(action);
+    }
+
+    @Override public void writeExternal(ObjectOutput out) throws IOException {
+      // If you required serialization to return this through a remote call, it
+      // would seem expected for the expression to be evaluated.
+      // Therefore in order to serialize we need to evaluate the Delayed.
+      out.writeObject(eval());
+    }
+
+    @Override @SuppressWarnings("unchecked") public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+      Try<A> result = (Try<A>) in.readObject();
+      this.runReference.set(unit -> result);
     }
   }
 }

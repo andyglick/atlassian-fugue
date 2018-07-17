@@ -21,6 +21,7 @@ This project attempts to adhere to [Semantic Versioning](http://semver.org/).
         * `Steps.begin(..)` has methods for `Either`, `Option`, `Try` and `Optional` monad types
         * `then`, `filter` and `yield` is included with each step
         * Maximum of 6 steps permitted
+- Try#Success, Try#Failure and Try#Delayed are serializable
 
 ## [4.6.2] - [2018-06-15]
 ### Changed
