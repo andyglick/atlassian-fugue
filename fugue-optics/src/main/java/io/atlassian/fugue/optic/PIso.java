@@ -1,11 +1,14 @@
 package io.atlassian.fugue.optic;
 
-import io.atlassian.fugue.*;
+import io.atlassian.fugue.Either;
+import io.atlassian.fugue.Iterables;
+import io.atlassian.fugue.Monoid;
+import io.atlassian.fugue.Option;
+import io.atlassian.fugue.Pair;
+import io.atlassian.fugue.Suppliers;
 
-import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 /**
  * A {@link PIso} defines an isomorphism between types S, A and B, T:

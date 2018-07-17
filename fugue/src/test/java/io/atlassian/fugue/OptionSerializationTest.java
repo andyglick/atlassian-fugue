@@ -4,12 +4,12 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.NotSerializableException;
-import java.lang.reflect.Field;
 import java.util.Base64;
 
 import static io.atlassian.fugue.Serializer.toBytes;
 import static io.atlassian.fugue.Serializer.toObject;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 
 public class OptionSerializationTest {

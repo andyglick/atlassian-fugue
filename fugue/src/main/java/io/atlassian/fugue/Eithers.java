@@ -15,7 +15,6 @@
  */
 package io.atlassian.fugue;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.function.Function;
 import java.util.function.Predicate;

@@ -25,8 +25,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static io.atlassian.fugue.Iterables.filter;
-import static io.atlassian.fugue.Iterables.memoize;
 import static io.atlassian.fugue.Iterables.map;
+import static io.atlassian.fugue.Iterables.memoize;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;

@@ -1,6 +1,12 @@
 package io.atlassian.fugue.optic.law;
 
-import io.atlassian.fugue.*;
+import io.atlassian.fugue.Either;
+import io.atlassian.fugue.Eithers;
+import io.atlassian.fugue.Iterables;
+import io.atlassian.fugue.Option;
+import io.atlassian.fugue.Options;
+import io.atlassian.fugue.Pair;
+import io.atlassian.fugue.Suppliers;
 import io.atlassian.fugue.law.IsEq;
 import io.atlassian.fugue.optic.PTraversal;
 
@@ -8,7 +14,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import static io.atlassian.fugue.law.IsEq.isEq;
 import static java.util.Spliterator.ORDERED;
