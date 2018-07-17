@@ -37,7 +37,7 @@ import java.util.Optional;
  * .yield((number1, number2, number3) -> number3 * 4);
  * }
  * <p>
- * This yield will produce a {@link io.atlassian.fugue.Option.Some} containing
+ * This yield will produce a {@link io.atlassian.fugue.Option#some} containing
  * the final value of 40.
  * <p>
  * This is calculated by:
