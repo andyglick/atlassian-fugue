@@ -6,10 +6,8 @@ import io.atlassian.fugue.Option;
 import io.atlassian.fugue.Pair;
 
 import java.util.function.BiFunction;
-import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 public final class Traversal<S, A> extends PTraversal<S, S, A, A> {
 

@@ -16,19 +16,6 @@
 
 package io.atlassian.fugue;
 
-import static io.atlassian.fugue.Functions.countingPredicate;
-import static io.atlassian.fugue.Iterators.emptyIterator;
-import static io.atlassian.fugue.Iterators.peekingIterator;
-import static io.atlassian.fugue.Option.none;
-import static io.atlassian.fugue.Option.some;
-import static io.atlassian.fugue.Pair.leftValue;
-import static io.atlassian.fugue.Pair.pair;
-import static io.atlassian.fugue.Pair.rightValue;
-import static io.atlassian.fugue.Suppliers.ofInstance;
-import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableCollection;
-import static java.util.Objects.requireNonNull;
-
 import java.io.Serializable;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -50,6 +37,19 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.StreamSupport;
+
+import static io.atlassian.fugue.Functions.countingPredicate;
+import static io.atlassian.fugue.Iterators.emptyIterator;
+import static io.atlassian.fugue.Iterators.peekingIterator;
+import static io.atlassian.fugue.Option.none;
+import static io.atlassian.fugue.Option.some;
+import static io.atlassian.fugue.Pair.leftValue;
+import static io.atlassian.fugue.Pair.pair;
+import static io.atlassian.fugue.Pair.rightValue;
+import static io.atlassian.fugue.Suppliers.ofInstance;
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableCollection;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Contains static utility methods that operate on or return objects of type

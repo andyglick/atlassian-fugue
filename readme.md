@@ -27,14 +27,14 @@ Add fugue as a dependency to your pom.xml:
         <dependency>
             <groupId>io.atlassian.fugue</groupId>
             <artifactId>fugue</artifactId>
-            <version>4.6.2</version>
+            <version>4.7.0</version>
         </dependency>
         ...
     </dependencies>
     
 For Gradle add fugue as a dependency to your `dependencies` section:
 
-    compile 'io.atlassian.fugue:fugue:4.6.2'
+    compile 'io.atlassian.fugue:fugue:4.7.0'
 
 ## Building fugue
 
@@ -63,6 +63,28 @@ other way you can use `.toScala`.
 To enable this syntax you need to add the following to your scope:
 
     import io.atlassian.fugue.converters.ScalaConverters._
+
+## Steps
+
+From 4.7.0 there is a `fugue-extensions` module that adds some `for-comprehension` styled syntax 
+shortcuts for io.atlassian.fugue Option and Either, as well as Java8 Optional.
+
+This makes the following type of syntax possible. 
+
+```
+    Option<Double> either = Steps
+                    .begin(firstOKOperation())
+                    .then(str -> secondNGOperation(str))
+                    .then(() -> thirdOKOperation(number))
+                    .then((str, number, boo) -> fourthOKOperation(str, number, boo))
+                    .then((str, number, boo, str2) -> fifthOKOperation())
+                    .yield((str, number, boo, str2, fifth) -> new Double(number));
+```
+               
+Works up to 6 Steps, and breaks out on the first Left (Either), none (Option), failure (Try) 
+or empty (Optional)
+
+See the javadoc for more details.
 
 ## Android
 

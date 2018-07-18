@@ -15,23 +15,21 @@
  */
 package io.atlassian.fugue.extras;
 
-import static com.google.common.collect.Maps.immutableEntry;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
+import io.atlassian.fugue.Functions;
+import io.atlassian.fugue.Option;
+import org.junit.Test;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import javax.annotation.Nullable;
-
-import org.junit.Test;
-
-import io.atlassian.fugue.Functions;
-import io.atlassian.fugue.Option;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
+import static com.google.common.collect.Maps.immutableEntry;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 public class ImmutableMapsTest {
 
