@@ -17,7 +17,7 @@
     <groupId>io.atlassian.fugue</groupId>
     <artifactId>fugue-parent</artifactId>
     <packaging>pom</packaging>
-    <version>4.6.3-SNAPSHOT</version>
+    <version>4.7.0-SNAPSHOT</version>
     <name>Functional Extensions Library</name>
 
     <licenses>
@@ -37,6 +37,7 @@
         <module>fugue-deprecated</module>
         <module>fugue-hamcrest</module>
         <module>fugue-quickcheck-generators</module>
+        <module>fugue-extensions</module>
     </modules>
 
     <properties>
@@ -201,6 +202,11 @@
                 <groupId>com.pholser</groupId>
                 <artifactId>junit-quickcheck-generators</artifactId>
                 <version>${junit-quickcheck.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.npathai</groupId>
+                <artifactId>hamcrest-optional</artifactId>
+                <version>2.0.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -18,9 +18,9 @@ package io.atlassian.fugue;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
-import java.util.HashMap;
 
 import static io.atlassian.fugue.Functions.apply;
 import static io.atlassian.fugue.Functions.constant;

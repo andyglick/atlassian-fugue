@@ -4,9 +4,7 @@ import io.atlassian.fugue.Either;
 import io.atlassian.fugue.Monoid;
 import io.atlassian.fugue.Pair;
 
-import java.util.function.BinaryOperator;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * A {@link Getter} can be seen as a glorified get method between a type S and a

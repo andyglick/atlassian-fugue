@@ -186,6 +186,22 @@ public class EitherRightProjectionTest {
     assertThat(filtered.isDefined(), is(false));
   }
 
+  @Test public void filterOrElseWithUnsatisfiedHandlerDefinedTrue() {
+    Either<Integer, String> filtered = r.right().filterOrElse(x -> true, () -> 300);
+    assertThat(filtered, is(r));
+  }
+
+  @Test public void filterOrElseWithUnsatisfiedHandlerDefinedFalse() {
+    Either<Integer, String> filtered = r.right().filterOrElse(x -> false, () -> 300);
+    assertThat(filtered.right().isDefined(), is(false));
+    assertThat(filtered.left().get(), is(300));
+  }
+
+  @Test public void filterOrElseWithUnsatisfiedHandlerNotDefined() {
+    Either<Integer, String> filtered = l.right().filterOrElse(x -> false, () -> 300);
+    assertThat(filtered, is(l));
+  }
+
   @Test public void applyDefinedRight() {
     final Either<Integer, Function<String, String>> func = right(reverse);
     assertThat(r.right().ap(func).right().get(), is("!aayeh"));

@@ -6,7 +6,6 @@ import io.atlassian.fugue.Pair;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 /**
  * {@link PLens} with a monomorphic set function
