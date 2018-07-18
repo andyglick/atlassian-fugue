@@ -4,6 +4,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import java.util.Iterator;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
@@ -227,4 +228,21 @@ public class TryDelayedTest {
     t.forEach(invoked::set);
     assertThat(invoked.get(), is(0));
   }
+
+  @Test public void iteratorNotEmpty() {
+    Try<Integer> t = Checked.delay(() -> 18);
+    Iterator<Integer> iterator = t.iterator();
+    assertThat(iterator.hasNext(), is(true));
+    assertThat(iterator.next(), is(18));
+    assertThat(iterator.hasNext(), is(false));
+  }
+
+  @Test public void iteratorEmpty() {
+    Try<Integer> t = Checked.delay(() -> {
+      throw new RuntimeException();
+    });
+    Iterator<Integer> iterator = t.iterator();
+    assertThat(iterator.hasNext(), is(false));
+  }
+
 }

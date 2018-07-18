@@ -6,6 +6,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -48,7 +49,7 @@ import static java.util.function.Function.identity;
  *
  * @since 4.4.0
  */
-@SuppressWarnings("WeakerAccess") public abstract class Try<A> implements Serializable {
+@SuppressWarnings("WeakerAccess") public abstract class Try<A> implements Serializable, Iterable<A> {
   private static final long serialVersionUID = -999421999482330308L;
 
   /**
@@ -377,6 +378,22 @@ import static java.util.function.Function.identity;
    * @since 4.7
    */
   public abstract void forEach(Consumer<? super A> action);
+
+  /**
+   * Return an iterator for this type. This will be an empty iterator for the
+   * failure {@link #isFailure()} case, and a iterator of a single value for the
+   * success {@link #isSuccess()} case.
+   * <p>
+   * Note that for {@link Try#delayed(Supplier)} this <strong>is</strong> an
+   * evaluating operation.
+   *
+   * @return an iterator over the contained value {@link #isSuccess() if
+   * success}, or an empty one otherwise.
+   * @since 4.7.1
+   */
+  @Override public final Iterator<A> iterator() {
+    return toOption().iterator();
+  }
 
   private static final class Failure<A> extends Try<A> {
     private static final long serialVersionUID = 735762069058538901L;

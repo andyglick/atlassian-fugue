@@ -4,6 +4,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -198,6 +199,11 @@ public class TryFailureTest {
   @Test public void filterOrElseFalseFailure() {
     final Try<Integer> filter = t.filterOrElse(value -> false, () -> new TestException("this is a different error"));
     assertThat(filter, is(t));
+  }
+
+  @Test public void iteratorEmpty() {
+    Iterator<Integer> iterator = t.iterator();
+    assertThat(iterator.hasNext(), is(false));
   }
 
 }
