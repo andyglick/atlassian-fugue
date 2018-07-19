@@ -4,6 +4,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
@@ -165,6 +166,13 @@ public class TrySuccessTest {
     TestException testException = new TestException();
     final Try<Integer> filter = t.filterOrElse(value -> !Objects.equals(value, STARTING_VALUE), () -> testException);
     assertThat(filter, is(Try.failure(testException)));
+  }
+
+  @Test public void iteratorNotEmpty() {
+    Iterator<Integer> iterator = t.iterator();
+    assertThat(iterator.hasNext(), is(true));
+    assertThat(iterator.next(), is(STARTING_VALUE));
+    assertThat(iterator.hasNext(), is(false));
   }
 
   private class TestException extends RuntimeException {}

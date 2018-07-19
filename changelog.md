@@ -3,11 +3,16 @@ All notable changes to this project will be documented in this file.
 
 This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 
-## [4.7.0] - [unreleased]
+## [4.7.1] - [unreleased]
+### Changed
+- Changed javadoc for `Try#filterOrElse` to mention handling of `Try#delayed`
+- Support for `Try` as `Iterable`, allowing it to be used in `Pair#zip`
+
+## [4.7.0] - [2018-07-18]
 ### Added
 - added `TryMatchers` to complement current set of hamcrest matchers
 - Try includes additional methods:
-    * `filterOrElse``
+    * `filterOrElse`
     * `orElse`
     * `forEach`
     * `toOption`
