@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.function.Function;
 
@@ -29,7 +29,7 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 @RunWith(MockitoJUnitRunner.class) public final class ThrowablesTest {
   @Mock private Function<Throwable, RuntimeException> function;
 
-  @SuppressWarnings("deprecation") @Test public void testPropagateWithFunctionForRuntimeException() throws Exception {
+  @Test public void testPropagateWithFunctionForRuntimeException() throws Exception {
     final Exception original = new RuntimeException();
     try {
       propogate(original, function);
@@ -41,7 +41,7 @@ import static org.mockito.Mockito.verifyZeroInteractions;
     verifyZeroInteractions(function);
   }
 
-  @SuppressWarnings("deprecation") @Test public void testPropagateWithFunctionForNonRuntimeException() throws Exception {
+  @Test public void testPropagateWithFunctionForNonRuntimeException() throws Exception {
     final RuntimeException runtime = new RuntimeException();
     Mockito.when(function.apply(Mockito.<Throwable> any())).thenReturn(runtime);
 
@@ -56,7 +56,7 @@ import static org.mockito.Mockito.verifyZeroInteractions;
     Mockito.verify(function).apply(original);
   }
 
-  @SuppressWarnings("deprecation") @Test public void testPropagateWithTypeForRuntimeException() throws Exception {
+  @Test public void testPropagateWithTypeForRuntimeException() throws Exception {
     final Exception original = new RuntimeException();
     try {
       propogate(original, MyRuntimeException.class);
@@ -66,7 +66,7 @@ import static org.mockito.Mockito.verifyZeroInteractions;
     }
   }
 
-  @SuppressWarnings("deprecation") @Test public void testPropagateWithTypeForNonRuntimeException() throws Exception {
+  @Test public void testPropagateWithTypeForNonRuntimeException() throws Exception {
     final Exception original = new Exception();
     try {
       propogate(original, MyRuntimeException.class);
