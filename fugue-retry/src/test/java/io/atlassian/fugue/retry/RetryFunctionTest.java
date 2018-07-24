@@ -15,22 +15,22 @@
  */
 package io.atlassian.fugue.retry;
 
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.function.Function;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
 
-public class RetryFunctionTest {
+@RunWith(MockitoJUnitRunner.class) public class RetryFunctionTest {
   private static final int ATTEMPTS = 4;
 
   @Mock private Function<String, Integer> function;
@@ -38,10 +38,6 @@ public class RetryFunctionTest {
   @Mock private RuntimeException runtimeException;
   public static final String INPUT = "1";
   public static final Integer EXPECTED = 1;
-
-  @Before public void setUp() {
-    initMocks(this);
-  }
 
   @Test public void basicFunction() {
     when(function.apply(INPUT)).thenReturn(EXPECTED);
