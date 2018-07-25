@@ -3,7 +3,10 @@ All notable changes to this project will be documented in this file.
 
 This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 
-## [4.7.1] - [unreleased]
+## [4.7.2] - [unreleased]
+### Changed
+
+## [4.7.1] - [2018-07-19]
 ### Changed
 - Changed javadoc for `Try#filterOrElse` to mention handling of `Try#delayed`
 - Support for `Try` as `Iterable`, allowing it to be used in `Pair#zip`
