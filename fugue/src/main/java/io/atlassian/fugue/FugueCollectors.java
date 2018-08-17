@@ -19,67 +19,67 @@ public final class FugueCollectors {
 
   /**
    * Collect the left values if there are only lefts, otherwise return the first
-   * right encountered. Collector have `foldLeft` semantics. For
-   * {@link java.util.Spliterator#ORDERED} sequences the right-most
+   * right encountered. Collectors have `foldLeft` semantics. For
+   * {@link java.util.Spliterator#ORDERED} sequences the left-most
    * {@link io.atlassian.fugue.Either.Right} value is returned.
    *
-   * @param <A> the LHS type
-   * @param <B> the RHS type
+   * @param <L> the LHS type
+   * @param <R> the RHS type
    * @since 4.8.0
    * @return left biased collector of {@link Either}.
    */
-  public static <A, B> Collector<Either<A, B>, ?, Either<List<A>, B>> toEitherLeft() {
+  public static <L, R> Collector<Either<L, R>, ?, Either<List<L>, R>> toEitherLeft() {
     return toEitherLeft(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
   }
 
   /**
    * Collect the left values if there are only lefts, otherwise return the first
-   * right encountered. Collector have `foldLeft` semantics. For
-   * {@link java.util.Spliterator#ORDERED} sequences the right-most
+   * right encountered. Collectors have `foldLeft` semantics. For
+   * {@link java.util.Spliterator#ORDERED} sequences the left-most
    * {@link io.atlassian.fugue.Either.Right} value is returned.
    *
    * @param lCollector result collector
-   * @param <A> the LHS type
-   * @param <B> the RHS type
-   * @param <C> the mutable accumulation type of the reduction operation
-   * @param <D> the result type of the reduction operation
+   * @param <L> the LHS type
+   * @param <R> the RHS type
+   * @param <A> the mutable accumulation type of the reduction operation
+   * @param <B> the result type of the reduction operation
    * @since 4.8.0
    * @return left biased collector of {@link Either}.
    */
-  public static <A, B, C, D> Collector<Either<A, B>, ?, Either<D, B>> toEitherLeft(Collector<A, C, D> lCollector) {
+  public static <L, R, A, B> Collector<Either<L, R>, ?, Either<B, R>> toEitherLeft(Collector<L, A, B> lCollector) {
     return new EitherLeftCollector<>(lCollector);
   }
 
   /**
    * Collect the right values if there are only rights, otherwise return the
-   * first left encountered. Collector have `foldLeft` semantics. For
-   * {@link java.util.Spliterator#ORDERED} sequences the right-most
+   * first left encountered. Collectors have `foldLeft` semantics. For
+   * {@link java.util.Spliterator#ORDERED} sequences the left-most
    * {@link io.atlassian.fugue.Either.Left} value is returned.
    *
-   * @param <A> the LHS type
-   * @param <B> the RHS type
+   * @param <L> the LHS type
+   * @param <R> the RHS type
    * @since 4.8.0
    * @return right biased collector of {@link Either}.
    */
-  public static <A, B> Collector<Either<A, B>, ?, Either<A, List<B>>> toEitherRight() {
+  public static <L, R> Collector<Either<L, R>, ?, Either<L, List<R>>> toEitherRight() {
     return toEitherRight(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
   }
 
   /**
    * Collect the right values if there are only rights, otherwise return the
-   * first left encountered. Collector have `foldLeft` semantics. For
-   * {@link java.util.Spliterator#ORDERED} sequences the right-most
+   * first left encountered. Collectors have `foldLeft` semantics. For
+   * {@link java.util.Spliterator#ORDERED} sequences the left-most
    * {@link io.atlassian.fugue.Either.Left} value is returned.
    *
    * @param rCollector result collector
-   * @param <A> the LHS type
-   * @param <B> the RHS type
-   * @param <C> the mutable accumulation type of the reduction operation
-   * @param <D> the result type of the reduction operation
+   * @param <L> the LHS type
+   * @param <R> the RHS type
+   * @param <A> the mutable accumulation type of the reduction operation
+   * @param <B> the result type of the reduction operation
    * @since 4.8.0
    * @return right biased collector of {@link Either}.
    */
-  public static <A, B, C, D> Collector<Either<A, B>, ?, Either<A, D>> toEitherRight(Collector<B, C, D> rCollector) {
+  public static <L, R, A, B> Collector<Either<L, R>, ?, Either<L, B>> toEitherRight(Collector<R, A, B> rCollector) {
     return new EitherRightCollector<>(rCollector);
   }
 
@@ -110,8 +110,8 @@ public final class FugueCollectors {
 
   /**
    * Collect the right values if there are only successes, otherwise return the
-   * first failure encountered. Collector have `foldLeft` semantics. For
-   * {@link java.util.Spliterator#ORDERED} sequences the right-most
+   * first failure encountered. Collectors have `foldLeft` semantics. For
+   * {@link java.util.Spliterator#ORDERED} sequences the left-most
    * {@link io.atlassian.fugue.Try.Failure} value is returned.
    *
    * @param <A> the success type
@@ -124,8 +124,8 @@ public final class FugueCollectors {
 
   /**
    * Collect the right values if there are only successes, otherwise return the
-   * first failure encountered. Collector have `foldLeft` semantics. For
-   * {@link java.util.Spliterator#ORDERED} sequences the right-most
+   * first failure encountered. Collectors have `foldLeft` semantics. For
+   * {@link java.util.Spliterator#ORDERED} sequences the left-most
    * {@link io.atlassian.fugue.Try.Failure} value is returned.
    *
    * @param <A> the success type
@@ -138,29 +138,29 @@ public final class FugueCollectors {
     return new TrySuccessCollector<>(aCollector);
   }
 
-  private static final class EitherRightCollector<A, B, C, D> implements Collector<Either<A, B>, Ref<Either<A, C>>, Either<A, D>> {
-    private final Collector<B, C, D> delegate;
+  private static final class EitherRightCollector<L, R, A, B> implements Collector<Either<L, R>, Ref<Either<L, A>>, Either<L, B>> {
+    private final Collector<R, A, B> delegate;
 
-    private EitherRightCollector(Collector<B, C, D> delegate) {
+    private EitherRightCollector(Collector<R, A, B> delegate) {
       this.delegate = delegate;
     }
 
-    @Override public Supplier<Ref<Either<A, C>>> supplier() {
+    @Override public Supplier<Ref<Either<L, A>>> supplier() {
       return () -> new Ref<>(Either.right(delegate.supplier().get()));
     }
 
-    @Override public BiConsumer<Ref<Either<A, C>>, Either<A, B>> accumulator() {
+    @Override public BiConsumer<Ref<Either<L, A>>, Either<L, R>> accumulator() {
       return (ref, either) -> ref.set(ref.get().flatMap(b -> either.map(r -> {
         delegate.accumulator().accept(b, r);
         return b;
       })));
     }
 
-    @Override public BinaryOperator<Ref<Either<A, C>>> combiner() {
+    @Override public BinaryOperator<Ref<Either<L, A>>> combiner() {
       return (refL, refR) -> new Ref<>(refL.get().flatMap(lb -> refR.get().map(rb -> delegate.combiner().apply(lb, rb))));
     }
 
-    @Override public Function<Ref<Either<A, C>>, Either<A, D>> finisher() {
+    @Override public Function<Ref<Either<L, A>>, Either<L, B>> finisher() {
       return ref -> ref.get().map(b -> delegate.finisher().apply(b));
     }
 
@@ -169,29 +169,29 @@ public final class FugueCollectors {
     }
   }
 
-  private static final class EitherLeftCollector<A, B, C, D> implements Collector<Either<A, B>, Ref<Either<C, B>>, Either<D, B>> {
-    private final Collector<A, C, D> delegate;
+  private static final class EitherLeftCollector<L, R, A, B> implements Collector<Either<L, R>, Ref<Either<A, R>>, Either<B, R>> {
+    private final Collector<L, A, B> delegate;
 
-    private EitherLeftCollector(Collector<A, C, D> delegate) {
+    private EitherLeftCollector(Collector<L, A, B> delegate) {
       this.delegate = delegate;
     }
 
-    @Override public Supplier<Ref<Either<C, B>>> supplier() {
+    @Override public Supplier<Ref<Either<A, R>>> supplier() {
       return () -> new Ref<>(Either.left(delegate.supplier().get()));
     }
 
-    @Override public BiConsumer<Ref<Either<C, B>>, Either<A, B>> accumulator() {
+    @Override public BiConsumer<Ref<Either<A, R>>, Either<L, R>> accumulator() {
       return (ref, either) -> ref.set(ref.get().left().flatMap(b -> either.leftMap(l -> {
         delegate.accumulator().accept(b, l);
         return b;
       })));
     }
 
-    @Override public BinaryOperator<Ref<Either<C, B>>> combiner() {
+    @Override public BinaryOperator<Ref<Either<A, R>>> combiner() {
       return (refL, refR) -> new Ref<>(refL.get().left().flatMap(lb -> refR.get().leftMap(rb -> delegate.combiner().apply(lb, rb))));
     }
 
-    @Override public Function<Ref<Either<C, B>>, Either<D, B>> finisher() {
+    @Override public Function<Ref<Either<A, R>>, Either<B, R>> finisher() {
       return ref -> ref.get().leftMap(b -> delegate.finisher().apply(b));
     }
 
@@ -268,7 +268,7 @@ public final class FugueCollectors {
    * {@link Collector#accumulator()} because it should always mutate the
    * collectors state in-place. Not thread safe!
    * {@link java.util.stream.Collector.Characteristics#CONCURRENT} must not be
-   * peresent in the list of collector's characteristics.
+   * present in the list of collector's characteristics.
    *
    * @param <A> reference type
    */
