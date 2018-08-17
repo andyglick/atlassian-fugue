@@ -19,7 +19,9 @@ public final class FugueCollectors {
 
   /**
    * Collect the left values if there are only lefts, otherwise return the first
-   * right encountered.
+   * right encountered. Collector have `foldLeft` semantics. For
+   * {@link java.util.Spliterator#ORDERED} sequences the right-most
+   * {@link io.atlassian.fugue.Either.Right} value is returned.
    *
    * @param <A> the LHS type
    * @param <B> the RHS type
@@ -32,7 +34,9 @@ public final class FugueCollectors {
 
   /**
    * Collect the left values if there are only lefts, otherwise return the first
-   * right encountered.
+   * right encountered. Collector have `foldLeft` semantics. For
+   * {@link java.util.Spliterator#ORDERED} sequences the right-most
+   * {@link io.atlassian.fugue.Either.Right} value is returned.
    *
    * @param lCollector result collector
    * @param <A> the LHS type
@@ -48,7 +52,9 @@ public final class FugueCollectors {
 
   /**
    * Collect the right values if there are only rights, otherwise return the
-   * first left encountered.
+   * first left encountered. Collector have `foldLeft` semantics. For
+   * {@link java.util.Spliterator#ORDERED} sequences the right-most
+   * {@link io.atlassian.fugue.Either.Left} value is returned.
    *
    * @param <A> the LHS type
    * @param <B> the RHS type
@@ -61,7 +67,9 @@ public final class FugueCollectors {
 
   /**
    * Collect the right values if there are only rights, otherwise return the
-   * first left encountered.
+   * first left encountered. Collector have `foldLeft` semantics. For
+   * {@link java.util.Spliterator#ORDERED} sequences the right-most
+   * {@link io.atlassian.fugue.Either.Left} value is returned.
    *
    * @param rCollector result collector
    * @param <A> the LHS type
@@ -102,11 +110,13 @@ public final class FugueCollectors {
 
   /**
    * Collect the right values if there are only successes, otherwise return the
-   * first failure encountered.
+   * first failure encountered. Collector have `foldLeft` semantics. For
+   * {@link java.util.Spliterator#ORDERED} sequences the right-most
+   * {@link io.atlassian.fugue.Try.Failure} value is returned.
    *
    * @param <A> the success type
    * @since 4.8.0
-   * @return right biased collector of {@link Either}.
+   * @return success biased collector of {@link Try}.
    */
   public static <A> Collector<Try<A>, ?, Try<List<A>>> toTrySuccess() {
     return toTrySuccess(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
@@ -114,13 +124,15 @@ public final class FugueCollectors {
 
   /**
    * Collect the right values if there are only successes, otherwise return the
-   * first failure encountered.
+   * first failure encountered. Collector have `foldLeft` semantics. For
+   * {@link java.util.Spliterator#ORDERED} sequences the right-most
+   * {@link io.atlassian.fugue.Try.Failure} value is returned.
    *
    * @param <A> the success type
    * @param <B> the mutable accumulation type of the reduction operation
    * @param <C> the result type of the reduction operation
    * @since 4.8.0
-   * @return right biased collector of {@link Either}.
+   * @return success biased collector of {@link Try}.
    */
   public static <A, B, C> Collector<Try<A>, ?, Try<C>> toTrySuccess(Collector<A, B, C> aCollector) {
     return new TrySuccessCollector<>(aCollector);
@@ -224,7 +236,11 @@ public final class FugueCollectors {
     }
 
     @Override public Supplier<Ref<Try<B>>> supplier() {
-      return () -> new Ref<>(Try.successful(delegate.supplier().get()));
+      return () -> {
+        B b = delegate.supplier().get();
+        Try<B> bTry = null == b ? Try.failure(new NullPointerException()) : Try.successful(b);
+        return new Ref<>(bTry);
+      };
     }
 
     @Override public BiConsumer<Ref<Try<B>>, Try<A>> accumulator() {
@@ -247,6 +263,15 @@ public final class FugueCollectors {
     }
   }
 
+  /**
+   * Mutable reference. Used to carry collectors state. Specifically for
+   * {@link Collector#accumulator()} because it should always mutate the
+   * collectors state in-place. Not thread safe!
+   * {@link java.util.stream.Collector.Characteristics#CONCURRENT} must not be
+   * peresent in the list of collector's characteristics.
+   *
+   * @param <A> reference type
+   */
   private static final class Ref<A> {
     private A value;
 
