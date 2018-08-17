@@ -3,8 +3,9 @@ All notable changes to this project will be documented in this file.
 
 This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 
-## [4.7.2] - [unreleased]
-### Changed
+## [4.8.0] - [unreleased]
+### Added
+- added `FugueCollectors` to complement fugue types with Stream API support.
 
 ## [4.7.1] - [2018-07-19]
 ### Changed
