@@ -50,7 +50,7 @@ public final class FugueCollectors {
         lCollector.accumulator().accept(a, l);
         return a;
       }))), (refL, refR) -> new AtomicReference<>(refL.get().left().flatMap(lv -> refR.get().leftMap(rv -> lCollector.combiner().apply(lv, rv)))),
-      ref -> ref.get().leftMap(a -> lCollector.finisher().apply(a)), noIdentityFinishCharacterictics(lCollector));
+      ref -> ref.get().leftMap(a -> lCollector.finisher().apply(a)), noIdentityFinishCharacteristics(lCollector));
   }
 
   /**
@@ -84,11 +84,11 @@ public final class FugueCollectors {
    */
   public static <L, R, A, B> Collector<Either<L, R>, ?, Either<L, B>> toEitherRight(Collector<R, A, B> rCollector) {
     return Collector.of(() -> new AtomicReference<>(Either.<L, A> right(rCollector.supplier().get())), (ref, either) -> ref.getAndUpdate(acc -> acc
-      .flatMap(a -> either.map(l -> {
-        rCollector.accumulator().accept(a, l);
+      .flatMap(a -> either.map(r -> {
+        rCollector.accumulator().accept(a, r);
         return a;
       }))), (refL, refR) -> new AtomicReference<>(refL.get().flatMap(lv -> refR.get().map(rv -> rCollector.combiner().apply(lv, rv)))), ref -> ref
-      .get().map(a -> rCollector.finisher().apply(a)), noIdentityFinishCharacterictics(rCollector));
+      .get().map(a -> rCollector.finisher().apply(a)), noIdentityFinishCharacteristics(rCollector));
   }
 
   /**
@@ -144,15 +144,15 @@ public final class FugueCollectors {
    * @return success biased collector of {@link Try}.
    */
   public static <A, B, C> Collector<Try<A>, ?, Try<C>> toTrySuccess(Collector<A, B, C> aCollector) {
-    return Collector.of(() -> new AtomicReference<>(Checked.now(() -> requireNonNull(aCollector.supplier().get()))), (ref, bTry) -> ref
-      .getAndUpdate(acc -> acc.flatMap(a -> bTry.map(l -> {
-        aCollector.accumulator().accept(a, l);
-        return a;
+    return Collector.of(() -> new AtomicReference<>(Checked.now(() -> requireNonNull(aCollector.supplier().get()))), (ref, aTry) -> ref
+      .getAndUpdate(acc -> acc.flatMap(b -> aTry.map(a -> {
+        aCollector.accumulator().accept(b, a);
+        return b;
       }))), (refL, refR) -> new AtomicReference<>(refL.get().flatMap(lv -> refR.get().map(rv -> aCollector.combiner().apply(lv, rv)))), ref -> ref
-      .get().map(a -> aCollector.finisher().apply(a)), noIdentityFinishCharacterictics(aCollector));
+      .get().map(b -> aCollector.finisher().apply(b)), noIdentityFinishCharacteristics(aCollector));
   }
 
-  private static Collector.Characteristics[] noIdentityFinishCharacterictics(Collector<?, ?, ?> delegate) {
+  private static Collector.Characteristics[] noIdentityFinishCharacteristics(Collector<?, ?, ?> delegate) {
     return delegate.characteristics().stream().filter(ch -> !Collector.Characteristics.IDENTITY_FINISH.equals(ch))
       .toArray(Collector.Characteristics[]::new);
   }
