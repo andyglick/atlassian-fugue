@@ -45,6 +45,7 @@ public final class FugueCollectors {
    * @return left biased collector of {@link Either}.
    */
   public static <L, R, A, B> Collector<Either<L, R>, ?, Either<B, R>> toEitherLeft(Collector<L, A, B> lCollector) {
+    requireNonNull(lCollector);
     return Collector.of(() -> new AtomicReference<>(Either.<A, R> left(lCollector.supplier().get())),
       (ref, either) -> ref.getAndUpdate(acc -> acc.left().flatMap(a -> either.leftMap(l -> {
         lCollector.accumulator().accept(a, l);
@@ -83,6 +84,7 @@ public final class FugueCollectors {
    * @return right biased collector of {@link Either}.
    */
   public static <L, R, A, B> Collector<Either<L, R>, ?, Either<L, B>> toEitherRight(Collector<R, A, B> rCollector) {
+    requireNonNull(rCollector);
     return Collector.of(() -> new AtomicReference<>(Either.<L, A> right(rCollector.supplier().get())), (ref, either) -> ref.getAndUpdate(acc -> acc
       .flatMap(a -> either.map(r -> {
         rCollector.accumulator().accept(a, r);
@@ -113,6 +115,7 @@ public final class FugueCollectors {
    * @return flattening collector of {@link Option}.
    */
   public static <A, B, C> Collector<Option<A>, ?, C> flatten(Collector<A, B, C> aCollector) {
+    requireNonNull(aCollector);
     return Collector.of(aCollector.supplier(), (acc, option) -> option.forEach(a -> aCollector.accumulator().accept(acc, a)), aCollector.combiner(),
       aCollector.finisher(), aCollector.characteristics().toArray(new Collector.Characteristics[0]));
   }
@@ -144,6 +147,7 @@ public final class FugueCollectors {
    * @return success biased collector of {@link Try}.
    */
   public static <A, B, C> Collector<Try<A>, ?, Try<C>> toTrySuccess(Collector<A, B, C> aCollector) {
+    requireNonNull(aCollector);
     return Collector.of(() -> new AtomicReference<>(Checked.now(() -> requireNonNull(aCollector.supplier().get()))), (ref, aTry) -> ref
       .getAndUpdate(acc -> acc.flatMap(b -> aTry.map(a -> {
         aCollector.accumulator().accept(b, a);
