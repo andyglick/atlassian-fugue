@@ -10,6 +10,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * {@link Collector} instances.
  *
@@ -41,12 +43,11 @@ public final class FugueCollectors {
    * @param lCollector result collector
    * @param <L> the LHS type
    * @param <R> the RHS type
-   * @param <A> the mutable accumulation type of the reduction operation
-   * @param <B> the result type of the reduction operation
+   * @param <A> the result type of the reduction operation
    * @since 4.8.0
    * @return left biased collector of {@link Either}.
    */
-  public static <L, R, A, B> Collector<Either<L, R>, ?, Either<B, R>> toEitherLeft(Collector<L, A, B> lCollector) {
+  public static <L, R, A> Collector<Either<L, R>, ?, Either<A, R>> toEitherLeft(Collector<L, ?, A> lCollector) {
     return new EitherLeftCollector<>(lCollector);
   }
 
@@ -74,12 +75,11 @@ public final class FugueCollectors {
    * @param rCollector result collector
    * @param <L> the LHS type
    * @param <R> the RHS type
-   * @param <A> the mutable accumulation type of the reduction operation
-   * @param <B> the result type of the reduction operation
+   * @param <A> the result type of the reduction operation
    * @since 4.8.0
    * @return right biased collector of {@link Either}.
    */
-  public static <L, R, A, B> Collector<Either<L, R>, ?, Either<L, B>> toEitherRight(Collector<R, A, B> rCollector) {
+  public static <L, R, A> Collector<Either<L, R>, ?, Either<L, A>> toEitherRight(Collector<R, ?, A> rCollector) {
     return new EitherRightCollector<>(rCollector);
   }
 
@@ -99,12 +99,11 @@ public final class FugueCollectors {
    *
    * @param aCollector result collector
    * @param <A> the option type
-   * @param <B> the mutable accumulation type of the reduction operation
-   * @param <C> the result type of the reduction operation
+   * @param <B> the result type of the reduction operation
    * @since 4.8.0
    * @return flattening collector of {@link Option}.
    */
-  public static <A, B, C> Collector<Option<A>, ?, C> flatten(Collector<A, B, C> aCollector) {
+  public static <A, B> Collector<Option<A>, ?, B> flatten(Collector<A, ?, B> aCollector) {
     return new OptionFlattenCollector<>(aCollector);
   }
 
@@ -129,12 +128,11 @@ public final class FugueCollectors {
    * {@link io.atlassian.fugue.Try.Failure} value is returned.
    *
    * @param <A> the success type
-   * @param <B> the mutable accumulation type of the reduction operation
-   * @param <C> the result type of the reduction operation
+   * @param <B> the result type of the reduction operation
    * @since 4.8.0
    * @return success biased collector of {@link Try}.
    */
-  public static <A, B, C> Collector<Try<A>, ?, Try<C>> toTrySuccess(Collector<A, B, C> aCollector) {
+  public static <A, B, C> Collector<Try<A>, ?, Try<B>> toTrySuccess(Collector<A, ?, B> aCollector) {
     return new TrySuccessCollector<>(aCollector);
   }
 
@@ -142,7 +140,7 @@ public final class FugueCollectors {
     private final Collector<R, A, B> delegate;
 
     private EitherRightCollector(Collector<R, A, B> delegate) {
-      this.delegate = delegate;
+      this.delegate = requireNonNull(delegate);
     }
 
     @Override public Supplier<Ref<Either<L, A>>> supplier() {
@@ -173,7 +171,7 @@ public final class FugueCollectors {
     private final Collector<L, A, B> delegate;
 
     private EitherLeftCollector(Collector<L, A, B> delegate) {
-      this.delegate = delegate;
+      this.delegate = requireNonNull(delegate);
     }
 
     @Override public Supplier<Ref<Either<A, R>>> supplier() {
@@ -204,7 +202,7 @@ public final class FugueCollectors {
     private final Collector<A, B, C> delegate;
 
     private OptionFlattenCollector(Collector<A, B, C> delegate) {
-      this.delegate = delegate;
+      this.delegate = requireNonNull(delegate);
     }
 
     @Override public Supplier<B> supplier() {
@@ -232,7 +230,7 @@ public final class FugueCollectors {
     private final Collector<A, B, C> delegate;
 
     private TrySuccessCollector(Collector<A, B, C> delegate) {
-      this.delegate = delegate;
+      this.delegate = requireNonNull(delegate);
     }
 
     @Override public Supplier<Ref<Try<B>>> supplier() {
