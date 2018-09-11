@@ -52,8 +52,8 @@ public class FilterLeftTest {
       Either.<Integer, String> right("fore"), Either.<Integer, String> left(22));
 
     final Iterator<Integer> iterator = filterLeft(it).iterator();
-    assertEquals(new Integer(1), iterator.next());
-    assertEquals(new Integer(22), iterator.next());
+    assertEquals(1, (int) iterator.next());
+    assertEquals(22, (int) iterator.next());
     assertFalse(iterator.hasNext());
   }
 

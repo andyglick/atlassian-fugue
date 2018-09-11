@@ -17,7 +17,7 @@
     <groupId>io.atlassian.fugue</groupId>
     <artifactId>fugue-parent</artifactId>
     <packaging>pom</packaging>
-    <version>4.7.2-SNAPSHOT</version>
+    <version>5.0.0-SNAPSHOT</version>
     <name>Functional Extensions Library</name>
 
     <licenses>
@@ -47,13 +47,7 @@
         <maven.compiler.target>8</maven.compiler.target>
         <maven.javadoc.plugin.version>2.10.3</maven.javadoc.plugin.version>
         <clover.version>4.1.2</clover.version>
-        <mockito-core.version>2.18.3</mockito-core.version>
-        <junit.version>4.12</junit.version>
-        <hamcrest.version>1.3</hamcrest.version>
         <junit-quickcheck.version>0.6.1</junit-quickcheck.version>
-        <jsr305.version>3.0.2</jsr305.version>
-        <guava.osgi.version>18.0</guava.osgi.version>
-        <slf4j-api.version>1.7.25</slf4j-api.version>
         <fugue.osgi.export.version>${project.version}</fugue.osgi.export.version>
     </properties>
 
@@ -73,6 +67,14 @@
     </scm>
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.22.0</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>net.revelc.code</groupId>
@@ -142,57 +144,29 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>com.atlassian.platform</groupId>
+                <artifactId>platform</artifactId>
+                <version>5.0.0-da227d3</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.atlassian.platform</groupId>
+                <artifactId>third-party</artifactId>
+                <version>5.0.0-da227d3</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
                 <groupId>com.google.code.findbugs</groupId>
                 <artifactId>annotations</artifactId>
                 <version>3.0.0</version>
             </dependency>
 
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${slf4j-api.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-simple</artifactId>
-                <version>${slf4j-api.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>${guava.osgi.version}</version>
-            </dependency>
-
 
             <!-- Test deps -->
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.hamcrest</groupId>
-                        <artifactId>hamcrest-core</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-core</artifactId>
-                <version>${mockito-core.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.hamcrest</groupId>
-                        <artifactId>hamcrest-core</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.hamcrest</groupId>
-                <artifactId>hamcrest-library</artifactId>
-                <version>${hamcrest.version}</version>
-            </dependency>
             <dependency>
                 <groupId>com.pholser</groupId>
                 <artifactId>junit-quickcheck-core</artifactId>

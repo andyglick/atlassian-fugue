@@ -18,11 +18,7 @@ package io.atlassian.fugue;
 import org.junit.Test;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -46,7 +42,7 @@ import static org.hamcrest.Matchers.nullValue;
 
 public class IterablesTest {
 
-  private final Predicate<Integer> grepOne = input -> new Integer(1).equals(input);
+  private final Predicate<Integer> grepOne = input -> Objects.equals(input, 1);
   private final Option<Integer> none = Option.<Integer> none();
 
   @Test public void emptyIterableIteratorHasNext() {
