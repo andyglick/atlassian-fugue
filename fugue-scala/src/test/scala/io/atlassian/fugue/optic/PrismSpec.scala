@@ -7,19 +7,19 @@ import io.atlassian.fugue.optic.std.EitherOptics.right
 class PrismSpec extends TestSuite {
 
   test("Prism Laws") {
-    check(PrismTests(right[String, Int]))
+    PrismTests(right[String, Int]).check()
   }
 
   test("Prism.asOptional") {
-    check(OptionalTests(right[String, Int].asOptional()))
+    OptionalTests(right[String, Int].asOptional()).check()
   }
 
   test("Prism.asTraversal") {
-    check(TraversalTests(right[String, Int].asTraversal()))
+    TraversalTests(right[String, Int].asTraversal()).check()
   }
 
   test("Prism.asSetter") {
-    check(SetterTests(right[String, Int].asSetter()))
+    SetterTests(right[String, Int].asSetter()).check()
   }
 
   // TODO: test compose methods
