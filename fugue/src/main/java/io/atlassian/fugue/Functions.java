@@ -688,7 +688,7 @@ public class Functions {
     matchingFunctions[4] = f5;
     System.arraycopy(fs, 0, matchingFunctions, 5, fs.length);
 
-    return new Matcher<>(Arrays.asList(matchingFunctions));
+    return new Matcher<A, B>(Arrays.asList(matchingFunctions));
   }
 
   /* utility copy function */
@@ -703,7 +703,7 @@ public class Functions {
       }
     }
 
-    return new Matcher<>(Arrays.asList(dest));
+    return new Matcher<A, B>(Arrays.asList(dest));
   }
 
   static class Matcher<A, B> implements Function<A, Option<B>> {
