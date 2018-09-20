@@ -10,8 +10,7 @@ This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 - Changed the scala version to 2.11.12
 - Changed guava to version 26.0-jre
 
-
-## [4.8.0] - [unreleased]
+## [4.7.2] - [2018-09-19]
 ### Added
 - added `FugueCollectors` to complement fugue types with Stream API support which includes:
   * `toEitherRight` collector (Similar to `Eithers#sequenceRight`)
