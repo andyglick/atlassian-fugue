@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -30,8 +31,8 @@ import static io.atlassian.fugue.Iterables.all;
 import static io.atlassian.fugue.Iterables.any;
 import static io.atlassian.fugue.Iterables.emptyIterable;
 import static io.atlassian.fugue.Iterables.findFirst;
-import static io.atlassian.fugue.Iterables.map;
 import static io.atlassian.fugue.Iterables.join;
+import static io.atlassian.fugue.Iterables.map;
 import static io.atlassian.fugue.Iterables.partition;
 import static io.atlassian.fugue.Iterables.rangeTo;
 import static io.atlassian.fugue.Iterables.rangeUntil;
@@ -46,7 +47,7 @@ import static org.hamcrest.Matchers.nullValue;
 
 public class IterablesTest {
 
-  private final Predicate<Integer> grepOne = input -> new Integer(1).equals(input);
+  private final Predicate<Integer> grepOne = input -> Objects.equals(input, 1);
   private final Option<Integer> none = Option.<Integer> none();
 
   @Test public void emptyIterableIteratorHasNext() {
@@ -112,6 +113,20 @@ public class IterablesTest {
 
   @Test public void rangeToStep() {
     assertThat(rangeTo(1, 5, 2), is(contains(1, 3, 5)));
+  }
+
+  @Test public void rangeToMaxValue() {
+    assertThat(rangeTo(Integer.MAX_VALUE - 1, Integer.MAX_VALUE), is(contains(Integer.MAX_VALUE - 1, Integer.MAX_VALUE)));
+  }
+
+  @Test public void rangeToMinValue() {
+    assertThat(rangeTo(Integer.MIN_VALUE + 1, Integer.MIN_VALUE), is(contains(Integer.MIN_VALUE + 1, Integer.MIN_VALUE)));
+  }
+
+  @Test(expected = NoSuchElementException.class) public void rangeToIterator() {
+    final Iterator<Integer> iterator = rangeTo(1, 1, 1).iterator();
+    iterator.next();
+    iterator.next();
   }
 
   @Test public void rangeUntilStep() {

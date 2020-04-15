@@ -1,6 +1,11 @@
 package io.atlassian.fugue.optic.law;
 
-import io.atlassian.fugue.*;
+import io.atlassian.fugue.Either;
+import io.atlassian.fugue.Eithers;
+import io.atlassian.fugue.Option;
+import io.atlassian.fugue.Options;
+import io.atlassian.fugue.Pair;
+import io.atlassian.fugue.Suppliers;
 import io.atlassian.fugue.law.IsEq;
 import io.atlassian.fugue.optic.POptional;
 

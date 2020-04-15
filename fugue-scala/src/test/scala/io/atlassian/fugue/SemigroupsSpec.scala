@@ -28,60 +28,60 @@ class SemigroupsSpec extends TestSuite {
     intMaximum.append(1, 2) shouldEqual 2
     max(Comparator.naturalOrder[Integer]()).append(1, 2) shouldEqual 2
     max[Integer]().append(1, 2) shouldEqual 2
-    check(SemigroupTests(intMaximum))
+    SemigroupTests(intMaximum).check()
   }
   test("intMaximum via comparator") {
-    check(SemigroupTests(max(Comparator.naturalOrder[Integer]())))
+    SemigroupTests(max(Comparator.naturalOrder[Integer]())).check()
   }
   test("intMaximum via comparable") {
-    check(SemigroupTests(max[Integer]()))
+    SemigroupTests(max[Integer]()).check()
   }
 
   test("intMinimum") {
     intMinimum.append(1, 2) shouldEqual 1
     min(Comparator.naturalOrder[Integer]()).append(1, 2) shouldEqual 1
     min[Integer]().append(1, 2) shouldEqual 1
-    check(SemigroupTests(intMinimum))
+    SemigroupTests(intMinimum).check()
   }
   test("intMinimum via comparator") {
-    check(SemigroupTests(min(Comparator.naturalOrder[Integer]())))
+    SemigroupTests(min(Comparator.naturalOrder[Integer]())).check()
   }
   test("intMinimum via comparable") {
-    check(SemigroupTests(min[Integer]()))
+    SemigroupTests(min[Integer]()).check()
   }
 
   test("longMaximum") {
     longMaximum.append(1L, 2L) shouldEqual 2L
-    check(SemigroupTests(longMaximum))
+    SemigroupTests(longMaximum).check()
   }
 
   test("longMinimum") {
     longMinimum.append(1L, 2L) shouldEqual 1L
-    check(SemigroupTests(longMinimum))
+    SemigroupTests(longMinimum).check()
   }
 
   test("bigintMaximum") {
     bigintMaximum.append(BigInteger.valueOf(1), BigInteger.valueOf(2)) shouldEqual BigInteger.valueOf(2)
-    check(SemigroupTests(bigintMaximum))
+    SemigroupTests(bigintMaximum).check()
   }
 
   test("bigintMinimum") {
     bigintMinimum.append(BigInteger.valueOf(1), BigInteger.valueOf(2)) shouldEqual BigInteger.valueOf(1)
-    check(SemigroupTests(bigintMinimum))
+    SemigroupTests(bigintMinimum).check()
   }
 
   test("bigDecimalMaximum") {
     bigDecimalMaximum.append(BigDecimal.valueOf(1.0), BigDecimal.valueOf(2.0)) shouldEqual BigDecimal.valueOf(2.0)
-    check(SemigroupTests(bigDecimalMaximum))
+    SemigroupTests(bigDecimalMaximum).check()
   }
 
   test("bigDecimalMinimum") {
     bigDecimalMinimum.append(BigDecimal.valueOf(1.0), BigDecimal.valueOf(2.0)) shouldEqual BigDecimal.valueOf(1.0)
-    check(SemigroupTests(bigDecimalMinimum))
+    SemigroupTests(bigDecimalMinimum).check()
   }
 
   test("dual is also a semigroup") {
-    check(SemigroupTests(Semigroup.dual(intMaximum)))
+    SemigroupTests(Semigroup.dual(intMaximum)).check()
   }
 
 }

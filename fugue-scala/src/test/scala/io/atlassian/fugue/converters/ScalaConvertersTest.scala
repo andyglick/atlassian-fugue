@@ -46,18 +46,18 @@ class ScalaConvertersTest {
 
   @Test def function1ToJavaFunctionImplicitly() {
     val g: JFunction[String, Integer] = { (s: String) => s.length }.toJava
-    assertThat(new Integer(3), is(g.apply("abc")))
+    assertThat(Integer.valueOf(3), is(g.apply("abc")))
   }
 
   @Test def function1ToJavaFunctionTypeConvertedExplicitly() {
     val g: JFunction[Integer, Integer] = ((i: Int) => i * 2).toJava
-    assertThat(new Integer(4), is(g.apply(2)))
+    assertThat(Integer.valueOf(4), is(g.apply(2)))
   }
 
   @Test def function1ToJavaFunctionTypeConvertedImplicitly() {
     def f(ff: JFunction[Integer, Integer]): Integer = ff.apply(2)
     val g: JFunction[Integer, Integer] = ((i: Int) => i * 2).toJava
-    assertThat(new Integer(4), is(f(g)))
+    assertThat(Integer.valueOf(4), is(f(g)))
   }
 
   @Test def javaFunctionToFunction1Implicitly() {
@@ -119,7 +119,7 @@ class ScalaConvertersTest {
 
   @Test def optionToFugueOption() {
     val o: fugue.Option[Integer] = Some(1).asInstanceOf[scala.Option[Int]].toJava
-    assertThat(fugue.Option.some(new Integer(1)), is(o))
+    assertThat(fugue.Option.some(Integer.valueOf(1)), is(o))
   }
 
   @Test def fugueOptionToOption() {
@@ -135,7 +135,7 @@ class ScalaConvertersTest {
   @Test def tuple2ToFuguePairImplicitly() {
     val p: fugue.Pair[String, Integer] = ("abc", 1).toJava
     assertThat("abc", is(p.left))
-    assertThat(new Integer(1), is(p.right))
+    assertThat(Integer.valueOf(1), is(p.right))
   }
 
   @Test def fuguePairToTuple2() {

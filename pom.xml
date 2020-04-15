@@ -12,49 +12,14 @@
   <parent>
     <groupId>com.atlassian.pom</groupId>
     <artifactId>central-pom</artifactId>
-    <version>4.0.21</version>
+    <version>5.0.21</version>
   </parent>
 
   <groupId>io.atlassian.fugue</groupId>
   <artifactId>fugue-parent</artifactId>
   <packaging>pom</packaging>
-  <version>4.5.1-SNAPSHOT</version>
+  <version>5.0.0-SNAPSHOT</version>
   <name>Functional Extensions Library</name>
-
-  <licenses>
-    <license>
-      <name>Apache License 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-
-  <modules>
-    <module>fugue</module>
-    <module>fugue-optics</module>
-    <module>fugue-scala</module>
-    <module>fugue-retry</module>
-    <module>fugue-guava</module>
-    <module>fugue-deprecated</module>
-    <module>fugue-hamcrest</module>
-    <module>fugue-quickcheck-generators</module>
-  </modules>
-
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>8</maven.compiler.source>
-    <maven.compiler.target>8</maven.compiler.target>
-    <maven.javadoc.plugin.version>2.10.3</maven.javadoc.plugin.version>
-    <clover.version>4.1.1</clover.version>
-    <mockito-core.version>1.8.4</mockito-core.version>
-    <junit.version>4.12</junit.version>
-    <hamcrest.version>1.3</hamcrest.version>
-    <junit-quickcheck.version>0.6.1</junit-quickcheck.version>
-    <jsr305.version>3.0.0</jsr305.version>
-    <guava.osgi.version>18.0</guava.osgi.version>
-    <slf4j-api.version>1.6.0</slf4j-api.version>
-    <fugue.osgi.export.version>${project.version}</fugue.osgi.export.version>
-  </properties>
 
   <issueManagement>
     <system>Bitbucket</system>
@@ -71,65 +36,109 @@
     <tag>HEAD</tag>
   </scm>
 
-  <profiles>
-    <profile>
-      <id>jacoco</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.jacoco</groupId>
-            <artifactId>jacoco-maven-plugin</artifactId>
-            <version>0.7.9</version>
-            <executions>
-              <execution>
-                <id>prepare</id>
-                <phase>process-test-classes</phase>
-                <goals>
-                  <goal>prepare-agent</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>report</id>
-                <phase>test</phase>
-                <goals>
-                  <goal>report</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>prepare-integration</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>prepare-agent-integration</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>verify</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>report-integration</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>openclover</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.openclover</groupId>
-            <artifactId>clover-maven-plugin</artifactId>
-            <version>4.2.0</version>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
+  <licenses>
+    <license>
+      <name>Apache License 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <distributionManagement>
+    <site>
+      <id>atlassian-documentation</id>
+      <url>scpexe://docs-app.internal.atlassian.com/var/www/domains/docs.atlassian.com/${project.artifactId}/${project.version}</url>
+    </site>
+  </distributionManagement>
+
+  <modules>
+    <module>fugue</module>
+    <module>fugue-optics</module>
+    <module>fugue-scala</module>
+    <module>fugue-retry</module>
+    <module>fugue-guava</module>
+    <module>fugue-deprecated</module>
+    <module>fugue-hamcrest</module>
+    <module>fugue-quickcheck-generators</module>
+    <module>fugue-extensions</module>
+  </modules>
+
+  <properties>
+    <annotations.version>3.0.0</annotations.version>
+    <clover.version>${openclover.version}</clover.version>
+    <fugue.osgi.export.version>${project.version}</fugue.osgi.export.version>
+    <guava.version>26.0-jre</guava.version>
+    <hamcrest-optional.version>2.0.0</hamcrest-optional.version>
+    <hamcrest.version>1.3</hamcrest.version>
+    <jdkLevel>1.8</jdkLevel>
+    <junit-quickcheck.version>0.6.1</junit-quickcheck.version>
+    <junit.version>4.13</junit.version>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.javadoc.plugin.version>2.10.3</maven.javadoc.plugin.version>
+    <mockito.version>2.21.0</mockito.version>
+    <openclover.version>4.4.1</openclover.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <slf4j.version>1.7.25</slf4j.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.google.code.findbugs</groupId>
+        <artifactId>annotations</artifactId>
+        <version>${annotations.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${guava.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+
+
+      <!-- Test deps -->
+      <dependency>
+        <groupId>com.pholser</groupId>
+        <artifactId>junit-quickcheck-core</artifactId>
+        <version>${junit-quickcheck.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.pholser</groupId>
+        <artifactId>junit-quickcheck-generators</artifactId>
+        <version>${junit-quickcheck.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.npathai</groupId>
+        <artifactId>hamcrest-optional</artifactId>
+        <version>${hamcrest-optional.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>${mockito.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hamcrest</groupId>
+        <artifactId>hamcrest-library</artifactId>
+        <version>${hamcrest.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <build>
     <plugins>
@@ -193,77 +202,4 @@
     </plugins>
   </build>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>com.google.code.findbugs</groupId>
-        <artifactId>annotations</artifactId>
-        <version>3.0.0</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <version>${slf4j-api.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-simple</artifactId>
-        <version>${slf4j-api.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.google.guava</groupId>
-        <artifactId>guava</artifactId>
-        <version>${guava.osgi.version}</version>
-      </dependency>
-
-
-      <!-- Test deps -->
-      <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>${junit.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-core</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-core</artifactId>
-        <version>${mockito-core.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-core</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.hamcrest</groupId>
-        <artifactId>hamcrest-library</artifactId>
-        <version>${hamcrest.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.pholser</groupId>
-        <artifactId>junit-quickcheck-core</artifactId>
-        <version>${junit-quickcheck.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.pholser</groupId>
-        <artifactId>junit-quickcheck-generators</artifactId>
-        <version>${junit-quickcheck.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
-  <distributionManagement>
-    <site>
-      <id>atlassian-documentation</id>
-      <url>scpexe://docs-app.internal.atlassian.com/var/www/domains/docs.atlassian.com/${project.artifactId}/${project.version}</url>
-    </site>
-  </distributionManagement>
 </project>

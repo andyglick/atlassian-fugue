@@ -3,7 +3,77 @@ All notable changes to this project will be documented in this file.
 
 This project attempts to adhere to [Semantic Versioning](http://semver.org/).
 
-## [4.5.1] - [unreleased]
+## [5.0.0] - [unreleased]
+### Changed
+- This version is Java 11 compatible
+- This version is Platform 5 compatible
+- Changed the scala version to 2.11.12
+- Changed guava to version 26.0-jre
+
+## [4.7.2] - [2018-09-19]
+### Added
+- added `FugueCollectors` to complement fugue types with Stream API support which includes:
+  * `toEitherRight` collector (Similar to `Eithers#sequenceRight`)
+  * `toEitherLeft` collector (Similar to `Eithers#sequenceLeft`)
+  * `flatten` collector which flattens stream of `Option`s into stream of values filtering `None`s
+  * `toTrySuccess` collector (Similar to `Try#sequence`)
+
+## [4.7.1] - [2018-07-19]
+### Changed
+- Changed javadoc for `Try#filterOrElse` to mention handling of `Try#delayed`
+- Support for `Try` as `Iterable`, allowing it to be used in `Pair#zip`
+
+## [4.7.0] - [2018-07-18]
+### Added
+- added `TryMatchers` to complement current set of hamcrest matchers
+- Try includes additional methods:
+    * `filterOrElse`
+    * `orElse`
+    * `forEach`
+    * `toOption`
+    * `toStream`
+- Either includes includes additional methods:
+    * `filterOrElse`
+- a new `fugue-extensions` module has been included that will include:
+    * `Function3`, `Function4`, `Function5`, `Function6` as complements to existing JDK Function and BiFunction
+    * `Predicate3`, `Predicate4`, `Predicate5`, `Predicate6` as complements to existing JDK Predicate and BiPredicate
+    * Steps package that provides some "for-comprehension" styled syntax shortcuts.
+        * `Steps.begin(..)` has methods for `Either`, `Option`, `Try` and `Optional` monad types
+        * `then`, `filter` and `yield` is included with each step
+        * Maximum of 6 steps permitted
+- Try#Success, Try#Failure and Try#Delayed are serializable
+
+## [4.6.2] - [2018-06-15]
+### Changed
+- changed Iterables#rangeTo(int,int) and Iterables#rangeTo(int,int,int) to properly handle max and min integers
+- changed rangeTo().iterator().next() to throw NoSuchElementException when hasNext() returns false
+
+## [4.6.1] - [2018-03-12]
+### Added
+- added `Pair#zip(Optional, Optional)`
+- added `Eithers#sequenceRight(Iterable, Collector)`
+- added `Eithers#sequenceLeft(Iterable, Collector)`
+- added `Try#sequence(Iterable, Collector)`
+- added `Checked#delay(Supplier)`, `Try#delayed(Supplier<Try>)` and `Try#Delayed`.
+  This delays the execution of a computation that may result in an exception or return a successfully computed value.
+  It works nicely with `Try#sequence(Iterable)` to bypass following computations if a previous computation has already resulted in an exception.
+  
+### Deprecated
+- `Checked#of(Supplier)` deprecated in favour of `Checked#now(Supplier)` to make it explicit that the evaluation is immediate. 
+
+## [4.5.1] - [2017-12-8]
+### Changed
+- typo in Either#fold javadoc
+- slf4j version bump 1.6.0 to 1.7.25
+- jsr305 version bump 3.0.0 to 3.0.2
+- clover version bump 4.1.1 to 4.1.2
+- support for partial recover for Try via Try#recover(Class, Function) and Try#recoverWith(Class, Function)
+
+## [2.7.0] - [2017-10-11]
+### Changed
+- minimum jdk version to 1.7 to support forward compatibility with gauva v22+
+- Now throws IllegalStateException instead of UnsupportedOperationException from emptyiterable.iterator and none.iterator. This is a consequence
+  of swapping out guava's empty iterator for collections.emptyiterator. This change is _not_ present in fugue v3+.
 
 ## [4.5.0] - [2017-04-09]
 ### Added

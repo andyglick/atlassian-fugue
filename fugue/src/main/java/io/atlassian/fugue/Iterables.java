@@ -16,19 +16,6 @@
 
 package io.atlassian.fugue;
 
-import static io.atlassian.fugue.Functions.countingPredicate;
-import static io.atlassian.fugue.Iterators.emptyIterator;
-import static io.atlassian.fugue.Iterators.peekingIterator;
-import static io.atlassian.fugue.Option.none;
-import static io.atlassian.fugue.Option.some;
-import static io.atlassian.fugue.Pair.leftValue;
-import static io.atlassian.fugue.Pair.pair;
-import static io.atlassian.fugue.Pair.rightValue;
-import static io.atlassian.fugue.Suppliers.ofInstance;
-import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableCollection;
-import static java.util.Objects.requireNonNull;
-
 import java.io.Serializable;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -50,6 +37,19 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.StreamSupport;
+
+import static io.atlassian.fugue.Functions.countingPredicate;
+import static io.atlassian.fugue.Iterators.emptyIterator;
+import static io.atlassian.fugue.Iterators.peekingIterator;
+import static io.atlassian.fugue.Option.none;
+import static io.atlassian.fugue.Option.some;
+import static io.atlassian.fugue.Pair.leftValue;
+import static io.atlassian.fugue.Pair.pair;
+import static io.atlassian.fugue.Pair.rightValue;
+import static io.atlassian.fugue.Suppliers.ofInstance;
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableCollection;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Contains static utility methods that operate on or return objects of type
@@ -463,7 +463,7 @@ public class Iterables {
    * @param start from (inclusive), must be greater than zero and less than end
    * @param end to (inclusive)
    * @param step size to step – must not be zero, must be positive if end is
-   * greater than start, neagtive otherwise
+   * greater than start, negative otherwise
    * @return a sequence of {@link Integer integers}
    * @since 1.2
    */
@@ -483,16 +483,25 @@ public class Iterables {
 
     return () -> new Iterators.Unmodifiable<Integer>() {
       private int i = start;
+      private boolean reachedMinOrMax = false;
 
       @Override public boolean hasNext() {
-        return step > 0 ? i <= end : i >= end;
+        return (step > 0 ? i <= end : i >= end) && !reachedMinOrMax;
       }
 
       @Override public Integer next() {
+        if (!hasNext()) {
+          throw new NoSuchElementException();
+        }
         try {
           return i;
         } finally {
-          i += step;
+          int attempt = i + step;
+          // see Math#addExact(int,int)
+          if (((i ^ attempt) & (step ^ attempt)) < 0) {
+            reachedMinOrMax = true;
+          }
+          i = attempt;
         }
       }
     };

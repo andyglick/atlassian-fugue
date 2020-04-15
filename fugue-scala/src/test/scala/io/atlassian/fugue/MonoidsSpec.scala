@@ -29,64 +29,64 @@ class MonoidsSpec extends TestSuite {
 
   test("intAddition") {
     intAddition.append(1, 2) shouldEqual 3
-    check(MonoidTests(intAddition))
+    MonoidTests(intAddition).check()
   }
 
   test("intMultiplication") {
     intMultiplication.append(2, 3) shouldEqual 6
-    check(MonoidTests(intMultiplication))
+    MonoidTests(intMultiplication).check()
   }
 
   test("bigintAddition") {
     bigintAddition.append(BigInteger.valueOf(2), BigInteger.valueOf(3)) shouldEqual BigInteger.valueOf(5)
-    check(MonoidTests(bigintAddition))
+    MonoidTests(bigintAddition).check()
   }
 
   test("bigintMultiplication") {
     bigintMultiplication.append(BigInteger.valueOf(2), BigInteger.valueOf(3)) shouldEqual BigInteger.valueOf(6)
-    check(MonoidTests(bigintMultiplication))
+    MonoidTests(bigintMultiplication).check()
   }
 
   test("longAddition") {
     longAddition.append(1L, 2L) shouldEqual 3L
-    check(MonoidTests(longAddition))
+    MonoidTests(longAddition).check()
   }
 
   test("longMultiplication") {
     longMultiplication.append(2L, 3L) shouldEqual 6L
-    check(MonoidTests(longMultiplication))
+    MonoidTests(longMultiplication).check()
   }
 
   test("disjunction") {
     disjunction.append(false, true) shouldEqual true
     disjunction.append(true, true) shouldEqual true
-    check(MonoidTests(disjunction))
+    MonoidTests(disjunction).check()
   }
 
   test("exclusiveDisjunction") {
     exclusiveDisjunction.append(false, true) shouldEqual true
     exclusiveDisjunction.append(true, true) shouldEqual false
-    check(MonoidTests(exclusiveDisjunction))
+    MonoidTests(exclusiveDisjunction).check()
   }
 
   test("conjunction") {
     conjunction.append(false, true) shouldEqual false
     conjunction.append(true, true) shouldEqual true
-    check(MonoidTests(conjunction))
+    MonoidTests(conjunction).check()
   }
 
   test("string") {
     string.append("a", "b") shouldEqual "ab"
-    check(MonoidTests(string))
+    MonoidTests(string).check()
   }
 
   test("unit") {
-    check(MonoidTests(unit))
+    MonoidTests(unit).check()
   }
 
   test("list") {
     list[String]().append(asList("a"), asList("b")) shouldEqual asList("a", "b")
-    check(MonoidTests(list[Integer]()))
+    MonoidTests(list[Integer]()).check()
   }
 
   test("iterable") {
@@ -95,18 +95,18 @@ class MonoidsSpec extends TestSuite {
 
   test("firstOption") {
     firstOption[String]().append(some("a"), some("b")) shouldEqual some("a")
-    check(MonoidTests(firstOption[Integer]()))
+    MonoidTests(firstOption[Integer]()).check()
   }
 
   test("lastOption") {
     lastOption[String]().append(some("a"), some("b")) shouldEqual some("b")
-    check(MonoidTests(lastOption[Integer]()))
+    MonoidTests(lastOption[Integer]()).check()
   }
 
   test("option") {
     option(Semigroups.intMaximum).append(some(1), some(2)) shouldEqual some(2)
     option(Semigroups.intMaximum).append(some(3), some(2)) shouldEqual some(3)
-    check(MonoidTests(option(Semigroups.intMaximum)))
+    MonoidTests(option(Semigroups.intMaximum)).check()
   }
 
   test("either") {
@@ -114,7 +114,7 @@ class MonoidsSpec extends TestSuite {
 
     m.append(right("a"), right("b")) shouldEqual right("ab")
     m.append(Either.left(1), Either.left(2)) shouldEqual Either.left(2)
-    check(MonoidTests(m))
+    MonoidTests(m).check()
   }
 
 }

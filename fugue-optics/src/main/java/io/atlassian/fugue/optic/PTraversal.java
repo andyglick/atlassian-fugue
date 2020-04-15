@@ -1,10 +1,21 @@
 package io.atlassian.fugue.optic;
 
-import io.atlassian.fugue.*;
+import io.atlassian.fugue.Either;
+import io.atlassian.fugue.Eithers;
+import io.atlassian.fugue.Functions;
+import io.atlassian.fugue.Iterables;
+import io.atlassian.fugue.Monoid;
+import io.atlassian.fugue.Monoids;
+import io.atlassian.fugue.Option;
+import io.atlassian.fugue.Options;
+import io.atlassian.fugue.Pair;
+import io.atlassian.fugue.Suppliers;
 
 import java.util.Collections;
-import java.util.function.*;
-import java.util.stream.Stream;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 /**
  * A {@link PTraversal} can be seen as a {@link POptional} generalised to 0 to n

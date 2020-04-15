@@ -17,11 +17,11 @@
 package io.atlassian.fugue
 
 import Monoid._
-import io.atlassian.fugue.law.{ IsEq, MonoidTests }
+import io.atlassian.fugue.law.IsEq
 import IsEq._
 import io.atlassian.fugue.law.MonoidTests
-import org.scalacheck.Prop._
-import org.scalacheck.{ Arbitrary, Properties }
+import org.scalacheck.Prop.forAll
+import org.scalacheck.{ Arbitrary, Prop, Properties }
 
 class MonoidSpec extends TestSuite {
   val intMonoid = new Monoid[Int] {
@@ -31,7 +31,7 @@ class MonoidSpec extends TestSuite {
   }
 
   test("Monoid laws") {
-    check(MonoidTests(intMonoid))
+    MonoidTests(intMonoid).check()
   }
 
   val stringMonoid = new Monoid[String] {
@@ -41,16 +41,16 @@ class MonoidSpec extends TestSuite {
   }
 
   test("Monoids derived methods") {
-    check(derivedMethodsTests(stringMonoid))
+    derivedMethodsTests(stringMonoid).check()
   }
 
   test("Monoids composition") {
-    check(MonoidTests(compose(stringMonoid, intMonoid)))
+    MonoidTests(compose(stringMonoid, intMonoid)).check()
   }
 
   def derivedMethodsTests[A: Arbitrary](monoid: Monoid[A]) = new Properties("derived methods") {
 
-    property("dual is also a monoid") = MonoidTests(Monoid.dual(monoid))
+    include(MonoidTests(Monoid.dual(monoid)), "dual is also a monoid.")
 
     property("intersperse is consistent with sum") = forAll((a: A, aa: java.util.List[A]) => isEq(monoid.sum(Iterables.intersperse(aa, a)), monoid.intersperse(aa, a)))
 

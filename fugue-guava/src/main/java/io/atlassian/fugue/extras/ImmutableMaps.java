@@ -15,17 +15,17 @@
  */
 package io.atlassian.fugue.extras;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
+import io.atlassian.fugue.Functions;
+import io.atlassian.fugue.Iterables;
+import io.atlassian.fugue.Option;
+import io.atlassian.fugue.Options;
+
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-
-import io.atlassian.fugue.Functions;
-import io.atlassian.fugue.Option;
-import io.atlassian.fugue.Options;
-import io.atlassian.fugue.Iterables;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 
 /**
  * Provides some utility methods to convert Iterables to ImmutableMap, and to

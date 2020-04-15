@@ -1,5 +1,12 @@
 package io.atlassian.fugue;
 
+import org.hamcrest.Matchers;
+import org.junit.Test;
+
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
+
 import static io.atlassian.fugue.Either.left;
 import static io.atlassian.fugue.Either.right;
 import static io.atlassian.fugue.EitherRightProjectionTest.reverseToEither;
@@ -14,13 +21,6 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
-
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Function;
-
-import org.hamcrest.Matchers;
-import org.junit.Test;
 
 public class EitherRightBiasTest {
   private final Either<String, Integer> l = left("heyaa!");
@@ -162,6 +162,16 @@ public class EitherRightBiasTest {
 
   @Test public void filterLeft() {
     assertThat(l.filter(x -> x == 12), is(Option.<Either<String, Integer>> none()));
+  }
+
+  @Test public void filterOrElseUnsatisfiedHandlerRight() {
+    assertThat(r.filterOrElse(x -> x == 12, () -> "else"), is(r));
+    assertThat(r.filterOrElse(x -> x == 11, () -> "else"), is(left("else")));
+  }
+
+  @Test public void filterOrElseUnsatisfiedHandlerLeft() {
+    assertThat(l.filterOrElse(x -> x == 12, () -> "else"), is(l));
+    assertThat(l.filterOrElse(x -> x == 11, () -> "else"), is(l));
   }
 
   @Test public void orElseRightInstance() {

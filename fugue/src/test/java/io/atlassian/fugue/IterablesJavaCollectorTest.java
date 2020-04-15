@@ -25,8 +25,13 @@ import static io.atlassian.fugue.Iterables.collect;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static java.util.stream.Collectors.*;
-import static org.junit.Assert.*;
+import static java.util.stream.Collectors.averagingInt;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.toList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class IterablesJavaCollectorTest {
 

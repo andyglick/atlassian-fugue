@@ -15,11 +15,6 @@
  */
 package io.atlassian.fugue;
 
-import static io.atlassian.fugue.Option.none;
-import static io.atlassian.fugue.Option.some;
-import static io.atlassian.fugue.Suppliers.ofInstance;
-import static java.util.Objects.requireNonNull;
-
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -29,6 +24,11 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+
+import static io.atlassian.fugue.Option.none;
+import static io.atlassian.fugue.Option.some;
+import static io.atlassian.fugue.Suppliers.ofInstance;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A class that acts as a container for a value of one of two types. An Either
@@ -372,6 +372,27 @@ public abstract class Either<L, R> implements Serializable {
   }
 
   /**
+   * Return a <code>Right</code> if this is a <code>Right</code> and the
+   * contained values satisfies the given predicate.
+   * 
+   * If this is a <code>Right</code> but the predicate is not satisfied, return
+   * a <code>Left</code> with the value provided by the orElseSupplier.
+   * 
+   * Return a <code>Left</code> if this a <code>Left</code> with the contained
+   * value.
+   * 
+   * @param p The predicate function to test on the right contained value.
+   * @param orElseSupplier The supplier to execute when is a right, and
+   * predicate is unsatisfied
+   * @return a new Either that will be either the existing left/right or a left
+   * with result of orElseSupplier
+   * @since 4.7.0
+   */
+  public final Either<L, R> filterOrElse(Predicate<? super R> p, Supplier<? extends L> orElseSupplier) {
+    return right().filterOrElse(p, orElseSupplier);
+  }
+
+  /**
    * Convert this Either to an {@link Optional}. Returns with
    * {@link Optional#of(Object)} if it is a right, otherwise
    * {@link Optional#empty()}.
@@ -494,7 +515,7 @@ public abstract class Either<L, R> implements Serializable {
   public abstract Either<R, L> swap();
 
   /**
-   * Applies the function to the wrapped value, applying ifLeft it this is a
+   * Applies the function to the wrapped value, applying ifLeft if this is a
    * Left and ifRight if this is a Right.
    *
    * @param <V> the destination type
@@ -802,6 +823,36 @@ public abstract class Either<L, R> implements Serializable {
     }
 
     /**
+     * Return a <code>Left</code> if this is a <code>Left</code> and the
+     * contained values satisfies the given predicate.
+     *
+     * If this is a <code>Left</code> but the predicate is not satisfied, return
+     * a <code>Right</code> with the value provided by the orElseSupplier.
+     *
+     * Return a <code>Right</code> if this a <code>Right</code> with the
+     * contained value.
+     *
+     * @param p The predicate function to test on the right contained value.
+     * @param orElseSupplier The supplier to execute when is a left, and
+     * predicate is unsatisfied
+     * @return a new Either that will be either the existing left/right or a
+     * right with result of orElseSupplier
+     * @since 4.7.0
+     */
+    @SuppressWarnings("unchecked") public Either<L, R> filterOrElse(Predicate<? super L> p, Supplier<? extends R> orElseSupplier) {
+      if (isLeft()) {
+        L value = get();
+        if (p.test(value)) {
+          return new Left<>(value);
+        } else {
+          return (Either<L, R>) right(orElseSupplier.get());
+        }
+      } else {
+        return this.toRight();
+      }
+    }
+
+    /**
      * Function application on this projection's value.
      *
      * @param <X> the LHS type
@@ -922,6 +973,36 @@ public abstract class Either<L, R> implements Serializable {
         return some(result);
       }
       return none();
+    }
+
+    /**
+     * Return a <code>Right</code> if this is a <code>Right</code> and the
+     * contained values satisfies the given predicate.
+     *
+     * If this is a <code>Right</code> but the predicate is not satisfied,
+     * return a <code>Left</code> with the value provided by the orElseSupplier.
+     *
+     * Return a <code>Left</code> if this a <code>Left</code> with the contained
+     * value.
+     *
+     * @param p The predicate function to test on the right contained value.
+     * @param orElseSupplier The supplier to execute when is a right, and
+     * predicate is unsatisfied
+     * @return a new Either that will be either the existing left/right or a
+     * left with result of orElseSupplier
+     * @since 4.7.0
+     */
+    @SuppressWarnings("unchecked") public Either<L, R> filterOrElse(Predicate<? super R> p, Supplier<? extends L> orElseSupplier) {
+      if (isRight()) {
+        R value = get();
+        if (p.test(value)) {
+          return new Right<>(value);
+        } else {
+          return (Either<L, R>) left(orElseSupplier.get());
+        }
+      } else {
+        return this.toLeft();
+      }
     }
 
     /**

@@ -27,14 +27,14 @@ Add fugue as a dependency to your pom.xml:
         <dependency>
             <groupId>io.atlassian.fugue</groupId>
             <artifactId>fugue</artifactId>
-            <version>4.5.0</version>
+            <version>4.7.1</version>
         </dependency>
         ...
     </dependencies>
     
 For Gradle add fugue as a dependency to your `dependencies` section:
 
-    compile 'io.atlassian.fugue:fugue:4.5.0'
+    compile 'io.atlassian.fugue:fugue:4.7.1'
 
 ## Building fugue
 
@@ -64,9 +64,33 @@ To enable this syntax you need to add the following to your scope:
 
     import io.atlassian.fugue.converters.ScalaConverters._
 
+## Steps
+
+From 4.7.0 there is a `fugue-extensions` module that adds some `for-comprehension` styled syntax 
+shortcuts for io.atlassian.fugue Option and Either, as well as Java8 Optional.
+
+This makes the following type of syntax possible. 
+
+```
+    Option<Double> either = Steps
+                    .begin(firstOKOperation())
+                    .then(str -> secondNGOperation(str))
+                    .then(() -> thirdOKOperation(number))
+                    .then((str, number, boo) -> fourthOKOperation(str, number, boo))
+                    .then((str, number, boo, str2) -> fifthOKOperation())
+                    .yield((str, number, boo, str2, fifth) -> new Double(number));
+```
+               
+Works up to 6 Steps, and breaks out on the first Left (Either), none (Option), failure (Try) 
+or empty (Optional)
+
+See the javadoc for more details.
+
 ## Android
 
-Please use 2.x releases for projects requiring JDK 1.6. The latest release 2.x release is v2.6.1.
+The latest release that supports JDK 1.6 is v2.6.1.
+The latest release that supports JDK 1.7 is v2.7.0. This is forward compatibile with guava for 
+andriod v22+ which requires 1.7.
 
 ## Migrating from Fugue v2.x to v3.x
 
@@ -129,3 +153,5 @@ issue and a member of the team will renew it.*
 better to separate the builds for coverage verification and install/deploy.
 
 For more details read the [Clover documentation](https://confluence.atlassian.com/display/CLOVER/Basic+usage).
+
+Maven releases are changing. Publishing to maven central will require manual intervention go/buildeng
