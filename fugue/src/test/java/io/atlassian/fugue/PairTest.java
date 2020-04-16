@@ -21,11 +21,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import static io.atlassian.fugue.Pair.pair;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 
 public class PairTest {
+
+  private static final String RIGHT = "right";
+
   @Test(expected = NullPointerException.class) public void testNullLeft() {
     pair(null, "");
   }
@@ -35,11 +38,11 @@ public class PairTest {
   }
 
   @Test public void left() {
-    assertThat(pair("left", "right").left(), equalTo("left"));
+    assertThat(pair("left", RIGHT).left(), equalTo("left"));
   }
 
   @Test public void right() {
-    assertThat(pair("left", "right").right(), equalTo("right"));
+    assertThat(pair("left", RIGHT).right(), equalTo(RIGHT));
   }
 
   @Test public void toStringTest() {
@@ -50,11 +53,11 @@ public class PairTest {
     assertThat(pair(1, 3).hashCode(), equalTo(65539));
   }
 
-  @Test public void notEqualToNull() {
+  @SuppressWarnings({ "ConstantConditions", "EqualsReplaceableByObjectsCall" }) @Test public void notEqualToNull() {
     assertThat(pair(1, 3).equals(null), equalTo(false));
   }
 
-  @Test public void equalToSelf() {
+  @SuppressWarnings("EqualsWithItself") @Test public void equalToSelf() {
     final Pair<Integer, Integer> pair = pair(1, 3);
     assertThat(pair.equals(pair), equalTo(true));
   }

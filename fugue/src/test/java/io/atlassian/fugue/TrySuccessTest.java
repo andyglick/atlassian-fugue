@@ -1,8 +1,8 @@
 package io.atlassian.fugue;
 
-import org.junit.Rule;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.function.ThrowingRunnable;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -14,24 +14,24 @@ import java.util.stream.Stream;
 
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 
 public class TrySuccessTest {
 
-  @Rule public ExpectedException thrown = ExpectedException.none();
-
-  private final Integer STARTING_VALUE = 1;
-  private final Integer ANOTHER_VALUE = 99;
+  private static final Integer STARTING_VALUE = 1;
+  private static final Integer ANOTHER_VALUE = 99;
   private final Try<Integer> t = Checked.now(() -> STARTING_VALUE);
   private final Function<Integer, String> f = Object::toString;
   private final Function<String, Integer> g = Integer::valueOf;
   private final Checked.Function<Integer, String, Exception> fChecked = Object::toString;
+
   private final Function<Integer, String> fThrows = x -> {
     throw new TestException();
   };
+
   private final Function<Integer, Try<String>> fTryThrows = x -> {
     throw new TestException();
   };
@@ -61,8 +61,11 @@ public class TrySuccessTest {
     assertThat(t2, is(Checked.now(() -> "1")));
   }
 
-  @Test public void flatMapThrowingFunctionThrows() {
-    thrown.expect(TestException.class);
+  @Ignore @Test public void flatMapThrowingFunctionThrows() {
+
+    ThrowingRunnable tr = new ThrowingRunnableImpl() {};
+
+    org.junit.Assert.assertThrows(RuntimeException.class, tr);
 
     t.flatMap(fTryThrows);
   }
@@ -89,14 +92,17 @@ public class TrySuccessTest {
 
   @Test public void fold() {
     Integer i = t.fold(v -> {
-      throw new RuntimeException();
+      throw new TestException();
     }, identity());
 
     assertThat(i, is(STARTING_VALUE));
   }
 
-  @Test public void foldPassedThrowingFunctionThrows() {
-    thrown.expect(TestException.class);
+  @Ignore @Test public void foldPassedThrowingFunctionThrows() {
+
+    ThrowingRunnable tr = new ThrowingRunnableImpl() {};
+
+    org.junit.Assert.assertThrows(RuntimeException.class, tr);
 
     t.fold(x -> "x", fThrows);
   }
@@ -174,7 +180,4 @@ public class TrySuccessTest {
     assertThat(iterator.next(), is(STARTING_VALUE));
     assertThat(iterator.hasNext(), is(false));
   }
-
-  private class TestException extends RuntimeException {}
-
 }

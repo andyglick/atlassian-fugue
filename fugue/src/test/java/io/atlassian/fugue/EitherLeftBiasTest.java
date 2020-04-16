@@ -5,7 +5,7 @@ import org.junit.Test;
 import static io.atlassian.fugue.Either.left;
 import static io.atlassian.fugue.Either.right;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class EitherLeftBiasTest {
   private final Either<String, Integer> l = left("heyaa!");

@@ -18,7 +18,6 @@
     <packaging>jar</packaging>
     <name>Functional Extensions Retry Inter-Ops</name>
 
-
     <build>
         <plugins>
             <plugin>
@@ -47,11 +46,6 @@
             </plugin>
         </plugins>
     </build>
-
-    <properties>
-        <license.location>${project.basedir}/../clover.license</license.location>
-    </properties>
-
 
     <dependencies>
         <dependency>

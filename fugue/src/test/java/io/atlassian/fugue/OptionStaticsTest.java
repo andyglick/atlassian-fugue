@@ -15,7 +15,6 @@
  */
 package io.atlassian.fugue;
 
-import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 
 import java.lang.reflect.InvocationTargetException;
@@ -41,10 +40,10 @@ import static io.atlassian.fugue.Options.filterNone;
 import static io.atlassian.fugue.Options.find;
 import static io.atlassian.fugue.Options.flatten;
 import static io.atlassian.fugue.Options.lift;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.Assert.assertThat;
 
 public class OptionStaticsTest {
   static final Integer NULL = null;
@@ -192,16 +191,16 @@ public class OptionStaticsTest {
 
   @Test public void filterNones() {
     final List<Option<Integer>> list = Arrays.asList(some(1), none(Integer.class), some(2));
-    MatcherAssert.assertThat(size(filterNone(list)), is(equalTo(2)));
+    assertThat(size(filterNone(list)), is(equalTo(2)));
   }
 
   @Test public void someDefined() {
-    MatcherAssert.assertThat(filter(Collections.singletonList(some(3)), Maybe::isDefined).iterator().hasNext(), is(true));
+    assertThat(filter(Collections.singletonList(some(3)), Maybe::isDefined).iterator().hasNext(), is(true));
   }
 
   @Test public void noneNotDefined() {
     // throw new RuntimeException();
-    MatcherAssert.assertThat(filter(Collections.singletonList(none(int.class)), Maybe::isDefined).iterator().hasNext(), is(false));
+    assertThat(filter(Collections.singletonList(none(int.class)), Maybe::isDefined).iterator().hasNext(), is(false));
   }
 
   @Test public void fromPresentOptional() {

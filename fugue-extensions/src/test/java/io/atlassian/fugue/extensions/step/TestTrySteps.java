@@ -24,7 +24,7 @@ import static io.atlassian.fugue.extensions.step.TestUtils.alwaysTrue6;
 import static io.atlassian.fugue.hamcrest.TryMatchers.isFailure;
 import static io.atlassian.fugue.hamcrest.TryMatchers.isSuccessful;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class TestTrySteps {
 

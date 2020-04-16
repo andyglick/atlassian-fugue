@@ -18,10 +18,6 @@
     <packaging>jar</packaging>
     <name>Functional Extensions - JUnit QuickCheck Generators</name>
 
-    <properties>
-        <license.location>${project.basedir}/../clover.license</license.location>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>io.atlassian.fugue</groupId>

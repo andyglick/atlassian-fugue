@@ -26,7 +26,6 @@
         <scalatest.version>3.0.5</scalatest.version>
         <scala.import.version>${scala.version.base}</scala.import.version>
         <scala.version.exclusive>2.12</scala.version.exclusive>
-        <license.location>${project.basedir}/../clover.license</license.location>
     </properties>
 
     <build>

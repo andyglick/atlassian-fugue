@@ -20,7 +20,7 @@ import org.junit.Test;
 import static io.atlassian.fugue.Eithers.toLeft;
 import static io.atlassian.fugue.Eithers.toRight;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ToEitherLeftOrRightTest {
   private static final String ORIGINAL_STRING = "abc";

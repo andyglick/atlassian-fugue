@@ -21,10 +21,10 @@ import java.util.function.Function;
 
 import static io.atlassian.fugue.Functions.compose;
 import static io.atlassian.fugue.Option.some;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 public class FunctionComposeTest {
   Function<String, Option<Integer>> toInt = input -> {
@@ -60,6 +60,6 @@ public class FunctionComposeTest {
   @Test public void referenceEqualityOfComposition() {
     final Function<Integer, Integer> intFunc = (a) -> a + 1;
     final Function<Integer, Double> intDouble = (a) -> a + 1.0;
-    assertTrue(compose(intDouble, intFunc).equals(compose(intDouble, intFunc)));
+    assertEquals(compose(intDouble, intFunc), compose(intDouble, intFunc));
   }
 }

@@ -22,8 +22,8 @@ import java.util.function.Function;
 
 import static io.atlassian.fugue.Functions.fold;
 import static java.util.Arrays.asList;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 public class FunctionsFoldTest {
   @Test public void f2FoldSum() {

@@ -7,7 +7,7 @@ import static io.atlassian.fugue.Try.successful;
 import static io.atlassian.fugue.hamcrest.TryMatchers.isFailure;
 import static io.atlassian.fugue.hamcrest.TryMatchers.isSuccessful;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class TryMatchersTest {
 

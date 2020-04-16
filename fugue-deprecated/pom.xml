@@ -48,11 +48,6 @@
         </plugins>
     </build>
 
-    <properties>
-        <license.location>${project.basedir}/../clover.license</license.location>
-    </properties>
-
-
     <dependencies>
         <dependency>
             <groupId>org.slf4j</groupId>

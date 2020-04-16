@@ -26,7 +26,7 @@ import static io.atlassian.fugue.UtilityFunctions.reverse;
 import static io.atlassian.fugue.UtilityFunctions.toStringFunction;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class EitherLeftProjectionTest {
   private final Either<String, Integer> l = left("heyaa!");

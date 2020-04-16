@@ -21,7 +21,7 @@ import java.util.Iterator;
 import java.util.function.Function;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class IterablesIterateTest {
   private static final Function<Integer, Integer> INC = i -> i + 1;

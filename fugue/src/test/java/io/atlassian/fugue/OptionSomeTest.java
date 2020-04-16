@@ -31,7 +31,7 @@ import static io.atlassian.fugue.Option.some;
 import static io.atlassian.fugue.Suppliers.ofInstance;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class OptionSomeTest {
   private static final Integer ORIGINAL_VALUE = 1;

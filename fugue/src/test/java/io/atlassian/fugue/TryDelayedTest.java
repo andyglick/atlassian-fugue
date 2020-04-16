@@ -1,8 +1,6 @@
 package io.atlassian.fugue;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import java.util.Iterator;
 import java.util.Optional;
@@ -10,15 +8,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.emptyIterable;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 
 public class TryDelayedTest {
-
-  @Rule public ExpectedException thrown = ExpectedException.none();
 
   @Test public void success() {
     Try<Integer> t = Checked.delay(() -> 1);

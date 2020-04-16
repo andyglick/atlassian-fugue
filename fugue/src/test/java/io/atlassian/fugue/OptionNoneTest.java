@@ -26,7 +26,7 @@ import static io.atlassian.fugue.Option.none;
 import static io.atlassian.fugue.Option.some;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class OptionNoneTest {
   private final Option<Integer> none = none();

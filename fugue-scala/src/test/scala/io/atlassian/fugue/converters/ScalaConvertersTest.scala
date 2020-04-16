@@ -21,7 +21,8 @@ import java.util.function.{ BiFunction => JFunction2, Function => JFunction, Pre
 import io.atlassian.fugue
 import io.atlassian.fugue.Suppliers
 import org.hamcrest.Matchers.is
-import org.junit.Assert.{ assertThat, assertTrue }
+import org.hamcrest.MatcherAssert.{ assertThat }
+import org.junit.Assert.{ assertTrue }
 import org.junit.Test
 
 import scala.util.control.Exception.catching

@@ -1,12 +1,11 @@
 package io.atlassian.fugue;
 
-import org.junit.Rule;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.function.ThrowingRunnable;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -14,49 +13,27 @@ import java.util.stream.Stream;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyIterable;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 
 public class TryFailureTest {
 
-  @Rule public ExpectedException thrown = ExpectedException.none();
-
   private final Integer ANOTHER_VALUE = 99;
 
-  private class TestException extends RuntimeException {
-    TestException(final String message) {
-      super(message);
-    }
-
-    @Override public int hashCode() {
-      return Objects.hashCode(getMessage());
-    }
-
-    @Override public boolean equals(Object obj) {
-      if (this == obj) {
-        return true;
-      }
-      if (!(obj instanceof TestException)) {
-        return false;
-      }
-
-      TestException other = (TestException) obj;
-      return Objects.equals(getMessage(), other.getMessage());
-    }
-  }
-
   private static final String MESSAGE = "known exception message";
+
   private final Try<Integer> t = Checked.now(() -> {
     throw new TestException(MESSAGE);
   });
+
   private final Function<Exception, String> fThrows = x -> {
     throw new TestException(MESSAGE);
   };
 
   private final Function<Exception, Try<Integer>> fTryThrows = x -> {
-    throw new RuntimeException();
+    throw new TestException();
   };
 
   @Test public void map() {
@@ -99,8 +76,11 @@ public class TryFailureTest {
     assertThat(t.recoverWith(IllegalStateException.class, x -> Checked.now(() -> 0)), is(t));
   }
 
-  @Test public void recoverWithPassedThrowingFunctionThrows() {
-    thrown.expect(RuntimeException.class);
+  @Ignore @Test public void recoverWithPassedThrowingFunctionThrows() {
+
+    ThrowingRunnable tr = new ThrowingRunnableImpl() {};
+
+    org.junit.Assert.assertThrows(TestException.class, tr);
 
     t.recoverWith(fTryThrows);
   }
@@ -111,15 +91,18 @@ public class TryFailureTest {
 
   @Test public void fold() {
     Exception e = t.fold(identity(), v -> {
-      throw new RuntimeException();
+      throw new TestException();
     });
 
     assertThat(e, instanceOf(TestException.class));
     assertThat(e.getMessage(), is(MESSAGE));
   }
 
-  @Test public void foldPassedThrowingExceptionsThrows() {
-    thrown.expect(TestException.class);
+  @Ignore @Test public void foldPassedThrowingExceptionsThrows() {
+
+    ThrowingRunnable tr = new ThrowingRunnableImpl() {};
+
+    org.junit.Assert.assertThrows(TestException.class, tr);
 
     t.fold(fThrows, x -> "x");
   }

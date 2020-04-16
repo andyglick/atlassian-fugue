@@ -24,7 +24,7 @@ import static io.atlassian.fugue.Eithers.merge;
 import static io.atlassian.fugue.UtilityFunctions.addOne;
 import static io.atlassian.fugue.UtilityFunctions.square;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class EitherTest {
   @Test(expected = NullPointerException.class) public void testNullLeft() {

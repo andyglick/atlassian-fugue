@@ -7,12 +7,12 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static io.atlassian.fugue.Try.failure;
-import static java.util.Arrays.asList;
 import static io.atlassian.fugue.Try.successful;
+import static java.util.Arrays.asList;
 import static java.util.Collections.shuffle;
 import static java.util.stream.Collectors.toSet;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 public class TrySuccessCollectorTest {
 

@@ -27,7 +27,7 @@ import static io.atlassian.fugue.Eithers.sequenceLeft;
 import static io.atlassian.fugue.Eithers.sequenceRight;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 @SuppressWarnings("unchecked") public class EitherSequenceTest {
   @Test public void sequenceRights() {

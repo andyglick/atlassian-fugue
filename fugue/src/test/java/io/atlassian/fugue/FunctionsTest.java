@@ -43,7 +43,7 @@ import static io.atlassian.fugue.UtilityFunctions.square;
 import static io.atlassian.fugue.UtilityFunctions.subtract;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class FunctionsTest {
 

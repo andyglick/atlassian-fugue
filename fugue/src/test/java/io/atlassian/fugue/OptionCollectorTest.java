@@ -13,7 +13,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.shuffle;
 import static java.util.stream.Collectors.toSet;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class OptionCollectorTest {
 

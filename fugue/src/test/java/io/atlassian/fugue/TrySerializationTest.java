@@ -10,7 +10,7 @@ import static io.atlassian.fugue.Serializer.toBytes;
 import static io.atlassian.fugue.Serializer.toObject;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class TrySerializationTest {
   @Test public void serializeFailure() throws IOException {

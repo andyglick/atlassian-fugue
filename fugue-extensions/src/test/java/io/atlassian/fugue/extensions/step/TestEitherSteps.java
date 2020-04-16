@@ -24,7 +24,7 @@ import static io.atlassian.fugue.extensions.step.TestUtils.alwaysTrue6;
 import static io.atlassian.fugue.hamcrest.EitherMatchers.isLeft;
 import static io.atlassian.fugue.hamcrest.EitherMatchers.isRight;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class TestEitherSteps {
 

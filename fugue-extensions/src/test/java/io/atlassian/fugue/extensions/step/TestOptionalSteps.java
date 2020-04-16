@@ -23,7 +23,7 @@ import static io.atlassian.fugue.extensions.step.TestUtils.alwaysTrue6;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class TestOptionalSteps {
 

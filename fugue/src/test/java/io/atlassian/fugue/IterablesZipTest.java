@@ -24,7 +24,7 @@ import static io.atlassian.fugue.Iterables.zipWithIndex;
 import static io.atlassian.fugue.Pair.pair;
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.contains;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class IterablesZipTest {
   @Test public void zipFromLists() {
