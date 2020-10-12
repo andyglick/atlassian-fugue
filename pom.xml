@@ -64,7 +64,7 @@
     <java.version>8</java.version>
     <jdkLevel>1.8</jdkLevel>
     <junit-quickcheck.version>0.6.1</junit-quickcheck.version>
-    <junit.version>4.13</junit.version>
+    <junit.version>4.13.1</junit.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <maven.javadoc.plugin.version>2.10.3</maven.javadoc.plugin.version>
