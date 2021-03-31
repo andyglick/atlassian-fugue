@@ -58,7 +58,7 @@
   <properties>
     <annotations.version>3.0.0</annotations.version>
     <fugue.osgi.export.version>${project.version}</fugue.osgi.export.version>
-    <guava.version>26.0-jre</guava.version>
+    <guava.version>29.0-jre</guava.version>
     <hamcrest-optional.version>2.0.0</hamcrest-optional.version>
     <hamcrest.version>2.2</hamcrest.version>
     <java.version>8</java.version>
